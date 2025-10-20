@@ -1,32 +1,19 @@
-# BeatBetano (React + Vite) v1.0.0
+# BeatBetano (React + Vite) v1.1.0
 
-Gestor de apuestas deportivas con **React + Vite + Tailwind**, listo para deploy en **GitHub Pages** como **project site** en el repo `amante.beatbetano`.
+Deploy en **GitHub Pages** como project site: **https://amante.github.io/beatbetano/**
 
-## 🚀 Características
-- Bet Builder (múltiples legs) con cálculo de **parlay** y retorno
-- Gestión de apuestas (OPEN/WON/LOST/VOID)
-- **Banca**: depósitos/retiros y movimientos automáticos al liquidar
-- Exportar/Importar **JSON / CSV / XLSX** (usa SheetJS)
-- Persistencia en `localStorage`
-- Configurable en **CLP / USD / EUR** y **cuotas American/Decimal/Fraccional**
-- UI con Tailwind + iconos de `lucide-react`
-
-## 🛠️ Dev
-```bash
-npm i
-npm run dev
-```
-
-## 🧱 Build
-```bash
-npm run build
-# genera dist/ y copia dist/index.html -> dist/404.html (fallback GH Pages)
-```
-
-## 🌐 Deploy en GitHub Pages
-1. Crea el repositorio **amante.beatbetano** en tu cuenta.
-2. Sube **todo** este proyecto (incluyendo `.github/workflows/pages.yml`).
-3. Push a la rama **main**. El workflow compilará y publicará en **Pages**.
-4. URL final: `https://amante.github.io/amante.beatbetano/`
-
-> Nota: En `vite.config.js` el `base` ya está en `/amante.beatbetano/` (necesario para rutas y assets en un project site).
+## Pasos
+1. Crea el repo **beatbetano** en tu cuenta `amante`.
+2. Sube todo este proyecto (incluida `.github/workflows/pages.yml`).
+3. En local:
+   ```bash
+   npm i
+   npm run build
+   git init
+   git add .
+   git commit -m "BeatBetano React v1.1.0"
+   git branch -M main
+   git remote add origin https://github.com/amante/beatbetano.git
+   git push -u origin main
+   ```
+4. GitHub Actions compila y publica en Pages.
