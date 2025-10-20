@@ -1,4 +1,4 @@
-export const VERSION='v1.2.0'
+export const VERSION='v1.2.1'
 export const LS_KEYS={ bets:'beatbetano_bets', ledger:'beatbetano_ledger', settings:'beatbetano_settings', starting:'beatbetano_starting', activity:'beatbetano_activity', slipDraft:'beatbetano_slip_draft' }
 export const save=(k,v)=>localStorage.setItem(k, JSON.stringify(v))
 export const load=(k,f)=>JSON.parse(localStorage.getItem(k)||JSON.stringify(f))
