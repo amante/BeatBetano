@@ -1,4 +1,4 @@
-export const VERSION='v1.2.2'
+export const VERSION='v1.2.3'
 export const LS_KEYS={ bets:'beatbetano_bets', ledger:'beatbetano_ledger', settings:'beatbetano_settings', starting:'beatbetano_starting', activity:'beatbetano_activity', slipDraft:'beatbetano_slip_draft' }
 export const save=(k,v)=>localStorage.setItem(k, JSON.stringify(v))
 export const load=(k,f)=>JSON.parse(localStorage.getItem(k)||JSON.stringify(f))
@@ -11,7 +11,7 @@ export const americanToDecimal=(a)=>{ const n=Number(a); if(!isFinite(n)||n===0)
 export const fractionalToDecimal=(fr)=>{ const [num,den]=String(fr).split('/').map(Number); if(!isFinite(num)||!isFinite(den)||den===0) return null; return 1+num/den }
 export const toDecimalOdds=(input,fmt)=> fmt==='decimal'?(Number(input)>1?Number(input):null): fmt==='american'?americanToDecimal(input): fmt==='fractional'?fractionalToDecimal(input): null
 export const decimalToAmerican=(d)=>{ const x=Number(d); if(!isFinite(x)||x<=1) return null; return x>=2? Math.round((x-1)*100) : -Math.round(100/(x-1)) }
-export const toFraction=(dec)=>{ const x=Number(dec); if(!isFinite(x)||x<=1) return '—'; const v=x-1,denom=1000; const num=Math.round(v*denom); const g=(a,b)=>b?g(b,a%b):a; const m=g(num,denom); return `${Math.round(num/m)}/${Math.round(denom/m)}` }
+export const toFraction=(dec)=>{ const x=Number(dec); if(!isFinite(x)||x<=1) return '—'; const v=x-1,den=1000; const num=Math.round(v*den); const g=(a,b)=>b?g(b,a%b):a; const m=g(num,den); return `${Math.round(num/m)}/${Math.round(den/m)}` }
 export const parlayDecimal=(legs)=> legs.reduce((p,l)=> p*Number(l.oddsDec),1)
 export const getDraftSlip=()=>load(LS_KEYS.slipDraft,[])
 export const setDraftSlip=(arr)=>save(LS_KEYS.slipDraft,arr)

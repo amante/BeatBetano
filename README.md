@@ -1,14 +1,18 @@
-# BeatBetano (React + Vite) v1.2.2
+# BeatBetano (React + Vite) v1.2.3
 
-**Cambio clave:** `vite.config.js` ahora usa `base: '/BeatBetano/'` (coincide con el nombre del repo con B mayúscula).
-Incluye página de diagnóstico `/env` que muestra `import.meta.env.BASE_URL` en producción.
+- `index.html` usa `<script src="/src/main.jsx">` (ruta absoluta) para que Vite **reescriba** a `assets/*.js` en el build.
+- Workflow oficial de GitHub Pages con `configure-pages` y pasos de diagnóstico que muestran la cabecera de `dist/index.html` y hacen `grep` para verificar que **no** quedó `src/main.jsx`.
 
-## Deploy (GitHub Pages - Actions)
-1. Sube este proyecto al repo `amante/BeatBetano` (mismo case).
-2. Settings → Pages → Source: **GitHub Actions**.
-3. Push a `main` y el workflow publicará `dist/`.
+## Deploy
+1) Sube este proyecto al repo `amante/BeatBetano` (mismo case).  
+2) Settings → Pages → Source: **GitHub Actions**.  
+3) Push a `main`.
 
-## Dev local
+## Verificación
+- En el job de Actions verás los logs de “Diagnostics” con el `head` de `dist/index.html` y la búsqueda por `src/main.jsx` (no debe aparecer).
+- En producción, **Ver código fuente** debe mostrar `<script type="module" src="/BeatBetano/assets/...js">`.
+
+## Dev
 ```bash
 npm install
 npm run dev
