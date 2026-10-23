@@ -67,6 +67,8 @@ jobs:
           Path('results/nba/challenger_comparison.json').write_text(json.dumps(result,indent=2))
           print(json.dumps(result,indent=2))
           PY
+      - name: Audit Challenger robustness by season phase, favorite and sample size
+        run: python nba/robustness.py --input results/nba/three_seasons.json --output results/nba/robustness.json
       - name: Archive coverage and metrics, including failure evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -78,4 +80,5 @@ jobs:
             results/nba/season_audit.json
             results/nba/exclusion_audit.json
             results/nba/challenger_comparison.json
+            results/nba/robustness.json
           retention-days: 14
