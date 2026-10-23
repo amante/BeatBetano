@@ -18,6 +18,10 @@ class Tests(unittest.TestCase):
         self.assertIn("home_only_baseline",r["pooled"])
     def test_misalignment(self):
         with self.assertRaisesRegex(ValueError,"Misaligned"):
-            compare_holdout([SimpleNamespace(game_id="x",season=2025,p_home=0.5)],
-                            [{"game_id":"y","home_points":101,"away_points":95}])
+            compare_holdout([SimpleNamespace(game_id="warm1",season=2024,p_home=0.5),
+                             SimpleNamespace(game_id="warm2",season=2024,p_home=0.5),
+                             SimpleNamespace(game_id="x",season=2025,p_home=0.5)],
+                            [{"game_id":"warm1","home_points":101,"away_points":95},
+                             {"game_id":"warm2","home_points":95,"away_points":101},
+                             {"game_id":"y","home_points":101,"away_points":95}])
 if __name__=="__main__":unittest.main()
