@@ -1,0 +1,51 @@
+name: NFL EPA success rate — historical challenger
+on:
+  push:
+    paths: ['validation/**','.github/workflows/nfl-epa-challenger.yml']
+  pull_request:
+    paths: ['validation/**','.github/workflows/nfl-epa-challenger.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r validation/requirements.txt
+      - name: Run synthetic leakage tests
+        run: python -m unittest discover -s validation/tests -v
+      - name: Download game outcomes
+        run: python validation/backtest.py fetch-nfl --output data/games.csv
+      - name: Download nflverse play-by-play 2013–2025
+        run: python validation/fetch_nfl_pbp.py --start 2013 --end 2025 --output data/pbp.parquet
+      - name: Run Elo on full history through 2025
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          p="data/games.csv"
+          d=pd.read_csv(p,low_memory=False)
+          d=d[(d.season>=2010)&(d.season<=2025)]
+          assert d.season.nunique()>=16
+          d.to_csv(p,index=False)
+          PY
+          python validation/backtest.py nfl --input data/games.csv --output results/elo
+      - name: Train and compare EPA challenger
+        run: python validation/nfl_epa.py --games data/games.csv --pbp data/pbp.parquet --elo results/elo/pregame_predictions.csv --output results/epa
+      - name: Check and archive
+        run: |
+          python - <<'PY'
+          import json
+          x=json.load(open("results/epa/comparison.json"))
+          assert x["test_games"]>=400,x
+          print(json.dumps(x,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nfl-epa-success-comparison
+          path: results/epa/
+          retention-days: 30
