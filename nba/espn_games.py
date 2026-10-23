@@ -8,6 +8,8 @@ import argparse,json,time
 from datetime import date,timedelta
 from pathlib import Path
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 BASE="https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 
 def parse_events(payload):
@@ -45,6 +47,11 @@ def parse_events(payload):
 def fetch_range(start,end,session=None):
     if start != end: raise ValueError("ESPN scoreboard requires a single day")
     s=session or requests.Session()
+    if session is None:
+        retry=Retry(total=5,connect=5,read=5,backoff_factor=1.0,
+                    status_forcelist=[429,500,502,503,504],
+                    allowed_methods=frozenset(["GET"]))
+        s.mount("https://",HTTPAdapter(max_retries=retry))
     r=s.get(BASE,params={"dates":f"{start:%Y%m%d}","seasontype":2,"limit":500},timeout=40)
     r.raise_for_status()
     payload=r.json()
@@ -83,7 +90,7 @@ def ingest(out,start,end):
         audit["coverage_warning"]="Game count differs from canonical 1230; reconcile ESPN event classifications before scoring"
         audit["source_events_for_reconciliation"]=[meta.get(x["game_id"],{"id":x["game_id"]}) for x in values]
     (p.parent/"coverage.json").write_text(json.dumps(audit,indent=2))
-    print(json.dumps(audit,indent=2))
+    print(json.dumps({k:v for k,v in audit.items() if k!="source_events_for_reconciliation"},indent=2))
     return values
 
 if __name__=="__main__":
