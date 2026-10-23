@@ -38,6 +38,20 @@ jobs:
               rows.extend(group)
           (base/'three_seasons.json').write_text(json.dumps(rows))
           PY
+      - name: Clean known NBA Cup championship and exhibition contamination
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,'nba')
+          from clean_regular import clean
+          p=Path('results/nba/three_seasons.json')
+          rows,report=clean(json.loads(p.read_text()))
+          p.write_text(json.dumps(rows))
+          Path('results/nba/exclusion_audit.json').write_text(json.dumps(report,indent=2))
+          print(json.dumps(report,indent=2))
+          PY
       - name: Audit team 82-game appearances and surplus candidates
         run: python nba/season_audit.py --input results/nba/three_seasons.json --output results/nba/season_audit.json
       - name: Score 2024-25 and 2025-26 chronological holdouts
@@ -51,4 +65,5 @@ jobs:
             results/nba/*/coverage.json
             results/nba/benchmark.json
             results/nba/season_audit.json
+            results/nba/exclusion_audit.json
           retention-days: 14
