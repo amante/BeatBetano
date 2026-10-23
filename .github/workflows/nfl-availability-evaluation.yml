@@ -1,0 +1,30 @@
+name: NFL availability delta paired evaluation
+on:
+  pull_request:
+    paths: ['validation/**','.github/workflows/nfl-availability-evaluation.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r validation/requirements.txt
+      - run: python -m unittest discover -s validation/tests -v
+      - run: python validation/backtest.py fetch-nfl --output data/games.csv
+      - run: python validation/fetch_nfl_pbp.py --start 2023 --end 2024 --output data/pbp.parquet
+      - run: python validation/fetch_nfl_injuries.py --games data/games.csv --start 2023 --end 2024 --output results/injury_source
+      - name: Compare EPA and EPA with archived injury reports
+        run: python validation/nfl_availability_compare.py --games data/games.csv --pbp data/pbp.parquet --injuries results/injury_source/pregame_snapshots.csv --output results/comparison
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nfl-availability-2023-2024-paired-results
+          path: |
+            results/comparison/
+            results/injury_source/coverage.json
+          retention-days: 30
