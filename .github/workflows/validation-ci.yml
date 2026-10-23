@@ -1,0 +1,29 @@
+name: Sports validation tests
+
+on:
+  push:
+    paths:
+      - 'validation/**'
+      - '.github/workflows/validation-ci.yml'
+  pull_request:
+    paths:
+      - 'validation/**'
+      - '.github/workflows/validation-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install -r validation/requirements.txt
+      - name: Run synthetic-data tests
+        run: python -m unittest discover -s validation/tests -v
+      - name: Compile backtest
+        run: python -m py_compile validation/backtest.py
