@@ -1,0 +1,25 @@
+name: NFL.com live public source smoke
+on:
+  pull_request:
+    paths: ['validation/nflcom_live_smoke.py','.github/workflows/nflcom-live-smoke.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r validation/requirements.txt
+      - name: Probe public NFL.com injury report, do not bypass access controls
+        run: python validation/nflcom_live_smoke.py --url https://www.nfl.com/injuries/league/2026/REG7 --output results/nflcom_smoke
+      - name: Archive source evidence or explicit unavailability
+        uses: actions/upload-artifact@v4
+        with:
+          name: nflcom-live-smoke
+          path: results/nflcom_smoke/
+          retention-days: 7
