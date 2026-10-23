@@ -8,6 +8,7 @@ from collections import defaultdict
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from model import evaluate,score
+from calibration_benchmark import compare_holdout
 
 def evaluate_history(games):
     if not games:raise ValueError("No NBA games supplied")
@@ -41,6 +42,7 @@ def evaluate_history(games):
     summary["interpretation"]=("verified_game_count" if summary["coverage_verified"] else "EXPLORATORY_ONLY: ESPN game-count mismatches remain unreconciled; do not use as calibrated model")
     hold=[(p,g) for p,g in zip(predictions,games) if p.season in (2025,2026)]
     summary["holdout_pooled"]=score([p for p,g in hold],[g for p,g in hold])
+    summary["benchmark_comparison"]=compare_holdout(predictions,games)
     return summary
 
 def main():
