@@ -1,0 +1,47 @@
+name: NBA three-season chronological backtest
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  historical:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install requests
+      - run: python -m unittest discover -s nba/tests -v
+      - name: Fetch 2023-24 regular season
+        run: python nba/espn_games.py --start 2023-10-24 --end 2024-04-14 --output results/nba/2024/games.json
+      - name: Fetch 2024-25 regular season
+        run: python nba/espn_games.py --start 2024-10-22 --end 2025-04-13 --output results/nba/2025/games.json
+      - name: Fetch 2025-26 regular season
+        run: python nba/espn_games.py --start 2025-10-21 --end 2026-04-12 --output results/nba/2026/games.json
+      - name: Combine chronological verified fixtures
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          base=Path('results/nba')
+          rows=[]
+          for year in (2024,2025,2026):
+              group=json.loads((base/str(year)/'games.json').read_text())
+              if any(x['season']!=year for x in group):
+                  raise ValueError(f'Unexpected ESPN season labels: {year}')
+              rows.extend(group)
+          (base/'three_seasons.json').write_text(json.dumps(rows))
+          PY
+      - name: Score 2024-25 and 2025-26 chronological holdouts
+        run: python nba/walkforward.py --input results/nba/three_seasons.json --output results/nba/benchmark.json
+      - name: Archive coverage and metrics, including failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nba-three-season-backtest
+          path: |
+            results/nba/*/coverage.json
+            results/nba/benchmark.json
+          retention-days: 14
