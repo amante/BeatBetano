@@ -56,6 +56,17 @@ jobs:
         run: python nba/season_audit.py --input results/nba/three_seasons.json --output results/nba/season_audit.json
       - name: Score 2024-25 and 2025-26 chronological holdouts
         run: python nba/walkforward.py --input results/nba/three_seasons.json --output results/nba/benchmark.json
+      - name: Evaluate Challenger vs Elo on both holdout seasons
+        run: |
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,'nba')
+          from challenger import compare
+          result=compare(json.loads(Path('results/nba/three_seasons.json').read_text()))
+          Path('results/nba/challenger_comparison.json').write_text(json.dumps(result,indent=2))
+          print(json.dumps(result,indent=2))
+          PY
       - name: Archive coverage and metrics, including failure evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -66,4 +77,5 @@ jobs:
             results/nba/benchmark.json
             results/nba/season_audit.json
             results/nba/exclusion_audit.json
+            results/nba/challenger_comparison.json
           retention-days: 14
