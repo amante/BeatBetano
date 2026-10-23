@@ -1,0 +1,52 @@
+name: NFL challenger vs Elo — real historical data
+on:
+  push:
+    paths: ['validation/**','.github/workflows/nfl-challenger.yml']
+  pull_request:
+    paths: ['validation/**','.github/workflows/nfl-challenger.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r validation/requirements.txt
+      - name: Fetch NFL results
+        run: python validation/backtest.py fetch-nfl --output data/nfl_games.csv
+      - name: Restrict dates
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          p="data/nfl_games.csv"
+          d=pd.read_csv(p,low_memory=False)
+          d=d[(d.season>=2010)&(d.season<=2025)]
+          assert d.season.nunique()>=16
+          d.to_csv(p,index=False)
+          PY
+      - name: Compute baseline Elo
+        run: python validation/backtest.py nfl --input data/nfl_games.csv --output results/elo
+      - name: Fit challenger and score identical holdout games
+        run: python validation/nfl_challenger.py --games data/nfl_games.csv --elo-predictions results/elo/pregame_predictions.csv --output results/challenger
+      - name: Validate outputs
+        run: |
+          python - <<'PY'
+          import json
+          x=json.load(open("results/challenger/comparison.json"))
+          assert x["test_games"] >= 400
+          assert x["test_seasons"] == [2024,2025]
+          print(json.dumps(x,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nfl-challenger-paired-2024-2025
+          path: |
+            results/elo/metrics.json
+            results/challenger/comparison.json
+            results/challenger/paired_predictions.csv
+          retention-days: 30
