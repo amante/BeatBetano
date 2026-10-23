@@ -1,5 +1,9 @@
 name: NBA three-season chronological backtest
 on:
+  pull_request:
+    paths:
+      - 'nba/**'
+      - '.github/workflows/nba-three-season-backtest.yml'
   workflow_dispatch:
 permissions:
   contents: read

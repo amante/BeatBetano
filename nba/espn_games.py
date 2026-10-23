@@ -8,6 +8,8 @@ import argparse,json,time
 from datetime import date,timedelta
 from pathlib import Path
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 BASE="https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 
 def parse_events(payload):
@@ -45,20 +47,29 @@ def parse_events(payload):
 def fetch_range(start,end,session=None):
     if start != end: raise ValueError("ESPN scoreboard requires a single day")
     s=session or requests.Session()
-    r=s.get(BASE,params={"dates":f"{start:%Y%m%d}","limit":500},timeout=40)
+    if session is None:
+        retry=Retry(total=5,connect=5,read=5,backoff_factor=1.0,
+                    status_forcelist=[429,500,502,503,504],
+                    allowed_methods=frozenset(["GET"]))
+        s.mount("https://",HTTPAdapter(max_retries=retry))
+    r=s.get(BASE,params={"dates":f"{start:%Y%m%d}","seasontype":2,"limit":500},timeout=40)
     r.raise_for_status()
     payload=r.json()
     if not isinstance(payload.get("events"),list):
         raise ValueError("ESPN scoreboard missing events array")
-    return parse_events(payload),len(payload["events"])
+    # Carry source classifications into an audit (never used as model inputs).
+    games=parse_events(payload)
+    metadata={str(e.get("id")):{"id":str(e.get("id")), "name":e.get("name"), "shortName":e.get("shortName"), "season":e.get("season"), "notes":e.get("notes"), "competitions":[{"type":c.get("type"),"notes":c.get("notes"),"status":c.get("status",{}).get("type")} for c in e.get("competitions",[])]} for e in payload["events"]}
+    return games,len(payload["events"]),metadata
 
 def ingest(out,start,end):
     start=date.fromisoformat(start);end=date.fromisoformat(end)
     if end<start:raise ValueError("Bad date window")
     # ESPN public scoreboard supports a single YYYYMMDD per request.
-    cursor=start;raw=0;games=[]
+    cursor=start;raw=0;games=[];meta={}
     while cursor<=end:
-        part,n=fetch_range(cursor,cursor)
+        part,n,m=fetch_range(cursor,cursor)
+        meta.update(m)
         if n>=500:raise ValueError("Potential truncated scoreboard data")
         games+=part;raw+=n
         cursor+=timedelta(days=1)
@@ -73,8 +84,13 @@ def ingest(out,start,end):
     p.write_text(json.dumps(values,indent=2))
     audit={"start":str(start),"end":str(end),"raw_events":raw,"complete_regular_games":len(values),
            "season_counts":{str(k):sum(g["season"]==k for g in values) for k in sorted(set(g["season"] for g in values))}}
+    # Preserve identifiers for source reconciliation, without silently trimming
+    # a nonstandard 1230+ set to force an artificially passing backtest.
+    if len(values)!=1230:
+        audit["coverage_warning"]="Game count differs from canonical 1230; reconcile ESPN event classifications before scoring"
+        audit["source_events_for_reconciliation"]=[meta.get(x["game_id"],{"id":x["game_id"]}) for x in values]
     (p.parent/"coverage.json").write_text(json.dumps(audit,indent=2))
-    print(json.dumps(audit,indent=2))
+    print(json.dumps({k:v for k,v in audit.items() if k!="source_events_for_reconciliation"},indent=2))
     return values
 
 if __name__=="__main__":
