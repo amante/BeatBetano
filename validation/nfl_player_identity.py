@@ -15,8 +15,8 @@ def resolve(evidence,players):
     e["name_key"]=e.player_name.map(norm);p["name_key"]=p.display_name.map(norm)
     counts=p.groupby(["team","name_key"]).gsis_id.nunique().rename("candidate_count").reset_index()
     distinct=p.drop_duplicates(["team","name_key","gsis_id"])
-    unique=counts[counts.candidate_count==1][["team","name_key"]]
-    unique=unique.merge(distinct[["team","name_key","gsis_id"]],on=["team","name_key"],how="left",validate="one_to_one")
+    unique=distinct.merge(counts,on=["team","name_key"],how="left",validate="many_to_one")
+    unique=unique[unique.candidate_count.eq(1)][["team","name_key","gsis_id"]].drop_duplicates(["team","name_key"])
     joined=e.merge(unique,on=["team","name_key"],how="left",validate="many_to_one")
     joined["identity_status"]=joined.gsis_id.notna().map({True:"single_name_candidate_requires_review",False:"unresolved"})
     return joined.drop(columns="name_key")
