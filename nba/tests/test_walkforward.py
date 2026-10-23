@@ -17,7 +17,7 @@ class Tests(unittest.TestCase):
                 rows.append({"game_id":f"{year}-{i}","season":year,
                              "tipoff_utc":(start+timedelta(days=i)).isoformat(),
                              "home_team":"BOS","away_team":"NYK",
-                             "home_points":101,"away_points":100})
+                             "home_points":101 if i==0 else 99,"away_points":100})
         result=evaluate_history(rows)
         self.assertFalse(result["coverage_verified"])
         self.assertIn("2024",result["coverage_discrepancies"])
