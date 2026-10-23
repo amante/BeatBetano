@@ -1,0 +1,29 @@
+name: NFL injury pregame coverage 2023–24
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ['validation/**','.github/workflows/nfl-injury-coverage.yml']
+permissions:
+  contents: read
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r validation/requirements.txt
+      - name: Check source timestamp safety
+        run: python -m unittest discover -s validation/tests -v
+      - name: Download nflverse schedules
+        run: python validation/backtest.py fetch-nfl --output data/games.csv
+      - name: Audit pregame injury rows and paired match coverage
+        run: python validation/fetch_nfl_injuries.py --games data/games.csv --output results/injuries
+      - name: Save coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: nfl-injury-availability-coverage-2023-2024
+          path: results/injuries/
+          retention-days: 30
