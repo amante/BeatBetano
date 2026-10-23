@@ -42,7 +42,8 @@ def parse_events(payload):
                       "home_points":hp,"away_points":ap})
     return games
 
-def fetch_range(start,end,session=None):\n    if start != end: raise ValueError("ESPN scoreboard requires a single day")
+def fetch_range(start,end,session=None):
+    if start != end: raise ValueError("ESPN scoreboard requires a single day")
     s=session or requests.Session()
     r=s.get(BASE,params={"dates":f"{start:%Y%m%d}","limit":500},timeout=40)
     r.raise_for_status()
@@ -54,7 +55,14 @@ def fetch_range(start,end,session=None):\n    if start != end: raise ValueError(
 def ingest(out,start,end):
     start=date.fromisoformat(start);end=date.fromisoformat(end)
     if end<start:raise ValueError("Bad date window")
-    # ESPN public scoreboard supports a single YYYYMMDD per request.\n    cursor=start;raw=0;games=[]\n    while cursor<=end:\n        part,n=fetch_range(cursor,cursor)\n        if n>=500:raise ValueError("Potential truncated scoreboard data")\n        games+=part;raw+=n\n        cursor+=timedelta(days=1)\n        time.sleep(0.2)
+    # ESPN public scoreboard supports a single YYYYMMDD per request.
+    cursor=start;raw=0;games=[]
+    while cursor<=end:
+        part,n=fetch_range(cursor,cursor)
+        if n>=500:raise ValueError("Potential truncated scoreboard data")
+        games+=part;raw+=n
+        cursor+=timedelta(days=1)
+        time.sleep(0.2)
     by_id={}
     for g in games:
         if g["game_id"] in by_id and g!=by_id[g["game_id"]]:
