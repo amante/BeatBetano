@@ -1,0 +1,58 @@
+name: NFL historical baseline — real data
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/nfl-historical.yml'
+      - 'validation/**'
+
+permissions:
+  contents: read
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r validation/requirements.txt
+      - name: Download public NFL game results
+        run: python validation/backtest.py fetch-nfl --output data/nfl_games.csv
+      - name: Restrict to completed seasons, check data integrity
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          from pathlib import Path
+          p = Path("data/nfl_games.csv")
+          d = pd.read_csv(p, low_memory=False)
+          required = {"season", "gameday", "home_team", "away_team", "home_score", "away_score"}
+          assert required.issubset(d.columns), f"Missing {required - set(d.columns)}"
+          d = d[(d.season >= 2010) & (d.season <= 2025)].copy()
+          assert d["season"].nunique() >= 10, "Insufficient history"
+          assert not d.empty, "No historical games"
+          d.to_csv(p, index=False)
+          print(f"Dataset: {len(d)} rows across seasons {d.season.min()}–{d.season.max()}")
+          PY
+      - name: Run strictly historical NFL Elo baseline
+        run: python validation/backtest.py nfl --input data/nfl_games.csv --output results/nfl
+      - name: Verify meaningful holdout metrics
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          m = json.loads(Path("results/nfl/metrics.json").read_text())
+          assert m["test_seasons"] == [2024, 2025], m
+          assert m["test_games"] >= 400, m
+          assert 0 < m["brier"] < 1 and 0 < m["log_loss"] < 2, m
+          print(json.dumps(m, indent=2))
+          PY
+      - name: Archive metrics and predictions
+        uses: actions/upload-artifact@v4
+        with:
+          name: nfl-historical-elo-2010-2025
+          path: results/nfl/
+          retention-days: 30
