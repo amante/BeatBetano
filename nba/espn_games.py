@@ -73,6 +73,11 @@ def ingest(out,start,end):
     p.write_text(json.dumps(values,indent=2))
     audit={"start":str(start),"end":str(end),"raw_events":raw,"complete_regular_games":len(values),
            "season_counts":{str(k):sum(g["season"]==k for g in values) for k in sorted(set(g["season"] for g in values))}}
+    # Preserve identifiers for source reconciliation, without silently trimming
+    # a nonstandard 1230+ set to force an artificially passing backtest.
+    if len(values)!=1230:
+        audit["coverage_warning"]="Game count differs from canonical 1230; reconcile ESPN event classifications before scoring"
+        audit["game_ids_for_reconciliation"]=[x["game_id"] for x in values]
     (p.parent/"coverage.json").write_text(json.dumps(audit,indent=2))
     print(json.dumps(audit,indent=2))
     return values
