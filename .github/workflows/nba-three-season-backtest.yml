@@ -38,6 +38,8 @@ jobs:
               rows.extend(group)
           (base/'three_seasons.json').write_text(json.dumps(rows))
           PY
+      - name: Audit team 82-game appearances and surplus candidates
+        run: python nba/season_audit.py --input results/nba/three_seasons.json --output results/nba/season_audit.json
       - name: Score 2024-25 and 2025-26 chronological holdouts
         run: python nba/walkforward.py --input results/nba/three_seasons.json --output results/nba/benchmark.json
       - name: Archive coverage and metrics, including failure evidence
@@ -48,4 +50,5 @@ jobs:
           path: |
             results/nba/*/coverage.json
             results/nba/benchmark.json
+            results/nba/season_audit.json
           retention-days: 14
