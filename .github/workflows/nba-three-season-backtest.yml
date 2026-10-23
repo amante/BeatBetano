@@ -69,6 +69,8 @@ jobs:
           PY
       - name: Audit Challenger robustness by season phase, favorite and sample size
         run: python nba/robustness.py --input results/nba/three_seasons.json --output results/nba/robustness.json
+      - name: Evaluate exploratory guardrails without claiming independent validation
+        run: python nba/guardrails.py --input results/nba/three_seasons.json --output results/nba/guardrails_exploratory.json
       - name: Archive coverage and metrics, including failure evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -81,4 +83,5 @@ jobs:
             results/nba/exclusion_audit.json
             results/nba/challenger_comparison.json
             results/nba/robustness.json
+            results/nba/guardrails_exploratory.json
           retention-days: 14
