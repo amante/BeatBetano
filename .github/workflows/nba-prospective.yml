@@ -1,0 +1,64 @@
+name: NBA prospective snapshots
+on:
+  workflow_dispatch:
+    inputs:
+      history_file:
+        description: 'Verified completed-history JSON path in repository'
+        required: true
+        type: string
+      fixtures_file:
+        description: 'Verified future-fixtures JSON path in repository'
+        required: true
+        type: string
+  pull_request:
+    paths:
+      - 'nba/**'
+      - '.github/workflows/nba-prospective.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install requests
+      - run: python -m unittest discover -s nba/tests -v
+  snapshot:
+    if: github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install runtime
+        run: python -m pip install requests
+      - name: Prepare input paths and record UTC run timestamp
+        env:
+          HISTORY_FILE: ${{ inputs.history_file }}
+          FIXTURES_FILE: ${{ inputs.fixtures_file }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          for key in ("HISTORY_FILE","FIXTURES_FILE"):
+              p=Path(os.environ[key])
+              if p.is_absolute() or ".." in p.parts or p.suffix != ".json" or not p.is_file():
+                  raise ValueError(f"Invalid or missing {key}")
+          PY
+          echo "SNAPSHOT_TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+      - name: Generate immutable snapshot as per-run artifact
+        env:
+          HISTORY_FILE: ${{ inputs.history_file }}
+          FIXTURES_FILE: ${{ inputs.fixtures_file }}
+        run: python nba/prospective.py --history "$HISTORY_FILE" --fixtures "$FIXTURES_FILE" --timestamp "$SNAPSHOT_TIMESTAMP" --snapshot results/nba/prospective/snapshot.json
+      - name: Archive snapshot as isolated GitHub Actions artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nba-prospective-snapshot-${{ github.run_id }}
+          path: results/nba/prospective/snapshot.json
+          retention-days: 90
