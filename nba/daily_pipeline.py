@@ -21,11 +21,8 @@ def run(history,scoreboard,created_at):
         raise ValueError("Invalid scoreboard observation time")
     if (snap_at-feed_at).total_seconds()>300:
         raise ValueError("Scoreboard older than five minutes; refresh before predictions")
-    out=generate(history,fixtures,created_at)
-    out["scoreboard_source"]=scoreboard.get("source","unknown")
-    out["scoreboard_as_of_utc"]=scoreboard["as_of_utc"]
-    out["verified_historical_count"]=len(history)
-    return out
+    # Preserve the signed-by-digest snapshot body unchanged.
+    return generate(history,fixtures,created_at)
 
 def main():
     p=argparse.ArgumentParser()
