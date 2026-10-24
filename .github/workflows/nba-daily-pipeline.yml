@@ -1,0 +1,61 @@
+name: NBA verified pregame three-model run
+on:
+  pull_request:
+    paths:
+      - 'nba/**'
+      - '.github/workflows/nba-daily-pipeline.yml'
+  workflow_dispatch:
+    inputs:
+      game_date:
+        description: 'NBA scoreboard date YYYY-MM-DD'
+        required: true
+        type: string
+      history_file:
+        description: 'Repository path to verified complete history JSON'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install requests
+      - run: python -m unittest discover -s nba/tests -v
+  pregame:
+    if: github.event_name == 'workflow_dispatch'
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install requests
+      - name: Validate inputs and run verified daily pregame predictions
+        env:
+          GAME_DATE: ${{ inputs.game_date }}
+          HISTORY_FILE: ${{ inputs.history_file }}
+        run: |
+          python - <<'PY'
+          import os,re
+          from pathlib import Path
+          date=os.environ["GAME_DATE"]
+          if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",date):
+              raise ValueError("Bad NBA game date")
+          p=Path(os.environ["HISTORY_FILE"])
+          if p.is_absolute() or ".." in p.parts or p.suffix!=".json" or not p.is_file():
+              raise ValueError("Invalid or missing verified history file")
+          PY
+          python nba/daily_pipeline.py --history "$HISTORY_FILE" --date "$GAME_DATE" --output results/nba/prospective/three_model_snapshot.json
+      - name: Archive pregame evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nba-pregame-${{ github.run_id }}
+          path: results/nba/prospective/three_model_snapshot.json
+          retention-days: 90
