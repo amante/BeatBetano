@@ -48,7 +48,7 @@ jobs:
                   artifact_id=matches[0]["id"]
                   break
           if chosen is None:raise ValueError("No eligible archived pregame predictions")
-          with open(os.environ["GITHUB_ENV"],"a") as f:f.write(f"PREGAME_RUN={chosen}\\nARTIFACT_ID={artifact_id}\\n")
+          with open(os.environ["GITHUB_ENV"],"a") as f:f.write(f"PREGAME_RUN={chosen}\nARTIFACT_ID={artifact_id}\n")
           print(f"Selected immutable prediction artifact from run {chosen}")
           PY
           gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > /tmp/nba-pregame.zip
