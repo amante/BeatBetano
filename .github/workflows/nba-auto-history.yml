@@ -65,6 +65,9 @@ jobs:
         continue-on-error: true
         run: |
           python nba/official_injury_pdf.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/official_injury_source.json
+      - name: Reconcile NBA official-injury lines and game lineup status together
+        run: |
+          python nba/injury_lineup_joint.py --snapshot results/nba/prospective/snapshot.json --official results/nba/prospective/official_injury_source.json --preview results/nba/prospective/game_previews.json --output results/nba/prospective/injury_lineup_status.json
       - name: Mark missing full-pregame evidence explicitly
         run: |
           python nba/full_pregame_gate.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/full_pregame_status.json
@@ -91,5 +94,6 @@ jobs:
             results/nba/prospective/roster_matchups.json
             results/nba/prospective/game_previews.json
             results/nba/prospective/official_injury_source.json
+            results/nba/prospective/injury_lineup_status.json
             results/nba/prospective/sporting_observations.json
           retention-days: 90
