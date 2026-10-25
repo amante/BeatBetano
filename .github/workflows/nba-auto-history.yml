@@ -77,6 +77,9 @@ jobs:
       - name: Audit both teams' roster depth and positional matchup evidence
         run: |
           python nba/roster_matchups.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/roster_matchups.json $(test -s results/nba/prospective/sporting_observations.json && echo "--sporting-data results/nba/prospective/sporting_observations.json")
+      - name: Prepare verified NBA availability feature candidates
+        run: |
+          python nba/availability_impact.py --snapshot results/nba/prospective/snapshot.json --roster results/nba/prospective/roster_matchups.json --output results/nba/prospective/availability_features.json
       - name: Generate unified NBA model output
         run: |
           python nba/integrated_model.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/integrated_model.json $(test -s results/nba/prospective/sporting_observations.json && echo "--sporting-data results/nba/prospective/sporting_observations.json")
@@ -95,6 +98,7 @@ jobs:
             results/nba/prospective/integrated_model.json
             results/nba/prospective/nba_hoy.json
             results/nba/prospective/roster_matchups.json
+            results/nba/prospective/availability_features.json
             results/nba/prospective/game_previews.json
             results/nba/prospective/official_injury_source.json
             results/nba/prospective/injury_lineup_status.json
