@@ -15,11 +15,12 @@ def utc(value):
         raise ValueError("UTC datetime required")
     return d
 
-def integrate(snapshot,evidence):
+def integrate(snapshot,evidence,sporting_data=None):
     original={k:v for k,v in snapshot.items() if k!="content_sha256"}
     sha=hashlib.sha256(json.dumps(original,sort_keys=True,separators=(",",":")).encode()).hexdigest()
     if sha!=snapshot.get("content_sha256"):raise ValueError("Tampered statistical snapshot")
     records=evidence.get("games",{})
+    supplemental=(sporting_data or {}).get("games",{})
     if not isinstance(records,dict):raise ValueError("Expected games evidence mapping")
     output=[]
     created=utc(snapshot["created_at_utc"])
@@ -52,7 +53,9 @@ def integrate(snapshot,evidence):
                 "awaiting_independent_impact_validation" if not certified or not valid_delta else
                 "integrated_candidate")
         output.append({"game_id":p["game_id"],"home_team":p["home_team"],"away_team":p["away_team"],
-                       "tipoff_utc":p["tipoff_utc"],"elo_p_home":p["elo_p_home"],
+                       "tipoff_utc":p["tipoff_utc"],
+                       "sporting_observations":supplemental.get(str(p["game_id"]),{}),
+                       "elo_p_home":p["elo_p_home"],
                        "challenger_p_home":p["challenger_p_home"],
                        "hybrid_p_home":base,"evidence_checks":checks,
                        "all_sporting_steps_verified":complete,
@@ -69,11 +72,13 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--snapshot",required=True)
     parser.add_argument("--evidence")
+    parser.add_argument("--sporting-data")
     parser.add_argument("--output",required=True)
     a=parser.parse_args()
     snapshot=json.loads(Path(a.snapshot).read_text())
     evidence=json.loads(Path(a.evidence).read_text()) if a.evidence else {}
-    result=integrate(snapshot,evidence)
+    sporting=json.loads(Path(a.sporting_data).read_text()) if a.sporting_data else {}
+    result=integrate(snapshot,evidence,sporting)
     dest=Path(a.output);dest.parent.mkdir(parents=True,exist_ok=True)
     with dest.open("x") as f:json.dump(result,f,indent=2)
     print(json.dumps({"games":len(result["predictions"]),"integrated":sum(x["integrated_p_home"] is not None for x in result["predictions"])},indent=2))
