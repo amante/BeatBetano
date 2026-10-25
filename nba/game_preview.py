@@ -49,9 +49,19 @@ def collect(snapshot,session=None):
     for g in snapshot["predictions"]:
         tip=datetime.fromisoformat(g["tipoff_utc"].replace("Z","+00:00"))
         if tip<=clock:continue
-        response=request.get(SUMMARY,params={"event":str(g["game_id"])},timeout=30)
-        response.raise_for_status()
-        games[str(g["game_id"])]=extract_game(response.json(),g,clock.isoformat())
+        try:
+            response=request.get(SUMMARY,params={"event":str(g["game_id"])},timeout=30)
+            response.raise_for_status()
+            games[str(g["game_id"])]=extract_game(response.json(),g,clock.isoformat())
+        except (requests.RequestException, ValueError, KeyError, TypeError) as exc:
+            games[str(g["game_id"])]={
+                "game_id":str(g["game_id"]),"observed_at_utc":clock.isoformat(),
+                "source_url":SUMMARY+"?event="+str(g["game_id"]),
+                "injury_observations":[],"confirmed_starting_lineups":None,
+                "lineup_status":"unverified","is_pregame_evidence":False,
+                "retrieval_status":"unavailable",
+                "retrieval_error_type":type(exc).__name__,
+                "note":"ESPN evidence unavailable for this game; no missing players assumed healthy."}
     return {"snapshot_sha256":snapshot["content_sha256"],
             "source":"ESPN game preview; supplementary, not official NBA starter confirmation",
             "games":games}
@@ -62,7 +72,7 @@ def main():
     a=p.parse_args()
     result=collect(json.loads(Path(a.snapshot).read_text()))
     out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True)
-    with out.open("x") as f:json.dump(result,f,indent=2)
+    out.write_text(json.dumps(result,indent=2))
     print(json.dumps({"game_previews_collected":len(result["games"]),
                       "confirmed_lineups":0},indent=2))
 
