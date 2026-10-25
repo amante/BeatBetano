@@ -56,12 +56,17 @@ jobs:
           GAME_DATE: ${{ inputs.game_date }}
         run: |
           python nba/daily_pipeline.py --history results/nba/history.json --date "$GAME_DATE" --output results/nba/prospective/snapshot.json
+      - name: Collect independently sourced NBA sporting observations
+        id: sporting
+        continue-on-error: true
+        run: |
+          python nba/sporting_feed.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/sporting_observations.json
       - name: Mark missing full-pregame evidence explicitly
         run: |
           python nba/full_pregame_gate.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/full_pregame_status.json
       - name: Generate unified NBA model output
         run: |
-          python nba/integrated_model.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/integrated_model.json
+          python nba/integrated_model.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/integrated_model.json $(test -s results/nba/prospective/sporting_observations.json && echo "--sporting-data results/nba/prospective/sporting_observations.json")
       - name: Archive predictions and provenance evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -72,4 +77,5 @@ jobs:
             results/nba/prospective/snapshot.json
             results/nba/prospective/full_pregame_status.json
             results/nba/prospective/integrated_model.json
+            results/nba/prospective/sporting_observations.json
           retention-days: 90
