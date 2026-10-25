@@ -51,8 +51,17 @@ jobs:
           with open(os.environ["GITHUB_ENV"],"a") as f:f.write(f"PREGAME_RUN={chosen}\nARTIFACT_ID={artifact_id}\n")
           print(f"Selected immutable prediction artifact from run {chosen}")
           PY
-          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > /tmp/nba-pregame.zip
-          unzip -q /tmp/nba-pregame.zip -d results/nba/settlement/input
+      - name: Download immutable pregame artifact from selected run
+        uses: actions/download-artifact@v4
+        with:
+          name: nba-automatic-pregame-${{ env.PREGAME_RUN }}
+          run-id: ${{ env.PREGAME_RUN }}
+          repository: ${{ github.repository }}
+          github-token: ${{ github.token }}
+          path: results/nba/settlement/input
+      - name: Validate downloaded archive
+        run: |
+          find results/nba/settlement/input -maxdepth 4 -type f -print
           test -s results/nba/settlement/input/prospective/snapshot.json
       - name: Settle against current source results without modifying snapshot
         run: |
