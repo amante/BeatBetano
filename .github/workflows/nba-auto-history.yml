@@ -33,7 +33,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: python -m pip install requests
+      - run: python -m pip install requests pypdf
       - name: Validate scoreboard date and capture timestamp
         env:
           GAME_DATE: ${{ inputs.game_date }}
@@ -61,8 +61,7 @@ jobs:
         continue-on-error: true
         run: |
           python nba/sporting_feed.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/sporting_observations.json
-      - name: Preserve official NBA injury report PDF extraction
-        continue-on-error: true
+      - name: Preserve official NBA injury report PDF extraction or explicit unavailability
         run: |
           python nba/official_injury_pdf.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/official_injury_source.json
       - name: Collect per-game ESPN preview observations

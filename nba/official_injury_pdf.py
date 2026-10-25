@@ -74,9 +74,17 @@ def main():
     args=p.parse_args()
     data=json.loads(Path(args.snapshot).read_text())
     if not data.get("predictions"):raise ValueError("No prospective fixtures")
-    report=retrieve(data)
+    try:
+        report=retrieve(data)
+    except (requests.RequestException, ValueError, ImportError) as exc:
+        report={"source_index":INDEX,"report_url":None,"official_document_retrieved":False,
+                "individual_player_status_verified":False,"raw_page_text":[],
+                "source_report_as_of_utc":None,
+                "retrieval_status":"unavailable",
+                "retrieval_error_type":type(exc).__name__,
+                "note":"Official NBA source unavailable; no official athlete statuses verified. ESPN preview is separately collected as unverified observations."}
     path=Path(args.output);path.parent.mkdir(parents=True,exist_ok=True)
-    with path.open("x") as f:json.dump(report,f,indent=2)
-    print(json.dumps({"report_url":report["report_url"],"pages":report["pages"],
-      "player_status_verified":False},indent=2))
+    path.write_text(json.dumps(report,indent=2))
+    print(json.dumps({"report_url":report["report_url"],"pages":report.get("pages",0),
+      "official_source_available":report["official_document_retrieved"],"player_status_verified":False},indent=2))
 if __name__=="__main__":main()
