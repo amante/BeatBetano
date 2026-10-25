@@ -64,6 +64,10 @@ jobs:
       - name: Mark missing full-pregame evidence explicitly
         run: |
           python nba/full_pregame_gate.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/full_pregame_status.json
+      - name: Collect per-game ESPN preview observations
+        continue-on-error: true
+        run: |
+          python nba/game_preview.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/game_previews.json
       - name: Audit both teams' roster depth and positional matchup evidence
         run: |
           python nba/roster_matchups.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/roster_matchups.json $(test -s results/nba/prospective/sporting_observations.json && echo "--sporting-data results/nba/prospective/sporting_observations.json")
@@ -81,5 +85,6 @@ jobs:
             results/nba/prospective/full_pregame_status.json
             results/nba/prospective/integrated_model.json
             results/nba/prospective/roster_matchups.json
+            results/nba/prospective/game_previews.json
             results/nba/prospective/sporting_observations.json
           retention-days: 90
