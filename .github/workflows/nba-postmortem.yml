@@ -38,18 +38,22 @@ jobs:
           else:
               data=json.loads(subprocess.check_output(["gh","api",f"repos/{repo}/actions/workflows/nba-auto-history.yml/runs","-f","per_page=30","-f","event=workflow_dispatch","--method","GET"],text=True))
               ids=[r["id"] for r in data["workflow_runs"] if r["status"]=="completed" and r["conclusion"]=="success" and r["head_branch"]=="main"]
-          chosen=None\n          artifact_id=None
+          chosen=None
+          artifact_id=None
           for rid in ids:
               payload=json.loads(subprocess.check_output(["gh","api",f"repos/{repo}/actions/runs/{rid}/artifacts"],text=True))
               matches=[a for a in payload["artifacts"] if a["name"]==f"nba-automatic-pregame-{rid}" and not a["expired"]]
               if matches:
                   chosen=rid
+                  artifact_id=matches[0]["id"]
                   break
           if chosen is None:raise ValueError("No eligible archived pregame predictions")
-          with open(os.environ["GITHUB_ENV"],"a") as f:f.write(f"PREGAME_RUN={chosen}\n")
+          with open(os.environ["GITHUB_ENV"],"a") as f:f.write(f"PREGAME_RUN={chosen}\\nARTIFACT_ID={artifact_id}\\n")
           print(f"Selected immutable prediction artifact from run {chosen}")
           PY
-          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > /tmp/nba-pregame.zip\n          unzip -q /tmp/nba-pregame.zip -d results/nba/settlement/input\n          test -s results/nba/settlement/input/prospective/snapshot.json
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > /tmp/nba-pregame.zip
+          unzip -q /tmp/nba-pregame.zip -d results/nba/settlement/input
+          test -s results/nba/settlement/input/prospective/snapshot.json
       - name: Settle against current source results without modifying snapshot
         run: |
           test -s results/nba/settlement/input/prospective/snapshot.json
