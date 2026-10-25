@@ -59,6 +59,9 @@ jobs:
       - name: Mark missing full-pregame evidence explicitly
         run: |
           python nba/full_pregame_gate.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/full_pregame_status.json
+      - name: Generate unified NBA model output
+        run: |
+          python nba/integrated_model.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/integrated_model.json
       - name: Archive predictions and provenance evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -68,4 +71,5 @@ jobs:
             results/nba/history_audit.json
             results/nba/prospective/snapshot.json
             results/nba/prospective/full_pregame_status.json
+            results/nba/prospective/integrated_model.json
           retention-days: 90
