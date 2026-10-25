@@ -56,6 +56,9 @@ jobs:
           GAME_DATE: ${{ inputs.game_date }}
         run: |
           python nba/daily_pipeline.py --history results/nba/history.json --date "$GAME_DATE" --output results/nba/prospective/snapshot.json
+      - name: Mark missing full-pregame evidence explicitly
+        run: |
+          python nba/full_pregame_gate.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/full_pregame_status.json
       - name: Archive predictions and provenance evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -64,4 +67,5 @@ jobs:
           path: |
             results/nba/history_audit.json
             results/nba/prospective/snapshot.json
+            results/nba/prospective/full_pregame_status.json
           retention-days: 90
