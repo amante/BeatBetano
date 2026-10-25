@@ -1,0 +1,64 @@
+name: NBA point-in-time retrospective backtest
+on:
+  pull_request:
+    paths:
+      - 'nba/**'
+      - '.github/workflows/nba-retrospective.yml'
+  workflow_dispatch:
+    inputs:
+      scoreboard_date:
+        description: 'Past NBA ESPN scoreboard date YYYY-MM-DD'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - run: python -m unittest discover -s nba/tests -v
+  replay:
+    if: github.event_name == 'workflow_dispatch'
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Validate replay day is in the past
+        env:
+          REPLAY_DATE: ${{ inputs.scoreboard_date }}
+        run: |
+          python - <<'PY'
+          import os
+          from datetime import date,datetime,timezone
+          day=date.fromisoformat(os.environ["REPLAY_DATE"])
+          if day>=datetime.now(timezone.utc).date():
+              raise ValueError("Retrospective date must be strictly before today UTC")
+          if not date(2026,10,20)<=day<=date(2027,6,30):
+              raise ValueError("Date outside supported season")
+          PY
+      - name: Build historical point-in-time replay and postmortem
+        env:
+          REPLAY_DATE: ${{ inputs.scoreboard_date }}
+        run: |
+          python nba/retrospective.py --date "$REPLAY_DATE" --outdir results/nba/retrospective
+      - name: Archive replay predictions and actual results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nba-retrospective-${{ github.run_id }}
+          path: |
+            results/nba/retrospective/retrospective_snapshot.json
+            results/nba/retrospective/retrospective_report.json
+            results/nba/retrospective/history_audit.json
+          retention-days: 90
