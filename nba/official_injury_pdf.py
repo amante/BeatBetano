@@ -8,20 +8,38 @@ from datetime import datetime,timezone
 from urllib.parse import urljoin,urlparse
 from pathlib import Path
 import requests
-from bs4 import BeautifulSoup
-from pypdf import PdfReader
+from html.parser import HTMLParser
 
 INDEX="https://official.nba.com/nba-injury-report-2026-27-season/"
 
+class AnchorReader(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.links=[]
+        self.href=None
+        self.label=[]
+    def handle_starttag(self,tag,attrs):
+        if tag=="a":
+            self.href=dict(attrs).get("href")
+            self.label=[]
+    def handle_data(self,data):
+        if self.href is not None:self.label.append(data)
+    def handle_endtag(self,tag):
+        if tag=="a" and self.href:
+            self.links.append((self.href," ".join(self.label).strip()))
+            self.href=None
+            self.label=[]
+
 def discover(html):
-    soup=BeautifulSoup(html,"html.parser")
+    parsed=AnchorReader()
+    parsed.feed(html)
     candidates=[]
-    for a in soup.select("a[href]"):
-        url=urljoin(INDEX,a["href"])
+    for href,label in parsed.links:
+        url=urljoin(INDEX,href)
         host=urlparse(url).hostname or ""
         if not (host=="ak-static.cms.nba.com" and urlparse(url).path.lower().endswith(".pdf")):continue
         if "injury" not in url.lower():continue
-        candidates.append({"url":url,"label":a.get_text(" ",strip=True)})
+        candidates.append({"url":url,"label":label})
     if not candidates:raise ValueError("No NBA official injury report PDF references found")
     return candidates
 
@@ -35,6 +53,7 @@ def retrieve(snapshot,session=None):
     chosen=entries[0]
     pdf=s.get(chosen["url"],timeout=40);pdf.raise_for_status()
     if not pdf.content.startswith(b"%PDF-"):raise ValueError("Official URL did not return PDF bytes")
+    from pypdf import PdfReader
     pages=PdfReader(io.BytesIO(pdf.content)).pages
     if not pages:raise ValueError("Empty official injury report")
     extracted=[p.extract_text() or "" for p in pages]
