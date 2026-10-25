@@ -20,7 +20,7 @@ def retrospective(target_date,root,cutoff=None):
         raise ValueError("Replay cutoff must be target day 00:00 UTC")
     folder=Path(root);folder.mkdir(parents=True,exist_ok=True)
     history_path=folder/"history.json"
-    hist_audit=build(history_path,target_date,cutoff,folder/"raw")
+    hist_audit=build(history_path,(target-timedelta(days=1)).isoformat(),cutoff,folder/"raw")
     # Use final score ONLY as target label, never as pregame input.
     finals,raw_events,_=fetch_range(target,target)
     eligible=[g for g in finals if datetime.fromisoformat(g["tipoff_utc"].replace("Z","+00:00"))>stamp]
