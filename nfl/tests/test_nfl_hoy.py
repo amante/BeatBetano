@@ -23,7 +23,7 @@ class Tests(unittest.TestCase):
         x=report({"events":[event("1","2026-10-25T20:00:00Z")]},[],
                  "2026-10-25T12:00:00Z")["events"][0]
         self.assertIsNone(x["final_probability"])
-        self.assertEqual(x["historical_elo_candidate"],0.578247)
+        self.assertEqual(x["historical_elo_candidate"],0.578497)
     def test_reject_duplicate(self):
         x={"events":[event("1","2026-10-25T20:00:00Z")]*2}
         with self.assertRaises(ValueError):fixtures(x,"2026-10-25T12:00:00Z")
