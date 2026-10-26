@@ -24,6 +24,7 @@ jobs:
       - run: python -m pip install requests beautifulsoup4 pypdf
       - run: python -m unittest discover -s nba/tests -v
       - run: python -m unittest discover -s multisport/tests -v
+      - run: python -m unittest discover -s webresults/tests -v
   generate:
     if: github.event_name == 'workflow_dispatch'
     needs: tests
@@ -111,6 +112,9 @@ jobs:
       - name: Publish clearly labeled NBA baseline probabilities
         if: ${{ hashFiles('results/nba/prospective/nba_hoy.json') != '' }}
         run: python nba/preliminary_release.py --input results/nba/prospective/nba_hoy.json --output results/nba/prospective/nba_preliminary.json
+      - name: Show NBA predictions in GitHub Actions summary and HTML
+        if: ${{ hashFiles('results/nba/prospective/nba_preliminary.json') != '' }}
+        run: python webresults/render.py --input results/nba/prospective/nba_preliminary.json --html results/nba/prospective/index.html --summary results/nba/prospective/summary.md
       - name: Archive predictions and provenance evidence
         if: always()
         uses: actions/upload-artifact@v6
@@ -126,6 +130,8 @@ jobs:
             results/nba/prospective/integrated_model.json
             results/nba/prospective/nba_hoy.json
             results/nba/prospective/nba_preliminary.json
+            results/nba/prospective/index.html
+            results/nba/prospective/summary.md
             results/nba/prospective/roster_matchups.json
             results/nba/prospective/availability_features.json
             results/nba/prospective/game_previews.json
