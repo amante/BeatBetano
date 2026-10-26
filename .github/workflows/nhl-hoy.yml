@@ -42,6 +42,8 @@ jobs:
         run: python nhl/nhl_hoy.py --date "$GAME_DATE" --output results/nhl/nhl_hoy.json
       - name: Collect NHL goalie roster candidates and recent official game logs
         run: python nhl/goalie_feed.py --slate results/nhl/nhl_hoy.json --output results/nhl/goalie_candidates.json
+      - name: Integrate goalie observations into pregame evidence
+        run: python nhl/goalie_observations.py --slate results/nhl/nhl_hoy.json --candidates results/nhl/goalie_candidates.json --output results/nhl/goalie_observations.json
       - name: Render NHL predictions directly in Actions Summary and HTML
         run: python webresults/render.py --input results/nhl/nhl_hoy.json --html results/nhl/index.html --summary results/nhl/summary.md
       - uses: actions/upload-artifact@v6
@@ -51,6 +53,7 @@ jobs:
           path: |
             results/nhl/nhl_hoy.json
             results/nhl/goalie_candidates.json
+            results/nhl/goalie_observations.json
             results/nhl/index.html
             results/nhl/summary.md
           retention-days: 30
