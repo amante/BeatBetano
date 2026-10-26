@@ -15,10 +15,14 @@ def publish(report):
            type(final) not in (int,float) or not math.isfinite(final) or not 0<final<1):
             raise ValueError("Unapproved final")
         base=vals[2]
+        delta_challenger=round(vals[1]-vals[0],6)
+        delta_hybrid=round(vals[2]-vals[0],6)
         out.append({"game_id":row["game_id"],"home_team":row["home_team"],
             "away_team":row["away_team"],"tipoff_utc":row["tipoff_utc"],
             "statistical_baseline_home":base,"statistical_baseline_away":round(1-base,6),
             "official_elo_home":vals[0],"challenger_home":vals[1],
+            "delta_challenger_vs_elo_pp":round(100*delta_challenger,2),
+            "delta_hybrid_vs_elo_pp":round(100*delta_hybrid,2),
             "preliminary_dual_screen":abs(2*base-1)<=.06+1e-12,
             "preliminary_not_validated":True,
             "integrated_home":final,"integrated_away":row.get("final_p_away"),
