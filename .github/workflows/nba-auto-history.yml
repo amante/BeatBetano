@@ -104,6 +104,9 @@ jobs:
       - name: Freeze pregame NBA availability for future independent validation
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: python nba/availability_ledger.py --snapshot results/nba/prospective/snapshot.json --features results/nba/prospective/availability_features.json --output results/nba/prospective/frozen_availability.json
+      - name: Audit actual frozen lineup and injury coverage
+        if: ${{ hashFiles('results/nba/prospective/frozen_availability.json') != '' }}
+        run: python nba/availability_coverage.py --input results/nba/prospective/frozen_availability.json --output results/nba/prospective/availability_coverage.json
       - name: Generate unified NBA model output
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
@@ -138,6 +141,7 @@ jobs:
             results/nba/prospective/roster_matchups.json
             results/nba/prospective/availability_features.json
             results/nba/prospective/frozen_availability.json
+            results/nba/prospective/availability_coverage.json
             results/nba/prospective/game_previews.json
             results/nba/prospective/official_injury_source.json
             results/nba/prospective/injury_lineup_status.json
