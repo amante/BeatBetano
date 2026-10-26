@@ -48,7 +48,7 @@ def report_datetime(link):
     """Recognize NBA file date+ET clock only where explicit in the filename."""
     from zoneinfo import ZoneInfo
     name=unquote(urlparse(link).path.rsplit("/",1)[-1])
-    m=re.search(r"(20\\d\\d)[-_](\\d\\d)[-_](\\d\\d)[-_](\\d{1,2})(?:[-_]?)(\\d\\d)(AM|PM)",name,re.I)
+    m=re.search(r"(20\d\d)[-_](\d\d)[-_](\d\d)[-_](\d{1,2})(?:[-_]?)(\d\d)(AM|PM)",name,re.I)
     if not m:return None
     year,month,day,hour,minute,ampm=m.groups()
     hour=int(hour)%12+(12 if ampm.upper()=="PM" else 0)
