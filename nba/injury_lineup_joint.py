@@ -31,10 +31,39 @@ def parse_lines(raw_pages):
                 "team_verified":False})
     return rows
 
+
+def structured_rows(raw_pages):
+    """Conservative same-line extraction; no carry-forward across PDF columns."""
+    result=[]
+    for row in parse_lines(raw_pages):
+        line=row["raw"]
+        # Only accept an explicit team code followed by 'Last, First' and status.
+        m=re.match(r"^([A-Z]{2,3})\\s+([A-Za-z][A-Za-z'.\\- ]+),\\s*([A-Za-z][A-Za-z'.\\- ]+)\\s+(Out|Doubtful|Questionable|Probable|Available)\\b",line,re.I)
+        if not m:continue
+        team=normalize_team(m.group(1).upper())
+        if not team:continue
+        player=(m.group(3).strip()+" "+m.group(2).strip())
+        if len(player)<4:continue
+        result.append({"team":team,"player":player,"status":m.group(4).title(),
+            "page":row["page"],"line":row["line"],"raw":line,
+            "mapping":"explicit_same_line_team_and_player"})
+    return result
+
+def source_at_freeze(official,snapshot):
+    try:
+        if official.get("official_document_retrieved") is not True:return False
+        freeze=datetime.fromisoformat(snapshot["created_at_utc"].replace("Z","+00:00"))
+        report=datetime.fromisoformat(official["source_report_as_of_utc"].replace("Z","+00:00"))
+        downloaded=datetime.fromisoformat(official["downloaded_at_utc"].replace("Z","+00:00"))
+        return all(x.tzinfo is not None for x in (freeze,report,downloaded)) and report<=freeze and downloaded<=freeze
+    except (KeyError,ValueError,TypeError):return False
+
 def compile_report(snapshot,official=None,preview=None):
     official=official or {};preview=preview or {}
     text=official.get("raw_page_text",[])
     extracted=parse_lines(text)
+    eligible=source_at_freeze(official,snapshot)
+    resolved=structured_rows(text) if eligible else []
     games={}
     for game in snapshot["predictions"]:
         gid=str(game["game_id"])
@@ -44,16 +73,17 @@ def compile_report(snapshot,official=None,preview=None):
           "official_pdf_url":official.get("report_url"),
           "official_pdf_sha256":official.get("pdf_sha256"),
           "official_raw_status_lines":extracted,
+          "official_structured_candidate_rows":[r for r in resolved if r["team"] in (normalize_team(game["home_team"]),normalize_team(game["away_team"]))],
           "official_player_team_status_confirmed":False,
           "espn_pregame_observations":previews.get("injury_observations",[]),
           "home_confirmed_starting_five":None,
           "away_confirmed_starting_five":None,
           "lineups_confirmed":False,
-          "source_time_validated":False,
+          "source_time_validated":eligible,
           "status":"pending_official_player_reconciliation_and_confirmed_lineups"}
     return {"games":games,"source_document_available":bool(official.get("official_document_retrieved")),
-      "official_player_rows_resolved":0,"confirmed_starting_fives":0,
-      "note":"No unsupported inference of NBA official player statuses or starting fives."}
+      "official_player_rows_resolved":len(resolved),"confirmed_starting_fives":0,
+      "note":"Explicit same-line candidates only; neither player identity cross-validation nor starting five is confirmed."}
 
 if __name__=="__main__":
     ap=argparse.ArgumentParser()
