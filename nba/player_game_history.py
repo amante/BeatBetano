@@ -47,7 +47,7 @@ def parse_boxscore(payload,game,observed_at):
                     mm,ss=map(int,value.split(":"))
                     if ss>=60:raise ValueError("Bad seconds")
                     minutes=round(mm+ss/60,3)
-                elif isinstance(value,str) and re.fullmatch(r"\d{1,2}:\d{2}",value):
+                elif isinstance(value,str) and re.fullmatch(r"\d{1,2}(?:\.\d+)?",value):
                     minutes=float(value)
                 if minutes is not None and not 0<=minutes<=65:raise ValueError("Invalid minutes")
                 rows.append({"game_id":str(game["game_id"]),"team":team,
