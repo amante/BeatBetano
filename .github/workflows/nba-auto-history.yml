@@ -98,6 +98,10 @@ jobs:
         run: |
           python nba/source_coverage_scorecard.py --snapshot results/nba/prospective/snapshot.json --multisource results/nba/prospective/multisource_evidence.json --reconciliation results/nba/prospective/evidence_reconciliation.json --matched results/nba/prospective/br_roster_matching.json --output results/nba/prospective/source_coverage_scorecard.json --summary results/nba/prospective/source_coverage_scorecard.md
           cat results/nba/prospective/source_coverage_scorecard.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Recover ESPN pretip summary injury observations when structured feed is empty
+        if: ${{ hashFiles('results/nba/prospective/game_previews.json') != '' }}
+        run: |
+          python nba/availability_recovery.py --snapshot results/nba/prospective/snapshot.json --sporting results/nba/prospective/sporting_observations.json --preview results/nba/prospective/game_previews.json --output results/nba/prospective/availability_recovery.json
       - name: Archive prospective ESPN injury observations without retrospective leakage
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
@@ -180,5 +184,6 @@ jobs:
             results/nba/prospective/br_roster_matching.json
             results/nba/prospective/source_coverage_scorecard.json
             results/nba/prospective/source_coverage_scorecard.md
+            results/nba/prospective/availability_recovery.json
             results/nba/prospective/injury_observation_archive.json
           retention-days: 90
