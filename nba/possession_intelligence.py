@@ -32,7 +32,7 @@ def extract(payload,fixture):
    for name in names:
     val=stats.get(name)
     if isinstance(val,str):
-     matched=re.fullmatch(r"\\s*([0-9]+)\\s*[-/]\\s*([0-9]+)\\s*",val)
+     matched=re.fullmatch(r"\s*([0-9]+)\s*[-/]\s*([0-9]+)\s*",val)
      if matched:return float(matched.group(2))
    return None
   fga=num("fieldGoalsAttempted","fga")
