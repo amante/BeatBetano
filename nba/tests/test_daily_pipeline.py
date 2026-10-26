@@ -1,4 +1,5 @@
-import unittest,sys
+import unittest,sys,json,tempfile
+from unittest.mock import patch
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from daily_pipeline import run
@@ -22,6 +23,24 @@ class Tests(unittest.TestCase):
         h,f=self.setup()
         with self.assertRaisesRegex(ValueError,"older than five minutes"):
             run(h,f,"2026-10-23T22:07:00Z")
+    def test_cli_allow_empty_records_noop_without_snapshot(self):
+        from daily_pipeline import main
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            history=root/"history.json"
+            history.write_text(json.dumps(self.setup()[0]))
+            target=root/"snapshot.json"
+            scoreboard={"future_fixtures":[],"completed_games":[],
+                        "as_of_utc":"2026-10-25T23:00:00Z"}
+            with patch("daily_pipeline.fetch_day",return_value=scoreboard),patch(
+                "sys.argv",["daily_pipeline.py","--history",str(history),
+                            "--date","2026-10-25","--output",str(target),
+                            "--allow-empty"]):
+                main()
+            self.assertFalse(target.exists())
+            status=json.loads((root/"pregame_status.json").read_text())
+            self.assertEqual(status["status"],"no_eligible_pregame_games")
+
     def test_no_future_fixtures(self):
         h,f=self.setup();f["future_fixtures"]=[]
         with self.assertRaisesRegex(ValueError,"No not-yet-started"):
