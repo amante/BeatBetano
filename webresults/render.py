@@ -19,7 +19,7 @@ def build(report):
         if p is not None and (type(p) not in (int,float) or not 0<p<1):raise ValueError("Invalid probability")
         tip=game.get("start_utc",game.get("tipoff_utc",""))
         status=game.get("status","preliminary_not_validated")
-        rows.append((str(tip),str(away),str(home),fmt(p),fmt(1-p) if p is not None else "—",str(status)))
+        rows.append((str(tip),str(away),str(home),fmt(1-p) if p is not None else "—",fmt(p),str(status)))
     rows.sort()
     esc=lambda x:html.escape(str(x),quote=True)
     tr="".join("<tr>"+ "".join(f"<td>{esc(v)}</td>" for v in r)+"</tr>" for r in rows)
@@ -46,7 +46,7 @@ mark{{color:inherit;background:#315064}}
 <script>function filterRows(){{const q=document.getElementById('filter').value.toLowerCase();for(const row of document.querySelectorAll('#games tr'))row.hidden=!row.textContent.toLowerCase().includes(q);}}</script></body></html>"""
     markdown=[f"## {label} hoy — {asof}", "", "**Estimaciones preliminares, no calibradas; ninguna apuesta autorizada.**", "",
               "| Inicio UTC | Visitante | Local | P(visitante) | P(local) |", "|---|---|---|---:|---:|"]
-    markdown += [f"| {r[0]} | {r[1]} | {r[2]} | {r[4]} | {r[3]} |" for r in rows]
+    markdown += [f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]} |" for r in rows]
     markdown+=["",f"**Total:** {len(rows)} partidos. El HTML está disponible como artefacto de esta ejecución."]
     return page,"\n".join(markdown)+"\n"
 
