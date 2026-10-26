@@ -14,6 +14,8 @@ class Tests(unittest.TestCase):
   self.assertEqual([(r["team"],r["player"]) for r in rows],
    [("CLE","Khalifa Diop"),("CLE","Nae'Qwan Tomlin"),("WAS","AJ Dybantsa"),
     ("WAS","Tristan Vukcevic"),("CHA","Coby White")])
+ def test_team_name_not_part_of_player(self):
+  self.assertEqual(extract(["Boston Celtics Brown, Jaylen Questionable"])[0]["player"],"Jaylen Brown")
  def test_no_cross_page_inheritance(self):
   self.assertEqual(extract(["Cleveland Cavaliers Diop, Khalifa Out","Tomlin, Nae'Qwan Out"])[1:],[])
  def test_no_submitted_not_healthy(self):
