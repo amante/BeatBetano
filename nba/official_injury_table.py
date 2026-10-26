@@ -40,7 +40,8 @@ def extract(pages):
     continue
    # If a new game heading is present without an explicit team, discard context.
    if matchup_found and not team_match:team=None
-   candidate=line[team_match.end():] if team_match else line\n   hit=PLAYER_RE.search(candidate)
+   candidate=line[team_match.end():] if team_match else line
+   hit=PLAYER_RE.search(candidate)
    if not hit or not team:continue
    last=hit.group("last").strip()
    first=hit.group("first").strip()
