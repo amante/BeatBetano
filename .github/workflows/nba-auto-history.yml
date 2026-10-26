@@ -51,6 +51,10 @@ jobs:
           GAME_DATE: ${{ inputs.game_date }}
         run: |
           python nba/auto_history.py --date "$GAME_DATE" --timestamp "$HISTORY_TIME" --output results/nba/history.json --workdir results/nba/raw
+      - name: Archive recent historical individual NBA game logs (postgame evidence only)
+        continue-on-error: true
+        run: |
+          python nba/player_game_history.py --history results/nba/history.json --limit 10 --output results/nba/player_game_history.json
       - name: Generate three-model frozen pregame snapshot
         env:
           GAME_DATE: ${{ inputs.game_date }}
@@ -93,6 +97,7 @@ jobs:
           name: nba-automatic-pregame-${{ github.run_id }}
           path: |
             results/nba/history_audit.json
+            results/nba/player_game_history.json
             results/nba/prospective/snapshot.json
             results/nba/prospective/full_pregame_status.json
             results/nba/prospective/integrated_model.json
