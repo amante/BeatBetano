@@ -57,6 +57,10 @@ jobs:
         run: |
           python nba/feature_impact_audit.py --history results/nba/history.json --output results/nba/feature_impact_audit.json --summary results/nba/feature_impact_audit.md
           cat results/nba/feature_impact_audit.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Audit early-season hybrid guardrail sample thresholds
+        run: |
+          python nba/hybrid_gate_audit.py --history results/nba/history.json --output results/nba/hybrid_gate_audit.json --summary results/nba/hybrid_gate_audit.md
+          cat results/nba/hybrid_gate_audit.md >> "$GITHUB_STEP_SUMMARY"
       - name: Archive recent historical individual NBA game logs (postgame evidence only)
         continue-on-error: true
         run: |
@@ -169,6 +173,8 @@ jobs:
             results/nba/history_audit.json
             results/nba/feature_impact_audit.json
             results/nba/feature_impact_audit.md
+            results/nba/hybrid_gate_audit.json
+            results/nba/hybrid_gate_audit.md
             results/nba/player_game_history.json
             results/nba/player_history_coverage.json
             results/nba/prospective/snapshot.json
