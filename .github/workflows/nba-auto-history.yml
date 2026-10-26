@@ -94,6 +94,11 @@ jobs:
         run: |
           python nba/probability_score_audit.py --snapshot results/nba/prospective/snapshot.json --possessions results/nba/prospective/possession_intelligence.json --output results/nba/prospective/probability_score_audit.json --summary results/nba/prospective/probability_score_audit.md
           cat results/nba/prospective/probability_score_audit.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Compare NBA possession-informed challenger against frozen three-model probabilities
+        if: ${{ hashFiles('results/nba/prospective/possession_intelligence.json') != '' }}
+        run: |
+          python nba/possession_challenger.py --snapshot results/nba/prospective/snapshot.json --possessions results/nba/prospective/possession_intelligence.json --output results/nba/prospective/possession_challenger.json --summary results/nba/prospective/possession_challenger.md
+          cat results/nba/prospective/possession_challenger.md >> "$GITHUB_STEP_SUMMARY"
       - name: Collect independently sourced NBA sporting observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         id: sporting
@@ -212,6 +217,8 @@ jobs:
             results/nba/prospective/possession_intelligence.md
             results/nba/prospective/probability_score_audit.json
             results/nba/prospective/probability_score_audit.md
+            results/nba/prospective/possession_challenger.json
+            results/nba/prospective/possession_challenger.md
             results/nba/prospective/index.html
             results/nba/prospective/summary.md
             results/nba/prospective/roster_matchups.json
