@@ -111,6 +111,11 @@ jobs:
         if: ${{ hashFiles('results/nba/prospective/availability_coverage.json') != '' }}
         run: |
           python nba/source_gap_diagnostics.py --snapshot results/nba/prospective/snapshot.json --official results/nba/prospective/official_injury_source.json --preview results/nba/prospective/game_previews.json --sporting results/nba/prospective/sporting_observations.json --joint results/nba/prospective/injury_lineup_status.json --coverage results/nba/prospective/availability_coverage.json --output results/nba/prospective/source_gap_diagnostics.json
+      - name: Publish observed NBA injury coverage scorecard
+        if: ${{ hashFiles('results/nba/prospective/availability_coverage.json') != '' }}
+        run: |
+          python nba/injury_coverage_summary.py --official results/nba/prospective/official_injury_source.json --joint results/nba/prospective/injury_lineup_status.json --coverage results/nba/prospective/availability_coverage.json --output results/nba/prospective/injury_coverage_summary.json --summary results/nba/prospective/injury_coverage_summary.md
+          cat results/nba/prospective/injury_coverage_summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Generate unified NBA model output
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
@@ -146,6 +151,8 @@ jobs:
             results/nba/prospective/availability_features.json
             results/nba/prospective/frozen_availability.json
             results/nba/prospective/availability_coverage.json
+            results/nba/prospective/injury_coverage_summary.json
+            results/nba/prospective/injury_coverage_summary.md
             results/nba/prospective/source_gap_diagnostics.json
             results/nba/prospective/game_previews.json
             results/nba/prospective/official_injury_source.json
