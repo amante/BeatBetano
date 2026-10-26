@@ -79,6 +79,16 @@ jobs:
         run: |
           python nba/rotation_efficiency_report.py --snapshot results/nba/prospective/snapshot.json --history results/nba/history.json --players results/nba/player_game_history.json --output results/nba/prospective/rotation_efficiency_report.json --summary results/nba/prospective/rotation_efficiency_report.md
           cat results/nba/prospective/rotation_efficiency_report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Collect historical NBA team boxscore efficiency ingredients
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
+        continue-on-error: true
+        run: |
+          python nba/capture_team_boxscores.py --history results/nba/history.json --limit 80 --output results/nba/team_boxscores.json
+      - name: Report confirmed lineup coverage and possession-driven matchup projections
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json', 'results/nba/team_boxscores.json') != '' }}
+        run: |
+          python nba/possession_intelligence.py --snapshot results/nba/prospective/snapshot.json --history results/nba/history.json --observations results/nba/team_boxscores.json --output results/nba/prospective/possession_intelligence.json --summary results/nba/prospective/possession_intelligence.md
+          cat results/nba/prospective/possession_intelligence.md >> "$GITHUB_STEP_SUMMARY"
       - name: Collect independently sourced NBA sporting observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         id: sporting
@@ -192,6 +202,9 @@ jobs:
             results/nba/prospective/model_comparison.md
             results/nba/prospective/rotation_efficiency_report.json
             results/nba/prospective/rotation_efficiency_report.md
+            results/nba/team_boxscores.json
+            results/nba/prospective/possession_intelligence.json
+            results/nba/prospective/possession_intelligence.md
             results/nba/prospective/index.html
             results/nba/prospective/summary.md
             results/nba/prospective/roster_matchups.json
