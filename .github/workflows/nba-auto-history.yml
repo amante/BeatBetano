@@ -108,6 +108,9 @@ jobs:
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/nba_hoy.py --snapshot results/nba/prospective/snapshot.json --integrated results/nba/prospective/integrated_model.json --injury-lineups results/nba/prospective/injury_lineup_status.json --output results/nba/prospective/nba_hoy.json
+      - name: Publish clearly labeled NBA baseline probabilities
+        if: ${{ hashFiles('results/nba/prospective/nba_hoy.json') != '' }}
+        run: python nba/preliminary_release.py --input results/nba/prospective/nba_hoy.json --output results/nba/prospective/nba_preliminary.json
       - name: Archive predictions and provenance evidence
         if: always()
         uses: actions/upload-artifact@v6
@@ -122,6 +125,7 @@ jobs:
             results/nba/prospective/full_pregame_status.json
             results/nba/prospective/integrated_model.json
             results/nba/prospective/nba_hoy.json
+            results/nba/prospective/nba_preliminary.json
             results/nba/prospective/roster_matchups.json
             results/nba/prospective/availability_features.json
             results/nba/prospective/game_previews.json
