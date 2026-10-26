@@ -38,7 +38,7 @@ def structured_rows(raw_pages):
     for row in parse_lines(raw_pages):
         line=row["raw"]
         # Only accept an explicit team code followed by 'Last, First' and status.
-        m=re.match(r"^([A-Z]{2,3})\\s+([A-Za-z][A-Za-z'.\\- ]+),\\s*([A-Za-z][A-Za-z'.\\- ]+)\\s+(Out|Doubtful|Questionable|Probable|Available)\\b",line,re.I)
+        m=re.match(r"^([A-Z]{2,3})\s+([A-Za-z][A-Za-z'.\- ]+),\s*([A-Za-z][A-Za-z'.\- ]+)\s+(Out|Doubtful|Questionable|Probable|Available)\b",line,re.I)
         if not m:continue
         team=normalize_team(m.group(1).upper())
         if not team:continue
