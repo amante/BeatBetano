@@ -64,7 +64,7 @@ jobs:
       - name: Archive recent historical individual NBA game logs (postgame evidence only)
         continue-on-error: true
         run: |
-          python nba/player_game_history.py --history results/nba/history.json --limit 20 --output results/nba/player_game_history.json
+          python nba/player_game_history.py --history results/nba/history.json --limit 200 --output results/nba/player_game_history.json
       - name: Audit historical player sample coverage and provenance
         if: ${{ hashFiles('results/nba/player_game_history.json') != '' }}
         run: |
