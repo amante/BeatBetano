@@ -29,7 +29,7 @@ def archive(snapshot,sporting,preview=None):
         primary=sources.get(gid,{}).get("supplementary_injury_observations",{})
         if primary:
             observed=primary.get("observed_at_utc")
-            try:timely=timestamp(observed)<=created and timestamp(observed)<tip
+            try:timely=timestamp(observed)<tip
             except (ValueError,TypeError):timely=False
             if not timely:issues.append("sporting_injury_source_not_point_in_time")
             elif not primary.get("source"):issues.append("sporting_injury_source_missing_url")
@@ -41,7 +41,7 @@ def archive(snapshot,sporting,preview=None):
                     items.append({"team":i["team"],"player":i["player"],
                       "status":i.get("status"),"detail":i.get("detail"),
                       "source":primary["source"],"observed_at_utc":observed,
-                      "officially_verified":False})
+                      "officially_verified":False,"observed_after_snapshot":timestamp(observed)>created})
         secondary=previews.get(gid,{})
         if secondary:
             observed=secondary.get("observed_at_utc")
@@ -64,7 +64,7 @@ def archive(snapshot,sporting,preview=None):
       "snapshot_sha256":snapshot["content_sha256"],"games":games,
       "observation_count":sum(len(g["observations"]) for g in games),
       "historical_retroactive_backfill_allowed":False,"impact_training_authorized":False,
-      "note":"Archive only observations actually collected before tipoff. ESPN is supplementary. No model impact or lineup confirmation inferred."}
+      "note":"Archive observations collected before tipoff. Post-snapshot observations cannot alter the original frozen forecast. ESPN is supplementary; no model impact or lineup confirmation inferred."}
 
 def main():
     p=argparse.ArgumentParser()
