@@ -63,35 +63,44 @@ jobs:
         env:
           GAME_DATE: ${{ inputs.game_date }}
         run: |
-          python nba/daily_pipeline.py --history results/nba/history.json --date "$GAME_DATE" --output results/nba/prospective/snapshot.json
+          python nba/daily_pipeline.py --history results/nba/history.json --date "$GAME_DATE" --output results/nba/prospective/snapshot.json --allow-empty
       - name: Collect independently sourced NBA sporting observations
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         id: sporting
         continue-on-error: true
         run: |
           python nba/sporting_feed.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/sporting_observations.json
       - name: Preserve official NBA injury report PDF extraction or explicit unavailability
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/official_injury_pdf.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/official_injury_source.json
       - name: Collect per-game ESPN preview observations
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         continue-on-error: true
         run: |
           python nba/game_preview.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/game_previews.json
       - name: Reconcile NBA official-injury lines and game lineup status together
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/injury_lineup_joint.py --snapshot results/nba/prospective/snapshot.json --official results/nba/prospective/official_injury_source.json --preview results/nba/prospective/game_previews.json --output results/nba/prospective/injury_lineup_status.json
       - name: Mark missing full-pregame evidence explicitly
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/full_pregame_gate.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/full_pregame_status.json
       - name: Audit both teams' roster depth and positional matchup evidence
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/roster_matchups.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/roster_matchups.json $(test -s results/nba/prospective/sporting_observations.json && echo "--sporting-data results/nba/prospective/sporting_observations.json")
       - name: Prepare verified NBA availability feature candidates
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/availability_impact.py --snapshot results/nba/prospective/snapshot.json --roster results/nba/prospective/roster_matchups.json --output results/nba/prospective/availability_features.json
       - name: Generate unified NBA model output
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/integrated_model.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/integrated_model.json $(test -s results/nba/prospective/sporting_observations.json && echo "--sporting-data results/nba/prospective/sporting_observations.json")
       - name: Produce complete NBA hoy slate report
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/nba_hoy.py --snapshot results/nba/prospective/snapshot.json --integrated results/nba/prospective/integrated_model.json --injury-lineups results/nba/prospective/injury_lineup_status.json --output results/nba/prospective/nba_hoy.json
       - name: Archive predictions and provenance evidence
@@ -104,6 +113,7 @@ jobs:
             results/nba/player_game_history.json
             results/nba/player_history_coverage.json
             results/nba/prospective/snapshot.json
+            results/nba/prospective/pregame_status.json
             results/nba/prospective/full_pregame_status.json
             results/nba/prospective/integrated_model.json
             results/nba/prospective/nba_hoy.json
