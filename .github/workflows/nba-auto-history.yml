@@ -89,6 +89,10 @@ jobs:
         if: ${{ hashFiles('results/nba/prospective/multisource_evidence.json') != '' }}
         run: |
           python nba/evidence_reconciliation.py --snapshot results/nba/prospective/snapshot.json --multisource results/nba/prospective/multisource_evidence.json --output results/nba/prospective/evidence_reconciliation.json
+      - name: Match BR headlines to ESPN roster identities without inventing availability
+        if: ${{ hashFiles('results/nba/prospective/multisource_evidence.json') != '' }}
+        run: |
+          python nba/br_roster_matching.py --snapshot results/nba/prospective/snapshot.json --multisource results/nba/prospective/multisource_evidence.json --output results/nba/prospective/br_roster_matching.json
       - name: Archive prospective ESPN injury observations without retrospective leakage
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
@@ -168,5 +172,6 @@ jobs:
             results/nba/prospective/sporting_observations.json
             results/nba/prospective/multisource_evidence.json
             results/nba/prospective/evidence_reconciliation.json
+            results/nba/prospective/br_roster_matching.json
             results/nba/prospective/injury_observation_archive.json
           retention-days: 90
