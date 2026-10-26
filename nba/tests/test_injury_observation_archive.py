@@ -21,10 +21,16 @@ class TestArchive(unittest.TestCase):
         self.assertFalse(x["games"][0]["observations"][0]["officially_verified"])
     def test_reject_future_observation(self):
         s=sporting()
-        s["games"]["1"]["supplementary_injury_observations"]["observed_at_utc"]="2026-10-25T16:00:00Z"
+        s["games"]["1"]["supplementary_injury_observations"]["observed_at_utc"]="2026-10-25T20:00:00Z"
         x=archive(snap(),s)
         self.assertEqual(x["observation_count"],0)
         self.assertIn("sporting_injury_source_not_point_in_time",x["games"][0]["issues"])
+    def test_post_snapshot_but_pre_tipoff_kept_separate(self):
+        s=sporting()
+        s["games"]["1"]["supplementary_injury_observations"]["observed_at_utc"]="2026-10-25T16:00:00Z"
+        a=archive(snap(),s)
+        self.assertEqual(a["observation_count"],1)
+        self.assertTrue(a["games"][0]["observations"][0]["observed_after_snapshot"])
     def test_reject_wrong_team(self):
         s=sporting()
         s["games"]["1"]["supplementary_injury_observations"]["items"][0]["team"]="LAL"
