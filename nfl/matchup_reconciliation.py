@@ -52,9 +52,9 @@ def reconcile(slate,evidence,verified=None):
         if isinstance(w,dict) and w:
             try:good=instant(w["observed_at_utc"])<=instant(slate["as_of_utc"]) and instant(w["observed_at_utc"])<tip
             except (KeyError,TypeError,ValueError):good=False
-            if good and isinstance(w.get("source_url"),str) and w["source_url"].startswith("https://") and
+            if (good and isinstance(w.get("source_url"),str) and w["source_url"].startswith("https://") and
                 w.get("venue_id") and isinstance(w.get("wind_mph"),(int,float)) and
-                0<=w["wind_mph"]<=150:
+                0<=w["wind_mph"]<=150):
                 weather={"wind_mph":w["wind_mph"],"source_url":w["source_url"],
                          "observed_at_utc":w["observed_at_utc"],"venue_id":w["venue_id"],
                          "forecast_not_measured":True}
