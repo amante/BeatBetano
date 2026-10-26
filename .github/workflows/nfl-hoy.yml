@@ -40,9 +40,13 @@ jobs:
         env:
           GAME_DATE: ${{ inputs.game_date }}
         run: python nfl/nfl_hoy.py --date "$GAME_DATE" --history data/nfl_games.csv --output results/nfl/nfl_hoy.json
+      - name: Collect timestamped NFL injury/matchup observations
+        run: python nfl/pregame_evidence.py --slate results/nfl/nfl_hoy.json --output results/nfl/pregame_evidence.json
       - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: nfl-hoy-${{ github.run_id }}
-          path: results/nfl/nfl_hoy.json
+          path: |
+            results/nfl/nfl_hoy.json
+            results/nfl/pregame_evidence.json
           retention-days: 30
