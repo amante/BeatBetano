@@ -17,21 +17,19 @@ def build(snapshot,history,player_sample):
   teams={}
   for team in (g["home_team"],g["away_team"]):
    by_player={}
-   seen=set()
    for p in players:
     if p.get("team")!=team:continue
     event=games_by_id.get(str(p.get("game_id")))
     if not event or event["tipoff_utc"]>=tip:continue
-    if str(event["game_id"]) in seen:pass
     minute=p.get("minutes_played")
     if p.get("did_not_play") or type(minute) not in (int,float) or not 0<=minute<=65:continue
     pid=str(p.get("player_id") or "")
     if not pid:continue
     data=by_player.setdefault(pid,{"player_id":pid,"player":p.get("player"),"minutes":[],"games":[]})
-    data["minutes"].append(float(minute));data["games"].append(event["game_id"])
+    data["minutes"].append((event["tipoff_utc"],float(minute)));data["games"].append(event["game_id"])
    rotation=[]
    for data in by_player.values():
-    vals=data["minutes"]
+    vals=[value for _,value in sorted(data["minutes"])]
     # Require multiple observations before exposing any minutes estimate.
     projected=round(statistics.mean(vals[-5:]),1) if len(vals)>=3 else None
     rotation.append({"player_id":data["player_id"],"player":data["player"],
@@ -39,7 +37,9 @@ def build(snapshot,history,player_sample):
       "availability_verified":False,"starter_confirmed":False,
       "role":"provisional_rotation_candidate","projection_method":"mean_last_5_observed_minutes" if projected is not None else None})
    rotation.sort(key=lambda x:(x["minutes_projection"] is None,-(x["minutes_projection"] or 0),x["player_id"]))
-   teams[team]={"confirmed_starters":[],"starters_confirmation":"unavailable",
+   covered=sum(x["minutes_projection"] is not None for x in rotation)
+   teams[team]={"sampled_players":len(rotation),"players_with_minutes_estimates":covered,"players_below_minimum_sample":len(rotation)-covered,
+    "confirmed_starters":[],"starters_confirmation":"unavailable",
     "provisional_rotation":rotation,"confirmed_bench":[],
     "offensive_rating":None,"defensive_rating":None,"net_rating":None,
     "estimated_possessions":None,"points_per_possession":None,
@@ -60,7 +60,7 @@ def markdown(data):
  for gid,g in data["games"].items():
   out.extend([f'### {g["away_team"]} @ {g["home_team"]} ({gid})',""])
   for team,info in g["teams"].items():
-   out.append(f"**{team}** — confirmed starters: not available; confirmed bench: not available.")
+   out.append(f'**{team}** — historical player sample: {info["sampled_players"]}; minute estimates: {info["players_with_minutes_estimates"]}; insufficient sample: {info["players_below_minimum_sample"]}. Confirmed starters/bench: unavailable.')
    out.append("Player | Estimated minutes | Historical sample | Status")
    out.append("---|---:|---:|---")
    for p in info["provisional_rotation"][:12]:
