@@ -54,7 +54,11 @@ jobs:
       - name: Archive recent historical individual NBA game logs (postgame evidence only)
         continue-on-error: true
         run: |
-          python nba/player_game_history.py --history results/nba/history.json --limit 10 --output results/nba/player_game_history.json
+          python nba/player_game_history.py --history results/nba/history.json --limit 20 --output results/nba/player_game_history.json
+      - name: Audit historical player sample coverage and provenance
+        if: ${{ hashFiles('results/nba/player_game_history.json') != '' }}
+        run: |
+          python nba/player_history_coverage.py --history results/nba/history.json --sample results/nba/player_game_history.json --output results/nba/player_history_coverage.json
       - name: Generate three-model frozen pregame snapshot
         env:
           GAME_DATE: ${{ inputs.game_date }}
@@ -98,6 +102,7 @@ jobs:
           path: |
             results/nba/history_audit.json
             results/nba/player_game_history.json
+            results/nba/player_history_coverage.json
             results/nba/prospective/snapshot.json
             results/nba/prospective/full_pregame_status.json
             results/nba/prospective/integrated_model.json
