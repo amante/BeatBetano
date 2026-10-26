@@ -7,6 +7,7 @@ import argparse,json,math
 from datetime import date,datetime,timedelta,timezone
 from pathlib import Path
 import requests
+from team_units import game_units
 API="https://api-web.nhle.com/v1"
 
 def moment(value):
@@ -14,7 +15,7 @@ def moment(value):
     if d.tzinfo is None:raise ValueError("Timezone required")
     return d.astimezone(timezone.utc)
 
-def slate(score,standings,as_of,game_date):
+def slate(score,standings,as_of,game_date,unit_evidence=None):
     now=moment(as_of)
     if not isinstance(score.get("games"),list) or not isinstance(standings.get("standings"),list):
         raise ValueError("Official NHL score/standings required")
@@ -49,7 +50,12 @@ def slate(score,standings,as_of,game_date):
             diff=max(-3,min(3,quality(home)-quality(away)))
             p=round(1/(1+math.exp(-(0.16+0.35*diff))),6)
             reason="exploratory_statistical_only"
+        evidence=(unit_evidence or {}).get("games",{}).get(eid,{})
+        units=None
+        if evidence.get("home") is not None and evidence.get("away") is not None:
+            units=game_units(evidence["home"],evidence["away"],as_of,g["startTimeUTC"],home,away)
         events.append({"event_id":eid,"home_team":home,"away_team":away,
+            "unit_strength_evidence":units,
             "start_utc":tip.isoformat(),"statistical_p_home":p,
             "statistical_p_away":round(1-p,6) if p is not None else None,
             "official_baseline":None,"challenger":None,"final_probability":None,
@@ -70,13 +76,15 @@ def slate(score,standings,as_of,game_date):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--date",required=True);p.add_argument("--output",required=True)
+    p.add_argument("--units",help="Optional verified, time-stamped team unit evidence JSON")
     a=p.parse_args();day=date.fromisoformat(a.date)
     as_of=datetime.now(timezone.utc).isoformat()
     result=[]
     for suffix in ("/score/"+a.date,"/standings/"+(day-timedelta(days=1)).isoformat()):
         response=requests.get(API+suffix,timeout=35);response.raise_for_status()
         result.append(response.json())
-    report=slate(result[0],result[1],as_of,a.date)
+    unit_data=json.loads(Path(a.units).read_text()) if a.units else None
+    report=slate(result[0],result[1],as_of,a.date,unit_data)
     dest=Path(a.output);dest.parent.mkdir(parents=True,exist_ok=True)
     dest.write_text(json.dumps(report,indent=2))
     print(json.dumps({"pregame":len(report["events"]),"estimates":sum(g["statistical_p_home"] is not None for g in report["events"])}))
