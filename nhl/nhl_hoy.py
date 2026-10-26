@@ -8,6 +8,7 @@ from datetime import date,datetime,timedelta,timezone
 from pathlib import Path
 import requests
 from team_units import game_units
+from official_team_stats import collect
 API="https://api-web.nhle.com/v1"
 
 def moment(value):
@@ -30,6 +31,7 @@ def slate(score,standings,as_of,game_date,unit_evidence=None):
             gp=r.get("gamesPlayed");goals=r.get("goalDifferential")
             if type(gp) is int and gp>=0 and type(goals) in (int,float) and math.isfinite(goals):
                 base[abbr]={"games":gp,"goal_diff":goals}
+    official_stats=collect(standings,API+'/standings/'+(day-timedelta(days=1)).isoformat(),as_of)
     events=[];seen=set();skipped=[]
     for g in score["games"]:
         if g.get("gameType")!=2:continue
@@ -56,6 +58,7 @@ def slate(score,standings,as_of,game_date,unit_evidence=None):
             units=game_units(evidence["home"],evidence["away"],as_of,g["startTimeUTC"],home,away)
         events.append({"event_id":eid,"home_team":home,"away_team":away,
             "unit_strength_evidence":units,
+            "official_team_stats":{"home":official_stats.get(home),"away":official_stats.get(away)},
             "start_utc":tip.isoformat(),"statistical_p_home":p,
             "statistical_p_away":round(1-p,6) if p is not None else None,
             "official_baseline":None,"challenger":None,"final_probability":None,
@@ -71,7 +74,7 @@ def slate(score,standings,as_of,game_date,unit_evidence=None):
         "standings_effective_prior_day":True,"odds_used_in_sport_model":False,
         "events":events,"started_or_finished":skipped,
         "fixture_coverage_vs_source":True,"fixture_coverage_vs_league_verified":False,
-        "note":"Not official calibrated model; goalie, RT draw, 3GLP and rivalry modules are not yet computed."}
+        "note":"Observed NHL prior-day form and special teams are now included, but not independently calibrated; goalie, RT draw, 3GLP and rivalry modules are not yet computed."}
 
 def main():
     p=argparse.ArgumentParser()
