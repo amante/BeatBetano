@@ -50,25 +50,44 @@ def structured_rows(raw_pages):
             "mapping":"explicit_same_line_team_and_player"})
     return result
 
+def source_before_tip(official,game):
+    """Later collected evidence is eligible only if observed before game start.
+
+    Never claim it was available at original model snapshot time.
+    """
+    try:
+        if official.get("official_document_retrieved") is not True:return False
+        tip=datetime.fromisoformat(game["tipoff_utc"].replace("Z","+00:00"))
+        report=datetime.fromisoformat(official["source_report_as_of_utc"].replace("Z","+00:00"))
+        downloaded=datetime.fromisoformat(official["downloaded_at_utc"].replace("Z","+00:00"))
+        return all(x.tzinfo is not None for x in (tip,report,downloaded)) and report<=downloaded<tip
+    except (KeyError,ValueError,TypeError):return False
+
 def source_at_freeze(official,snapshot):
+    """Retained for compatibility: strict original snapshot evidence gate."""
     try:
         if official.get("official_document_retrieved") is not True:return False
         freeze=datetime.fromisoformat(snapshot["created_at_utc"].replace("Z","+00:00"))
         report=datetime.fromisoformat(official["source_report_as_of_utc"].replace("Z","+00:00"))
         downloaded=datetime.fromisoformat(official["downloaded_at_utc"].replace("Z","+00:00"))
-        return all(x.tzinfo is not None for x in (freeze,report,downloaded)) and report<=freeze and downloaded<=freeze
+        return all(x.tzinfo is not None for x in (freeze,report,downloaded)) and report<=downloaded<=freeze
     except (KeyError,ValueError,TypeError):return False
 
 def compile_report(snapshot,official=None,preview=None):
     official=official or {};preview=preview or {}
     text=official.get("raw_page_text",[])
     extracted=parse_lines(text)
-    eligible=source_at_freeze(official,snapshot)
-    resolved=(extract_official_table(text)+structured_rows(text)) if eligible else []
+    all_candidates=extract_official_table(text)+structured_rows(text)
+    # Do not double-count duplicated parses of the same PDF line.
+    unique={(r['page'],r['line'],r['team'],r['player'],r['status']):r for r in all_candidates}
+    all_candidates=list(unique.values())
     games={}
     for game in snapshot["predictions"]:
         gid=str(game["game_id"])
         previews=preview.get("games",{}).get(gid,{})
+        eligible=(source_before_tip(official,game) if game.get("tipoff_utc")
+                  else source_at_freeze(official,snapshot))
+        resolved=all_candidates if eligible else []
         games[gid]={"home_team":normalize_team(game["home_team"]),
           "away_team":normalize_team(game["away_team"]),
           "official_pdf_url":official.get("report_url"),
@@ -81,10 +100,11 @@ def compile_report(snapshot,official=None,preview=None):
           "away_confirmed_starting_five":None,
           "lineups_confirmed":False,
           "source_time_validated":eligible,
+          "separate_post_snapshot_evidence":eligible and not source_at_freeze(official,snapshot),
           "status":"pending_official_player_reconciliation_and_confirmed_lineups"}
     return {"games":games,"source_document_available":bool(official.get("official_document_retrieved")),
-      "official_player_rows_resolved":len(resolved),"confirmed_starting_fives":0,
-      "note":"Explicit same-line candidates only; neither player identity cross-validation nor starting five is confirmed."}
+      "official_player_rows_resolved":sum(len(v["official_structured_candidate_rows"]) for v in games.values()),"confirmed_starting_fives":0,
+      "note":"Later observed evidence is distinct from the frozen forecast; parse candidates are not roster-verified and starting fives remain unconfirmed."}
 
 if __name__=="__main__":
     ap=argparse.ArgumentParser()
