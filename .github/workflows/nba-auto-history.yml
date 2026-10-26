@@ -148,6 +148,11 @@ jobs:
       - name: Publish clearly labeled NBA baseline probabilities
         if: ${{ hashFiles('results/nba/prospective/nba_hoy.json') != '' }}
         run: python nba/preliminary_release.py --input results/nba/prospective/nba_hoy.json --output results/nba/prospective/nba_preliminary.json
+      - name: Audit NBA Elo challenger and hybrid probabilities side by side
+        if: ${{ hashFiles('results/nba/prospective/nba_preliminary.json') != '' }}
+        run: |
+          python nba/model_comparison.py --input results/nba/prospective/nba_preliminary.json --output results/nba/prospective/model_comparison.json --summary results/nba/prospective/model_comparison.md
+          cat results/nba/prospective/model_comparison.md >> "$GITHUB_STEP_SUMMARY"
       - name: Render NBA predictions directly in Actions Summary and HTML
         if: ${{ hashFiles('results/nba/prospective/nba_preliminary.json') != '' }}
         run: python webresults/render.py --input results/nba/prospective/nba_preliminary.json --html results/nba/prospective/index.html --summary results/nba/prospective/summary.md
@@ -166,6 +171,8 @@ jobs:
             results/nba/prospective/integrated_model.json
             results/nba/prospective/nba_hoy.json
             results/nba/prospective/nba_preliminary.json
+            results/nba/prospective/model_comparison.json
+            results/nba/prospective/model_comparison.md
             results/nba/prospective/index.html
             results/nba/prospective/summary.md
             results/nba/prospective/roster_matchups.json
