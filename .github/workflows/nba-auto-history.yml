@@ -99,6 +99,11 @@ jobs:
         run: |
           python nba/possession_challenger.py --snapshot results/nba/prospective/snapshot.json --possessions results/nba/prospective/possession_intelligence.json --output results/nba/prospective/possession_challenger.json --summary results/nba/prospective/possession_challenger.md
           cat results/nba/prospective/possession_challenger.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Audit NBA each offense against the opposing defense
+        if: ${{ hashFiles('results/nba/prospective/possession_intelligence.json') != '' }}
+        run: |
+          python nba/offense_defense_matchups.py --snapshot results/nba/prospective/snapshot.json --possessions results/nba/prospective/possession_intelligence.json --output results/nba/prospective/offense_defense_matchups.json --summary results/nba/prospective/offense_defense_matchups.md
+          cat results/nba/prospective/offense_defense_matchups.md >> "$GITHUB_STEP_SUMMARY"
       - name: Collect independently sourced NBA sporting observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         id: sporting
@@ -219,6 +224,8 @@ jobs:
             results/nba/prospective/probability_score_audit.md
             results/nba/prospective/possession_challenger.json
             results/nba/prospective/possession_challenger.md
+            results/nba/prospective/offense_defense_matchups.json
+            results/nba/prospective/offense_defense_matchups.md
             results/nba/prospective/index.html
             results/nba/prospective/summary.md
             results/nba/prospective/roster_matchups.json
