@@ -6,11 +6,52 @@ import argparse,json,re
 from datetime import datetime,timezone
 from pathlib import Path
 import requests
-from bs4 import BeautifulSoup
+
 from lineup_source_cascade import cascade,markdown
 URL="https://www.rotowire.com/basketball/nba-lineups.php"
 UA="BeatBetano/1.0 (pregame lineup evidence; contact via repository)"
 def parse_rotowire(html,snapshot,observed):
+ try:
+  from bs4 import BeautifulSoup
+ except ImportError:
+  # Some repository CI jobs intentionally run without optional scraping packages.
+  # Use the standard-library fallback to keep tests and extraction functional.
+  from html.parser import HTMLParser
+  class Parser(HTMLParser):
+   def __init__(self):
+    super().__init__();self.blocks=[];self.current=None;self.list_index=-1;self.capture=None
+   def handle_starttag(self,tag,attrs):
+    props=dict(attrs);classes=props.get("class","").split()
+    if "lineup" in classes and self.current is None:
+     self.current={"abbr":[],"lists":[]};self.blocks.append(self.current)
+    if self.current is None:return
+    if "lineup__abbr" in classes:self.capture=("abbr",None)
+    if "lineup__list" in classes:
+     self.current["lists"].append([]);self.list_index=len(self.current["lists"])-1
+    if "lineup__player" in classes and self.list_index>=0:self.capture=("player",self.list_index)
+   def handle_data(self,data):
+    if self.current is None or self.capture is None:return
+    kind,index=self.capture;v=data.strip()
+    if not v:return
+    if kind=="abbr":self.current["abbr"].append(v)
+    elif kind=="player":self.current["lists"][index].append(v)
+   def handle_endtag(self,tag):
+    if tag=="li" and self.capture and self.capture[0]=="player":self.capture=None
+    if tag in ("div","span") and self.capture and self.capture[0]=="abbr":self.capture=None
+    if tag=="ul":self.list_index=-1
+  parser=Parser();parser.feed(html)
+  candidates=[];errors=[]
+  fixtures={frozenset((g["home_team"],g["away_team"])):g for g in snapshot["predictions"]}
+  for block in parser.blocks:
+   names=[x.upper() for x in block["abbr"] if re.fullmatch("[A-Z]{2,4}",x.upper())]
+   if len(names)!=2:continue
+   game=fixtures.get(frozenset(names))
+   if not game or len(block["lists"])<2:continue
+   for team,players in zip(names,block["lists"][:2]):
+    players=players[:5]
+    if len(players)!=5 or len(set(players))!=5:continue
+    candidates.append({"game_id":str(game["game_id"]),"team":team,"provider":"rotowire","status":"projected","starters":players,"source_url":URL,"observed_at_utc":observed})
+  return candidates,errors
  soup=BeautifulSoup(html,"html.parser")
  fixtures={frozenset((g["home_team"],g["away_team"])):g for g in snapshot["predictions"]}
  candidates=[];errors=[]
