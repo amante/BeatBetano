@@ -71,7 +71,8 @@ def retrieve(snapshot,session=None):
     entries=discover(r.text)
     freeze=datetime.fromisoformat(snapshot['created_at_utc'].replace('Z','+00:00'))
     if freeze.tzinfo is None:raise ValueError('UTC pregame snapshot required')
-    chosen,report_time=select_report(entries,freeze)
+    # Evidence is collected after the snapshot: select what exists NOW, never backdate it.
+    chosen,report_time=select_report(entries,now)
     pdf=s.get(chosen["url"],timeout=40);pdf.raise_for_status()
     if not pdf.content.startswith(b"%PDF-"):raise ValueError("Official URL did not return PDF bytes")
     from pypdf import PdfReader
@@ -81,14 +82,14 @@ def retrieve(snapshot,session=None):
     if not any("Injury" in x or "INJURY" in x for x in extracted):
         raise ValueError("Official report extraction missing injury text")
     return {"source_index":INDEX,"report_url":chosen["url"],
-      "link_label":chosen["label"],"downloaded_at_utc":now.isoformat(),
+      "link_label":chosen["label"],"downloaded_at_utc":datetime.now(timezone.utc).isoformat(),
       "pdf_sha256":hashlib.sha256(pdf.content).hexdigest(),
       "pages":len(pages),"raw_page_text":extracted,
       "source_report_as_of_utc":report_time.isoformat(),
       "report_datetime_filename_verified":True,
       "official_document_retrieved":True,
       "individual_player_status_verified":False,
-      "note":"Latest indexed PDF, NOT proven published before every tipoff; no starting lineup confirmation."}
+      "note":"Separate later evidence observation: cannot retroactively change frozen predictions; only usable before each tipoff."}
 
 def main():
     p=argparse.ArgumentParser()
