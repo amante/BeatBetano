@@ -6,6 +6,7 @@ Parses official NBA PDF text conservatively; ambiguous rows remain unverified.
 import argparse,json,re
 from pathlib import Path
 from datetime import datetime,timezone
+from official_injury_table import extract as extract_official_table
 
 STATUS=re.compile(r"\b(Out|Doubtful|Questionable|Probable|Available)\b",re.I)
 TEAM_CODES={"ATL","BOS","BKN","CHA","CHI","CLE","DAL","DEN","DET","GSW","HOU","IND","LAC","LAL","MEM","MIA","MIL","MIN","NOP","NYK","OKC","ORL","PHI","PHX","POR","SAC","SAS","TOR","UTA","WAS"}
@@ -63,7 +64,7 @@ def compile_report(snapshot,official=None,preview=None):
     text=official.get("raw_page_text",[])
     extracted=parse_lines(text)
     eligible=source_at_freeze(official,snapshot)
-    resolved=structured_rows(text) if eligible else []
+    resolved=(extract_official_table(text)+structured_rows(text)) if eligible else []
     games={}
     for game in snapshot["predictions"]:
         gid=str(game["game_id"])
