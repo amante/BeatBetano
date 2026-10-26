@@ -29,10 +29,22 @@ def main():
     p.add_argument("--history",required=True,help="Validated completed-game ledger JSON")
     p.add_argument("--date",required=True,help="NBA scoreboard date YYYY-MM-DD")
     p.add_argument("--output",required=True,help="Create-only immutable JSON snapshot")
+    p.add_argument('--allow-empty',action='store_true',help='Record zero eligible games without error')
     x=p.parse_args()
     now=datetime.now(timezone.utc).isoformat()
     scoreboard=fetch_day(x.date,now)
     history=json.loads(Path(x.history).read_text())
+    if x.allow_empty and not scoreboard["future_fixtures"]:
+        target=Path(x.output)
+        target.parent.mkdir(parents=True,exist_ok=True)
+        status={"date":x.date,"as_of_utc":scoreboard["as_of_utc"],
+                "status":"no_eligible_pregame_games",
+                "future_fixtures":0,"completed_games":len(scoreboard["completed_games"]),
+                "snapshot_created":False,
+                "note":"No pregame fixtures remain; no probabilities were generated."}
+        (target.parent/"pregame_status.json").write_text(json.dumps(status,indent=2))
+        print(json.dumps(status,indent=2))
+        return
     snapshot=run(history,scoreboard,now)
     target=Path(x.output);target.parent.mkdir(parents=True,exist_ok=True)
     with target.open("x") as f:json.dump(snapshot,f,indent=2)
