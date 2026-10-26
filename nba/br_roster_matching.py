@@ -30,7 +30,7 @@ def match(snapshot,evidence,session=None):
  rosters={};errors={}
  for team in teams:
   try:
-   r=requester.get(ROSTER.format(team=team),timeout=25);r.raise_for_status()
+   r=requester.get(ROSTER.format(team=team.lower()),timeout=25);r.raise_for_status()
    rosters[team]=roster_names(r.json())
    if not rosters[team]:errors[team]="empty_roster"
   except (requests.RequestException,ValueError,TypeError,KeyError) as exc:
