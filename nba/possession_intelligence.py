@@ -3,7 +3,7 @@
 ESPN completed boxscores are postgame historical observations. Never classify
 current starters from past starters, projections, or headlines.
 """
-import argparse,json,statistics
+import argparse,json,statistics,re
 from datetime import datetime,timezone
 from pathlib import Path
 import requests
@@ -28,15 +28,25 @@ def extract(payload,fixture):
      try:return float(stats[name])
      except (ValueError,TypeError):pass
    return None
+  def attempts(*names):
+   for name in names:
+    val=stats.get(name)
+    if isinstance(val,str):
+     matched=re.fullmatch(r"\s*([0-9]+)\s*[-/]\s*([0-9]+)\s*",val)
+     if matched:return float(matched.group(2))
+   return None
   fga=num("fieldGoalsAttempted","fga")
+  if fga is None:fga=attempts("fieldGoalsMade-fieldGoalsAttempted","fieldGoals","fieldGoalsMadeAttempted")
   fta=num("freeThrowsAttempted","fta")
-  orb=num("offensiveRebounds","orb")
-  turnovers=num("turnovers","to")
+  if fta is None:fta=attempts("freeThrowsMade-freeThrowsAttempted","freeThrows","freeThrowsMadeAttempted")
+  orb=num("offensiveRebounds","offRebounds","offensiveReboundsTotal")
+  turnovers=num("turnovers","totalTurnovers","to")
   pts=num("points","PTS")
   if pts is None:
    match=next((x for x in comps[0].get("competitors",[]) if x.get("team",{}).get("abbreviation")==team),None)
    if match:pts=float(match["score"])
-  if any(v is None for v in (fga,fta,orb,turnovers,pts)):continue
+  missing=[key for key,val in (("FGA",fga),("FTA",fta),("ORB",orb),("TOV",turnovers),("PTS",pts)) if val is None]
+  if missing:raise ValueError("Missing boxscore fields "+team+": "+",".join(missing)+"; available="+",".join(sorted(stats)))
   poss=fga+0.44*fta-orb+turnovers
   if not 50<=poss<=160 or not 0<=pts<=250:continue
   result[team]={"possessions_estimated":poss,"points":pts}
@@ -56,7 +66,7 @@ def capture(history,limit=80,session=None):
     rows.append({"game_id":str(game["game_id"]),"tipoff_utc":game["tipoff_utc"],"team":team,
      "opponent":opponent,**values})
   except (requests.RequestException,ValueError,TypeError,KeyError) as exc:
-   errors.append({"game_id":str(game["game_id"]),"error":type(exc).__name__})
+   errors.append({"game_id":str(game["game_id"]),"error":type(exc).__name__,"detail":str(exc)[:500]})
  return {"games":rows,"source":URL,"errors":errors,"postgame_history_only":True}
 
 def lineup_confirmed(entry,tip,team):
