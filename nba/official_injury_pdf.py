@@ -64,6 +64,12 @@ def select_report(entries,freeze):
     dt,item=max(eligible,key=lambda pair:pair[0])
     return item,dt
 
+def eligible_reports(entries, cutoff):
+    ranked=[(report_datetime(e["url"]),e) for e in entries]
+    return [entry for stamp,entry in sorted(
+        ((stamp,entry) for stamp,entry in ranked if stamp is not None and stamp<=cutoff),
+        key=lambda pair:pair[0],reverse=True)]
+
 def retrieve(snapshot,session=None):
     s=session or requests.Session()
     now=datetime.now(timezone.utc)
@@ -72,9 +78,24 @@ def retrieve(snapshot,session=None):
     freeze=datetime.fromisoformat(snapshot['created_at_utc'].replace('Z','+00:00'))
     if freeze.tzinfo is None:raise ValueError('UTC pregame snapshot required')
     # Evidence is collected after the snapshot: select what exists NOW, never backdate it.
-    chosen,report_time=select_report(entries,now)
-    pdf=s.get(chosen["url"],timeout=40);pdf.raise_for_status()
-    if not pdf.content.startswith(b"%PDF-"):raise ValueError("Official URL did not return PDF bytes")
+    choices=eligible_reports(entries,now)
+    if not choices:raise ValueError("No timestamped official report <= collection time")
+    failures=[]
+    chosen=None
+    for choice in choices[:8]:
+        try:
+            pdf=s.get(choice["url"],timeout=40)
+            pdf.raise_for_status()
+            if not pdf.content.startswith(b"%PDF-"):
+                raise ValueError("Official link did not return PDF bytes")
+            chosen=choice
+            report_time=report_datetime(chosen["url"])
+            break
+        except (requests.RequestException,ValueError) as exc:
+            failures.append({"url":choice["url"],"type":type(exc).__name__,
+                "http_status":getattr(getattr(exc,"response",None),"status_code",None)})
+    if chosen is None:
+        raise ValueError("PDF candidates failed: "+json.dumps(failures))
     from pypdf import PdfReader
     pages=PdfReader(io.BytesIO(pdf.content)).pages
     if not pages:raise ValueError("Empty official injury report")
@@ -105,9 +126,14 @@ def main():
                 "source_report_as_of_utc":None,
                 "retrieval_status":"unavailable",
                 "retrieval_error_type":type(exc).__name__,
+                "retrieval_error_detail":str(exc)[:2000],
+                "retrieval_http_status":getattr(getattr(exc,"response",None),"status_code",None),
                 "note":"Official NBA source unavailable; no official athlete statuses verified. ESPN preview is separately collected as unverified observations."}
     path=Path(args.output);path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(report,indent=2))
     print(json.dumps({"report_url":report["report_url"],"pages":report.get("pages",0),
-      "official_source_available":report["official_document_retrieved"],"player_status_verified":False},indent=2))
+      "official_source_available":report["official_document_retrieved"],
+      "error_type":report.get("retrieval_error_type"),
+      "error_detail":report.get("retrieval_error_detail"),
+      "http_status":report.get("retrieval_http_status"),"player_status_verified":False},indent=2))
 if __name__=="__main__":main()
