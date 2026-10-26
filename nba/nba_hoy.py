@@ -42,6 +42,7 @@ def assemble(snapshot, integrated, injury_lineups=None):
             "official_baseline_p_home": row.get("elo_p_home"),
             "challenger_baseline_p_home": row.get("challenger_p_home"),
             "hybrid_baseline_p_home": row.get("hybrid_p_home"),
+            "hybrid_route": p.get("hybrid_route","unknown"),
             "final_p_home": home,
             "final_p_away": round(1-final, 6) if approved else None,
             "final_status": "validated_integrated_candidate" if approved else "pending_verified_evidence_or_validation",
