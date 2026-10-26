@@ -53,6 +53,10 @@ jobs:
           GAME_DATE: ${{ inputs.game_date }}
         run: |
           python nba/auto_history.py --date "$GAME_DATE" --timestamp "$HISTORY_TIME" --output results/nba/history.json --workdir results/nba/raw
+      - name: Audit Elo Challenger hybrid and sports-factor ablations
+        run: |
+          python nba/feature_impact_audit.py --history results/nba/history.json --output results/nba/feature_impact_audit.json --summary results/nba/feature_impact_audit.md
+          cat results/nba/feature_impact_audit.md >> "$GITHUB_STEP_SUMMARY"
       - name: Archive recent historical individual NBA game logs (postgame evidence only)
         continue-on-error: true
         run: |
@@ -163,6 +167,8 @@ jobs:
           name: nba-automatic-pregame-${{ github.run_id }}
           path: |
             results/nba/history_audit.json
+            results/nba/feature_impact_audit.json
+            results/nba/feature_impact_audit.md
             results/nba/player_game_history.json
             results/nba/player_history_coverage.json
             results/nba/prospective/snapshot.json
