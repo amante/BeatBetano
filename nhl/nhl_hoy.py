@@ -9,6 +9,7 @@ from pathlib import Path
 import requests
 from team_units import game_units
 from official_team_stats import collect
+from goalie_daily import matchup as goalie_matchup
 API="https://api-web.nhle.com/v1"
 
 def moment(value):
@@ -16,7 +17,7 @@ def moment(value):
     if d.tzinfo is None:raise ValueError("Timezone required")
     return d.astimezone(timezone.utc)
 
-def slate(score,standings,as_of,game_date,unit_evidence=None):
+def slate(score,standings,as_of,game_date,unit_evidence=None,goalie_evidence=None):
     now=moment(as_of)
     if not isinstance(score.get("games"),list) or not isinstance(standings.get("standings"),list):
         raise ValueError("Official NHL score/standings required")
@@ -56,7 +57,9 @@ def slate(score,standings,as_of,game_date,unit_evidence=None):
         units=None
         if evidence.get("home") is not None and evidence.get("away") is not None:
             units=game_units(evidence["home"],evidence["away"],as_of,g["startTimeUTC"],home,away)
+        goalie=goalie_matchup((goalie_evidence or {}).get("games",{}).get(eid),home,away,as_of,g["startTimeUTC"])
         events.append({"event_id":eid,"home_team":home,"away_team":away,
+            "goalie_daily_evidence":goalie,
             "unit_strength_evidence":units,
             "official_team_stats":{"home":official_stats.get(home),"away":official_stats.get(away)},
             "start_utc":tip.isoformat(),"statistical_p_home":p,
@@ -80,6 +83,7 @@ def main():
     p=argparse.ArgumentParser()
     p.add_argument("--date",required=True);p.add_argument("--output",required=True)
     p.add_argument("--units",help="Optional verified, time-stamped team unit evidence JSON")
+    p.add_argument("--goalies",help="Optional timestamped, independently sourced goalie evidence JSON")
     a=p.parse_args();day=date.fromisoformat(a.date)
     as_of=datetime.now(timezone.utc).isoformat()
     result=[]
@@ -87,7 +91,8 @@ def main():
         response=requests.get(API+suffix,timeout=35);response.raise_for_status()
         result.append(response.json())
     unit_data=json.loads(Path(a.units).read_text()) if a.units else None
-    report=slate(result[0],result[1],as_of,a.date,unit_data)
+    goalie_data=json.loads(Path(a.goalies).read_text()) if a.goalies else None
+    report=slate(result[0],result[1],as_of,a.date,unit_data,goalie_data)
     dest=Path(a.output);dest.parent.mkdir(parents=True,exist_ok=True)
     dest.write_text(json.dumps(report,indent=2))
     print(json.dumps({"pregame":len(report["events"]),"estimates":sum(g["statistical_p_home"] is not None for g in report["events"])}))
