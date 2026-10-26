@@ -104,6 +104,11 @@ jobs:
         run: |
           python nba/offense_defense_matchups.py --snapshot results/nba/prospective/snapshot.json --possessions results/nba/prospective/possession_intelligence.json --output results/nba/prospective/offense_defense_matchups.json --summary results/nba/prospective/offense_defense_matchups.md
           cat results/nba/prospective/offense_defense_matchups.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Fetch projected/confirmed NBA lineups from RotoWire fallback
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
+        run: |
+          python nba/lineup_live_collector.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/lineup_cascade.json --summary results/nba/prospective/lineup_cascade.md --candidates results/nba/prospective/lineup_source_candidates.json
+          cat results/nba/prospective/lineup_cascade.md >> "$GITHUB_STEP_SUMMARY"
       - name: Collect independently sourced NBA sporting observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         id: sporting
@@ -224,6 +229,9 @@ jobs:
             results/nba/prospective/probability_score_audit.md
             results/nba/prospective/possession_challenger.json
             results/nba/prospective/possession_challenger.md
+            results/nba/prospective/lineup_cascade.json
+            results/nba/prospective/lineup_cascade.md
+            results/nba/prospective/lineup_source_candidates.json
             results/nba/prospective/offense_defense_matchups.json
             results/nba/prospective/offense_defense_matchups.md
             results/nba/prospective/index.html
