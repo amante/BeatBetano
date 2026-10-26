@@ -85,7 +85,8 @@ def compile_report(snapshot,official=None,preview=None):
     for game in snapshot["predictions"]:
         gid=str(game["game_id"])
         previews=preview.get("games",{}).get(gid,{})
-        eligible=source_before_tip(official,game)
+        eligible=(source_before_tip(official,game) if game.get("tipoff_utc")
+                  else source_at_freeze(official,snapshot))
         resolved=all_candidates if eligible else []
         games[gid]={"home_team":normalize_team(game["home_team"]),
           "away_team":normalize_team(game["away_team"]),
