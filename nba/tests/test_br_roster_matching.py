@@ -20,6 +20,16 @@ class Tests(unittest.TestCase):
  def test_full_name_boundary(self):
   self.assertTrue(contains("Jayson Tatum injured","Jayson Tatum"))
   self.assertFalse(contains("Jay Tatum injured","Jayson Tatum"))
+ def test_espn_urls_use_lowercase_team_abbreviations(self):
+  class Recording:
+   def __init__(self):self.urls=[]
+   def get(self,url,timeout=0):
+    self.urls.append(url)
+    return Resp({"athletes":[{"id":"7","displayName":"Jayson Tatum"}]} if "/bos/" in url else {"athletes":[]})
+  session=Recording()
+  match(S,evidence([alert()]),session)
+  self.assertTrue(any("/bos/roster" in url for url in session.urls))
+  self.assertTrue(any("/nyk/roster" in url for url in session.urls))
  def test_roster_group_shape(self):
   self.assertEqual(roster_names({"athletes":[{"items":[{"id":"2","displayName":"A B"}]}]}),[{"name":"A B","id":"2"}])
  def test_unique_identity_not_health(self):
