@@ -32,7 +32,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m pip install requests
+      - run: python -m pip install -r validation/requirements.txt
       - name: Download real NFL historical league games
         run: python validation/backtest.py fetch-nfl --output data/nfl_games.csv
       - name: Produce all eligible NFL pregame matchups
