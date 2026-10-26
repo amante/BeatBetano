@@ -8,7 +8,7 @@ from datetime import datetime,timezone
 from math import exp,log
 from model import evaluate,probability,dual_eligible,score
 
-def predict_challenger(rows,window=10):
+def predict_challenger(rows,window=10,use_margin=True,use_rest=True):
     rows=list(rows)
     base=list(evaluate(rows,season_min=min(int(r["season"]) for r in rows),
                        season_max=max(int(r["season"]) for r in rows)))
@@ -34,7 +34,7 @@ def predict_challenger(rows,window=10):
         rest_effect=max(-2,min(2,rest(h)-rest(a)))
         prior=max(1e-8,min(1-1e-8,pred.p_home))
         # Coefficients predeclared; do not optimize them on 2025-26 holdouts.
-        logit=log(prior/(1-prior)) + 0.025*margin_effect + 0.035*rest_effect
+        logit=log(prior/(1-prior)) + (0.025*margin_effect if use_margin else 0) + (0.035*rest_effect if use_rest else 0)
         prob=1/(1+exp(-logit))
         output.append({"game_id":pred.game_id,"season":season,"p_home":prob,
                        "dual_eligible":dual_eligible(prob),
