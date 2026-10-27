@@ -19,11 +19,17 @@ jobs:
         run: |
           python nhl/walkforward_calibration.py --start 2024-10-01 --end 2026-10-26 --train-through 2025-06-30 --test-from 2025-10-01 --output results/nhl/walkforward_calibration.json --summary results/nhl/walkforward_calibration.md
           cat results/nhl/walkforward_calibration.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Compare frozen ML candidate to goal-only proxy on same historical holdout
+        run: |
+          python nhl/ml_candidate_compare.py --history results/nhl/walkforward_history.json --output results/nhl/ml_candidate_compare.json --summary results/nhl/ml_candidate_compare.md
+          cat results/nhl/ml_candidate_compare.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: nhl-walkforward-${{ github.run_id }}
           path: |
             results/nhl/walkforward_calibration.*
+            results/nhl/walkforward_history.json
+            results/nhl/ml_candidate_compare.*
             results/nhl/historical_fetch_errors.json
           retention-days: 30
