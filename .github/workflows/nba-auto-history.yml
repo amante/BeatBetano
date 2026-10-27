@@ -84,6 +84,11 @@ jobs:
         continue-on-error: true
         run: |
           python nba/capture_team_boxscores.py --history results/nba/history.json --limit 80 --output results/nba/team_boxscores.json
+      - name: Validate joint NBA minutes and current-roster evidence coverage
+        if: ${{ hashFiles('results/nba/prospective/rotation_efficiency_report.json') != '' }}
+        run: |
+          python nba/joint_minutes_report.py --snapshot results/nba/prospective/snapshot.json --rotation results/nba/prospective/rotation_efficiency_report.json --output results/nba/prospective/joint_minutes.json --summary results/nba/prospective/joint_minutes.md
+          cat results/nba/prospective/joint_minutes.md >> "$GITHUB_STEP_SUMMARY"
       - name: Report confirmed lineup coverage and possession-driven matchup projections
         if: ${{ hashFiles('results/nba/prospective/snapshot.json', 'results/nba/team_boxscores.json') != '' }}
         run: |
@@ -222,6 +227,8 @@ jobs:
             results/nba/prospective/model_comparison.md
             results/nba/prospective/rotation_efficiency_report.json
             results/nba/prospective/rotation_efficiency_report.md
+            results/nba/prospective/joint_minutes.json
+            results/nba/prospective/joint_minutes.md
             results/nba/team_boxscores.json
             results/nba/prospective/possession_intelligence.json
             results/nba/prospective/possession_intelligence.md
