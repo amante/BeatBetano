@@ -19,6 +19,24 @@ class Test(unittest.TestCase):
   rows=extract(fetch,"20262027","skater/summary")
   self.assertEqual(len(rows),1)
   self.assertIn("seasonId%3D20262027",urls[0])
+ def test_multi_team_stints_are_preserved(self):
+  calls=[]
+  def fetch(url):
+   calls.append(url)
+   return Response([
+    {"playerId":99,"teamId":1,"gamesPlayed":4},
+    {"playerId":99,"teamId":2,"gamesPlayed":6},
+    {"playerId":99,"teamId":2,"gamesPlayed":6},
+   ]) if len(calls)==1 else Response([])
+  rows=extract(fetch,"20262027","skater/summary",limit=3)
+  self.assertEqual(len(rows),2)
+  self.assertEqual({r["teamId"] for r in rows},{1,2})
+ def test_exact_duplicate_does_not_erase_valid_rows(self):
+  rows=extract(lambda url:Response([
+    {"playerId":1,"teamId":1},
+    {"playerId":1,"teamId":1},
+    {"playerId":2,"teamId":3}]),"20262027","skater/summary",limit=100)
+  self.assertEqual(len(rows),2)
  def test_empty_not_silent(self):
   r=collect(lambda url:Response([]),date(2026,10,27),1)
   self.assertEqual(r["reports"]["20262027"]["skater/summary"]["status"],"empty")
