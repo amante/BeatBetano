@@ -20,7 +20,9 @@ def main():
  for key in ("scoreboard","output","summary"):p.add_argument("--"+key,required=True)
  a=p.parse_args();s=json.loads(Path(a.scoreboard).read_text())
  data=audit(s,datetime.now(timezone.utc).isoformat())
- for name,value in ((a.output,json.dumps(data,indent=2)),(a.summary,"## Pregame cutoff audit\n\n"+f'Captured: {data["initial_pregame_games"]}, crossed tipoff during execution: {data["crossed_tipoff"]}. No retroactive predictions.\n'):
+ summary = ("## Pregame cutoff audit\\n\\n"
+  + f'Captured: {data["initial_pregame_games"]}, crossed tipoff during execution: {data["crossed_tipoff"]}. No retroactive predictions.\\n')
+ for name,value in ((a.output,json.dumps(data,indent=2)),(a.summary,summary)):
   f=Path(name);f.parent.mkdir(parents=True,exist_ok=True);f.write_text(value)
  print(json.dumps({"captured":data["initial_pregame_games"],"crossed_tipoff":data["crossed_tipoff"]}))
 if __name__=="__main__":main()
