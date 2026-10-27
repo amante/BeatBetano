@@ -70,14 +70,11 @@ jobs:
         run: |
           python nhl/module_audit.py --slate results/nhl/nhl_hoy.json --goalies results/nhl/goalie_observations.json --output results/nhl/module_audit.json --summary results/nhl/module_audit.md
           cat results/nhl/module_audit.md >> "$GITHUB_STEP_SUMMARY"
-      - name: Render four-pillar measured evidence to Actions Summary
+      - name: Render real snapshot evidence for all 11 matchups
         run: |
-          python nhl/four_pillars.py --slate results/nhl/nhl_hoy.json --goalies results/nhl/goalie_observations.json --output results/nhl/four_pillars.json --summary results/nhl/four_pillars.md
-          cat results/nhl/four_pillars.md >> "$GITHUB_STEP_SUMMARY"
-      - name: Retrieve real NHL skater rosters and club statistics
-        run: |
-          python nhl/real_players.py --roster-snapshot results/nhl/goalie_candidates.json --slate results/nhl/nhl_hoy.json --output results/nhl/real_players.json --summary results/nhl/real_players.md
-          cat results/nhl/real_players.md >> "$GITHUB_STEP_SUMMARY"
+          if [ ! -f results/nhl/pregame_snapshot.json ]; then echo 'No cached NHL current-season evidence' >&2; exit 1; fi
+          python nhl/pregame_reporting.py --input results/nhl/pregame_snapshot.json --summary results/nhl/verified_evidence.md
+          cat results/nhl/verified_evidence.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -97,5 +94,5 @@ jobs:
             results/nhl/four_pillars.json
             results/nhl/four_pillars.md
             results/nhl/real_players.json
-            results/nhl/real_players.md
+            results/nhl/verified_evidence.md
           retention-days: 30
