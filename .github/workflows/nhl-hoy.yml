@@ -75,6 +75,10 @@ jobs:
           if [ ! -f results/nhl/pregame_snapshot.json ]; then echo 'No cached NHL current-season evidence' >&2; exit 1; fi
           python nhl/pregame_reporting.py --input results/nhl/pregame_snapshot.json --summary results/nhl/verified_evidence.md
           cat results/nhl/verified_evidence.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Calculate transparent NHL goal-process exploratory estimates
+        run: |
+          python nhl/goal_process.py --input results/nhl/pregame_snapshot.json --output results/nhl/goal_process.json --summary results/nhl/goal_process.md
+          cat results/nhl/goal_process.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -95,4 +99,6 @@ jobs:
             results/nhl/four_pillars.md
             results/nhl/real_players.json
             results/nhl/verified_evidence.md
+            results/nhl/goal_process.json
+            results/nhl/goal_process.md
           retention-days: 30
