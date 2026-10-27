@@ -46,7 +46,7 @@ def measure(roster,stats,team,freeze):
          "roster_source":API+"/roster/"+team+"/current",
          "stats_source":API+"/club-stats/"+team+"/"+str(int(freeze[:4])-(int(freeze[5:7])<7))*0 if False else None}
 
-def capture(slate,fetch):
+def capture(slate,fetch,rosters=None):
  if slate.get("sport")!="nhl":raise ValueError("NHL slate required")
  freeze=utc(slate["as_of_utc"])
  teams={}
@@ -59,13 +59,19 @@ def capture(slate,fetch):
   roster_url=f"{API}/roster/{team}/current"
   stats_url=f"{API}/club-stats/{team}/{season}/2"
   try:
-   roster=fetch(roster_url)
+   cached=(rosters or {}).get(team)
+   roster=cached if cached is not None else fetch(roster_url)
+   error=None
    try:
     stats=fetch(stats_url)
-   except (requests.RequestException,ValueError,KeyError,TypeError):
-    stats_url=f"{API}/club-stats/{team}/now"
-    stats=fetch(stats_url)
+   except (requests.RequestException,ValueError,KeyError,TypeError) as exc:
+    error=str(exc)[:200]
+    stats={"skaters":[]}
    out=measure(roster,stats,team,slate["as_of_utc"])
+   if error:
+    out["status"]="roster_only_stats_unavailable"
+    out["stats_error"]=error
+   out["roster_reused"]=cached is not None
    out["roster_source"]=roster_url;out["stats_source"]=stats_url
    return team,out
   except (requests.RequestException,ValueError,KeyError,TypeError) as exc:
@@ -95,11 +101,22 @@ def summary(report):
 def main():
  p=argparse.ArgumentParser()
  for name in ("slate","output","summary"):p.add_argument("--"+name,required=True)
+ p.add_argument("--roster-snapshot",required=True)
  a=p.parse_args();slate=json.loads(Path(a.slate).read_text())
  def fetch(url):
   r=requests.get(url,timeout=25);r.raise_for_status();return r.json()
- out=capture(slate,fetch)
- if out["teams"] and not any(record.get("skaters") for record in out["teams"].values()):
+ previous=json.loads(Path(a.roster_snapshot).read_text())
+ if previous.get("as_of_utc")!=slate.get("as_of_utc"):
+  raise ValueError("Roster snapshot timestamp mismatch")
+ rosters={}
+ for game in previous.get("games",{}).values():
+  for side in ("home","away"):
+   row=game.get(side,{})
+   if "roster_forwards" in row and "roster_defensemen" in row:
+    team=row["roster_url"].split("/roster/")[1].split("/")[0]
+    rosters[team]={"forwards":row["roster_forwards"],"defensemen":row["roster_defensemen"]}
+ out=capture(slate,fetch,rosters)
+ if out["teams"] and not any(record.get("skaters") or record.get("roster_forwards",0)+record.get("roster_defense",0)>0 for record in out["teams"].values()):
   raise RuntimeError("Zero NHL skaters; refusing false success. "+str({k:(v["status"],v.get("error_detail")) for k,v in out["teams"].items()}))
  for filename,value in ((a.output,json.dumps(out,indent=2)),(a.summary,summary(out))):
   target=Path(filename);target.parent.mkdir(parents=True,exist_ok=True);target.write_text(value)

@@ -60,7 +60,7 @@ jobs:
           cat results/nhl/four_pillars.md >> "$GITHUB_STEP_SUMMARY"
       - name: Retrieve real NHL skater rosters and club statistics
         run: |
-          python nhl/real_players.py --slate results/nhl/nhl_hoy.json --output results/nhl/real_players.json --summary results/nhl/real_players.md
+          python nhl/real_players.py --roster-snapshot results/nhl/goalie_candidates.json --slate results/nhl/nhl_hoy.json --output results/nhl/real_players.json --summary results/nhl/real_players.md
           cat results/nhl/real_players.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v6
         if: always()

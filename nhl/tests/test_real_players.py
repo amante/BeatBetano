@@ -14,8 +14,14 @@ class Tests(unittest.TestCase):
  def test_future_only_and_summary(self):
   slate={"sport":"nhl","as_of_utc":"2026-10-27T10:00:00Z","events":[{"start_utc":"2026-10-28T00:00:00Z","home_team":"BOS","away_team":"MTL"}]}
   def fetch(url):return {"forwards":[],"defensemen":[]} if "/roster/" in url else {"skaters":[]}
-  result=capture(slate,fetch)
+  def forbidden(url):
+   if "/roster/" in url:raise AssertionError("duplicate roster fetch")
+   return {"skaters":[]}
+  roster={"forwards":[{"id":10,"positionCode":"C"}],"defensemen":[]}
+  result=capture(slate,forbidden,{"BOS":roster,"MTL":roster})
   self.assertEqual(len(result["teams"]),2)
+  self.assertEqual(result["teams"]["BOS"]["roster_forwards"],1)
+  self.assertTrue(result["teams"]["BOS"]["roster_reused"])
   self.assertIn("MTL",summary(result))
   slate["events"][0]["start_utc"]="2026-10-27T09:00:00Z"
   with self.assertRaises(ValueError):capture(slate,fetch)
