@@ -60,7 +60,7 @@ jobs:
           python nba/current_feed.py --date "$GAME_DATE" --timestamp "$HISTORY_TIME" --output results/nba/initial_scoreboard.json
           cat results/nba/initial_scoreboard.json | python -c 'import json,sys; x=json.load(sys.stdin); print("Initial pregame candidates:",len(x["future_fixtures"]))'
       - name: Download precomputed historical evidence
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: nba-prepared-${{ inputs.game_date }}
           run-id: ${{ inputs.history_run_id }}
