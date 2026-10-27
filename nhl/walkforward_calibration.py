@@ -24,18 +24,29 @@ def parse_games(payload,day):
     return rows
 
 def fetch_season(fetch,start,end,pause=lambda:None):
-    games=[];errors=[]
+    # NHL schedule API returns an entire schedule week; fewer requests than
+    # one per calendar day. Overlap and holidays handled by game ID dedup.
+    games_by_id={};errors=[]
     current=start
     while current<=end:
-        day=current.isoformat()
+        anchor=current.isoformat()
         try:
-            response=fetch(API+day)
+            response=fetch("https://api-web.nhle.com/v1/schedule/"+anchor)
             response.raise_for_status()
-            games.extend(parse_games(response.json(),day))
+            payload=response.json()
+            if not isinstance(payload.get("gameWeek"),list):
+                raise ValueError("Missing gameWeek; API schema changed")
+            for day in payload["gameWeek"]:
+                game_date=day.get("date")
+                if not game_date or not start.isoformat()<=game_date<=end.isoformat():
+                    continue
+                for g in parse_games({"games":day.get("games",[])},game_date):
+                    games_by_id[g["id"]]=g
         except (requests.RequestException,ValueError,KeyError) as exc:
-            errors.append({"date":day,"error":str(exc)[:120]})
-        pause();current+=timedelta(days=1)
-    return sorted(games,key=lambda x:(x["date"],x["id"])),errors
+            errors.append({"date":anchor,"error":str(exc)[:120]})
+        pause()
+        current+=timedelta(days=7)
+    return sorted(games_by_id.values(),key=lambda x:(x["date"],x["id"])),errors
 
 def poisson(mean):
     xs=[math.exp(-mean)]
@@ -84,6 +95,7 @@ def calibrate(rows,train_until,test_start):
     train=[r for r in rows if r["date"]<=train_until]
     test=[r for r in rows if r["date"]>=test_start]
     if len(train)<150 or len(test)<30:raise ValueError("Not enough separated games")
+    if train_until>=test_start:raise ValueError("Train and test windows overlap")
     candidates=[(p,h,s) for p in (2.8,3.0,3.2) for h in (0.0,0.08,0.16) for s in (5,10,20)]
     best=None
     for parameters in candidates:
@@ -117,7 +129,8 @@ def main():
     p.add_argument("--output",required=True);p.add_argument("--summary",required=True)
     a=p.parse_args();session=requests.Session()
     games,errors=fetch_season(lambda url:session.get(url,timeout=20),date.fromisoformat(a.start),date.fromisoformat(a.end))
-    if len(errors)>0:raise SystemExit(f"Historical retrieval incomplete: {len(errors)} failed days. Refusing false validation.")
+    if len(errors)>0:raise SystemExit(f"Historical retrieval incomplete: {len(errors)} failed weeks. Refusing false validation.")
+    if len(games)<1500:raise SystemExit(f"Insufficient completed games: {len(games)}. Refusing false validation.")
     result=calibrate(games,a.train_through,a.test_from)
     result["retrieved_games"]=len(games);result["historical_days_errors"]=errors
     dest=Path(a.output);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_text(json.dumps(result,indent=2))
