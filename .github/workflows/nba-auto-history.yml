@@ -98,6 +98,12 @@ jobs:
         run: |
           python nba/rotation_efficiency_report.py --snapshot results/nba/prospective/snapshot.json --history results/nba/history.json --players results/nba/player_game_history.json --output results/nba/prospective/rotation_efficiency_report.json --summary results/nba/prospective/rotation_efficiency_report.md
           cat results/nba/prospective/rotation_efficiency_report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Capture official NBA pace/possession observations (experimental; optional)
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
+        env:
+          GAME_DATE: ${{ inputs.game_date }}
+        run: |
+          python nba/nba_official_pace_capture.py --date "$GAME_DATE" --output results/nba/prospective/nba_official_pace.json
       - name: Report confirmed lineup coverage and possession-driven matchup projections
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' && hashFiles('results/nba/team_boxscores.json') != '' }}
         run: |
@@ -270,6 +276,7 @@ jobs:
             results/nba/prospective/joint_minutes.json
             results/nba/prospective/joint_minutes.md
             results/nba/team_boxscores.json
+            results/nba/prospective/nba_official_pace.json
             results/nba/prospective/possession_intelligence.json
             results/nba/prospective/possession_intelligence.md
             results/nba/prospective/probability_score_audit.json
