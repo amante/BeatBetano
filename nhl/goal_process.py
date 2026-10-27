@@ -4,6 +4,7 @@ Unfitted Poisson model: transparent, bounded inputs, no bookmakers.
 Not official/challenger probabilities and not calibrated or bet-authorized.
 """
 import argparse,json,math
+from factor_engine import process
 from pathlib import Path
 
 def poisson(mean,kmax=30):
@@ -67,15 +68,16 @@ def calculate(lh,la):
 def run(evidence):
     outputs=[]
     for game in evidence["games"]:
-        lh,la=goal_rates(game["home_evidence"],game["away_evidence"])
+        factors=process(game)
+        lh,la=factors["home_goals_rate"],factors["away_goals_rate"]
         outputs.append({"event_id":game["event_id"],"home":game["home_team"],
-                        "away":game["away_team"],**calculate(lh,la)})
+                        "away":game["away_team"],"factor_audit":factors["factor_audit"],**calculate(lh,la)})
     return {"as_of_utc":evidence["as_of_utc"],"games":outputs,"odds_used":False,
             "calibrated":False,"model":"exploratory_only"}
 
 def markdown(result):
     lines=["## NHL — exploratory goal-process projections (NOT calibrated)","",
-    "Not the official model or challenger. Fixed 3.0 goals/game prior, 10-game shrinkage, independent Poisson goals and 50/50 overtime assumption; not estimated from holdout data. Not betting-authorized.","",
+    "Not official or challenger. Five-game shrinkage and small untrained shot proxy; independent Poisson with 50/50 overtime. Goalie, PP/PK, actual lines and rivalry are documented but NOT applied without verified inputs and fitted coefficients. Not betting-authorized.","",
     "| Game | ML A/H% | RT A/X/H% | +3 lead A/H% | First +3 A/H% |",
     "|---|---|---|---|---|"]
     fmt=lambda x:f"{100*x:.1f}"
