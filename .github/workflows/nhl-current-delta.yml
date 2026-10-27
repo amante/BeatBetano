@@ -1,0 +1,48 @@
+name: NHL — Current-season incremental update
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 12 * * *'
+permissions:
+  contents: read
+jobs:
+  incremental:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m pip install requests
+      - name: Determine current NHL season
+        id: season
+        run: echo "id=$(python -c 'from datetime import date; from nhl.multiseason_stats import seasons; print(seasons(date.today(),1)[0])')" >> "$GITHUB_OUTPUT"
+      - name: Restore previous current-season snapshot
+        uses: actions/cache/restore@v4
+        with:
+          path: results/nhl/cache/current_snapshot.json
+          key: nhl-current-${{ steps.season.outputs.id }}-${{ github.run_id }}
+          restore-keys: |
+            nhl-current-${{ steps.season.outputs.id }}-
+      - name: Extract current season and compute delta
+        run: |
+          python nhl/current_delta.py --previous results/nhl/cache/current_snapshot.json --snapshot results/nhl/new_snapshot.json --delta results/nhl/current_delta.json --summary results/nhl/current_delta.md
+          cat results/nhl/current_delta.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Update snapshot cache
+        run: |
+          mkdir -p results/nhl/cache
+          cp results/nhl/new_snapshot.json results/nhl/cache/current_snapshot.json
+      - name: Save current-season cache
+        uses: actions/cache/save@v4
+        with:
+          path: results/nhl/cache/current_snapshot.json
+          key: nhl-current-${{ steps.season.outputs.id }}-${{ github.run_id }}
+      - uses: actions/upload-artifact@v6
+        with:
+          name: nhl-current-delta-${{ github.run_id }}
+          path: |
+            results/nhl/new_snapshot.json
+            results/nhl/current_delta.json
+            results/nhl/current_delta.md
+          retention-days: 30
