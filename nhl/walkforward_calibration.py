@@ -32,7 +32,7 @@ def fetch_season(fetch,start,end,pause=lambda:None):
         # NHL regular-season schedules have no games in July-September.
         # Avoid querying absent calendar weeks (often HTTP 404), but
         # never suppress failures for October-June.
-        if current.month in (7, 8, 9):
+        if current.month in (7, 8, 9) and (current+timedelta(days=6)).month in (7, 8, 9):
             current+=timedelta(days=7)
             continue
         anchor=current.isoformat()
