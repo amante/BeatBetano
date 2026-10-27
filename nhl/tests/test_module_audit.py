@@ -26,6 +26,27 @@ class ModuleAuditTests(unittest.TestCase):
         self.assertEqual(game["modules"]["division_rivalry"]["context"]["rivalry_tier"], "A")
         self.assertIn("MTL @ BOS", markdown(result))
 
+    def test_cached_evidence_resolves_observed_modules_without_fake_ratings(self):
+        stamp = "2026-10-27T15:00:00Z"
+        slate = {"sport":"nhl","as_of_utc":stamp,"events":[{"event_id":"9",
+                 "home_team":"PHI","away_team":"CBJ"}]}
+        goalies = {"sport":"nhl","as_of_utc":stamp,"games":{}}
+        side = {"crs_evidence":{"games_played":8},
+                "unit_evidence":{"forwards":{"players_with_stats":12},"defense":{"players_with_stats":7}},
+                "goalie_evidence":{"candidates":[{"player_id":1}]},
+                "special_teams_evidence":{"power_play_pct_observed":0.22,"penalty_kill_pct_observed":0.83}}
+        cache = {"sport":"nhl","as_of_utc":stamp,"games":[{"event_id":"9","home_evidence":side,"away_evidence":side}]}
+        result=review(slate,goalies,cache)["games"][0]
+        self.assertEqual(result["modules"]["crs"]["state"],"observed_only")
+        self.assertEqual(result["modules"]["unit_ratings"]["state"],"observed_only")
+        self.assertEqual(result["modules"]["sustainable_pp_pk"]["state"],"observed_only")
+        self.assertIsNone(result["official_win_probability"])
+    def test_cached_evidence_wrong_timestamp_fails(self):
+        slate={"sport":"nhl","as_of_utc":"2026-10-27T15:00:00Z","events":[]}
+        goalie={"sport":"nhl","as_of_utc":slate["as_of_utc"],"games":{}}
+        with self.assertRaises(ValueError):
+            review(slate,goalie,{"sport":"nhl","as_of_utc":"2026-10-27T16:00:00Z","games":[]})
+
     def test_fails_closed_on_timestamp_mismatch(self):
         with self.assertRaises(ValueError):
             review({"sport": "nhl", "as_of_utc": "2026-10-27T00:00:00Z", "events": []},

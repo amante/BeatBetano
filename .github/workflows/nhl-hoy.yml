@@ -68,7 +68,7 @@ jobs:
         run: python webresults/render.py --input results/nhl/nhl_hoy.json --html results/nhl/index.html --summary results/nhl/summary.md
       - name: Audit all ten NHL modules and display coverage in Actions Summary
         run: |
-          python nhl/module_audit.py --slate results/nhl/nhl_hoy.json --goalies results/nhl/goalie_observations.json --output results/nhl/module_audit.json --summary results/nhl/module_audit.md
+          python nhl/module_audit.py --slate results/nhl/nhl_hoy.json --goalies results/nhl/goalie_observations.json --snapshot results/nhl/pregame_snapshot.json --output results/nhl/module_audit.json --summary results/nhl/module_audit.md
           cat results/nhl/module_audit.md >> "$GITHUB_STEP_SUMMARY"
       - name: Render real snapshot evidence for all 11 matchups
         run: |

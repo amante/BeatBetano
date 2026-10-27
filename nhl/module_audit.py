@@ -36,11 +36,14 @@ def context(home, away):
             "familiarity": "divisional_repetition" if divisional else "not_established",
             "probability_delta": None, "delta_calibrated": False}
 
-def review(slate, goalies):
+def review(slate, goalies, cached=None):
     if slate.get("sport") != "nhl" or goalies.get("sport") != "nhl":
         raise ValueError("NHL inputs required")
     if slate.get("as_of_utc") != goalies.get("as_of_utc"):
         raise ValueError("Point-in-time mismatch")
+    if cached is not None and cached.get("as_of_utc") != slate["as_of_utc"]:
+        raise ValueError("Cached evidence timestamp mismatch")
+    cached_games = {str(g["event_id"]): g for g in cached.get("games", [])} if cached else {}
     records = []
     for game in slate.get("events", []):
         eid = str(game["event_id"])
@@ -61,15 +64,27 @@ def review(slate, goalies):
                           and stats[side].get("power_play_pct_observed") is not None
                           and stats[side].get("penalty_kill_pct_observed") is not None
                           for side in ("home", "away"))
+        cached_game = cached_games.get(eid)
+        if cached is not None and cached_game is None:
+            raise ValueError("No cached evidence for game " + eid)
+        def measured(section, fields):
+            return cached_game is not None and all(
+                isinstance(cached_game.get(side + "_evidence", {}).get(section), dict)
+                and all(cached_game[side + "_evidence"][section].get(field) is not None for field in fields)
+                for side in ("home", "away"))
+        team_form = measured("crs_evidence", ("games_played",))
+        skaters = measured("unit_evidence", ("forwards", "defense"))
+        cached_pp = measured("special_teams_evidence", ("power_play_pct_observed", "penalty_kill_pct_observed"))
+        goalie_candidates = measured("goalie_evidence", ("candidates",))
         ctx = context(game["home_team"], game["away_team"])
         details = {
-            "crs": {"state": "unavailable", "reason": "no_validated_roster_weighting"},
-            "unit_ratings": {"state": "evidence_only" if has_units else "missing",
+            "crs": {"state": "observed_only" if team_form else "unavailable", "rating": None, "reason": "team_stats_not_calibrated" if team_form else "no_validated_roster_weighting"},
+            "unit_ratings": {"state": "observed_only" if skaters else ("evidence_only" if has_units else "missing"),
                              "reason": "verified_inputs_not_probabilistic_weights" if has_units else "no_verified_unit_snapshots"},
-            "goalie_daily": {"state": "evidence_only" if goalie_measured else "missing",
+            "goalie_daily": {"state": "evidence_only" if goalie_measured or goalie_candidates else "missing",
                              "confirmed_starters": goalie_confirmed,
                              "reason": "rating_and_impact_not_fitted" if goalie_measured else "goalie_evidence_missing"},
-            "sustainable_pp_pk": {"state": "observed_only" if pp_observed else "missing",
+            "sustainable_pp_pk": {"state": "observed_only" if pp_observed or cached_pp else "missing",
                                    "reason": "observed_percentages_not_bayesian_strength"},
             "division_rivalry": {"state": "context_available", "context": ctx,
                                   "reason": "context_only_no_calibrated_probability_delta"},
@@ -113,11 +128,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--slate", required=True)
     ap.add_argument("--goalies", required=True)
+    ap.add_argument("--snapshot")
     ap.add_argument("--output", required=True)
     ap.add_argument("--summary", required=True)
     args = ap.parse_args()
     result = review(json.loads(Path(args.slate).read_text()),
-                    json.loads(Path(args.goalies).read_text()))
+                    json.loads(Path(args.goalies).read_text()),
+                    json.loads(Path(args.snapshot).read_text()) if args.snapshot else None)
     for path, value in ((args.output, json.dumps(result, indent=2)),
                         (args.summary, markdown(result))):
         destination = Path(path)
