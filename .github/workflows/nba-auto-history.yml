@@ -84,11 +84,6 @@ jobs:
         continue-on-error: true
         run: |
           python nba/capture_team_boxscores.py --history results/nba/history.json --limit 80 --output results/nba/team_boxscores.json
-      - name: Validate joint NBA minutes and current-roster evidence coverage
-        if: ${{ hashFiles('results/nba/prospective/rotation_efficiency_report.json') != '' }}
-        run: |
-          python nba/joint_minutes_report.py --snapshot results/nba/prospective/snapshot.json --rotation results/nba/prospective/rotation_efficiency_report.json --output results/nba/prospective/joint_minutes.json --summary results/nba/prospective/joint_minutes.md
-          cat results/nba/prospective/joint_minutes.md >> "$GITHUB_STEP_SUMMARY"
       - name: Report confirmed lineup coverage and possession-driven matchup projections
         if: ${{ hashFiles('results/nba/prospective/snapshot.json', 'results/nba/team_boxscores.json') != '' }}
         run: |
@@ -123,10 +118,6 @@ jobs:
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/espn_current_roster_feed.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/current_roster_feed.json
-      - name: Evaluate bounded NBA injury availability scenarios
-        if: ${{ hashFiles('results/nba/prospective/active_roster_resolved.json') != '' }}
-        run: |
-          python nba/availability_scenarios.py --snapshot results/nba/prospective/snapshot.json --rotation results/nba/prospective/rotation_efficiency_report.json --availability results/nba/prospective/active_roster_resolved.json --output results/nba/prospective/availability_scenarios.json
       - name: Collect independently sourced NBA sporting observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         id: sporting
@@ -143,6 +134,15 @@ jobs:
           python nba/active_roster_resolver.py --snapshot results/nba/prospective/snapshot.json --roster results/nba/prospective/current_roster_feed.json --statuses results/nba/prospective/current_status_feed.json --lineups results/nba/prospective/lineup_cascade.json --output results/nba/prospective/active_roster_resolved.json --summary results/nba/prospective/active_roster_resolved.md
           cat results/nba/prospective/active_roster_resolved.md >> "$GITHUB_STEP_SUMMARY"
           python nba/joint_minutes_report.py --snapshot results/nba/prospective/snapshot.json --rotation results/nba/prospective/rotation_efficiency_report.json --availability results/nba/prospective/active_roster_resolved.json --output results/nba/prospective/joint_minutes.json --summary results/nba/prospective/joint_minutes.md
+      - name: Evaluate bounded NBA injury availability scenarios
+        if: ${{ hashFiles('results/nba/prospective/active_roster_resolved.json') != '' }}
+        run: |
+          python nba/availability_scenarios.py --snapshot results/nba/prospective/snapshot.json --rotation results/nba/prospective/rotation_efficiency_report.json --availability results/nba/prospective/active_roster_resolved.json --output results/nba/prospective/availability_scenarios.json
+      - name: Audit evidence coverage before downstream model claims
+        if: ${{ hashFiles('results/nba/prospective/active_roster_resolved.json') != '' }}
+        run: |
+          python nba/pipeline_readiness_audit.py --snapshot results/nba/prospective/snapshot.json --roster results/nba/prospective/current_roster_feed.json --availability results/nba/prospective/active_roster_resolved.json --minutes results/nba/prospective/joint_minutes.json --output results/nba/prospective/pipeline_readiness.json --summary results/nba/prospective/pipeline_readiness.md
+          cat results/nba/prospective/pipeline_readiness.md >> "$GITHUB_STEP_SUMMARY"
       - name: Preserve official NBA injury report PDF extraction or explicit unavailability
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
@@ -268,6 +268,8 @@ jobs:
             results/nba/prospective/active_roster_resolved.json
             results/nba/prospective/active_roster_resolved.md
             results/nba/prospective/availability_scenarios.json
+            results/nba/prospective/pipeline_readiness.json
+            results/nba/prospective/pipeline_readiness.md
             results/nba/prospective/lineup_source_candidates.json
             results/nba/prospective/offense_defense_matchups.json
             results/nba/prospective/offense_defense_matchups.md
