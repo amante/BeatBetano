@@ -10,8 +10,13 @@ on:
         description: 'NBA ESPN scoreboard date YYYY-MM-DD (US league calendar)'
         required: true
         type: string
+      history_run_id:
+        description: 'Successful NBA prepare historical evidence workflow run ID for same game_date'
+        required: true
+        type: string
 permissions:
   contents: read
+  actions: read
 jobs:
   tests:
     runs-on: ubuntu-24.04
@@ -54,11 +59,18 @@ jobs:
         run: |
           python nba/current_feed.py --date "$GAME_DATE" --timestamp "$HISTORY_TIME" --output results/nba/initial_scoreboard.json
           cat results/nba/initial_scoreboard.json | python -c 'import json,sys; x=json.load(sys.stdin); print("Initial pregame candidates:",len(x["future_fixtures"]))'
-      - name: Build cleaned completed NBA historical ledger
+      - name: Download precomputed historical evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: nba-prepared-${{ inputs.game_date }}
+          run-id: ${{ inputs.history_run_id }}
+          github-token: ${{ github.token }}
+          path: results/nba
+      - name: Validate precomputed historical evidence
         env:
           GAME_DATE: ${{ inputs.game_date }}
         run: |
-          python nba/auto_history.py --date "$GAME_DATE" --timestamp "$HISTORY_TIME" --output results/nba/history.json --workdir results/nba/raw
+          python nba/prepared_history_gate.py --date "$GAME_DATE" --history results/nba/history.json --audit results/nba/history_audit.json --players results/nba/player_game_history.json --teams results/nba/team_boxscores.json
       - name: Audit Elo Challenger hybrid and sports-factor ablations
         run: |
           python nba/feature_impact_audit.py --history results/nba/history.json --output results/nba/feature_impact_audit.json --summary results/nba/feature_impact_audit.md
@@ -67,14 +79,6 @@ jobs:
         run: |
           python nba/hybrid_gate_audit.py --history results/nba/history.json --output results/nba/hybrid_gate_audit.json --summary results/nba/hybrid_gate_audit.md
           cat results/nba/hybrid_gate_audit.md >> "$GITHUB_STEP_SUMMARY"
-      - name: Archive recent historical individual NBA game logs (postgame evidence only)
-        continue-on-error: true
-        run: |
-          python nba/player_game_history.py --history results/nba/history.json --limit 200 --output results/nba/player_game_history.json
-      - name: Audit historical player sample coverage and provenance
-        if: ${{ hashFiles('results/nba/player_game_history.json') != '' }}
-        run: |
-          python nba/player_history_coverage.py --history results/nba/history.json --sample results/nba/player_game_history.json --output results/nba/player_history_coverage.json
       - name: Audit fixtures crossing tipoff during historical processing
         run: |
           python nba/pregame_time_window_audit.py --scoreboard results/nba/initial_scoreboard.json --output results/nba/pregame_time_window.json --summary results/nba/pregame_time_window.md
@@ -94,11 +98,6 @@ jobs:
         run: |
           python nba/rotation_efficiency_report.py --snapshot results/nba/prospective/snapshot.json --history results/nba/history.json --players results/nba/player_game_history.json --output results/nba/prospective/rotation_efficiency_report.json --summary results/nba/prospective/rotation_efficiency_report.md
           cat results/nba/prospective/rotation_efficiency_report.md >> "$GITHUB_STEP_SUMMARY"
-      - name: Collect historical NBA team boxscore efficiency ingredients
-        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
-        continue-on-error: true
-        run: |
-          python nba/capture_team_boxscores.py --history results/nba/history.json --limit 80 --output results/nba/team_boxscores.json
       - name: Report confirmed lineup coverage and possession-driven matchup projections
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' && hashFiles('results/nba/team_boxscores.json') != '' }}
         run: |
