@@ -82,7 +82,7 @@ def collect(slate,session=None):
             url=f"{BASE}/roster/{team}/{season}"
             try:
                 roster=read(url)
-                pair[side]={"roster_url":url,"candidates":candidate_logs(roster,read,team,freeze,g["start_utc"],season)}
+                pair[side]={"roster_url":url,"roster_forwards":roster.get("forwards",[]),"roster_defensemen":roster.get("defensemen",[]),"candidates":candidate_logs(roster,read,team,freeze,g["start_utc"],season)}
             except (requests.RequestException,ValueError,KeyError) as e:
                 pair[side]={"roster_url":url,"candidates":[],"status":"unavailable"}
         games[gid]=pair
