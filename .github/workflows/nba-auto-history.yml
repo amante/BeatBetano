@@ -48,6 +48,12 @@ jobs:
               raise ValueError("Game date outside supported current NBA season")
           PY
           echo "HISTORY_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+      - name: Capture NBA pregame candidates immediately before historical processing
+        env:
+          GAME_DATE: ${{ inputs.game_date }}
+        run: |
+          python nba/current_feed.py --date "$GAME_DATE" --timestamp "$HISTORY_TIME" --output results/nba/initial_scoreboard.json
+          cat results/nba/initial_scoreboard.json | python -c 'import json,sys; x=json.load(sys.stdin); print("Initial pregame candidates:",len(x["future_fixtures"]))'
       - name: Build cleaned completed NBA historical ledger
         env:
           GAME_DATE: ${{ inputs.game_date }}
@@ -69,13 +75,22 @@ jobs:
         if: ${{ hashFiles('results/nba/player_game_history.json') != '' }}
         run: |
           python nba/player_history_coverage.py --history results/nba/history.json --sample results/nba/player_game_history.json --output results/nba/player_history_coverage.json
+      - name: Audit fixtures crossing tipoff during historical processing
+        run: |
+          python nba/pregame_time_window_audit.py --scoreboard results/nba/initial_scoreboard.json --output results/nba/pregame_time_window.json --summary results/nba/pregame_time_window.md
+          cat results/nba/pregame_time_window.md >> "$GITHUB_STEP_SUMMARY"
       - name: Generate three-model frozen pregame snapshot
         env:
           GAME_DATE: ${{ inputs.game_date }}
         run: |
           python nba/daily_pipeline.py --history results/nba/history.json --date "$GAME_DATE" --output results/nba/prospective/snapshot.json --allow-empty
+      - name: Report empty slate without treating it as a model failure
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') == '' }}
+        run: |
+          echo '## NBA pregame: no eligible games remain' >> "$GITHUB_STEP_SUMMARY"
+          echo 'No pretip snapshot was produced. Historical diagnostics are retained; downstream pregame analysis is intentionally skipped to prevent post-tip leakage.' >> "$GITHUB_STEP_SUMMARY"
       - name: Report historical rotation/minutes and unfilled efficiency fields
-        if: ${{ hashFiles('results/nba/prospective/snapshot.json', 'results/nba/player_game_history.json') != '' }}
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' && hashFiles('results/nba/player_game_history.json') != '' }}
         run: |
           python nba/rotation_efficiency_report.py --snapshot results/nba/prospective/snapshot.json --history results/nba/history.json --players results/nba/player_game_history.json --output results/nba/prospective/rotation_efficiency_report.json --summary results/nba/prospective/rotation_efficiency_report.md
           cat results/nba/prospective/rotation_efficiency_report.md >> "$GITHUB_STEP_SUMMARY"
@@ -85,7 +100,7 @@ jobs:
         run: |
           python nba/capture_team_boxscores.py --history results/nba/history.json --limit 80 --output results/nba/team_boxscores.json
       - name: Report confirmed lineup coverage and possession-driven matchup projections
-        if: ${{ hashFiles('results/nba/prospective/snapshot.json', 'results/nba/team_boxscores.json') != '' }}
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' && hashFiles('results/nba/team_boxscores.json') != '' }}
         run: |
           python nba/possession_intelligence.py --snapshot results/nba/prospective/snapshot.json --history results/nba/history.json --observations results/nba/team_boxscores.json --output results/nba/prospective/possession_intelligence.json --summary results/nba/prospective/possession_intelligence.md
           cat results/nba/prospective/possession_intelligence.md >> "$GITHUB_STEP_SUMMARY"
@@ -110,7 +125,7 @@ jobs:
           python nba/lineup_live_collector.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/lineup_cascade.json --summary results/nba/prospective/lineup_cascade.md --candidates results/nba/prospective/lineup_source_candidates.json
           cat results/nba/prospective/lineup_cascade.md >> "$GITHUB_STEP_SUMMARY"
       - name: Reconcile sourced NBA projected lineups against historical player identities
-        if: ${{ hashFiles('results/nba/prospective/lineup_cascade.json', 'results/nba/prospective/rotation_efficiency_report.json') != '' }}
+        if: ${{ hashFiles('results/nba/prospective/lineup_cascade.json') != '' && hashFiles('results/nba/prospective/rotation_efficiency_report.json') != '' }}
         run: |
           python nba/lineup_roster_reconciliation.py --snapshot results/nba/prospective/snapshot.json --rotation results/nba/prospective/rotation_efficiency_report.json --lineups results/nba/prospective/lineup_cascade.json --output results/nba/prospective/lineup_roster_reconciliation.json --summary results/nba/prospective/lineup_roster_reconciliation.md
           cat results/nba/prospective/lineup_roster_reconciliation.md >> "$GITHUB_STEP_SUMMARY"
@@ -233,6 +248,9 @@ jobs:
         with:
           name: nba-automatic-pregame-${{ github.run_id }}
           path: |
+            results/nba/initial_scoreboard.json
+            results/nba/pregame_time_window.json
+            results/nba/pregame_time_window.md
             results/nba/history_audit.json
             results/nba/feature_impact_audit.json
             results/nba/feature_impact_audit.md
