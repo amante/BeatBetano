@@ -59,12 +59,17 @@ def capture(slate,fetch):
   roster_url=f"{API}/roster/{team}/current"
   stats_url=f"{API}/club-stats/{team}/{season}/2"
   try:
-   roster=fetch(roster_url);stats=fetch(stats_url)
+   roster=fetch(roster_url)
+   try:
+    stats=fetch(stats_url)
+   except (requests.RequestException,ValueError,KeyError,TypeError):
+    stats_url=f"{API}/club-stats/{team}/now"
+    stats=fetch(stats_url)
    out=measure(roster,stats,team,slate["as_of_utc"])
    out["roster_source"]=roster_url;out["stats_source"]=stats_url
    return team,out
-  except (requests.RequestException,ValueError,KeyError,TypeError):
-   return team,{"team":team,"status":"source_unavailable","skaters":[],
+  except (requests.RequestException,ValueError,KeyError,TypeError) as exc:
+   return team,{"team":team,"status":"source_unavailable","error_type":type(exc).__name__,"error_detail":str(exc)[:250],"skaters":[],
                 "roster_source":roster_url,"stats_source":stats_url,
                 "crs":None,"unit_ratings":None,"confirmed_lineup":False}
  with ThreadPoolExecutor(max_workers=6) as pool:
@@ -91,10 +96,11 @@ def main():
  p=argparse.ArgumentParser()
  for name in ("slate","output","summary"):p.add_argument("--"+name,required=True)
  a=p.parse_args();slate=json.loads(Path(a.slate).read_text())
- s=requests.Session()
  def fetch(url):
-  r=s.get(url,timeout=25);r.raise_for_status();return r.json()
+  r=requests.get(url,timeout=25);r.raise_for_status();return r.json()
  out=capture(slate,fetch)
+ if out["teams"] and not any(record.get("skaters") for record in out["teams"].values()):
+  raise RuntimeError("Zero NHL skaters; refusing false success. "+str({k:(v["status"],v.get("error_detail")) for k,v in out["teams"].items()}))
  for filename,value in ((a.output,json.dumps(out,indent=2)),(a.summary,summary(out))):
   target=Path(filename);target.parent.mkdir(parents=True,exist_ok=True);target.write_text(value)
  print(json.dumps({"teams":len(out["teams"]),"with_skaters":sum(bool(r.get("skaters")) for r in out["teams"].values())}))
