@@ -52,7 +52,7 @@ def summary(report):
             row=game[side]
             statuses=", ".join(f"{k}: {v}" for k,v in sorted(row["capture_status_counts"].items())) or "none"
             lines.append(f'| {gid} | {row["team"]} | {row["total_rostered_candidates"]} | {len(row["goalie_candidates"])} | {statuses} | {row["rejected_stat_rows"]} |')
-    return "\\n".join(lines)+"\\n"
+    return "\n".join(lines)+"\n"
 
 def main():
     p=argparse.ArgumentParser()
