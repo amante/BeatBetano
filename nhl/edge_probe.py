@@ -6,26 +6,33 @@ from pathlib import Path
 import requests
 
 ROOT = "https://api-web.nhle.com/v1/edge"
+STATS = "https://api.nhle.com/stats/rest/en"
 ENDPOINTS = {
     "team_detail": "/team-detail/9/20252026/2",
     "skater_detail": "/skater-detail/8482116/20252026/2",
     "goalie_detail": "/goalie-detail/8476945/20252026/2",
+    "core_skater_summary": STATS + "/skater/summary?cayenneExp=seasonId=20252026&limit=2",
+    "core_goalie_summary": STATS + "/goalie/summary?cayenneExp=seasonId=20252026&limit=2",
+    "core_team_summary": STATS + "/team/summary?cayenneExp=seasonId=20252026&limit=2",
 }
 
 def run(fetch, pause=lambda: None):
     rows = []
     for name, path in ENDPOINTS.items():
         try:
-            r = fetch(ROOT + path)
+            url = path if path.startswith("https://") else ROOT + path
+            r = fetch(url)
             status = r.status_code
             result = {"endpoint": name, "http_status": status,
-                      "url_path": path, "json_ok": False, "top_level_keys": []}
+                      "url_path": url.split("?")[0], "json_ok": False, "top_level_keys": [], "records": 0}
             if status == 200:
                 try:
                     payload = r.json()
                     result["json_ok"] = isinstance(payload, dict) and bool(payload)
                     if isinstance(payload, dict):
                         result["top_level_keys"] = sorted(payload.keys())[:30]
+                        if isinstance(payload.get("data"),list):
+                            result["records"] = len(payload["data"])
                 except ValueError:
                     pass
             if status == 429:
@@ -36,11 +43,11 @@ def run(fetch, pause=lambda: None):
                          "url_path": path, "json_ok": False,
                          "error": type(e).__name__})
         pause()
-    return {"source": ROOT, "purpose": "non-calibrated availability check",
+    return {"source": "NHL Stats REST and NHL EDGE", "purpose": "non-calibrated availability check",
             "endpoint_results": rows, "usable": any(x["json_ok"] for x in rows)}
 
 def markdown(data):
-    lines = ["## NHL EDGE — direct endpoint check", "",
+    lines = ["## NHL Core Stats + EDGE — direct endpoint check", "",
              "Small, manual, rate-limited probe. No sports ratings or betting probabilities are produced.",
              "", "| Endpoint | HTTP | JSON | Response fields |",
              "|---|---:|---|---|"]
