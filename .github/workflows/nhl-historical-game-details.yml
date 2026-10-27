@@ -1,0 +1,74 @@
+name: NHL — Historical game details batch
+on:
+  workflow_dispatch:
+    inputs:
+      start_index:
+        description: "Index into sorted historical ledger (0-based)"
+        type: number
+        required: true
+        default: 0
+      batch_size:
+        description: "Games to request in this batch (up to 100)"
+        type: number
+        required: true
+        default: 50
+      prior_details_run:
+        description: "Optional previous successful details run ID to resume cached records"
+        type: string
+        required: false
+        default: ""
+permissions:
+  contents: read
+  actions: read
+jobs:
+  historical-details:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Tests
+        run: python -m unittest discover -s nhl/tests -v
+      - name: Download validated historical ledger (existing completed calibration)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 40604007375 --repo "${{ github.repository }}" --name nhl-walkforward-40604007375 --dir .historical
+          test -s .historical/walkforward_history.json
+      - name: Recover previous batch if specified
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRIOR_RUN: ${{ inputs.prior_details_run }}
+        run: |
+          mkdir -p results/nhl/game_details
+          if [ -n "$PRIOR_RUN" ]; then
+            gh run download "$PRIOR_RUN" --repo "${{ github.repository }}" --name "nhl-game-details-$PRIOR_RUN" --dir results/nhl/game_details
+          fi
+      - name: Collect dated NHL game detail batch
+        env:
+          START: ${{ inputs.start_index }}
+          COUNT: ${{ inputs.batch_size }}
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          rows=json.loads(Path(".historical/walkforward_history.json").read_text())
+          start=int(os.environ["START"]);count=int(os.environ["COUNT"])
+          if start<0 or not 1<=count<=100:raise SystemExit("Invalid batch")
+          selection=rows[start:start+count]
+          if not selection:raise SystemExit("No records in selected batch")
+          Path(".historical/selected.json").write_text(json.dumps(selection))
+          print("Selected historical games:",len(selection))
+          PY
+          python nhl/historical_game_collector.py --history .historical/selected.json --output-dir results/nhl/game_details --max-games 100 --delay 1.5
+          cat results/nhl/game_details/manifest.json >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: nhl-game-details-${{ github.run_id }}
+          path: results/nhl/game_details/
+          retention-days: 90
+          if-no-files-found: warn
