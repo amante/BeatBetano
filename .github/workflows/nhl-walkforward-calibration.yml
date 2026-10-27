@@ -23,5 +23,7 @@ jobs:
         if: always()
         with:
           name: nhl-walkforward-${{ github.run_id }}
-          path: results/nhl/walkforward_calibration.*
+          path: |
+            results/nhl/walkforward_calibration.*
+            results/nhl/historical_fetch_errors.json
           retention-days: 30
