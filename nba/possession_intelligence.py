@@ -123,6 +123,8 @@ def build(snapshot,history,observations,lineups=None):
    projected[team]={"possessions_projected":estimated,"matchup_points_per_possession":round(ppp,3) if ppp is not None else None,
    "projected_points":round(estimated*ppp,1) if estimated is not None and ppp is not None else None}
   output[str(future["game_id"])]={"teams":stats,"projections":projected,
+   "projected_combined_team_possessions":round(sum(projected[t]["possessions_projected"] for t in teams),1) if estimated is not None else None,
+   "projected_game_pace":estimated,
    "all_starters_confirmed":all(stats[t]["starting_five_status"]=="confirmed" for t in teams),
    "probability_adjustment_authorized":False}
  return {"games":output,"snapshot_sha256":snapshot["content_sha256"],"no_odds_input":True,
@@ -132,14 +134,15 @@ def markdown(report):
  out=["## NBA — Quintetos, eficiencia y posesiones","","**Historial observado y proyección exploratoria; no sustituyen titulares confirmados ni probabilidades validadas.**",""]
  for gid,g in report["games"].items():
   out.append("### "+gid)
-  out.append("| Equipo | Quinteto confirmado | ORtg | DRtg | Posesiones esperadas | PPP esperado | Puntos esperados | % posesiones anotadas |")
+  out.append("| Equipo | Quinteto confirmado | ORtg | DRtg | Posesiones del equipo | PPP esperado | Puntos esperados | % posesiones anotadas |")
   out.append("|---|---|---:|---:|---:|---:|---:|---:|")
   for team,stats in g["teams"].items():
    pred=g["projections"][team]
    fmt=lambda v:"—" if v is None else str(v)
    starters=", ".join(stats["confirmed_starters"]) if stats["confirmed_starters"] else "No verificado"
    out.append(f'| {team} | {starters} | {fmt(stats["offensive_rating"])} | {fmt(stats["defensive_rating"])} | {fmt(pred["possessions_projected"])} | {fmt(pred["matchup_points_per_possession"])} | {fmt(pred["projected_points"])} | — |')
- out+=["","Las tasas por posesión de anotación requieren secuencias play-by-play; no equivalen a puntos/posesión."]
+  out.append(f'\\n**Total de posesiones de ambos equipos:** {g["projected_combined_team_possessions"] if g["projected_combined_team_possessions"] is not None else "—"} · **Ritmo proyectado (pace):** {g["projected_game_pace"] if g["projected_game_pace"] is not None else "—"}')
+ out+=["","El pace representa aproximadamente las posesiones de cada equipo en 48 minutos; el total combinado suma las posesiones de ambos equipos. Por conservación de posesión, las cifras de ambos equipos suelen ser muy próximas.","Las tasas por posesión de anotación requieren secuencias play-by-play; no equivalen a puntos/posesión."]
  return "\n".join(out)+"\n"
 def main():
  p=argparse.ArgumentParser()
