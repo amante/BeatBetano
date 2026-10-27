@@ -14,6 +14,21 @@ def utc(x):
     if d.tzinfo is None:raise ValueError("UTC offset required")
     return d.astimezone(timezone.utc)
 
+def read_save_line(g):
+    """Read two possible official goalie game-log schemas without inventing saves."""
+    shots=g.get("shotsAgainst")
+    saves=g.get("saves")
+    against=g.get("goalsAgainst")
+    if type(shots) is not int or shots<0:
+        return None
+    if type(saves) is not int and type(against) is int and 0<=against<=shots:
+        saves=shots-against
+    if type(saves) is not int or not 0<=saves<=shots:
+        return None
+    if type(against) is int and shots-saves!=against:
+        return None
+    return shots,saves
+
 def candidate_logs(roster,fetch_log,team,freeze,tipoff,season):
     goalie_list=roster.get("goalies",[])
     if not isinstance(goalie_list,list):raise ValueError("No goalie roster list")
@@ -28,7 +43,7 @@ def candidate_logs(roster,fetch_log,team,freeze,tipoff,season):
             continue
         log=payload.get("gameLog",[])
         if not isinstance(log,list):continue
-        records=[]
+        records=[]; rejected=0
         for g in log:
             day=g.get("gameDate")
             if not isinstance(day,str):continue
@@ -36,9 +51,10 @@ def candidate_logs(roster,fetch_log,team,freeze,tipoff,season):
             except ValueError:continue
             if date>=utc(freeze) or date>=utc(tipoff):continue
             if g.get("gameType") not in (None,2):continue
-            saves=g.get("saves");shots=g.get("shotsAgainst")
-            if type(saves) is not int or type(shots) is not int or not 0<=saves<=shots:continue
-            records.append((date,shots,saves))
+            stat=read_save_line(g)
+            if stat is None:
+                rejected+=1;continue
+            records.append((date,*stat))
         records.sort(reverse=True)
         recent=records[:5]
         shots=sum(x[1] for x in recent);saves=sum(x[2] for x in recent)
@@ -47,7 +63,8 @@ def candidate_logs(roster,fetch_log,team,freeze,tipoff,season):
           "observed_at_utc":freeze,"starter_status":"unknown","official_confirmation":False,
           "shots_against":shots,"saves":saves,"sample_games":len(recent),
           "starts_last_7_days":starts7,"gsax":None,
-          "data_status":"recent_completed_games_only" if recent else "no_verified_game_logs"})
+          "data_status":"recent_completed_games_only" if recent else ("unrecognized_game_log_stats" if rejected else "no_verified_game_logs"),
+          "rejected_stat_rows":rejected})
     return out
 
 def collect(slate,session=None):
