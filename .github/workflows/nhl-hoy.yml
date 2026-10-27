@@ -40,6 +40,22 @@ jobs:
         env:
           GAME_DATE: ${{ inputs.game_date }}
         run: python nhl/nhl_hoy.py --date "$GAME_DATE" --output results/nhl/nhl_hoy.json
+      - name: Restore existing current-season NHL snapshot
+        id: snapshot
+        uses: actions/cache/restore@v4
+        with:
+          path: results/nhl/cache/current_snapshot.json
+          key: nhl-current-20262027-pregame-${{ github.run_id }}
+          restore-keys: |
+            nhl-current-20262027-
+      - name: Reuse cached season data for every pregame matchup
+        if: steps.snapshot.outputs.cache-hit != ''
+        run: |
+          python nhl/pregame_snapshot.py --slate results/nhl/nhl_hoy.json --snapshot results/nhl/cache/current_snapshot.json --output results/nhl/pregame_snapshot.json --summary results/nhl/pregame_snapshot.md
+          cat results/nhl/pregame_snapshot.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Report missing cached current-season evidence
+        if: steps.snapshot.outputs.cache-hit == ''
+        run: echo "NHL current-season snapshot not cached; run the incremental workflow first." >> "$GITHUB_STEP_SUMMARY"
       - name: Collect NHL goalie roster candidates and recent official game logs
         run: python nhl/goalie_feed.py --slate results/nhl/nhl_hoy.json --output results/nhl/goalie_candidates.json
       - name: Integrate goalie observations into pregame evidence
@@ -68,6 +84,8 @@ jobs:
           name: nhl-hoy-${{ github.run_id }}
           path: |
             results/nhl/nhl_hoy.json
+            results/nhl/pregame_snapshot.json
+            results/nhl/pregame_snapshot.md
             results/nhl/goalie_candidates.json
             results/nhl/goalie_observations.json
             results/nhl/goalie_coverage.md
