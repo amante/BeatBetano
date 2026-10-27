@@ -153,6 +153,9 @@ def main():
         diagnostics.write_text(json.dumps({"failed_weeks":errors,"recovered_games":len(games)},indent=2))
         raise SystemExit(f"Historical retrieval incomplete: {len(errors)} failed active-season weeks; first errors: {errors[:3]}. Refusing false validation.")
     if len(games)<1500:raise SystemExit(f"Insufficient completed games: {len(games)}. Refusing false validation.")
+    history_path=Path(a.output).with_name("walkforward_history.json")
+    history_path.parent.mkdir(parents=True,exist_ok=True)
+    history_path.write_text(json.dumps(games))
     result=calibrate(games,a.train_through,a.test_from)
     result["retrieved_games"]=len(games);result["historical_days_errors"]=errors
     dest=Path(a.output);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_text(json.dumps(result,indent=2))
