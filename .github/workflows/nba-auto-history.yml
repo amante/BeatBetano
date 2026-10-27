@@ -48,6 +48,12 @@ jobs:
               raise ValueError("Game date outside supported current NBA season")
           PY
           echo "HISTORY_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_ENV"
+      - name: Capture NBA pregame candidates immediately before historical processing
+        env:
+          GAME_DATE: ${{ inputs.game_date }}
+        run: |
+          python nba/current_feed.py --date "$GAME_DATE" --timestamp "$HISTORY_TIME" --output results/nba/initial_scoreboard.json
+          cat results/nba/initial_scoreboard.json | python -c 'import json,sys; x=json.load(sys.stdin); print("Initial pregame candidates:",len(x["future_fixtures"]))'
       - name: Build cleaned completed NBA historical ledger
         env:
           GAME_DATE: ${{ inputs.game_date }}
@@ -69,6 +75,10 @@ jobs:
         if: ${{ hashFiles('results/nba/player_game_history.json') != '' }}
         run: |
           python nba/player_history_coverage.py --history results/nba/history.json --sample results/nba/player_game_history.json --output results/nba/player_history_coverage.json
+      - name: Audit fixtures crossing tipoff during historical processing
+        run: |
+          python nba/pregame_time_window_audit.py --scoreboard results/nba/initial_scoreboard.json --output results/nba/pregame_time_window.json --summary results/nba/pregame_time_window.md
+          cat results/nba/pregame_time_window.md >> "$GITHUB_STEP_SUMMARY"
       - name: Generate three-model frozen pregame snapshot
         env:
           GAME_DATE: ${{ inputs.game_date }}
@@ -238,6 +248,9 @@ jobs:
         with:
           name: nba-automatic-pregame-${{ github.run_id }}
           path: |
+            results/nba/initial_scoreboard.json
+            results/nba/pregame_time_window.json
+            results/nba/pregame_time_window.md
             results/nba/history_audit.json
             results/nba/feature_impact_audit.json
             results/nba/feature_impact_audit.md
