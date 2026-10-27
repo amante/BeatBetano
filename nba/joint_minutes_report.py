@@ -71,9 +71,13 @@ def markdown(report):
  return "\n".join(rows)+"\n"
 def main():
  p=argparse.ArgumentParser()
- for a in ("snapshot","rotation","availability","output","summary"):p.add_argument("--"+a,required=True)
+ for a in ("snapshot","rotation","output","summary"):p.add_argument("--"+a,required=True)
+ p.add_argument("--availability")
  x=p.parse_args()
- report=build(*[json.loads(Path(getattr(x,key)).read_text()) for key in ("snapshot","rotation","availability")])
+ snap=json.loads(Path(x.snapshot).read_text())
+ rotation=json.loads(Path(x.rotation).read_text())
+ evidence=json.loads(Path(x.availability).read_text()) if x.availability else {"snapshot_sha256":snap["content_sha256"],"games":{}}
+ report=build(snap,rotation,evidence)
  for path,content in ((x.output,json.dumps(report,indent=2)),(x.summary,markdown(report))):
   f=Path(path);f.parent.mkdir(parents=True,exist_ok=True);f.write_text(content)
  print(json.dumps({"games":len(report["games"]),"allocated_teams":sum(r["allocations"] is not None for g in report["games"].values() for r in g["teams"].values())}))
