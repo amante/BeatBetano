@@ -29,6 +29,10 @@ jobs:
         run: |
           python nhl/current_delta.py --previous results/nhl/cache/current_snapshot.json --snapshot results/nhl/new_snapshot.json --delta results/nhl/current_delta.json --summary results/nhl/current_delta.md
           cat results/nhl/current_delta.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Build four NHL evidence pillars
+        run: |
+          python nhl/delta_pillars.py --input results/nhl/new_snapshot.json --output results/nhl/four_pillars_evidence.json --summary results/nhl/four_pillars_evidence.md
+          cat results/nhl/four_pillars_evidence.md >> "$GITHUB_STEP_SUMMARY"
       - name: Update snapshot cache
         run: |
           mkdir -p results/nhl/cache
@@ -45,4 +49,6 @@ jobs:
             results/nhl/new_snapshot.json
             results/nhl/current_delta.json
             results/nhl/current_delta.md
+            results/nhl/four_pillars_evidence.json
+            results/nhl/four_pillars_evidence.md
           retention-days: 30
