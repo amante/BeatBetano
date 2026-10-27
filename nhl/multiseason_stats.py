@@ -31,10 +31,15 @@ def extract(fetch,year,report,limit=100):
         if not batch:break
         for entry in batch:
             if not isinstance(entry,dict):raise ValueError("Invalid NHL row")
-            key=entry.get("playerId",entry.get("teamId",entry.get("id")))
-            if key is not None and key in seen:raise ValueError("Duplicate entity across pages")
-            if key is not None:seen.add(key)
-        records.extend(batch)
+            # NHL Stats can emit one row per player/team stint and an
+            # all-teams aggregate. Player ID alone is not a unique row key.
+            # Deduplicate only *identical* returned records while preserving
+            # distinct team stints and season totals.
+            signature=json.dumps(entry,sort_keys=True,separators=(",",":"))
+            if signature in seen:
+                continue
+            seen.add(signature)
+            records.append(entry)
         if len(records)>maximum:raise ValueError("Unexpectedly large API response")
         if len(batch)<limit:break
         page+=1
