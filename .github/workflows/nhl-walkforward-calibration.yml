@@ -1,0 +1,27 @@
+name: NHL — Historical ML walk-forward calibration
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m pip install requests
+      - name: Validate chronological model and leakage guards
+        run: python -m unittest discover -s nhl/tests -v
+      - name: Train on 2024-25 and evaluate 2025-26 onward
+        run: |
+          python nhl/walkforward_calibration.py --start 2024-10-01 --end 2026-10-26 --train-through 2025-06-30 --test-from 2025-10-01 --output results/nhl/walkforward_calibration.json --summary results/nhl/walkforward_calibration.md
+          cat results/nhl/walkforward_calibration.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: nhl-walkforward-${{ github.run_id }}
+          path: results/nhl/walkforward_calibration.*
+          retention-days: 30
