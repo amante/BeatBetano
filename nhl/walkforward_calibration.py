@@ -29,6 +29,12 @@ def fetch_season(fetch,start,end,pause=lambda:None):
     games_by_id={};errors=[]
     current=start
     while current<=end:
+        # NHL regular-season schedules have no games in July-September.
+        # Avoid querying absent calendar weeks (often HTTP 404), but
+        # never suppress failures for October-June.
+        if current.month in (7, 8, 9):
+            current+=timedelta(days=7)
+            continue
         anchor=current.isoformat()
         try:
             response=fetch("https://api-web.nhle.com/v1/schedule/"+anchor)
@@ -129,7 +135,11 @@ def main():
     p.add_argument("--output",required=True);p.add_argument("--summary",required=True)
     a=p.parse_args();session=requests.Session()
     games,errors=fetch_season(lambda url:session.get(url,timeout=20),date.fromisoformat(a.start),date.fromisoformat(a.end))
-    if len(errors)>0:raise SystemExit(f"Historical retrieval incomplete: {len(errors)} failed weeks. Refusing false validation.")
+    if errors:
+        diagnostics=Path(a.output).with_name("historical_fetch_errors.json")
+        diagnostics.parent.mkdir(parents=True,exist_ok=True)
+        diagnostics.write_text(json.dumps({"failed_weeks":errors,"recovered_games":len(games)},indent=2))
+        raise SystemExit(f"Historical retrieval incomplete: {len(errors)} failed active-season weeks; first errors: {errors[:3]}. Refusing false validation.")
     if len(games)<1500:raise SystemExit(f"Insufficient completed games: {len(games)}. Refusing false validation.")
     result=calibrate(games,a.train_through,a.test_from)
     result["retrieved_games"]=len(games);result["historical_days_errors"]=errors
