@@ -119,6 +119,12 @@ jobs:
         run: |
           python nba/lineup_roster_reconciliation.py --snapshot results/nba/prospective/snapshot.json --rotation results/nba/prospective/rotation_efficiency_report.json --lineups results/nba/prospective/lineup_cascade.json --output results/nba/prospective/lineup_roster_reconciliation.json --summary results/nba/prospective/lineup_roster_reconciliation.md
           cat results/nba/prospective/lineup_roster_reconciliation.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Resolve verified current NBA roster and status evidence
+        if: ${{ hashFiles('results/nba/prospective/lineup_cascade.json') != '' }}
+        run: |
+          python nba/active_roster_resolver.py --snapshot results/nba/prospective/snapshot.json --roster results/nba/prospective/current_roster_feed.json --statuses results/nba/prospective/current_status_feed.json --lineups results/nba/prospective/lineup_cascade.json --output results/nba/prospective/active_roster_resolved.json --summary results/nba/prospective/active_roster_resolved.md
+          cat results/nba/prospective/active_roster_resolved.md >> "$GITHUB_STEP_SUMMARY"
+          python nba/joint_minutes_report.py --snapshot results/nba/prospective/snapshot.json --rotation results/nba/prospective/rotation_efficiency_report.json --availability results/nba/prospective/active_roster_resolved.json --output results/nba/prospective/joint_minutes.json --summary results/nba/prospective/joint_minutes.md
       - name: Collect independently sourced NBA sporting observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         id: sporting
@@ -245,6 +251,8 @@ jobs:
             results/nba/prospective/lineup_cascade.md
             results/nba/prospective/lineup_roster_reconciliation.json
             results/nba/prospective/lineup_roster_reconciliation.md
+            results/nba/prospective/active_roster_resolved.json
+            results/nba/prospective/active_roster_resolved.md
             results/nba/prospective/lineup_source_candidates.json
             results/nba/prospective/offense_defense_matchups.json
             results/nba/prospective/offense_defense_matchups.md
