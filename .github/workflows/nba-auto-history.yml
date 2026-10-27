@@ -123,6 +123,10 @@ jobs:
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/espn_current_roster_feed.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/current_roster_feed.json
+      - name: Evaluate bounded NBA injury availability scenarios
+        if: ${{ hashFiles('results/nba/prospective/active_roster_resolved.json') != '' }}
+        run: |
+          python nba/availability_scenarios.py --snapshot results/nba/prospective/snapshot.json --rotation results/nba/prospective/rotation_efficiency_report.json --availability results/nba/prospective/active_roster_resolved.json --output results/nba/prospective/availability_scenarios.json
       - name: Collect independently sourced NBA sporting observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         id: sporting
@@ -263,6 +267,7 @@ jobs:
             results/nba/prospective/current_status_feed.json
             results/nba/prospective/active_roster_resolved.json
             results/nba/prospective/active_roster_resolved.md
+            results/nba/prospective/availability_scenarios.json
             results/nba/prospective/lineup_source_candidates.json
             results/nba/prospective/offense_defense_matchups.json
             results/nba/prospective/offense_defense_matchups.md

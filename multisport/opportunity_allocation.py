@@ -3,7 +3,7 @@
 Allocations are joint and conditional on availability, never independent raw
 player averages. No betting inputs and no production probability adjustment.
 """
-from math import isfinite
+from math import isfinite,floor
 
 SPORTS={
  "nba":{"minutes":240.0},
@@ -52,8 +52,27 @@ def allocate(sport,unit,players,total=None):
   if consumed<1e-9:break
   remaining-=consumed;active=next_active
  if remaining>1e-5:return {"status":"infeasible","reason":"unallocated_budget","allocations":None}
+ # Quantize jointly: independent round(v, 5) may lose budget units.
+ # Allocate integer 1e-5 units by largest remainder, respecting every cap.
+ scale=100000
+ target_units=round(float(total)*scale)
+ if abs(target_units/scale-float(total))>1e-9:
+  raise ValueError("Budget exceeds supported five-decimal precision")
+ units={pid:floor(v*scale+1e-9) for pid,v in alloc.items()}
+ caps={pid:floor(cap*scale+1e-9) for pid,_,cap in eligible}
+ missing=target_units-sum(units.values())
+ ordered=sorted(alloc,key=lambda pid:(-(alloc[pid]*scale-units[pid]),pid))
+ for pid in ordered:
+  if missing<=0:break
+  room=caps[pid]-units[pid]
+  if room>0:
+   add=min(room,missing)
+   units[pid]+=add
+   missing-=add
+ if missing!=0:raise ValueError("Rounding cannot satisfy participation caps")
+ precise={pid:value/scale for pid,value in units.items()}
  return {"status":"provisional_joint_allocation","sport":sport,"unit":unit,"budget":total,
-  "allocations":{pid:round(v,5) for pid,v in alloc.items()}|{pid:0.0 for pid in out},
-  "residual":round(total-sum(alloc.values()),8),
+  "allocations":precise|{pid:0.0 for pid in out},
+  "residual":round(total-sum(precise.values()),8),
   "lineups_optimized":False,"calibrated":False,
   "note":"Shares respect caps and availability; role/lineup feasibility and measured absent-player substitutions require sport adapter."}
