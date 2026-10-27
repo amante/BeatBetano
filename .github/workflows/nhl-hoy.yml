@@ -50,6 +50,10 @@ jobs:
         run: python nhl/frozen_ledger.py --slate results/nhl/nhl_hoy.json --goalies results/nhl/goalie_observations.json --output results/nhl/frozen_pregame.json
       - name: Render NHL predictions directly in Actions Summary and HTML
         run: python webresults/render.py --input results/nhl/nhl_hoy.json --html results/nhl/index.html --summary results/nhl/summary.md
+      - name: Audit all ten NHL modules and display coverage in Actions Summary
+        run: |
+          python nhl/module_audit.py --slate results/nhl/nhl_hoy.json --goalies results/nhl/goalie_observations.json --output results/nhl/module_audit.json --summary results/nhl/module_audit.md
+          cat results/nhl/module_audit.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -62,4 +66,6 @@ jobs:
             results/nhl/frozen_pregame.json
             results/nhl/index.html
             results/nhl/summary.md
+            results/nhl/module_audit.json
+            results/nhl/module_audit.md
           retention-days: 30
