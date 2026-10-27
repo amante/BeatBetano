@@ -3,7 +3,7 @@
 All features are constructed using games strictly earlier than the target.
 No bookmaker data. No retrospective full-season totals.
 """
-import argparse,json,math
+import argparse,json,math,time
 from collections import defaultdict
 from datetime import date,timedelta
 from pathlib import Path
@@ -22,6 +22,18 @@ def parse_games(payload,day):
         rows.append({"date":day,"id":str(g["id"]),"home":h["abbrev"],"away":a["abbrev"],
                      "hg":h["score"],"ag":a["score"]})
     return rows
+
+def respectful_fetch(session,url,sleep=time.sleep):
+    for attempt in range(5):
+        response=session.get(url,timeout=25)
+        if response.status_code!=429:
+            return response
+        header=response.headers.get("Retry-After","")
+        try: delay=max(5,min(90,float(header)))
+        except (ValueError,TypeError): delay=min(90,10*(2**attempt))
+        if attempt==4:return response
+        sleep(delay)
+    raise RuntimeError("unreachable")
 
 def fetch_season(fetch,start,end,pause=lambda:None):
     # NHL schedule API returns an entire schedule week; fewer requests than
@@ -134,7 +146,7 @@ def main():
     p.add_argument("--test-from",default="2025-10-01")
     p.add_argument("--output",required=True);p.add_argument("--summary",required=True)
     a=p.parse_args();session=requests.Session()
-    games,errors=fetch_season(lambda url:session.get(url,timeout=20),date.fromisoformat(a.start),date.fromisoformat(a.end))
+    games,errors=fetch_season(lambda url:respectful_fetch(session,url),date.fromisoformat(a.start),date.fromisoformat(a.end),pause=lambda:time.sleep(2.5))
     if errors:
         diagnostics=Path(a.output).with_name("historical_fetch_errors.json")
         diagnostics.parent.mkdir(parents=True,exist_ok=True)

@@ -1,7 +1,7 @@
 import sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from walkforward_calibration import parse_games,fetch_season,predict,scores,calibrate
+from walkforward_calibration import parse_games,fetch_season,predict,scores,calibrate,respectful_fetch
 from datetime import date
 class Response:
  def raise_for_status(self):pass
