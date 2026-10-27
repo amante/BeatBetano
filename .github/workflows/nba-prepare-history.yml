@@ -1,0 +1,46 @@
+name: NBA prepare historical evidence
+on:
+  workflow_dispatch:
+    inputs:
+      game_date:
+        description: 'Target NBA scoreboard date YYYY-MM-DD'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m pip install requests
+      - name: Build historical evidence in advance
+        env:
+          GAME_DATE: ${{ inputs.game_date }}
+        run: |
+          python - <<'PY'
+          from datetime import date
+          import os
+          day=date.fromisoformat(os.environ["GAME_DATE"])
+          if day.year not in (2026,2027):
+              raise ValueError("Unsupported season date")
+          PY
+          python nba/auto_history.py --date "$GAME_DATE" --timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --output results/nba/history.json --workdir results/nba/raw
+      - name: Capture archived individual and team observations
+        run: |
+          python nba/player_game_history.py --history results/nba/history.json --limit 200 --output results/nba/player_game_history.json
+          python nba/capture_team_boxscores.py --history results/nba/history.json --limit 80 --output results/nba/team_boxscores.json
+      - uses: actions/upload-artifact@v6
+        with:
+          name: nba-prepared-${{ inputs.game_date }}
+          path: |
+            results/nba/history.json
+            results/nba/history_audit.json
+            results/nba/player_game_history.json
+            results/nba/team_boxscores.json
+          if-no-files-found: error
+          retention-days: 30
