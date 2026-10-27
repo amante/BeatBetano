@@ -119,6 +119,10 @@ jobs:
         run: |
           python nba/lineup_roster_reconciliation.py --snapshot results/nba/prospective/snapshot.json --rotation results/nba/prospective/rotation_efficiency_report.json --lineups results/nba/prospective/lineup_cascade.json --output results/nba/prospective/lineup_roster_reconciliation.json --summary results/nba/prospective/lineup_roster_reconciliation.md
           cat results/nba/prospective/lineup_roster_reconciliation.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Fetch current ESPN NBA team rosters (membership, not game availability)
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
+        run: |
+          python nba/espn_current_roster_feed.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/current_roster_feed.json
       - name: Resolve verified current NBA roster and status evidence
         if: ${{ hashFiles('results/nba/prospective/lineup_cascade.json') != '' }}
         run: |
@@ -251,6 +255,7 @@ jobs:
             results/nba/prospective/lineup_cascade.md
             results/nba/prospective/lineup_roster_reconciliation.json
             results/nba/prospective/lineup_roster_reconciliation.md
+            results/nba/prospective/current_roster_feed.json
             results/nba/prospective/active_roster_resolved.json
             results/nba/prospective/active_roster_resolved.md
             results/nba/prospective/lineup_source_candidates.json
