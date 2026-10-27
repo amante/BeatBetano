@@ -94,8 +94,8 @@ def scores(rows,params,min_prior_games=150):
 def calibrate(rows,train_until,test_start):
     train=[r for r in rows if r["date"]<=train_until]
     test=[r for r in rows if r["date"]>=test_start]
-    if len(train)<150 or len(test)<30:raise ValueError("Not enough separated games")
     if train_until>=test_start:raise ValueError("Train and test windows overlap")
+    if len(train)<150 or len(test)<30:raise ValueError("Not enough separated games")
     candidates=[(p,h,s) for p in (2.8,3.0,3.2) for h in (0.0,0.08,0.16) for s in (5,10,20)]
     best=None
     for parameters in candidates:
