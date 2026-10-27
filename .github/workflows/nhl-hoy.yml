@@ -43,7 +43,8 @@ jobs:
       - name: Collect NHL goalie roster candidates and recent official game logs
         run: python nhl/goalie_feed.py --slate results/nhl/nhl_hoy.json --output results/nhl/goalie_candidates.json
       - name: Integrate goalie observations into pregame evidence
-        run: python nhl/goalie_observations.py --slate results/nhl/nhl_hoy.json --candidates results/nhl/goalie_candidates.json --output results/nhl/goalie_observations.json --summary results/nhl/goalie_coverage.md
+        run: |
+          python nhl/goalie_observations.py --slate results/nhl/nhl_hoy.json --candidates results/nhl/goalie_candidates.json --output results/nhl/goalie_observations.json --summary results/nhl/goalie_coverage.md
           cat results/nhl/goalie_coverage.md >> "$GITHUB_STEP_SUMMARY"
       - name: Freeze NHL pregame forecast and goalie evidence for future backtesting
         run: python nhl/frozen_ledger.py --slate results/nhl/nhl_hoy.json --goalies results/nhl/goalie_observations.json --output results/nhl/frozen_pregame.json
