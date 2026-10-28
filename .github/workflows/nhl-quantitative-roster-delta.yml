@@ -1,0 +1,20 @@
+name: NHL — Quantitative roster proxy and availability delta
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/quantitative_roster_delta.py
+      - nhl/tests/test_quantitative_roster_delta.py
+      - .github/workflows/nhl-quantitative-roster-delta.yml
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Test quantitative roster proxy and delta
+        run: python -m unittest nhl.tests.test_quantitative_roster_delta nhl.tests.test_roster_aware_units -v
