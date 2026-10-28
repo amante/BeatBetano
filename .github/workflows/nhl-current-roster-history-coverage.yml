@@ -1,0 +1,63 @@
+name: NHL — Current roster versus player history coverage
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/current_roster_history_coverage.py
+      - nhl/tests/test_current_roster_history_coverage.py
+      - .github/workflows/nhl-current-roster-history-coverage.yml
+permissions:
+  contents: read
+jobs:
+  coverage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Test identity mapping and no same-day leakage
+        run: python -m unittest nhl.tests.test_current_roster_history_coverage -v
+      - name: Download immutable original archive
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .source/archive results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl-complete-2811-source.tar.gz \
+            --pattern archive_sha256.json --dir .source
+          tar -xzf .source/nhl-complete-2811-source.tar.gz -C .source/archive
+      - name: Verify historic game hashes
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          hashes=json.loads(Path(".source/archive_sha256.json").read_text())
+          if len(hashes)!=2811:raise SystemExit("Unexpected source count")
+          for name,digest in hashes.items():
+            if Path(name).name!=name:raise SystemExit("Unsafe archive path")
+            file=Path(".source/archive")/name
+            if not file.is_file() or hashlib.sha256(file.read_bytes()).hexdigest()!=digest:
+              raise SystemExit("Invalid source hash: "+name)
+          PY
+      - name: Fetch and time-stamp 32 roster candidate pools
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python nhl/official_roster_snapshot.py \
+            --all-teams --out results/nhl/current_rosters_32.json
+      - name: Join player IDs and compute club-level coverage
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python nhl/current_roster_history_coverage.py \
+            --rosters results/nhl/current_rosters_32.json \
+            --archive .source/archive \
+            --output results/nhl/current_roster_history_coverage.json
+      - uses: actions/upload-artifact@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: nhl-roster-history-coverage-${{ github.run_id }}
+          path: results/nhl/*.json
+          retention-days: 90
