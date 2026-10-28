@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark"><title>BeatBetano | Sports Intelligence</title>
+<link rel="stylesheet" href="./styles.css"></head>
+<body>
+<div class="shell">
+<aside class="sidebar" aria-label="Navegación principal">
+  <a class="brand" href="./index.html"><span class="brand-mark">B</span><span><strong>BEATBETANO</strong><small>SPORTS INTELLIGENCE</small></span></a>
+  <div class="nav-label">WORKSPACE</div>
+  <button class="nav active" type="button" data-nav="overview"><span>◫</span> Visión general</button>
+  <button class="nav" type="button" data-nav="games"><span>▦</span> Partidos y modelos</button>
+  <button class="nav" type="button" data-nav="calibration"><span>◷</span> Calibración</button>
+  <div class="nav-label second">DEPORTES</div>
+  <div id="sport-nav"></div>
+  <div class="aside-bottom"><span class="signal"></span><span>Modo investigación<small>Solo evidencia verificada</small></span></div>
+</aside>
+<div class="workspace">
+<header class="topbar"><button type="button" id="menu" class="mobile-menu" aria-label="Abrir menú">☰</button><span class="breadcrumb">PLATAFORMA <span>/</span> <b id="crumb">VISIÓN GENERAL</b></span><div class="top-actions"><span class="pill">SIN CUOTAS</span><label class="upload" for="file-input">↥ Importar reporte JSON</label><input id="file-input" type="file" accept=".json,application/json" hidden></div></header>
+<main>
+<section class="heading"><div><div class="eyebrow">SPORTS ANALYTICS / 2026–27</div><h1 id="page-title">Centro de inteligencia deportiva<span class="dot">.</span></h1><p id="page-desc">Cinco disciplinas, una arquitectura de evidencia. Sin pronósticos inventados.</p></div><span class="date" id="last-update">Sin datos importados</span></section>
+<section class="hero"><div><div class="eyebrow lime">MODELOS, EVIDENCIA Y DECISIONES</div><h2>Predicciones con trazabilidad.<br><em>Confianza basada en datos.</em></h2><p>Explora la cobertura de modelos, revisa probabilidades experimentales e identifica lo que aún requiere validación.</p><button id="hero-import" class="primary" type="button">Importar evidencia <span>↗</span></button></div><div class="hero-graphic" aria-hidden="true"><div class="orbit orbit-1"></div><div class="orbit orbit-2"></div><div class="orbit orbit-3"></div><span class="center-mark">B<span>•</span></span><span class="graphic-label">5 SPORTS<br>1 STANDARD</span></div></section>
+<section class="metrics" aria-label="Estado de datos"><article class="metric"><span>DEPORTES CONFIGURADOS</span><strong>05</strong><small>NBA · NFL · NHL · Fútbol · Tenis</small></article><article class="metric"><span>EVENTOS IMPORTADOS</span><strong id="metric-events">00</strong><small>De fuentes locales cargadas</small></article><article class="metric"><span>PROBABILIDADES VALIDADAS</span><strong id="metric-validated">00</strong><small>Sin promoción automática</small></article><article class="metric"><span>ESTADO DE EVIDENCIA</span><strong id="metric-state" class="metric-word">PENDIENTE</strong><small id="metric-state-help">Importa un reporte para comenzar</small></article></section>
+<section class="content-grid"><div class="panel main-panel"><div class="section-header"><div><div class="eyebrow">EXPLORADOR</div><h3 id="list-title">Partidos y cobertura</h3></div><div class="filters"><label for="sport-filter" class="sr-only">Deporte</label><select id="sport-filter"><option value="all">Todos los deportes</option><option value="nba">NBA</option><option value="nfl">NFL</option><option value="nhl">NHL</option><option value="soccer">Fútbol</option><option value="tennis">Tenis</option></select><label for="search" class="sr-only">Buscar equipos</label><input id="search" placeholder="Buscar equipo…" type="search"></div></div><div class="table-wrap"><table><thead><tr><th>PARTIDO</th><th>DEPORTE</th><th>MODELO</th><th>PROB. FINAL</th><th>ESTADO</th></tr></thead><tbody id="rows"><tr><td colspan="5" class="empty">No hay reportes cargados. Importa un JSON para ver partidos.</td></tr></tbody></table></div><div class="table-footer"><span id="row-count">0 eventos</span><span>Los datos no se envían a ningún servidor</span></div></div>
+<div class="side-stack"><section class="panel"><div class="eyebrow">ESTADO DE MOTORES</div><h3>Las cinco disciplinas</h3><div id="sports-list"></div></section><section class="panel notice"><span class="notice-icon">◇</span><h3>Integridad primero.</h3><p>El frontend nunca transforma una proyección experimental en una probabilidad oficial. Los campos ausentes permanecen como «Sin validar».</p><span>POINT-IN-TIME · NO ODDS · AUDITABLE</span></section></div></section>
+<section id="messages" class="messages" role="status" aria-live="polite"></section>
+</main><footer>BEATBETANO SPORTS INTELLIGENCE <span>RESEARCH INTERFACE · NO BETTING ADVICE</span></footer></div></div>
+<script src="./app.js" defer></script></body></html>
