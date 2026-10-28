@@ -36,9 +36,9 @@ jobs:
           from pathlib import Path
           base=Path(".nhl_source/full_archive")
           digests=json.loads(Path(".nhl_source/archive_sha256.json").read_text())
-          if len(digests)!=2811:raise SystemExit("Source checksum manifest must have 2811 games")
+          games=[name for name in digests if name!="manifest.json"]
+          if len(games)!=2811:raise SystemExit("Source checksum manifest must have 2811 games")
           for filename,digest in digests.items():
-            if filename== "manifest.json":continue
             target=base/filename
             if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest()!=digest:
               raise SystemExit("Invalid source digest: "+filename)
