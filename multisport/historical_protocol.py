@@ -4,7 +4,7 @@ Stages: raw collection -> canonicalization -> outcome completeness ->
 immutable provenance -> point-in-time feature readiness. Never equate
 completed-game observations with pregame information or model validation.
 """
-import argparse,hashlib,json
+import argparse,hashlib,json,math
 from collections import Counter
 from datetime import datetime,timezone
 from pathlib import Path
@@ -31,6 +31,7 @@ def canonical(records,sport):
         home_score=r.get("home_goals",r.get("home_points",r.get("hg",r.get("home_score",final.get("home_goals")))))
         away_score=r.get("away_goals",r.get("away_points",r.get("ag",r.get("away_score",final.get("away_goals")))))
         if home_score is None or away_score is None:raise ValueError("Missing finished scores")
+        if not (math.isfinite(float(home_score)) and math.isfinite(float(away_score))):raise ValueError("Non-finite score")
         if float(home_score)<0 or float(away_score)<0:raise ValueError("Negative result")
         out.append({"sport":sport,"event_id":identity,"date_or_start":str(when),
                     "home":str(home),"away":str(away),
@@ -48,7 +49,8 @@ def audit(records,sport,expected=None,source_ref=None):
               "expected_count":expected,"coverage_complete":expected is not None and len(rows)==expected,
               "sha256":hashlib.sha256(data).hexdigest(),"source_ref":source_ref,
               "years":dict(sorted(seasons.items())),"duplicate_count":0,
-              "postgame_outcomes_verified":True,
+              "postgame_outcome_schema_validated":True,
+              "independent_source_reconciliation_verified":False,
               "point_in_time_pregame_features_verified":False,
               "calibration_completed":False,"official_model_promoted":False}
     return rows,manifest
