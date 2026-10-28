@@ -20,12 +20,13 @@ def labels(game):
     if hg==ag:raise ValueError("NHL completed game cannot finish level")
     raw=game.get("goal_events")
     if not isinstance(raw,list) or not raw:raise ValueError("Missing goal PBP")
-    ordered=sorted(raw,key=lambda e:(int(e["period"]),seconds(e["time_in_period"]),int(e["event_id"])))
+    ordered=sorted(enumerate(raw),key=lambda pair:(int(pair[1]["period"]),seconds(pair[1]["time_in_period"]),pair[0]))
     seen=set();h=a=0;reg_h=reg_a=0
     h3=a3=False;first=None;first_event=None
     regulation=0;shootout_goals=0
-    for event in ordered:
-        eid=str(event["event_id"])
+    for ordinal,event in ordered:
+        raw_id=event.get("event_id")
+        eid=str(raw_id) if raw_id is not None else "goal-ordinal-"+str(ordinal)
         if eid in seen:raise ValueError("Duplicate goal event")
         seen.add(eid)
         period=int(event["period"]);kind=str(event.get("period_type","")).upper()
