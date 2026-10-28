@@ -17,6 +17,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
+      - run: python -m pip install requests
       - run: python -m unittest nhl.tests.test_schedule_context_ablations -v
       - name: Download official checked target labels
         if: github.event_name == 'workflow_dispatch'
