@@ -1,0 +1,19 @@
+name: NHL — Expected lineup and availability audit
+on:
+  pull_request:
+    paths:
+      - nhl/expected_lineup_availability.py
+      - nhl/tests/test_expected_lineup_availability.py
+      - .github/workflows/nhl-expected-lineup-availability.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_expected_lineup_availability nhl.tests.test_individual_roster_indices nhl.tests.test_roster_source_adapter -v
