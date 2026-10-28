@@ -101,7 +101,11 @@ def derive(archive,expected=2811):
                     h[count]+=1
                     for metric in h[name]:
                         h[name][metric]+=v[metric]
-    if not counts["home_prior_goalie_save_pct"] and not counts["away_prior_goalie_save_pct"]:\n        raise ValueError("No prior goalie save metrics parsed: investigate historical boxscore schema")\n    if not counts["home_prior_skater_goals_per_observed_game"] and not counts["away_prior_skater_goals_per_observed_game"]:\n        raise ValueError("No prior skater metrics parsed: investigate historical boxscore schema")\n    return result,{"games":len(result),"team_sides":len(result)*2,
+    if not counts["home_prior_goalie_save_pct"] and not counts["away_prior_goalie_save_pct"]:
+        raise ValueError("No prior goalie save metrics parsed: investigate historical boxscore schema")
+    if not counts["home_prior_skater_goals_per_observed_game"] and not counts["away_prior_skater_goals_per_observed_game"]:
+        raise ValueError("No prior skater metrics parsed: investigate historical boxscore schema")
+    return result,{"games":len(result),"team_sides":len(result)*2,
                    "non_null_feature_counts":dict(counts),
                    "same_game_starters_verified":0,"same_game_rosters_verified":0,
                    "odds_used":False,"model_promotion_authorized":False,
