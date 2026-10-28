@@ -9,6 +9,7 @@ class CoverageTests(unittest.TestCase):
     g={"game_id":gid,"date":day,"home":"TOR","away":"BOS",
       "boxscore":{"player_by_game_stats":{"homeTeam":{"forwards":[{"playerId":101,"goals":1,"sog":3,"toi":"12:00"}]}}}}
     (Path(d)/(gid+".json")).write_text(json.dumps(g))
+   (Path(d)/"manifest.json").write_text(json.dumps({"metadata":"archive manifest"}))
    roster=[]
    for i,t in enumerate(TEAMS):
     roster.append({"team":t,"source_kind":"official_current_team_roster_not_match_lineup",
