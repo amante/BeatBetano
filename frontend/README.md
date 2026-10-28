@@ -65,3 +65,21 @@ authorization-enforcing backend before enabling real login.
 The daily fixture updater commits publicly accessible JSON snapshots, not
 private model training datasets. Empty historical prediction counters indicate
 missing verified, settled predictions, not zero predictive accuracy.
+
+## Sport isolation and simulation UX
+
+A sport card opens `dashboard.html?sport=nba|nfl|nhl|soccer|tennis`.
+The page is read-only and displays only the chosen sport, including cumulative
+performance, yesterday's results and today's fixtures. Soccer fixtures retain
+country/league grouping. No user upload controls are present.
+
+Simulation requires an explicit **all upcoming games** or **selected upcoming
+games** choice. The client sends a POST with `sport`, `date`, `scope` and
+`event_ids` only to an optional same-origin HTTPS endpoint specified by
+`frontend/data/runtime-config.json` as `simulation_endpoint`. That endpoint
+must implement authentication, authorization, source collection, time-frozen
+prediction and job execution. GitHub Pages is static and does **not** provide
+that API. If no backend is configured, the button explicitly reports that no
+simulation was executed; it never fabricates a result or calls a public
+unauthenticated GitHub action. Public pages cannot protect restricted sports
+models or private source data.
