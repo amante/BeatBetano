@@ -19,7 +19,7 @@ def normalized(s):
 def resolve(capture,rosters,fixture):
  if not fixture.get("game_id") or not fixture.get("scheduled_start") or not fixture.get("teams"):
   raise ValueError("Fixture with start, game ID and two teams required")
- if len(fixture["teams"])!=2 or len(set(fixture["teams"]))!=2:raise ValueError("Invalid fixture teams")
+ if len(fixture["teams"])!=2 or len({x["code"] for x in fixture["teams"]})!=2:raise ValueError("Invalid fixture teams")
  if not fixture.get("publication_date_verified") or not fixture.get("fixture_mapping_verified"):
   raise ValueError("Editorial publication date and fixture must be independently verified")
  captured=timepoint(capture["retrieved_at"])
@@ -44,7 +44,7 @@ def resolve(capture,rosters,fixture):
   # Only clear full-name triplets are parsed as line combinations. Do not
   # treat arbitrary prose or standalone goalie lines as confirmed positions.
   for line in block["lines"]:
-   parts=[x.strip() for x in re.split(r"\\s+--\\s+|\\s+[–—]\\s+",line)]
+   parts=[x.strip() for x in re.split(r"\s+--\s+|\s+[–—]\s+",line)]
    if len(parts) not in (2,3):continue
    group="forward" if len(parts)==3 else "defense"
    for name in parts:
