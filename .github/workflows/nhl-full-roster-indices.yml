@@ -1,0 +1,32 @@
+name: NHL — Full roster coverage and player indices
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/official_roster_snapshot.py
+      - nhl/individual_roster_indices.py
+      - nhl/tests/test_individual_roster_indices.py
+      - .github/workflows/nhl-full-roster-indices.yml
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_individual_roster_indices nhl.tests.test_official_roster_goalie_toi nhl.tests.test_roster_source_adapter -v
+      - name: Capture all 32 official current roster candidate pools
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          mkdir -p results/nhl
+          python nhl/official_roster_snapshot.py --all-teams --out results/nhl/official_current_rosters_32.json
+      - uses: actions/upload-artifact@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: nhl-current-rosters-32-${{ github.run_id }}
+          path: results/nhl/official_current_rosters_32.json
+          retention-days: 30
