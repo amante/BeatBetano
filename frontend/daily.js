@@ -1,106 +1,117 @@
 "use strict";
 const $=id=>document.getElementById(id);
-const SPORT={nba:"NBA",nfl:"NFL",nhl:"NHL",tennis:"Tenis",soccer:"Fútbol"};
-let scoreboard=null,ledger=[];
-function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
-function chileDay(date){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(date);}
-function yesterday(day){const d=new Date(day+"T12:00:00Z");d.setUTCDate(d.getUTCDate()-1);return d.toISOString().slice(0,10);}
-function validScore(x){if(x===null||x===undefined||String(x).trim()==="")return null;const n=Number(x);return Number.isFinite(n)?n:null;}
-function outcome(game){
- if(!game.completed)return null;
- const h=validScore(game.home_score),a=validScore(game.away_score);
- if(h===null||a===null)return null;
- return h>a?"home":a>h?"away":"draw";
+const SPORTS={nba:"NBA",nfl:"NFL",nhl:"NHL",soccer:"Fútbol",tennis:"Tenis"};
+const qs=new URLSearchParams(location.search),sport=qs.get("sport");
+if(!Object.hasOwn(SPORTS,sport)){location.replace("./index.html");throw Error("Seleccione una disciplina desde la portada");}
+const title=SPORTS[sport];
+const localDay=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+const previousDay=d=>{const x=new Date(d+"T12:00:00Z");x.setUTCDate(x.getUTCDate()-1);return x.toISOString().slice(0,10);};
+const dayOf=utc=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(utc));
+const make=(tag,content,cls)=>{const el=document.createElement(tag);if(content!==undefined)el.textContent=content;if(cls)el.className=cls;return el;};
+let snapshot=null,history=[],predictions=[],runtime={};
+function isGame(g){return g&&g.sport===sport&&g.id!=null&&g.start_utc&&g.home&&g.away;}
+function result(g){if(!g.completed)return null;const a=Number(g.away_score),h=Number(g.home_score);if(g.home_score==null||g.away_score==null||!Number.isFinite(a)||!Number.isFinite(h))return null;return h>a?"home":h<a?"away":"draw";}
+function checkPick(p,g){
+ return String(p.game_id??p.event_id)===String(g.id)&&p.sport===g.sport&&p.market==="winner"&&["home","away","draw"].includes(p.pick)&&
+ p.odds_used_in_model===false&&p.point_in_time_sources_verified===true&&
+ Boolean(p.model_version)&&Number.isFinite(Date.parse(p.prediction_as_of_utc))&&
+ Date.parse(p.prediction_as_of_utc)<Date.parse(g.start_utc);
 }
-function validatedPick(p,match){
- const gameId=String(p.event_id??p.game_id??"");
- const sport=String(p.sport||"");
- const asOf=Date.parse(p.prediction_as_of_utc||"");
- const start=Date.parse(match.start_utc||"");
- return gameId===String(match.id)&&sport===match.sport&&Number.isFinite(asOf)&&Number.isFinite(start)
-   &&asOf<start&&p.odds_used_in_model===false&&p.point_in_time_sources_verified===true
-   &&typeof p.model_version==="string"&&p.model_version.length>0
-   &&["home","away","draw"].includes(p.pick)&&
-   (sport==="soccer"||p.pick!=="draw");
-}
-function evaluate(games,predictions){
- const known=new Map(games.map(g=>[g.sport+":"+g.id,g]));
- const classified=[],seen=new Set();
- for(const pick of predictions){
-  const key=pick.sport+":"+String(pick.event_id??pick.game_id)+":"+(pick.market||"winner")+":"+pick.model_version;
+function scored(){
+ const map=new Map(history.filter(isGame).map(g=>[g.id+"",g])),seen=new Set(),out=[];
+ for(const p of predictions){
+  const id=String(p.game_id??p.event_id??"");const g=map.get(id);
+  if(!g||!checkPick(p,g)||result(g)===null)continue;
+  const key=id+":"+(p.market||"")+":"+p.model_version;
   if(seen.has(key))continue;seen.add(key);
-  const game=known.get(pick.sport+":"+String(pick.event_id??pick.game_id));
-  if(!game||!validatedPick(pick,game))continue;
-  const actual=outcome(game);
-  if(actual===null)continue;
-  classified.push({sport:pick.sport,game,win:pick.pick===actual,model:pick.model_version,
-    pick:pick.pick,actual});
+  out.push({game:g,pick:p.pick,actual:result(g),won:p.pick===result(g)});
  }
- return classified;
+ return out;
 }
-function card(label,value,detail){const outer=el("article",undefined,"metric"),l=el("span",label),v=el("strong",value),d=el("small",detail);outer.append(l,v,d);return outer;}
-function draw(){
- const query=new URLSearchParams(location.search).get("sport");
- const sport=SPORT[query]?query:"nba";
- const date=$("daily-date").value;
- const all=(scoreboard?.games||[]).filter(g=>g.sport===sport&&chileDay(new Date(g.start_utc))===date);
- const yesterdayDate=yesterday(date);
- const previous=(scoreboard?.games||[]).filter(g=>g.sport===sport&&chileDay(new Date(g.start_utc))===yesterdayDate);
- // No guessing: historical stats require actual archived final outcomes.
- const allResults=evaluate(window.__historicalGames||scoreboard?.games||[],ledger).filter(x=>x.sport===sport);
- const wins=allResults.filter(x=>x.win).length,losses=allResults.length-wins;
- const relevant=allResults.filter(x=>chileDay(new Date(x.game.start_utc))===yesterdayDate);
- const stats=$("daily-stats");stats.replaceChildren(
-  card("PREDICCIONES EVALUADAS",String(allResults.length),"Solo picks congelados, verificados y finalizados"),
-  card("PORCENTAJE DE ACIERTO",allResults.length?(100*wins/allResults.length).toFixed(1)+" %":"—","No se cuentan partidos sin liquidar"),
-  card("GANADAS",String(wins),"Predicción coincidente con ganador"),
-  card("PERDIDAS",String(losses),"Predicción distinta del resultado"));
- const body=$("daily-results");body.replaceChildren();
- const grouped= new Map();
- for(const g of all){
-  const grouping=sport==="soccer"?[g.country||"Otros",g.league||"Sin liga"]:sport==="tennis"?[g.league||g.competition||"Circuito"]:[];
-  const key=grouping.join(" / ")||"Partidos de hoy";
+function stats(){
+ const wins=scored().filter(x=>x.won).length,total=scored().length;
+ const values=[total,total?((wins/total)*100).toFixed(1)+" %":"—",wins,total-wins];
+ const labels=["PREDICCIONES TOTALES EVALUADAS","PORCENTAJE DE ACIERTO","GANADAS","PERDIDAS"];
+ $("daily-stats").replaceChildren(...labels.map((label,i)=>{const card=make("article",undefined,"metric");card.append(make("span",label),make("strong",String(values[i])));return card;}));
+ const date=previousDay($("daily-date").value);$("yesterday-label").textContent="Resultado de predicciones · "+date;
+ const yesterday=scored().filter(x=>dayOf(x.game.start_utc)===date),root=$("yesterday-results");
+ root.replaceChildren();
+ if(!yesterday.length)root.append(make("p","No hay predicciones verificadas y resueltas del día anterior.","daily-empty"));
+ for(const x of yesterday)root.append(make("div",x.game.away+" — "+x.game.home+" | "+(x.won?"✓ Ganada":"✕ Perdida")+" | Predicción: "+x.pick+" | Resultado: "+x.actual,"daily-match"));
+}
+function activeGames(){return(snapshot?.games||[]).filter(g=>isGame(g)&&dayOf(g.start_utc)===$("daily-date").value).sort((a,b)=>a.start_utc.localeCompare(b.start_utc));}
+function renderGames(){
+ const games=activeGames(),root=$("daily-results");root.replaceChildren();
+ $("daily-label").textContent=title+" · "+$("daily-date").value+" · "+games.length+" partidos";
+ if(!games.length)root.append(make("p",snapshot?"Sin partidos confirmados para esta disciplina y fecha.":"No hay calendario disponible; pendiente actualización de las fuentes.","daily-empty"));
+ const grouped=new Map();
+ for(const g of games){
+  const country=sport==="soccer"?(g.country||"País no identificado"):null;
+  const league=sport==="soccer"?(g.league||"Liga no identificada"):sport==="tennis"?(g.league||g.competition||"Circuito"):"Partidos";
+  const key=sport==="soccer"?country+" / "+league:league;
   if(!grouped.has(key))grouped.set(key,[]);
   grouped.get(key).push(g);
  }
- if(!all.length){body.append(el("p",scoreboard?.errors?.length?"No hay partidos confirmados en las fuentes disponibles; consulta los errores de cobertura.":"No hay partidos en el snapshot para esta fecha.","daily-empty"));}
- for(const [name,games] of grouped){
-  const section=el("section",undefined,"daily-group");
-  section.append(el("h3",name));
-  for(const g of games){
-   const row=el("div",undefined,"daily-match");
-   const time=el("span",new Date(g.start_utc).toLocaleTimeString("es-CL",{timeZone:"America/Santiago",hour:"2-digit",minute:"2-digit"}),"daily-time");
-   const names=el("strong",g.away+" — "+g.home);
-   const state=el("span",g.completed?(g.away_score??"—")+" : "+(g.home_score??"—"):g.status,"daily-state");
-   row.append(time,names,state);section.append(row);
-  }body.append(section);
+ for(const [group,items] of grouped){
+  const sec=make("section",undefined,"daily-group");sec.append(make("h3",group));
+  for(const g of items){
+   const row=make("div",undefined,"daily-match");
+   row.append(make("span",new Date(g.start_utc).toLocaleTimeString("es-CL",{timeZone:"America/Santiago",hour:"2-digit",minute:"2-digit"}),"daily-time"),
+     make("strong",g.away+" — "+g.home),make("span",g.completed?String(g.away_score??"—")+" : "+String(g.home_score??"—"):g.status||"Programado","daily-state"));
+   sec.append(row);
+  }root.append(sec);
  }
- $("daily-label").textContent=SPORT[sport]+" · "+date+" · "+all.length+" partidos";
- $("yesterday-label").textContent="Resultados de predicciones · "+yesterdayDate;
- const prev=$("yesterday-results");prev.replaceChildren();
- if(!relevant.length)prev.append(el("p","Sin predicciones verificadas y liquidadas del día anterior.","daily-empty"));
- for(const item of relevant){prev.append(el("div",item.game.away+" — "+item.game.home+" · "+(item.win?"✓ Ganada":"✕ Perdida")+" · Pronóstico: "+item.pick+" · Resultado: "+item.actual,"daily-match"));}
- const errorSports=(scoreboard?.errors||[]).filter(e=>e.sport===sport);
- $("feed-message").textContent=scoreboard
-  ? "Fuente: "+scoreboard.as_of_utc+" · "+(errorSports.length?errorSports.length+" errores de cobertura; listado posiblemente incompleto.":"Cobertura de fuentes consultadas.")+" Las métricas requieren predicciones históricas verificadas."
-  : "No existe un snapshot diario cargado. Ejecuta el recolector o importa un reporte.";
+ const errors=(snapshot?.errors||[]).filter(x=>x.sport===sport);
+ $("feed-message").textContent=snapshot
+ ? "Fuente: "+snapshot.as_of_utc+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario obtenido de las fuentes configuradas.")
+ : "No se dispone de una publicación de calendario. El sistema no acepta cargas manuales.";
+ renderSelection(games);stats();
+}
+function renderSelection(games){
+ const root=$("simulation-games");root.replaceChildren();
+ const radio=document.querySelector('input[name="simulation-scope"]:checked');
+ $("simulation-selection").hidden=radio?.value!=="selected";
+ for(const g of games){
+  if(g.completed)continue;
+  const label=make("label",undefined,"selection-item"),check=document.createElement("input");
+  check.type="checkbox";check.value=String(g.id);check.name="chosen-game";
+  label.append(check,make("span",g.away+" — "+g.home+(sport==="soccer"?" · "+(g.country||"")+" / "+(g.league||""):"")));
+  root.append(label);
+ }
+ if(!root.children.length)root.append(make("p","No existen partidos pendientes de inicio para seleccionar.","daily-empty"));
+}
+async function runSimulation(){
+ const candidates=activeGames().filter(g=>!g.completed&&Date.parse(g.start_utc)>Date.now());
+ const scope=document.querySelector('input[name="simulation-scope"]:checked').value;
+ const selected=new Set([...document.querySelectorAll('input[name="chosen-game"]:checked')].map(x=>x.value));
+ const games=scope==="all"?candidates:candidates.filter(g=>selected.has(String(g.id)));
+ const status=$("simulation-status");
+ if(!games.length){status.textContent="Selecciona al menos un encuentro que aún no haya comenzado.";return;}
+ if(!runtime.simulation_endpoint){status.textContent="Simulación pendiente: el backend de ejecución aún no está conectado. No se ejecutó ningún modelo.";return;}
+ const url=new URL(runtime.simulation_endpoint,location.href);
+ if(url.origin!==location.origin||url.protocol!=="https:"){status.textContent="Endpoint no autorizado: debe ser HTTPS y del mismo origen.";return;}
+ const button=$("run-simulation");button.disabled=true;status.textContent="Enviando solicitud de simulación…";
+ try{
+  const response=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",
+   body:JSON.stringify({sport,date:$("daily-date").value,scope,event_ids:games.map(g=>String(g.id))})});
+  if(!response.ok)throw Error("HTTP "+response.status);
+  const data=await response.json();status.textContent=data.job_id?"Simulación solicitada. Trabajo: "+data.job_id:"Solicitud recibida; espera la confirmación del motor.";
+ }catch(err){status.textContent="No se pudo ejecutar: "+err.message;}finally{button.disabled=false;}
 }
 async function load(){
- try{
-  const r=await fetch("./data/daily.json?fresh="+Date.now(),{cache:"no-store"});
-  if(r.ok){const data=await r.json();if(!Array.isArray(data.games))throw Error("Snapshot inválido");scoreboard=data;
-   if(/^\d{4}-\d{2}-\d{2}$/.test(data.date))$("daily-date").value=data.date;}
- }catch(err){$("feed-message").textContent="Sin conexión con el snapshot de partidos: "+err.message;}
- try{const h=await fetch("./data/history.json",{cache:"no-store"});if(h.ok){const items=await h.json();if(Array.isArray(items))window.__historicalGames=items;}}catch(_){}
- try{const r=await fetch("./data/predictions.json",{cache:"no-store"});if(r.ok){const d=await r.json();ledger=Array.isArray(d)?d:Array.isArray(d.predictions)?d.predictions:[];}}catch(_){}
- draw();
+ $("daily-date").value=localDay();
+ const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json"].map(async path=>{
+  const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw Error(path+" "+response.status);return response.json();
+ }));
+ const got=i=>entries[i].status==="fulfilled"?entries[i].value:null;
+ snapshot=got(0);history=Array.isArray(got(1))?got(1):[];const p=got(2);
+ predictions=Array.isArray(p)?p:Array.isArray(p?.predictions)?p.predictions:[];runtime=got(3)||{};
+ renderGames();
 }
-$("daily-date").addEventListener("change",draw);
-$("predictions-file").addEventListener("change",async e=>{
- try{const f=e.target.files[0];if(!f)return;if(f.size>5e6)throw Error("Archivo mayor de 5MB");
- const parsed=JSON.parse(await f.text());const rows=Array.isArray(parsed)?parsed:parsed.predictions;
- if(!Array.isArray(rows))throw Error("Se requiere predictions[]");ledger=rows;draw();
- }catch(err){$("feed-message").textContent="Error importando pronósticos: "+err.message;}
- e.target.value="";
-});
+$("daily-date").addEventListener("change",renderGames);
+document.querySelectorAll('input[name="simulation-scope"]').forEach(r=>r.addEventListener("change",()=>renderSelection(activeGames())));
+$("run-simulation").addEventListener("click",runSimulation);
+$("crumb").textContent=title.toUpperCase();
+$("sport-nav").append(make("div",title,"nav active"));
+$("menu").addEventListener("click",()=>document.querySelector(".sidebar").classList.toggle("open"));
 load();
