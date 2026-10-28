@@ -1,0 +1,60 @@
+name: NHL — Prior goalie and skater ML ablations
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/prior_stats_ml_ablations.py
+      - nhl/tests/test_prior_stats_ml_ablations.py
+      - .github/workflows/nhl-prior-stats-ablations.yml
+permissions:
+  contents: read
+  actions: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_prior_stats_ml_ablations -v
+      - name: Download signed NHL labels and historical features
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .labels .features results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl_postgame_labels.csv --pattern labels_manifest.json --dir .labels
+          gh run download 40622612674 --repo "$GITHUB_REPOSITORY" \
+            --name nhl-prior-player-goalie-stats-40622612674 --dir .features
+      - name: Audit immutable source digests and evaluate
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          labels=Path(".labels/nhl_postgame_labels.csv")
+          meta=json.loads(Path(".labels/labels_manifest.json").read_text())
+          if meta["games"]!=2811 or meta["sha256"]!=hashlib.sha256(labels.read_bytes()).hexdigest():
+            raise SystemExit("NHL labels integrity failure")
+          feats=list(Path(".features").rglob("prior_player_goalie_stats.json"))
+          reports=list(Path(".features").rglob("prior_player_goalie_stats_manifest.json"))
+          if len(feats)!=1 or len(reports)!=1:raise SystemExit("Historical feature files missing/ambiguous")
+          report=json.loads(reports[0].read_text())
+          if report["games"]!=2811 or report["sha256"]!=hashlib.sha256(feats[0].read_bytes()).hexdigest():
+            raise SystemExit("NHL feature digest mismatch")
+          Path("feature_input_path.txt").write_text(str(feats[0]))
+          PY
+          python nhl/prior_stats_ml_ablations.py \
+            --labels .labels/nhl_postgame_labels.csv \
+            --features "$(cat feature_input_path.txt)" \
+            --output results/nhl/prior_stats_ml_ablation.json
+      - name: Preserve model benchmark
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v6
+        with:
+          name: nhl-goalie-skater-ablation-${{ github.run_id }}
+          path: results/nhl/prior_stats_ml_ablation.json
+          retention-days: 90
