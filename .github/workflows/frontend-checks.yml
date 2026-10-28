@@ -1,0 +1,27 @@
+name: Frontend static checks
+on:
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-checks.yml'
+  push:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-checks.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --check frontend/app.js
+      - run: |
+          test -s frontend/index.html
+          test -s frontend/styles.css
+          test -s frontend/README.md
+          grep -q 'id="rows"' frontend/index.html
+          grep -q 'id="file-input"' frontend/index.html
