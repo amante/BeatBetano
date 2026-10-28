@@ -15,21 +15,33 @@ def number(value):
         return x if math.isfinite(x) and x>=0 else None
     except (TypeError,ValueError):return None
 
+def goalie_saves_shots(goalie):
+    # Official NHL boxscores commonly encode saveShotsAgainst as "27/30".
+    paired=goalie.get("saveShotsAgainst")
+    if isinstance(paired,str) and "/" in paired:
+        parts=paired.split("/")
+        if len(parts)!=2:return None,None
+        saves=number(parts[0]);faced=number(parts[1])
+    else:
+        saves=number(paired if paired is not None else goalie.get("saves"))
+        faced=number(goalie.get("shotsAgainst"))
+    if saves is None or faced is None or faced<=0 or saves>faced:return None,None
+    return saves,faced
+
 def extract(stats,side):
     node=stats.get(side+"Team") if isinstance(stats,dict) else None
     if not isinstance(node,dict):return {"goalies":None,"skaters":None}
     goals_saved=shots_faced=0.; goalies=0
     for goalie in node.get("goalies",[]) if isinstance(node.get("goalies"),list) else []:
         if not isinstance(goalie,dict):continue
-        saves=number(goalie.get("saveShotsAgainst") if goalie.get("saveShotsAgainst") is not None else goalie.get("saves"))
-        faced=number(goalie.get("shotsAgainst"))
+        saves,faced=goalie_saves_shots(goalie)
         if faced is not None and saves is not None and faced>=saves and faced>0:
             goalies+=1; goals_saved+=saves;shots_faced+=faced
     shots=goals=0.; skaters=0
     for key in ("forwards","defense","defensemen"):
         for player in node.get(key,[]) if isinstance(node.get(key),list) else []:
             if not isinstance(player,dict):continue
-            g=number(player.get("goals"));s=number(player.get("shots"))
+            g=number(player.get("goals"));s=number(player.get("sog") if player.get("sog") is not None else player.get("shots"))
             if g is None or s is None or g>s:continue
             goals+=g;shots+=s;skaters+=1
     return {"goalies":{"appearances":goalies,"saves":goals_saved,"shots_against":shots_faced} if goalies else None,
@@ -89,7 +101,7 @@ def derive(archive,expected=2811):
                     h[count]+=1
                     for metric in h[name]:
                         h[name][metric]+=v[metric]
-    return result,{"games":len(result),"team_sides":len(result)*2,
+    if not counts["home_prior_goalie_save_pct"] and not counts["away_prior_goalie_save_pct"]:\n        raise ValueError("No prior goalie save metrics parsed: investigate historical boxscore schema")\n    if not counts["home_prior_skater_goals_per_observed_game"] and not counts["away_prior_skater_goals_per_observed_game"]:\n        raise ValueError("No prior skater metrics parsed: investigate historical boxscore schema")\n    return result,{"games":len(result),"team_sides":len(result)*2,
                    "non_null_feature_counts":dict(counts),
                    "same_game_starters_verified":0,"same_game_rosters_verified":0,
                    "odds_used":False,"model_promotion_authorized":False,
