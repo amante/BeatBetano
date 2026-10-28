@@ -1,0 +1,57 @@
+name: NHL — Prior-date goalie and skater metric extraction
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/prior_player_goalie_stats.py
+      - nhl/tests/test_prior_player_goalie_stats.py
+      - .github/workflows/nhl-prior-player-goalie-stats.yml
+permissions:
+  contents: read
+jobs:
+  historical:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Regression tests for leakage and field parsing
+        run: python -m unittest nhl.tests.test_prior_player_goalie_stats -v
+      - name: Load immutable original NHL history
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_source/archive results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl-complete-2811-source.tar.gz --pattern archive_sha256.json --dir .nhl_source
+          tar -xzf .nhl_source/nhl-complete-2811-source.tar.gz -C .nhl_source/archive
+      - name: Check all source digests and extract
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          archive=Path(".nhl_source/archive")
+          sums=json.loads(Path(".nhl_source/archive_sha256.json").read_text())
+          if len([k for k in sums if k!="manifest.json"])!=2811:
+            raise SystemExit("Source manifest has incomplete game coverage")
+          for name,expected in sums.items():
+            if Path(name).name!=name:raise SystemExit("Unsafe filename")
+            p=archive/name
+            if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest()!=expected:
+              raise SystemExit("Source SHA256 mismatch: "+name)
+          PY
+          python nhl/prior_player_goalie_stats.py \
+            --archive .nhl_source/archive --expected 2811 \
+            --output results/nhl/prior_player_goalie_stats.json \
+            --manifest results/nhl/prior_player_goalie_stats_manifest.json
+      - name: Retain chronological research dataset
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v6
+        with:
+          name: nhl-prior-player-goalie-stats-${{ github.run_id }}
+          path: results/nhl/prior_player_goalie_stats*.json
+          retention-days: 90
