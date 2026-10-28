@@ -52,6 +52,14 @@ jobs:
           Path('results/nba/exclusion_audit.json').write_text(json.dumps(report,indent=2))
           print(json.dumps(report,indent=2))
           PY
+      - name: Standardize and preserve full three-season historical outcome ledger
+        run: |
+          python -m multisport.historical_protocol \
+            --sport nba \
+            --input results/nba/three_seasons.json \
+            --output-dir results/nba/standard_history \
+            --expected-count 3690 \
+            --source-ref espn:nba:three_regular_seasons_2023_2026
       - name: Audit team 82-game appearances and surplus candidates
         run: python nba/season_audit.py --input results/nba/three_seasons.json --output results/nba/season_audit.json
       - name: Score 2024-25 and 2025-26 chronological holdouts
@@ -78,10 +86,12 @@ jobs:
           name: nba-three-season-backtest
           path: |
             results/nba/*/coverage.json
+            results/nba/three_seasons.json
+            results/nba/standard_history/*
             results/nba/benchmark.json
             results/nba/season_audit.json
             results/nba/exclusion_audit.json
             results/nba/challenger_comparison.json
             results/nba/robustness.json
             results/nba/guardrails_exploratory.json
-          retention-days: 14
+          retention-days: 90
