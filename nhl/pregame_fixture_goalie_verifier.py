@@ -28,7 +28,7 @@ def fixtures(data,day):
  return out
 
 def capture_schedule(day):
- if not re.fullmatch(r"20\\d{2}-\\d{2}-\\d{2}",day):raise ValueError("Invalid date")
+ if not re.fullmatch(r"20\d{2}-\d{2}-\d{2}",day):raise ValueError("Invalid date")
  url=API+day
  with urlopen(Request(url,headers={"User-Agent":"BeatBetano-research/1.0","Accept":"application/json"}),timeout=25) as r:
   raw=r.read(2_000_000)
