@@ -78,7 +78,7 @@ def labels(game):
       "goal_events_played":regulation+(h+a-reg_h-reg_a),
       "data_class":"POSTGAME_LABELS_NOT_PREGAME_FEATURES"}
 
-def build(root,expected=2811):
+def build(root,expected=2811,errors_output=None):
     files=sorted(p for p in Path(root).glob("*.json") if p.name!="manifest.json")
     if len(files)!=expected:raise ValueError(f"Expected {expected} individual game records, got {len(files)}")
     output=[];errors=[];ids=set()
@@ -91,7 +91,11 @@ def build(root,expected=2811):
             ids.add(record["game_id"]);output.append(record)
         except (ValueError,TypeError,KeyError,OverflowError) as exc:
             errors.append({"file":path.name,"reason":str(exc)})
-    if errors:raise ValueError(f"{len(errors)} goal-label validation failures: {errors[:10]}")
+    if errors:
+        if errors_output is not None:
+            target=Path(errors_output);target.parent.mkdir(parents=True,exist_ok=True)
+            target.write_text(json.dumps({"failed":len(errors),"examples":errors[:100],"errors":errors},indent=2))
+        raise ValueError(f"{len(errors)} goal-label validation failures: {errors[:10]}")
     return sorted(output,key=lambda g:(g["date"],g["game_id"]))
 
 def main():
@@ -99,7 +103,7 @@ def main():
     p.add_argument("--archive",required=True);p.add_argument("--output",required=True)
     p.add_argument("--expected",type=int,default=2811)
     args=p.parse_args()
-    rows=build(args.archive,args.expected)
+    rows=build(args.archive,args.expected,out_errors := Path(args.output)/"rejected_games.json")
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True)
     target=out/"nhl_postgame_labels.csv"
     with target.open("w",newline="") as f:
