@@ -1,0 +1,76 @@
+name: NHL — Archive complete history and validate labels
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  archive-and-label:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Validate postgame labeling logic
+        run: python -m unittest nhl.tests.test_historical_postgame_labels -v
+      - name: Retrieve verified 2811-game collection
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_archive output
+          gh run download 40608573064 --repo "$GITHUB_REPOSITORY" \
+            --name nhl-combined-historical-40608573064 --dir .nhl_archive
+          find .nhl_archive -name manifest.json -print
+      - name: Validate all source records and generate labels
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          manifests=list(Path(".nhl_archive").rglob("manifest.json"))
+          verified=[p for p in manifests if json.loads(p.read_text()).get("consolidated_games")==2811]
+          if len(verified)!=1:raise SystemExit("Cannot identify the verified 2811-game archive")
+          root=verified[0].parent
+          data=json.loads(verified[0].read_text())
+          if data.get("missing_games")!=0 or data.get("invalid_files"):
+            raise SystemExit("Upstream archive incomplete/invalid")
+          Path("archive_root.txt").write_text(str(root))
+          PY
+          python nhl/historical_postgame_labels.py \
+            --archive "$(cat archive_root.txt)" --output output --expected 2811
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json,os
+          root=Path(Path("archive_root.txt").read_text())
+          files=sorted(root.glob("*.json"))
+          digests={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
+          Path("output/archive_sha256.json").write_text(json.dumps(digests,sort_keys=True,indent=2))
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as f:
+            manifest=json.loads(Path("output/labels_manifest.json").read_text())
+            f.write("## NHL historical postgame labels\n\n")
+            f.write(str(manifest["games"])+" games fully reconciled; labels digest: `"+manifest["sha256"]+"`\n")
+          PY
+      - name: Create persistent archive bundles
+        run: |
+          tar -czf output/nhl-complete-2811-source.tar.gz -C "$(cat archive_root.txt)" .
+          sha256sum output/nhl-complete-2811-source.tar.gz output/nhl_postgame_labels.csv > output/SHA256SUMS
+      - name: Publish durable immutable GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=nhl-historical-2811-2026
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::Immutable source archive release already exists; refusing overwrite"
+            exit 1
+          fi
+          gh release create "$TAG" \
+            output/nhl-complete-2811-source.tar.gz \
+            output/nhl_postgame_labels.csv \
+            output/labels_manifest.json \
+            output/archive_sha256.json \
+            output/SHA256SUMS \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "${GITHUB_SHA}" \
+            --title "NHL 2,811 historical games — source and postgame labels" \
+            --notes "Source: verified NHL official gamecenter history from Actions run 40608573064. Labels: regulation outcomes, ML, +3 goal leads, first-to-+3. POSTGAME targets only, NOT pregame features, calibrated model, or starting lineup evidence."
