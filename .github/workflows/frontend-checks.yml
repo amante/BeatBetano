@@ -15,16 +15,20 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
       - run: |
           node --check frontend/app.js
           node --check frontend/portal.js
+          node --check frontend/daily.js
       - run: |
           test -s frontend/index.html
           test -s frontend/styles.css
           test -s frontend/portal.css
+          test -s frontend/daily.css
+          python -m py_compile frontend/collect_daily.py frontend/merge_daily_history.py
+          python -m unittest discover -s frontend/tests -v
           test -s frontend/dashboard.html
           grep -q 'id="login-overlay"' frontend/index.html
           grep -q 'class="sport-grid"' frontend/index.html
