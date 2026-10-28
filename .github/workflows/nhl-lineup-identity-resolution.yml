@@ -1,0 +1,20 @@
+name: NHL — Projected lineup player-ID resolution
+on:
+  pull_request:
+    paths:
+      - nhl/official_roster_snapshot.py
+      - nhl/nhlcom_lineup_identity.py
+      - nhl/tests/test_nhlcom_lineup_identity.py
+      - .github/workflows/nhl-lineup-identity-resolution.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_nhlcom_lineup_identity nhl.tests.test_official_roster_goalie_toi nhl.tests.test_nhlcom_projected_lineup_capture -v
