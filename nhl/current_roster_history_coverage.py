@@ -16,7 +16,7 @@ except ModuleNotFoundError:
 
 def aggregate(folder,as_of,expected_count=2811):
  cutoff=timepoint(as_of).astimezone(timezone.utc).date().isoformat()
- paths=list(Path(folder).glob("*.json"))
+ paths=[p for p in Path(folder).glob("*.json") if p.name!="manifest.json"]
  if len(paths)!=expected_count:raise ValueError("Historical archive incomplete")
  by_id=defaultdict(lambda:defaultdict(lambda:{"games":0,"toi_games":0,"toi_seconds":0,
       "goalie_games":0,"goalie_saves":0,"goalie_shots":0,"skater_games":0,"skater_goals":0,"skater_shots":0}))
