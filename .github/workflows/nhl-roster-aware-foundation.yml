@@ -1,0 +1,53 @@
+name: NHL — Roster-aware player history foundation
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/roster_aware_foundation.py
+      - nhl/tests/test_roster_aware_foundation.py
+      - .github/workflows/nhl-roster-aware-foundation.yml
+permissions:
+  contents: read
+jobs:
+  history:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_roster_aware_foundation -v
+      - name: Retrieve immutable NHL source
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .source/archive results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl-complete-2811-source.tar.gz --pattern archive_sha256.json --dir .source
+          tar -xzf .source/nhl-complete-2811-source.tar.gz -C .source/archive
+      - name: Verify source and compute player identity histories
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          checks=json.loads(Path(".source/archive_sha256.json").read_text())
+          if len([x for x in checks if x!="manifest.json"])!=2811:raise SystemExit("Incomplete audited source")
+          for name,sha in checks.items():
+            if name!=Path(name).name:raise SystemExit("Unsafe path")
+            f=Path(".source/archive")/name
+            if not f.is_file() or hashlib.sha256(f.read_bytes()).hexdigest()!=sha:
+              raise SystemExit("Archive integrity failed: "+name)
+          PY
+          python nhl/roster_aware_foundation.py \
+            --archive .source/archive \
+            --output results/nhl/roster_aware_player_history.json \
+            --manifest results/nhl/roster_aware_player_history_manifest.json
+      - uses: actions/upload-artifact@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: nhl-roster-aware-history-${{ github.run_id }}
+          path: results/nhl/roster_aware_player_history*.json
+          retention-days: 90
