@@ -84,6 +84,11 @@ def main():
  p.add_argument("--out",default="frontend/data/daily.json")
  a=p.parse_args()
  out=collect(a.date)
+ prev=(datetime.fromisoformat(a.date)-timedelta(days=1)).date().isoformat()
+ older=collect(prev)
+ out["games"]=sorted(older["games"]+out["games"],key=lambda x:(x["start_utc"],x["sport"],x["id"]))
+ out["errors"].extend(older["errors"])
+ out["included_dates"]=[prev,a.date]
  target=Path(a.out);target.parent.mkdir(parents=True,exist_ok=True)
  target.write_text(json.dumps(out,ensure_ascii=False,indent=2))
  print(json.dumps({"games":len(out["games"]),"feed_errors":len(out["errors"]),"sports":list(out["feeds"])}))
