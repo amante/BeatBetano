@@ -1,0 +1,33 @@
+name: NHL — Projected lineups editorial source capture
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/nhlcom_projected_lineup_capture.py
+      - nhl/tests/test_nhlcom_projected_lineup_capture.py
+      - .github/workflows/nhl-projected-lineups-source.yml
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_nhlcom_projected_lineup_capture -v
+      - name: Fetch actual official NHL.com editorial projections
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          mkdir -p results/nhl
+          python nhl/nhlcom_projected_lineup_capture.py \
+            --output results/nhl/projected_lineup_source.json \
+            --raw-output results/nhl/projected_lineup_source.html
+      - uses: actions/upload-artifact@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: nhl-projected-lineups-capture-${{ github.run_id }}
+          path: results/nhl/projected_lineup_source.*
+          retention-days: 30
