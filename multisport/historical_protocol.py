@@ -28,8 +28,8 @@ def canonical(records,sport):
         away=r.get("away_team") or r.get("away")
         if not home or not away:raise ValueError("Missing participants")
         final=r.get("result_final") or {}
-        home_score=r.get("home_goals",r.get("hg",r.get("home_score",final.get("home_goals"))))
-        away_score=r.get("away_goals",r.get("ag",r.get("away_score",final.get("away_goals"))))
+        home_score=r.get("home_goals",r.get("home_points",r.get("hg",r.get("home_score",final.get("home_goals")))))
+        away_score=r.get("away_goals",r.get("away_points",r.get("ag",r.get("away_score",final.get("away_goals")))))
         if home_score is None or away_score is None:raise ValueError("Missing finished scores")
         if float(home_score)<0 or float(away_score)<0:raise ValueError("Negative result")
         out.append({"sport":sport,"event_id":identity,"date_or_start":str(when),
