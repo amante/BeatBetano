@@ -35,7 +35,7 @@ def parse_event(event,sport,country=None,league=None):
  competitors=comp.get("competitors") or []
  home=next((x for x in competitors if x.get("homeAway")=="home"),None)
  away=next((x for x in competitors if x.get("homeAway")=="away"),None)
- if not home or not away:return None
+ if sport=="tennis" and (not home or not away) and len(competitors)>=2:\n  home,away=competitors[0],competitors[1]\n if not home or not away:return None
  dt=event.get("date")
  if not dt:return None
  state=(comp.get("status") or event.get("status") or {}).get("type",{})
