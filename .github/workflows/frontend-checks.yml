@@ -22,6 +22,9 @@ jobs:
           node --check frontend/app.js
           node --check frontend/portal.js
           node --check frontend/daily.js
+          ! grep -q 'type="file"' frontend/dashboard.html
+          grep -q 'id="run-simulation"' frontend/dashboard.html
+          grep -q 'name="simulation-scope"' frontend/dashboard.html
       - run: |
           test -s frontend/index.html
           test -s frontend/styles.css
@@ -33,5 +36,5 @@ jobs:
           grep -q 'id="login-overlay"' frontend/index.html
           grep -q 'class="sport-grid"' frontend/index.html
           test -s frontend/README.md
-          grep -q 'id="rows"' frontend/dashboard.html
-          grep -q 'id="file-input"' frontend/dashboard.html
+          grep -q 'id="daily-results"' frontend/dashboard.html
+          ! grep -q 'id="file-input"' frontend/dashboard.html
