@@ -20,11 +20,14 @@ def read_labels(path):
     if len(rows)!=2811:raise ValueError(f"Expected 2811 records, got {len(rows)}")
     if len({r["game_id"] for r in rows})!=len(rows):raise ValueError("Duplicate games")
     required=("date","home","away","ml_winner","rt_result",
-              "first_to_plus3","home_reached_plus3","away_reached_plus3")
+              "home_reached_plus3","away_reached_plus3")
     for r in rows:
         if any(k not in r or not r[k] for k in required):raise ValueError("Incomplete target labels")
         if r["ml_winner"] not in ("home","away") or r["rt_result"] not in ("home","draw","away"):raise ValueError("Invalid winner")
-        if r["first_to_plus3"] not in ("home","away","None"):raise ValueError("Invalid first-to-+3")
+        # CSV DictWriter serializes Python None as an empty field.
+        # For first-to-+3, empty means neither side reached a three-goal lead.
+        if "first_to_plus3" not in r or r["first_to_plus3"] not in ("home","away","None",""):
+            raise ValueError("Invalid first-to-+3")
         if any(r[k] not in ("True","False") for k in ("home_reached_plus3","away_reached_plus3")):raise ValueError("Invalid 3GLP boolean")
         if r["first_to_plus3"]=="home" and r["home_reached_plus3"]!="True":raise ValueError("First+3 home impossible")
         if r["first_to_plus3"]=="away" and r["away_reached_plus3"]!="True":raise ValueError("First+3 away impossible")
@@ -32,7 +35,7 @@ def read_labels(path):
 
 def outcomes(r):
     return {"ml":r["ml_winner"],"rt":r["rt_result"],
-            "first3":"none" if r["first_to_plus3"]=="None" else r["first_to_plus3"],
+            "first3":"none" if r["first_to_plus3"] in ("None","") else r["first_to_plus3"],
             "home3":"yes" if r["home_reached_plus3"]=="True" else "no",
             "away3":"yes" if r["away_reached_plus3"]=="True" else "no"}
 
