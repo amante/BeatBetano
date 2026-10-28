@@ -20,7 +20,12 @@ def labels(game):
     if hg==ag:raise ValueError("NHL completed game cannot finish level")
     raw=game.get("goal_events")
     if not isinstance(raw,list) or not raw:raise ValueError("Missing goal PBP")
-    ordered=sorted(enumerate(raw),key=lambda pair:(int(pair[1]["period"]),seconds(pair[1]["time_in_period"]),pair[0]))
+    def chronology(item):
+        idx,event=item
+        if event.get("period") is None:raise ValueError(f"Goal ordinal {idx}: official period is missing")
+        if event.get("time_in_period") is None:raise ValueError(f"Goal ordinal {idx}: official clock is missing")
+        return (int(event["period"]),seconds(event["time_in_period"]),idx)
+    ordered=sorted(enumerate(raw),key=chronology)
     seen=set();h=a=0;reg_h=reg_a=0
     h3=a3=False;first=None;first_event=None
     regulation=0;shootout_goals=0
@@ -43,8 +48,14 @@ def labels(game):
         if str(owner)==str(htid):h+=1
         elif str(owner)==str(atid):a+=1
         else:raise ValueError("Goal scored by unknown team")
-        if int(event["home_score"])!=h or int(event["away_score"])!=a:
-            raise ValueError("PBP goal score sequence inconsistent")
+        observed_home=event.get("home_score");observed_away=event.get("away_score")
+        # NHL official goal payloads can omit running scoreboard counts. The
+        # scorer team and chronological goal sequence still determine counts.
+        # Verify any score fields actually present; never invent an owner.
+        if observed_home is not None and int(observed_home)!=h:
+            raise ValueError(f"Goal {eid}: home scoreboard {observed_home} != reconstructed {h}")
+        if observed_away is not None and int(observed_away)!=a:
+            raise ValueError(f"Goal {eid}: away scoreboard {observed_away} != reconstructed {a}")
         if kind=="REG":
             if period>3:raise ValueError("Regulation goal after period 3")
             reg_h=h;reg_a=a;regulation+=1
