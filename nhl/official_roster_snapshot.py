@@ -10,6 +10,7 @@ from pathlib import Path
 from urllib.request import Request,urlopen
 
 HOST="https://api-web.nhle.com"
+TEAMS="ANA BOS BUF CAR CBJ CGY CHI COL DAL DET EDM FLA LAK MIN MTL NJD NSH NYI NYR OTT PHI PIT SEA SJS STL TBL TOR UTA VAN VGK WPG WSH".split()
 GROUPS={"forwards":"forward","defensemen":"defense","goalies":"goalie"}
 def parse_roster(payload,team,observed_at):
     if not re.fullmatch(r"[A-Z]{3}",team):raise ValueError("Invalid NHL club code")
@@ -48,9 +49,11 @@ def fetch(team,timeout=25):
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument("--teams",nargs="+",required=True);p.add_argument("--out",required=True)
+    p.add_argument("--teams",nargs="+");p.add_argument("--all-teams",action="store_true");p.add_argument("--out",required=True)
     a=p.parse_args()
-    teams=sorted(set(a.teams))
+    if a.all_teams and a.teams:raise ValueError("Select either --all-teams or --teams")
+    teams=TEAMS if a.all_teams else sorted(set(a.teams or []))
+    if not teams:raise ValueError("No teams specified")
     if len(teams)>32:raise ValueError("Too many clubs")
     records=[fetch(t) for t in teams]
     out=Path(a.out);out.parent.mkdir(parents=True,exist_ok=True)
