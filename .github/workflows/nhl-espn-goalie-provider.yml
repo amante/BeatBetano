@@ -1,0 +1,33 @@
+name: NHL — ESPN goalie provider observation
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/espn_goalie_provider_capture.py
+      - nhl/tests/test_espn_goalie_provider_capture.py
+      - .github/workflows/nhl-espn-goalie-provider.yml
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_espn_goalie_provider_capture nhl.tests.test_pregame_fixture_goalie_verifier -v
+      - name: Capture raw and parsed ESPN scoreboard goalie observations
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          mkdir -p results/nhl
+          python nhl/espn_goalie_provider_capture.py \
+            --date "$(date -u +%F)" \
+            --output results/nhl/espn_goalie_observations.json \
+            --raw-output results/nhl/espn_scoreboard_raw.json
+      - uses: actions/upload-artifact@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: nhl-espn-goalie-observations-${{ github.run_id }}
+          path: results/nhl/*.json
+          retention-days: 30
