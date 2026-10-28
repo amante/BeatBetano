@@ -1,0 +1,80 @@
+name: NHL — Cumulative historical archive
+on:
+  workflow_dispatch:
+    inputs:
+      prior_archive_run:
+        description: "Optional previously successful cumulative archive run ID (blank initializes with first 150)"
+        type: string
+        required: false
+        default: ""
+      batch_size:
+        description: "New historical games to add"
+        type: number
+        required: true
+        default: 100
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: nhl-cumulative-history
+  cancel-in-progress: false
+jobs:
+  archive:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Test NHL modules
+        run: python -m unittest discover -s nhl/tests -v
+      - name: Retrieve fixed NHL ledger and historical artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRIOR: ${{ inputs.prior_archive_run }}
+        run: |
+          mkdir -p .history/ledger .history/seed1 .history/seed2 .history/prior
+          gh run download 40604007375 --repo "$GITHUB_REPOSITORY" --name nhl-walkforward-40604007375 --dir .history/ledger
+          test -s .history/ledger/walkforward_history.json
+          if [ -n "$PRIOR" ]; then
+            case "$PRIOR" in *[!0-9]*|'') echo "Invalid prior run ID"; exit 1;; esac
+            gh run download "$PRIOR" --repo "$GITHUB_REPOSITORY" --name "nhl-cumulative-$PRIOR" --dir .history/prior
+          else
+            gh run download 40605004279 --repo "$GITHUB_REPOSITORY" --name nhl-game-details-40605004279 --dir .history/seed1
+            gh run download 40605983181 --repo "$GITHUB_REPOSITORY" --name nhl-game-details-40605983181 --dir .history/seed2
+          fi
+      - name: Merge caches and choose uncovered games
+        run: |
+          python nhl/consolidate_historical_games.py --ledger .history/ledger/walkforward_history.json --source-dir .history/seed1 --source-dir .history/seed2 --source-dir .history/prior --output-dir results/nhl/cumulative --selection-file .history/missing.json --batch-size "${{ inputs.batch_size }}"
+      - name: Fetch uncovered game details
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          n=len(json.loads(Path(".history/missing.json").read_text()))
+          Path(".history/has_work").write_text("yes" if n else "no")
+          print(f"Missing games in selected batch: {n}")
+          PY
+          if [ "$(cat .history/has_work)" = "yes" ]; then
+            python nhl/historical_game_collector.py --history .history/missing.json --output-dir results/nhl/new_games --max-games 150 --delay 1.5
+          fi
+      - name: Reconcile cumulative archive and coverage
+        run: |
+          python nhl/consolidate_historical_games.py --ledger .history/ledger/walkforward_history.json --source-dir results/nhl/cumulative --source-dir results/nhl/new_games --output-dir results/nhl/final_archive --selection-file .history/still_missing.json --batch-size 100
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          m=json.loads(Path("results/nhl/final_archive/manifest.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as f:
+            f.write(f"## NHL historical archive\n\nValidated cached games: **{m['consolidated_games']} / {m['ledger_games']}**. Remaining: **{m['missing_games']}**.\n")
+          if m["invalid_files"]:raise SystemExit("Archive integrity failures; inspect manifest")
+          PY
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: nhl-cumulative-${{ github.run_id }}
+          path: results/nhl/final_archive/
+          retention-days: 90
+          if-no-files-found: warn
