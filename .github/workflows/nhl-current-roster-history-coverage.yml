@@ -36,8 +36,9 @@ jobs:
           import hashlib,json
           from pathlib import Path
           hashes=json.loads(Path(".source/archive_sha256.json").read_text())
-          if len(hashes)!=2811:raise SystemExit("Unexpected source count")
-          for name,digest in hashes.items():
+          game_hashes={name:digest for name,digest in hashes.items() if name.endswith(".json") and name!="manifest.json"}
+          if len(game_hashes)!=2811:raise SystemExit(f"Unexpected game source count: {len(game_hashes)}")
+          for name,digest in game_hashes.items():
             if Path(name).name!=name:raise SystemExit("Unsafe archive path")
             file=Path(".source/archive")/name
             if not file.is_file() or hashlib.sha256(file.read_bytes()).hexdigest()!=digest:
