@@ -20,12 +20,13 @@ def labels(game):
     if hg==ag:raise ValueError("NHL completed game cannot finish level")
     raw=game.get("goal_events")
     if not isinstance(raw,list) or not raw:raise ValueError("Missing goal PBP")
-    ordered=sorted(raw,key=lambda e:(int(e["period"]),seconds(e["time_in_period"]),int(e["event_id"])))
+    ordered=sorted(enumerate(raw),key=lambda pair:(int(pair[1]["period"]),seconds(pair[1]["time_in_period"]),pair[0]))
     seen=set();h=a=0;reg_h=reg_a=0
     h3=a3=False;first=None;first_event=None
     regulation=0;shootout_goals=0
-    for event in ordered:
-        eid=str(event["event_id"])
+    for ordinal,event in ordered:
+        raw_id=event.get("event_id")
+        eid=str(raw_id) if raw_id is not None else "goal-ordinal-"+str(ordinal)
         if eid in seen:raise ValueError("Duplicate goal event")
         seen.add(eid)
         period=int(event["period"]);kind=str(event.get("period_type","")).upper()
@@ -77,7 +78,7 @@ def labels(game):
       "goal_events_played":regulation+(h+a-reg_h-reg_a),
       "data_class":"POSTGAME_LABELS_NOT_PREGAME_FEATURES"}
 
-def build(root,expected=2811):
+def build(root,expected=2811,errors_output=None):
     files=sorted(p for p in Path(root).glob("*.json") if p.name!="manifest.json")
     if len(files)!=expected:raise ValueError(f"Expected {expected} individual game records, got {len(files)}")
     output=[];errors=[];ids=set()
@@ -90,7 +91,11 @@ def build(root,expected=2811):
             ids.add(record["game_id"]);output.append(record)
         except (ValueError,TypeError,KeyError,OverflowError) as exc:
             errors.append({"file":path.name,"reason":str(exc)})
-    if errors:raise ValueError(f"{len(errors)} goal-label validation failures: {errors[:10]}")
+    if errors:
+        if errors_output is not None:
+            target=Path(errors_output);target.parent.mkdir(parents=True,exist_ok=True)
+            target.write_text(json.dumps({"failed":len(errors),"examples":errors[:100],"errors":errors},indent=2))
+        raise ValueError(f"{len(errors)} goal-label validation failures: {errors[:10]}")
     return sorted(output,key=lambda g:(g["date"],g["game_id"]))
 
 def main():
@@ -98,7 +103,7 @@ def main():
     p.add_argument("--archive",required=True);p.add_argument("--output",required=True)
     p.add_argument("--expected",type=int,default=2811)
     args=p.parse_args()
-    rows=build(args.archive,args.expected)
+    rows=build(args.archive,args.expected,out_errors := Path(args.output)/"rejected_games.json")
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True)
     target=out/"nhl_postgame_labels.csv"
     with target.open("w",newline="") as f:

@@ -28,6 +28,12 @@ class LabelTests(unittest.TestCase):
   x=labels(game([("home",1,"REG"),("away",2,"REG")],final=(2,1)))
   self.assertTrue(x["shootout"])
   self.assertEqual((x["rt_result"],x["ml_winner"]),("draw","home"))
+ def test_goal_event_ids_missing_in_official_feed(self):
+  g=game([("home",1,"REG"),("home",2,"REG"),("home",3,"REG")])
+  for event in g["goal_events"]:event["event_id"]=None
+  r=labels(g)
+  self.assertEqual(r["first_to_plus3"],"home")
+  self.assertEqual(r["first_plus3_event_id"],"goal-ordinal-2")
  def test_broken_score_rejected(self):
   g=game([("home",1,"REG"),("away",2,"REG"),("home",3,"REG")])
   g["goal_events"][1]["away_score"]=9
