@@ -1,0 +1,77 @@
+name: Multisport — Historical audit and archive
+on:
+  workflow_dispatch:
+    inputs:
+      sport:
+        description: Sport identifier
+        required: true
+        type: choice
+        options: [nba, nfl, nhl, soccer, tennis]
+      source_run_id:
+        description: Successful source collection workflow run ID
+        required: true
+        type: string
+      source_artifact:
+        description: Exact GitHub Actions source artifact name
+        required: true
+        type: string
+      source_json_path:
+        description: Relative JSON file inside downloaded artifact
+        required: true
+        type: string
+      expected_games:
+        description: Expected distinct finished games (0 means no certified coverage claim)
+        required: true
+        type: number
+        default: 0
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Test shared protocol
+        run: python -m unittest multisport.tests.test_historical_protocol -v
+      - name: Download original source from this repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.source_run_id }}
+          SOURCE_ARTIFACT: ${{ inputs.source_artifact }}
+        run: |
+          mkdir -p .source
+          gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name "$SOURCE_ARTIFACT" --dir .source
+      - name: Validate historical records without changing models
+        env:
+          SPORT: ${{ inputs.sport }}
+          JSON_PATH: ${{ inputs.source_json_path }}
+          EXPECTED: ${{ inputs.expected_games }}
+          SOURCE_RUN: ${{ inputs.source_run_id }}
+          SOURCE_ARTIFACT: ${{ inputs.source_artifact }}
+        run: |
+          python - <<'PY'
+          import os,subprocess
+          from pathlib import Path
+          raw=Path(os.environ["JSON_PATH"])
+          if raw.is_absolute() or ".." in raw.parts:raise SystemExit("Unsafe relative path")
+          target=Path(".source")/raw
+          if not target.is_file():raise SystemExit("Source JSON not found: "+str(target))
+          expected=int(os.environ["EXPECTED"])
+          if expected<0:raise SystemExit("expected_games must be nonnegative")
+          cmd=["python","-m","multisport.historical_protocol","--sport",os.environ["SPORT"],"--input",str(target),
+               "--output-dir","results/multisport/historical","--source-ref","actions:"+
+                 os.environ["SOURCE_RUN"]+"/"+os.environ["SOURCE_ARTIFACT"]]
+          if expected:cmd.extend(["--expected-count",str(expected)])
+          subprocess.run(cmd,check=True)
+          PY
+      - name: Publish validated audit artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: multisport-history-audit-${{ inputs.sport }}-${{ github.run_id }}
+          path: results/multisport/historical/
+          retention-days: 90
