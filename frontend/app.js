@@ -72,4 +72,6 @@ $("search").addEventListener("input",refresh);
 $("file-input").addEventListener("change",async e=>{try{await importFile(e.target.files[0]);}catch(err){message("No se pudo importar: "+err.message,true);}finally{e.target.value="";}});
 $("hero-import").addEventListener("click",()=>$("file-input").click());
 $("menu").addEventListener("click",()=>$("sport-nav").closest(".sidebar").classList.toggle("open"));
+const querySport=new URLSearchParams(window.location.search).get("sport");
+if(SPORTS.some(x=>x[0]===querySport)){selectedSport=querySport;$("sport-filter").value=querySport;setSection("games");}
 renderSports();refresh();
