@@ -21,10 +21,13 @@ jobs:
       - run: |
           node --check frontend/app.js
           node --check frontend/portal.js
+          node --check frontend/daily.js
       - run: |
           test -s frontend/index.html
           test -s frontend/styles.css
           test -s frontend/portal.css
+          test -s frontend/daily.css
+          python -m unittest discover -s frontend/tests -v
           test -s frontend/dashboard.html
           grep -q 'id="login-overlay"' frontend/index.html
           grep -q 'class="sport-grid"' frontend/index.html
