@@ -1,0 +1,20 @@
+name: NHL — Roster-aware units validation
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/roster_aware_units.py
+      - nhl/tests/test_roster_aware_units.py
+      - .github/workflows/nhl-roster-aware-units.yml
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Run lineup and unit regression tests
+        run: python -m unittest nhl.tests.test_roster_aware_units -v
