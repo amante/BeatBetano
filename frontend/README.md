@@ -41,3 +41,27 @@ are calculated by this UI.
 Research dashboard, not a production recommendation engine. Data imports
 are held in in-memory browser state and are lost when the page reloads.
 There is no login, connected storage, backend or deployment configured.
+
+## Public deployment
+
+On merge into `main`, `.github/workflows/pages-deploy.yml` validates and
+deploys the `frontend/` folder using GitHub Actions.
+
+Expected public URL after successful deployment:
+https://amante.github.io/BeatBetano/
+
+If the first run fails at `Configure GitHub Pages`, repository administrators
+must open **Settings → Pages → Build and deployment → Source → GitHub Actions**.
+Then rerun the workflow from **Actions → Deploy BeatBetano frontend to GitHub Pages**.
+The URL is not live until GitHub reports a successful deployment.
+
+**Security:** This is an openly accessible static preview; the login form
+is disabled and `Explorar demo sin cuenta` does not authenticate visitors.
+Never publish secrets, account data, personal records, private predictions or
+private API tokens under `frontend/` or `frontend/data/`. Every file in that
+folder is publicly downloadable. Connect a proper identity provider and
+authorization-enforcing backend before enabling real login.
+
+The daily fixture updater commits publicly accessible JSON snapshots, not
+private model training datasets. Empty historical prediction counters indicate
+missing verified, settled predictions, not zero predictive accuracy.
