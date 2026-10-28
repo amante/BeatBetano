@@ -1,0 +1,23 @@
+name: Multisport architecture contracts
+on:
+  pull_request:
+    paths:
+      - 'multisport/**'
+      - '.github/workflows/multisport-contracts.yml'
+  push:
+    paths:
+      - 'multisport/**'
+      - '.github/workflows/multisport-contracts.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest discover -s multisport/tests -v
