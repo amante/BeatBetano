@@ -1,0 +1,56 @@
+name: NHL — Historical prior-game evidence snapshots
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/prior_game_evidence.py
+      - nhl/tests/test_prior_game_evidence.py
+      - .github/workflows/nhl-prior-game-evidence.yml
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_prior_game_evidence -v
+      - name: Download immutable NHL historical source
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_source/archive results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl-complete-2811-source.tar.gz --pattern archive_sha256.json --dir .nhl_source
+          tar -xzf .nhl_source/nhl-complete-2811-source.tar.gz -C .nhl_source/archive
+      - name: Validate full source and derive previous-date observations
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          base=Path(".nhl_source/archive")
+          source=json.loads(Path(".nhl_source/archive_sha256.json").read_text())
+          if len([k for k in source if k!="manifest.json"])!=2811:
+            raise SystemExit("Incomplete source checksum ledger")
+          for filename,digest in source.items():
+            if Path(filename).name!=filename:raise SystemExit("Invalid source filename")
+            target=base/filename
+            if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest()!=digest:
+              raise SystemExit("Source checksum mismatch: "+filename)
+          PY
+          python nhl/prior_game_evidence.py \
+            --archive .nhl_source/archive --expected 2811 \
+            --output results/nhl/prior_game_evidence.json \
+            --manifest results/nhl/prior_game_evidence_manifest.json
+      - name: Preserve dated research feature coverage
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v6
+        with:
+          name: nhl-prior-game-evidence-${{ github.run_id }}
+          path: results/nhl/prior_game_evidence*.json
+          retention-days: 90
