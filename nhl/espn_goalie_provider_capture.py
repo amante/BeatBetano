@@ -7,7 +7,6 @@ import argparse,hashlib,json,re
 from datetime import datetime,timezone
 from pathlib import Path
 from urllib.request import Request,urlopen
-from nhl.pregame_fixture_goalie_verifier import fixtures
 
 HOST="https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates="
 def read(day):
@@ -47,7 +46,7 @@ def extract(data,metadata):
    out.append({"espn_event_id":str(ev.get("id","")),"team":abbr,
      "provider_goalie_name":name,"provider_athlete_id":provider_id,
      "goalie_status":status,"provider_raw_status":explicit,
-     "nlh_player_id":None,"matchup_verified":False,
+     "nhl_player_id":None,"matchup_verified":False,
      "confirmation_evidence_url":None,
      "source_url":metadata["source_url"],"source_captured_at":metadata["retrieved_at"],
      "source_class":"ESPN scoreboard provider report, unverified",
