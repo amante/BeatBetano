@@ -25,7 +25,10 @@ def parse_roster(payload,team,observed_at):
             pid=player["id"]
             if pid in ids:raise ValueError("Duplicate official roster ID")
             ids.add(pid)
-            players.append({"player_id":pid,"position_group":role,
+            first=player.get("firstName") or {};last=player.get("lastName") or {}
+            first=first.get("default","") if isinstance(first,dict) else first
+            last=last.get("default","") if isinstance(last,dict) else last
+            players.append({"player_id":pid,"first_name":first,"last_name":last,"full_name":(first+" "+last).strip(),"position_group":role,
                 "position_code":player.get("positionCode"),"roster_membership":"listed",
                 "lineup_status":"unknown","starter_confirmed":False,
                 "expected_share":None})
