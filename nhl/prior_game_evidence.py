@@ -50,7 +50,7 @@ def generate(folder,expected=2811):
         for x in by_day[day]:
             stats=(x.get("boxscore") or {}).get("player_by_game_stats")
             for side in ("home","away"):
-                players,goalies=roster_count(stats,side+"") if False else roster_count(stats,"home" if side=="home" else "away")
+                players,goalies=roster_count(stats,side)
                 track=history[x[side]]
                 track["games"]+=1
                 if players is not None:track["roster_recorded"]+=1
