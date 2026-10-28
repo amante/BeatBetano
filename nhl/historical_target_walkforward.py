@@ -48,7 +48,7 @@ def prediction(global_counts,team_counts,home,away,target,shrink,team_weight):
     cats=CATEGORIES[target]
     glob=global_counts[target]
     prior=normalize([glob[c]+1 for c in cats])
-    home_c=team_counts[home][target];away_c=team_counts[away][target]
+    home_c=team_counts["home:"+home][target];away_c=team_counts["away:"+away][target]
     # Team role-specific, date-past event counts; no target-game outcome.
     role_counts=[(home_c[c]+away_c[c]) for c in cats]
     total=sum(role_counts)
@@ -73,8 +73,8 @@ def timeline(rows,shrink,team_weight):
             y=outcomes(r)
             for t,v in y.items():
                 global_counts[t][v]+=1
-                team_counts[r["home"]][t][v]+=1
-                team_counts[r["away"]][t][v]+=1
+                team_counts["home:"+r["home"]][t][v]+=1
+                team_counts["away:"+r["away"]][t][v]+=1
     return result
 
 def metrics(entries):
