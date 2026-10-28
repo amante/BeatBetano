@@ -1,0 +1,108 @@
+name: NHL — One-click full historical backfill
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: nhl-all-historical-backfill
+  cancel-in-progress: false
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Retrieve official historical ledger
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .history
+          gh run download 40604007375 --repo "$GITHUB_REPOSITORY" --name nhl-walkforward-40604007375 --dir .history
+      - name: Create batches of 75 games
+        id: plan
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          rows=json.loads(Path(".history/walkforward_history.json").read_text())
+          if len(rows)<2500:raise SystemExit("Historical ledger coverage insufficient")
+          batches=[{"index":i,"start":i*75,"end":min(len(rows),(i+1)*75)} for i in range((len(rows)+74)//75)]
+          with open(os.environ["GITHUB_OUTPUT"],"a") as f:
+            f.write("matrix="+json.dumps({"include":batches},separators=(",",":"))+"\n")
+          print("Planned batches:",len(batches))
+          PY
+  fetch:
+    needs: plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 80
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Retrieve historical ledger and select deterministic range
+        env:
+          GH_TOKEN: ${{ github.token }}
+          START: ${{ matrix.start }}
+          END: ${{ matrix.end }}
+        run: |
+          mkdir -p .history
+          gh run download 40604007375 --repo "$GITHUB_REPOSITORY" --name nhl-walkforward-40604007375 --dir .history
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          rows=json.loads(Path(".history/walkforward_history.json").read_text())
+          Path(".history/batch.json").write_text(json.dumps(rows[int(os.environ["START"]):int(os.environ["END"])]))
+          PY
+      - name: Fetch complete assigned batch with bounded retries
+        run: |
+          python nhl/backfill_all_history.py --history .history/batch.json --archive results/nhl/batch --max-seconds 4400
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: nhl-full-batch-${{ matrix.index }}
+          path: results/nhl/batch/
+          retention-days: 90
+  consolidate:
+    if: always()
+    needs: [plan,fetch]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Download ledger and every batch artifact from same run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .history .batches
+          gh run download 40604007375 --repo "$GITHUB_REPOSITORY" --name nhl-walkforward-40604007375 --dir .history
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --pattern 'nhl-full-batch-*' --dir .batches || true
+      - name: Merge, audit duplicates and enforce total coverage
+        run: |
+          python nhl/consolidate_historical_games.py --ledger .history/walkforward_history.json --source-dir .batches --output-dir results/nhl/full_archive --selection-file results/nhl/missing.json --batch-size 100
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          m=json.loads(Path("results/nhl/full_archive/manifest.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as f:
+            f.write("## NHL complete historical collection\n\n"+str(m["consolidated_games"])+"/"+str(m["ledger_games"])+" records; "+str(m["missing_games"])+" missing.\n")
+          if m["missing_games"] or m["invalid_files"]:
+            raise SystemExit("Historical completeness not achieved: inspect batch jobs and missing.json")
+          PY
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: nhl-combined-historical-${{ github.run_id }}
+          path: |
+            results/nhl/full_archive/
+            results/nhl/missing.json
+          retention-days: 90
