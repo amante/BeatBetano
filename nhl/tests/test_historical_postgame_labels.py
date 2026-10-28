@@ -34,10 +34,18 @@ class LabelTests(unittest.TestCase):
   r=labels(g)
   self.assertEqual(r["first_to_plus3"],"home")
   self.assertEqual(r["first_plus3_event_id"],"goal-ordinal-2")
+ def test_missing_running_score_is_reconstructed_from_verified_goal_owner(self):
+  g=game([("home",1,"REG"),("home",2,"REG"),("away",3,"REG")])
+  for e in g["goal_events"]:e["home_score"]=None;e["away_score"]=None
+  r=labels(g)
+  self.assertEqual((r["rt_home_goals"],r["rt_away_goals"]),(2,1))
+ def test_missing_period_is_diagnosed(self):
+  g=game([("home",1,"REG")]);g["goal_events"][0]["period"]=None
+  with self.assertRaisesRegex(ValueError,"official period is missing"):labels(g)
  def test_broken_score_rejected(self):
   g=game([("home",1,"REG"),("away",2,"REG"),("home",3,"REG")])
   g["goal_events"][1]["away_score"]=9
-  with self.assertRaisesRegex(ValueError,"inconsistent"):labels(g)
+  with self.assertRaisesRegex(ValueError,"away scoreboard"):labels(g)
  def test_missing_team_ids_rejected(self):
   g=game([("home",1,"REG")]);g["boxscore"]["home_team"]={}
   with self.assertRaisesRegex(ValueError,"team IDs"):labels(g)
