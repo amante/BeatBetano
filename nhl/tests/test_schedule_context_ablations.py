@@ -20,7 +20,7 @@ class ScheduleContextTests(unittest.TestCase):
      row("2025-10-03","c")]
   out=context(x)
   self.assertEqual(out["a"]["rest"],out["b"]["rest"])
-  self.assertEqual(out["c"]["rest"],1)
+  self.assertEqual(out["c"]["rest"],0)  # both opponents last played on Oct 1
  def test_zero_adjustment(self):
   ctx={"rest":2,"division":1,"rivalry":1}
   self.assertAlmostEqual(adjust(.63,ctx,(0.,0.,0.)),.63)
