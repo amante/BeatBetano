@@ -51,6 +51,17 @@ jobs:
             f.write("## NHL historical postgame labels\n\n")
             f.write(str(manifest["games"])+" games fully reconciled; labels digest: `"+manifest["sha256"]+"`\n")
           PY
+      - name: Keep full validation diagnostics even when audit fails
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: nhl-postgame-validation-${{ github.run_id }}
+          path: |
+            output/rejected_games.json
+            output/labels_manifest.json
+            output/nhl_postgame_labels.csv
+          if-no-files-found: ignore
+          retention-days: 90
       - name: Create persistent archive bundles
         run: |
           tar -czf output/nhl-complete-2811-source.tar.gz -C "$(cat archive_root.txt)" .
