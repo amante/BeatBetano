@@ -1,0 +1,51 @@
+name: NHL — Schedule context ablation holdout
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/schedule_context_ablations.py
+      - nhl/tests/test_schedule_context_ablations.py
+      - .github/workflows/nhl-context-ablation.yml
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_schedule_context_ablations -v
+      - name: Download official checked target labels
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_labels results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl_postgame_labels.csv --pattern labels_manifest.json \
+            --dir .nhl_labels
+      - name: Authenticate input hash and evaluate
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          base=Path(".nhl_labels")
+          manifest=json.loads((base/"labels_manifest.json").read_text())
+          labels=base/"nhl_postgame_labels.csv"
+          if manifest["games"]!=2811 or hashlib.sha256(labels.read_bytes()).hexdigest()!=manifest["sha256"]:
+            raise SystemExit("Invalid NHL historical outcome label source")
+          PY
+          python nhl/schedule_context_ablations.py \
+            --labels .nhl_labels/nhl_postgame_labels.csv \
+            --output results/nhl/schedule_context_ablation.json
+      - name: Preserve experimental ablation
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v6
+        with:
+          name: nhl-context-ablation-${{ github.run_id }}
+          path: results/nhl/schedule_context_ablation.json
+          retention-days: 90
