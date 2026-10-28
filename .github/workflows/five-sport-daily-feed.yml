@@ -1,0 +1,39 @@
+name: Five-sport daily fixtures and results
+on:
+  schedule:
+    - cron: '15 9 * * *'
+    - cron: '15 21 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: daily-five-sport-feed
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Retrieve today's and yesterday's verified fixtures
+        run: python frontend/collect_daily.py --out frontend/data/daily.json
+      - name: Maintain chronological outcomes archive
+        run: python frontend/merge_daily_history.py --daily frontend/data/daily.json --history frontend/data/history.json
+      - name: Validate JSON output
+        run: |
+          python -m json.tool frontend/data/daily.json > /dev/null
+          python -m json.tool frontend/data/history.json > /dev/null
+      - name: Save snapshot to main
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add frontend/data/daily.json frontend/data/history.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: refresh five-sport fixtures and settled results"
+            git push origin HEAD:main
+          fi
