@@ -1,0 +1,63 @@
+name: NHL — Official roster and player-level historical evidence
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/official_roster_snapshot.py
+      - nhl/individual_goalie_toi_history.py
+      - nhl/tests/test_official_roster_goalie_toi.py
+      - .github/workflows/nhl-official-roster-goalie-toi.yml
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_official_roster_goalie_toi -v
+      - name: Download audited NHL history
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .source/archive results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl-complete-2811-source.tar.gz --pattern archive_sha256.json --dir .source
+          tar -xzf .source/nhl-complete-2811-source.tar.gz -C .source/archive
+      - name: Verify historical source checksums
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          hashes=json.loads(Path(".source/archive_sha256.json").read_text())
+          if len([k for k in hashes if k!="manifest.json"])!=2811:raise SystemExit("Wrong source count")
+          for name,expected in hashes.items():
+            if Path(name).name!=name:raise SystemExit("Unsafe path")
+            p=Path(".source/archive")/name
+            if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest()!=expected:
+              raise SystemExit("Historical source digest mismatch: "+name)
+          PY
+      - name: Extract prior-date individual goalie and TOI evidence
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python nhl/individual_goalie_toi_history.py \
+            --archive .source/archive \
+            --output results/nhl/individual_goalie_toi_history.json \
+            --manifest results/nhl/individual_goalie_toi_history_manifest.json
+      - name: Fetch official current NHL rosters as non-lineup candidate pools
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python nhl/official_roster_snapshot.py \
+            --teams BOS TOR \
+            --out results/nhl/official_current_roster_examples.json
+      - uses: actions/upload-artifact@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: nhl-official-roster-goalie-toi-${{ github.run_id }}
+          path: results/nhl/*.json
+          retention-days: 90
