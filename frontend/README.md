@@ -1,5 +1,13 @@
 # BeatBetano — Sports Intelligence Frontend
 
+## Navigation
+- `index.html`: public landing and login dialog UI.
+- The real login button is intentionally disabled until an identity provider/backend is configured; no passwords are collected or stored.
+- `Explorar demo sin cuenta`: opens a five-card sport selector (NBA, NFL, NHL, Soccer, Tennis).
+- Each sport card navigates to `dashboard.html?sport=...`, preserving the original analytics screen, filtered by sport.
+- Demo browsing is **not** authentication or access control. Protect backend routes before exposing private data.
+
+
 Static, responsive frontend for five sports. No npm dependencies or server.
 
 ## Run locally
