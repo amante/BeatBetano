@@ -6,7 +6,10 @@ Observations represent team goalies in completed games, not confirmed starters.
 import argparse,hashlib,json
 from pathlib import Path
 from collections import defaultdict,deque,Counter
-from prior_player_goalie_stats import extract
+try:
+    from nhl.prior_player_goalie_stats import extract
+except ModuleNotFoundError:
+    from prior_player_goalie_stats import extract
 
 def derive(folder,expected=2811,windows=(3,5,10),prior_shots=100,prior_rate=.905):
     if not 0<prior_rate<1 or prior_shots<0:raise ValueError("Invalid shrinkage prior")
