@@ -1,0 +1,119 @@
+name: Multisport — Historical audit and archive
+on:
+  workflow_dispatch:
+    inputs:
+      sport:
+        description: Sport identifier
+        required: true
+        type: choice
+        options: [nba, nfl, nhl, soccer, tennis]
+      source_run_id:
+        description: Successful source collection workflow run ID
+        required: true
+        type: string
+      source_artifact:
+        description: Exact GitHub Actions source artifact name
+        required: true
+        type: string
+      source_json_path:
+        description: Relative JSON file inside downloaded artifact
+        required: true
+        type: string
+      persist_release:
+        description: Publish immutable archive as GitHub Release after complete audit
+        required: true
+        type: boolean
+        default: false
+      expected_games:
+        description: Expected distinct finished games (0 means no certified coverage claim)
+        required: true
+        type: number
+        default: 0
+permissions:
+  contents: write
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Test shared protocol
+        run: python -m unittest multisport.tests.test_historical_protocol -v
+      - name: Download original source from this repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.source_run_id }}
+          SOURCE_ARTIFACT: ${{ inputs.source_artifact }}
+        run: |
+          mkdir -p .source
+          gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name "$SOURCE_ARTIFACT" --dir .source
+      - name: Validate historical records without changing models
+        env:
+          SPORT: ${{ inputs.sport }}
+          JSON_PATH: ${{ inputs.source_json_path }}
+          EXPECTED: ${{ inputs.expected_games }}
+          SOURCE_RUN: ${{ inputs.source_run_id }}
+          SOURCE_ARTIFACT: ${{ inputs.source_artifact }}
+        run: |
+          python - <<'PY'
+          import os,subprocess
+          from pathlib import Path
+          raw=Path(os.environ["JSON_PATH"])
+          if raw.is_absolute() or ".." in raw.parts:raise SystemExit("Unsafe relative path")
+          target=Path(".source")/raw
+          if not target.is_file():raise SystemExit("Source JSON not found: "+str(target))
+          expected=int(os.environ["EXPECTED"])
+          if expected<0:raise SystemExit("expected_games must be nonnegative")
+          cmd=["python","-m","multisport.historical_protocol","--sport",os.environ["SPORT"],"--input",str(target),
+               "--output-dir","results/multisport/historical","--source-ref","actions:"+
+                 os.environ["SOURCE_RUN"]+"/"+os.environ["SOURCE_ARTIFACT"]]
+          if expected:cmd.extend(["--expected-count",str(expected)])
+          subprocess.run(cmd,check=True)
+          PY
+      - name: Publish validated audit artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: multisport-history-audit-${{ inputs.sport }}-${{ github.run_id }}
+          path: results/multisport/historical/
+          retention-days: 90
+      - name: Package original source and verified manifest
+        if: inputs.persist_release && inputs.expected_games > 0
+        env:
+          SOURCE_PATH: ${{ inputs.source_json_path }}
+        run: |
+          mkdir -p results/multisport/package
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json,os,shutil
+          input_path=Path(".source")/os.environ["SOURCE_PATH"]
+          result=Path("results/multisport/historical")
+          manifest=json.loads((result/"audit_manifest.json").read_text())
+          if not manifest["coverage_complete"]:raise SystemExit("Cannot archive incomplete coverage")
+          archive=Path("results/multisport/package")
+          shutil.copyfile(input_path,archive/"original_source.json")
+          shutil.copyfile(result/"canonical_history.json",archive/"canonical_history.json")
+          shutil.copyfile(result/"audit_manifest.json",archive/"audit_manifest.json")
+          checks={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(archive.iterdir()) if p.is_file()}
+          (archive/"SHA256SUMS.json").write_text(json.dumps(checks,indent=2,sort_keys=True))
+          PY
+          tar -czf results/multisport/history-archive.tar.gz -C results/multisport/package .
+      - name: Publish immutable historical release
+        if: inputs.persist_release && inputs.expected_games > 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SPORT: ${{ inputs.sport }}
+          SOURCE_RUN: ${{ inputs.source_run_id }}
+        run: |
+          TAG="history-${SPORT}-source-${SOURCE_RUN}"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::The persistent archive for this source run already exists; refusing overwrite"
+            exit 1
+          fi
+          gh release create "$TAG" results/multisport/history-archive.tar.gz \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "Verified historical ${SPORT} archive (source run ${SOURCE_RUN})" \
+            --notes "Strict source integrity and expected-game coverage validated. POSTGAME RESULTS ONLY. Does not certify point-in-time features or predictive calibration."
