@@ -1,0 +1,55 @@
+name: NHL — Historical goalie roster and special teams evidence audit
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/historical_feature_readiness.py
+      - nhl/tests/test_historical_feature_readiness.py
+      - .github/workflows/nhl-feature-readiness.yml
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Test evidence classifications
+        run: python -m unittest nhl.tests.test_historical_feature_readiness -v
+      - name: Retrieve immutable original NHL historical games
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_source/full_archive results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl-complete-2811-source.tar.gz --pattern archive_sha256.json --dir .nhl_source
+          tar -xzf .nhl_source/nhl-complete-2811-source.tar.gz -C .nhl_source/full_archive
+      - name: Audit source checksums and module evidence
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          base=Path(".nhl_source/full_archive")
+          digests=json.loads(Path(".nhl_source/archive_sha256.json").read_text())
+          games=[name for name in digests if name!="manifest.json"]
+          if len(games)!=2811:raise SystemExit("Source checksum manifest must have 2811 games")
+          for filename,digest in digests.items():
+            target=base/filename
+            if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest()!=digest:
+              raise SystemExit("Invalid source digest: "+filename)
+          PY
+          python nhl/historical_feature_readiness.py \
+            --archive .nhl_source/full_archive --expected 2811 \
+            --output results/nhl/historical_feature_readiness.json
+      - name: Preserve audited evidence gap report
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v6
+        with:
+          name: nhl-feature-readiness-${{ github.run_id }}
+          path: results/nhl/historical_feature_readiness.json
+          retention-days: 90
