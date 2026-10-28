@@ -47,7 +47,7 @@ function draw(){
  const yesterdayDate=yesterday(date);
  const previous=(scoreboard?.games||[]).filter(g=>g.sport===sport&&chileDay(new Date(g.start_utc))===yesterdayDate);
  // No guessing: historical stats require actual archived final outcomes.
- const allResults=evaluate(scoreboard?.games||[],ledger).filter(x=>x.sport===sport);
+ const allResults=evaluate(window.__historicalGames||scoreboard?.games||[],ledger).filter(x=>x.sport===sport);
  const wins=allResults.filter(x=>x.win).length,losses=allResults.length-wins;
  const relevant=allResults.filter(x=>chileDay(new Date(x.game.start_utc))===yesterdayDate);
  const stats=$("daily-stats");stats.replaceChildren(
@@ -91,6 +91,7 @@ async function load(){
   if(r.ok){const data=await r.json();if(!Array.isArray(data.games))throw Error("Snapshot inválido");scoreboard=data;
    if(/^\d{4}-\d{2}-\d{2}$/.test(data.date))$("daily-date").value=data.date;}
  }catch(err){$("feed-message").textContent="Sin conexión con el snapshot de partidos: "+err.message;}
+ try{const h=await fetch("./data/history.json",{cache:"no-store"});if(h.ok){const items=await h.json();if(Array.isArray(items))window.__historicalGames=items;}}catch(_){}
  try{const r=await fetch("./data/predictions.json",{cache:"no-store"});if(r.ok){const d=await r.json();ledger=Array.isArray(d)?d:Array.isArray(d.predictions)?d.predictions:[];}}catch(_){}
  draw();
 }
