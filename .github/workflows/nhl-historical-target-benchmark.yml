@@ -1,0 +1,53 @@
+name: NHL — Chronological multi-target research benchmark
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/historical_target_walkforward.py
+      - nhl/tests/test_historical_target_walkforward.py
+      - .github/workflows/nhl-historical-target-benchmark.yml
+permissions:
+  contents: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Test chronology and result coding
+        run: python -m unittest nhl.tests.test_historical_target_walkforward -v
+      - name: Download immutable NHL audited targets
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_labels results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl_postgame_labels.csv --dir .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern labels_manifest.json --dir .nhl_labels
+      - name: Audit input SHA256 and compute walk-forward baselines
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          manifest=json.loads(Path(".nhl_labels/labels_manifest.json").read_text())
+          target=Path(".nhl_labels/nhl_postgame_labels.csv")
+          actual=hashlib.sha256(target.read_bytes()).hexdigest()
+          if manifest["games"]!=2811 or manifest["sha256"]!=actual:
+            raise SystemExit("Postgame labels SHA/count mismatch")
+          PY
+          python nhl/historical_target_walkforward.py \
+            --labels .nhl_labels/nhl_postgame_labels.csv \
+            --output results/nhl/historical_target_benchmark.json
+      - name: Preserve auditable model comparison
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v6
+        with:
+          name: nhl-target-walkforward-${{ github.run_id }}
+          path: results/nhl/historical_target_benchmark.json
+          retention-days: 90
