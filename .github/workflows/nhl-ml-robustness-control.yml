@@ -1,0 +1,62 @@
+name: NHL — ML robustness and contextual control
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/ml_robustness_control.py
+      - nhl/tests/test_ml_robustness_control.py
+      - .github/workflows/nhl-ml-robustness-control.yml
+permissions:
+  contents: read
+  actions: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install transitive historical module dependency
+        run: python -m pip install requests
+      - name: Run regression tests
+        run: python -m unittest nhl.tests.test_ml_robustness_control -v
+      - name: Download historical labels and verified lagged feature dataset
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .labels .features results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl_postgame_labels.csv --pattern labels_manifest.json --dir .labels
+          gh run download 40622612674 --repo "$GITHUB_REPOSITORY" \
+            --name nhl-prior-player-goalie-stats-40622612674 --dir .features
+      - name: Verify integrity and run robustness control
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          labels=Path(".labels/nhl_postgame_labels.csv")
+          manifest=json.loads(Path(".labels/labels_manifest.json").read_text())
+          if manifest["games"]!=2811 or manifest["sha256"]!=hashlib.sha256(labels.read_bytes()).hexdigest():
+            raise SystemExit("Labels digest mismatch")
+          feats=list(Path(".features").rglob("prior_player_goalie_stats.json"))
+          reports=list(Path(".features").rglob("prior_player_goalie_stats_manifest.json"))
+          if len(feats)!=1 or len(reports)!=1:raise SystemExit("Missing feature artifact")
+          meta=json.loads(reports[0].read_text())
+          if meta["games"]!=2811 or meta["sha256"]!=hashlib.sha256(feats[0].read_bytes()).hexdigest():
+            raise SystemExit("Feature digest mismatch")
+          Path("feature-path.txt").write_text(str(feats[0]))
+          PY
+          python nhl/ml_robustness_control.py \
+            --labels .labels/nhl_postgame_labels.csv \
+            --features "$(cat feature-path.txt)" \
+            --output results/nhl/ml_robustness_control.json
+      - uses: actions/upload-artifact@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: nhl-ml-robustness-control-${{ github.run_id }}
+          path: results/nhl/ml_robustness_control.json
+          retention-days: 90
