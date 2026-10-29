@@ -20,7 +20,8 @@ def generate(fixtures,history,issued,source_sha256):
  output=[];seen=set()
  for fixture in fixtures:
   gid=str(fixture["game_id"]);start=parse_utc(fixture["start_utc"])
-  if gid in seen:raise ValueError("Duplicate fixture");seen.add(gid)
+  if gid in seen:raise ValueError("Duplicate fixture")
+  seen.add(gid)
   if not now<start:continue
   day=start.date().isoformat()
   eligible=[r for r in history if r["date"]<day]
