@@ -1,0 +1,19 @@
+name: PULSO NHL player-to-team evidence bridge
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_team_bridge.py'
+      - 'nhl/tests/test_pulso_team_bridge.py'
+      - '.github/workflows/pulso-team-bridge.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_team_bridge nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_collective_v8 -v
