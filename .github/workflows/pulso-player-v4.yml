@@ -1,0 +1,43 @@
+name: PULSO PLAYER — NHL v4 multiteam and probability validation
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_player_v4.py'
+      - 'nhl/tests/test_pulso_player_v4.py'
+      - '.github/workflows/pulso-player-v4.yml'
+  workflow_dispatch:
+    inputs:
+      teams:
+        description: 'Comma-separated NHL teams; start with EDM,COL,DAL,FLA,NYR,TOR'
+        required: false
+        type: string
+        default: EDM,COL,DAL,FLA,NYR,TOR
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_player_v4 nhl.tests.test_pulso_player_v3 nhl.tests.test_pulso_player_v1 -v
+  replay:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Fetch NHL multi-team sources and run chronological replay
+        env:
+          PULSO_TEAMS: ${{ inputs.teams }}
+        run: python -m nhl.pulso_player_v4 --teams "$PULSO_TEAMS" --out results/nhl/pulso_player_v4
+      - uses: actions/upload-artifact@v6
+        with:
+          name: pulso-player-nhl-v4-${{ github.run_id }}
+          path: results/nhl/pulso_player_v4/
+          retention-days: 90
