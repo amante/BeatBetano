@@ -1,0 +1,18 @@
+name: PULSO NHL #212 — projected lineup coverage
+on:
+  pull_request:
+    paths:
+      - nhl/pulso_lineup_coverage_212.py
+      - nhl/tests/test_pulso_lineup_coverage_212.py
+      - .github/workflows/pulso-lineup-coverage-212.yml
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_lineup_coverage_212 -v
