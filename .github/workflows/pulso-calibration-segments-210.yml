@@ -1,0 +1,40 @@
+name: PULSO NHL #210 — segmented reliability
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_calibration_segments_210.py'
+      - 'nhl/tests/test_pulso_210.py'
+      - '.github/workflows/pulso-calibration-segments-210.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_210 -v
+      - name: Run real historical calibration when manually dispatched
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_labels results/nhl/210
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern labels_manifest.json --dir .nhl_labels
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          d=Path(".nhl_labels");m=json.loads((d/"labels_manifest.json").read_text());p=d/"nhl_postgame_labels.csv"
+          if m.get("games")!=2811 or hashlib.sha256(p.read_bytes()).hexdigest()!=m.get("sha256"):raise SystemExit("Historical label archive mismatch")
+          PY
+          python -m nhl.pulso_calibration_segments_210 --labels .nhl_labels/nhl_postgame_labels.csv --out results/nhl/210/calibration.json
+      - uses: actions/upload-artifact@v6
+        if: always() && github.event_name == 'workflow_dispatch'
+        with:
+          name: pulso-nhl-210-calibration-${{ github.run_id }}
+          path: results/nhl/210/
+          retention-days: 90
