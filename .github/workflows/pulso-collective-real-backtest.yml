@@ -1,0 +1,61 @@
+name: PULSO NHL — real 2811-game collective backtest
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Test chronological collective evaluator
+        run: python -m unittest nhl.tests.test_pulso_collective_calibration nhl.tests.test_historical_target_walkforward -v
+      - name: Download immutable NHL historical labels and provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_labels results/nhl/pulso_collective
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern labels_manifest.json --dir .nhl_labels
+      - name: Verify SHA256, record count, then run chronological backtest
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          from nhl.historical_target_walkforward import read_labels
+          root=Path(".nhl_labels")
+          manifest=json.loads((root/"labels_manifest.json").read_text())
+          path=root/"nhl_postgame_labels.csv"
+          sha=hashlib.sha256(path.read_bytes()).hexdigest()
+          if manifest.get("games")!=2811 or manifest.get("sha256")!=sha:
+            raise SystemExit("Verified NHL outcome-label provenance mismatch")
+          rows=read_labels(path)
+          if len(rows)!=2811:raise SystemExit("Unexpected real archive size")
+          Path("results/nhl/pulso_collective/input_provenance.json").write_text(json.dumps({"source":"nhl-historical-2811-2026","games":len(rows),"sha256":sha},indent=2))
+          PY
+          python -m nhl.pulso_collective_calibration --labels .nhl_labels/nhl_postgame_labels.csv --out results/nhl/pulso_collective/metrics.json
+      - name: Show comparison in GitHub Actions summary
+        run: |
+          python - <<'PY'
+          import json,os
+          d=json.load(open("results/nhl/pulso_collective/metrics.json"))
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as f:
+            f.write("## PULSO NHL — Chronological historical-outcome backtest\n\n")
+            f.write(f"Test events: **{d['test_n']}**; features: historical outcomes only, no source-verified goalie/player pregame variables.\n\n")
+            f.write("| Market | Baseline Brier | Challenger Brier | Baseline Log Loss | Challenger Log Loss |\n|---|---:|---:|---:|---:|\n")
+            for k,v in d["model_scores"].items():
+              b=d["baseline_scores"][k]
+              f.write(f"| {k} | {b['brier']:.6f} | {v['brier']:.6f} | {b['log_loss']:.6f} | {v['log_loss']:.6f} |\n")
+            f.write("\n**Not an official calibrated multi-module NHL prediction. No automatic promotion.**\n")
+          PY
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: pulso-nhl-real-collective-backtest-${{ github.run_id }}
+          path: results/nhl/pulso_collective/
+          retention-days: 90
+          if-no-files-found: warn
