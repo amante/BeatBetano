@@ -1,0 +1,43 @@
+name: PULSO PLAYER — NHL v3 team-rest and multi-player replay
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_player_v3.py'
+      - 'nhl/tests/test_pulso_player_v3.py'
+      - '.github/workflows/pulso-player-v3.yml'
+  workflow_dispatch:
+    inputs:
+      teams:
+        description: 'NHL team abbreviations, comma-separated (EDM default; ALL requires many API calls)'
+        required: false
+        type: string
+        default: EDM
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_player_v3 nhl.tests.test_pulso_player_ingest_v2 nhl.tests.test_pulso_player_v1 -v
+  replay:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Run actual sourced roster + team schedule replay
+        env:
+          PULSO_TEAMS: ${{ inputs.teams }}
+        run: python -m nhl.pulso_player_v3 --teams "$PULSO_TEAMS" --out results/nhl/pulso_player_v3 --start 2025-10-01
+      - uses: actions/upload-artifact@v6
+        with:
+          name: pulso-player-nhl-v3-${{ github.run_id }}
+          path: results/nhl/pulso_player_v3/
+          retention-days: 90
