@@ -48,10 +48,21 @@ def build(teams,seasons,fetch=fetch_json):
   for season in seasons:
    url=API.format(player=player,season=season)
    data=fetch(url)
-   if not isinstance(data,dict) or not isinstance(data.get("gameLog"),list):
+   if not isinstance(data,dict):
     raise ValueError("Bad player log "+url)
-   sources.append({"url":url,"kind":"player_log","player":player,"season":season,"rows":len(data["gameLog"])})
-   for g in data["gameLog"]:
+   # The NHL API can return no gameLog for a player with no appearances
+   # in a season. Only a clean, season-shaped response may be empty;
+   # explicit provider error payloads still fail closed.
+   if isinstance(data.get("gameLog"),list):
+    season_games=data["gameLog"]
+   elif data.get("gameLog") is None and not any(k in data for k in ("error","message","status","statusCode","code")) and (
+    "playerId" in data or "seasonId" in data or "season" in data
+   ):
+    season_games=[]
+   else:
+    raise ValueError("Bad player log "+url)
+   sources.append({"url":url,"kind":"player_log","player":player,"season":season,"rows":len(season_games),"empty":not bool(season_games)})
+   for g in season_games:
     game=str(g["gameId"]);team=g["teamAbbrev"]
     # Don't mix skater logs with team schedule from an unsupported club.
     if team not in teams:continue
