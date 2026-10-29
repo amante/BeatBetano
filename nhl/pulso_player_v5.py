@@ -35,6 +35,9 @@ def evaluate(rows,positions,start="2025-10-01"):
  # Create only prior-date base predictions (v4). Forward-test whole 2025-26
  # then 2026-27, tuning only on previous seasons' prior-dated predictions.
  base=v4_replay(rows,positions,start="2024-10-01")
+ # Index per player/team; repeated global scans would scale quadratically.
+ histories=defaultdict(list)
+ for g in rows:histories[(g["player_id"],g["team"])].append(g)
  by_season=defaultdict(list)
  for r in base:by_season[season_of(r["date"])].append(r)
  targets=[s for s in sorted(by_season) if s>=season_of(start)]
@@ -48,7 +51,7 @@ def evaluate(rows,positions,start="2025-10-01"):
    # Shots-volume * past personal goal-per-shot conversion (Bayesian prior):
    # prior goal/shots must be reconstructed from earlier game outcomes, NOT
    # from the scored sample or target game.
-   history=[g for g in rows if g["player_id"]==r["player_id"] and g["team"]==r["team"] and g["date"]<r["date"]]
+   history=[g for g in histories[(r["player_id"],r["team"])] if g["date"]<r["date"]]
    total_shots=sum(g["shots_on_goal"] for g in history)
    total_goals=sum(g["goals"] for g in history)
    conversion=(total_goals+1)/(total_shots+12)
