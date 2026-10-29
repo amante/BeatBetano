@@ -23,10 +23,16 @@ def integrate(fixture,coverage,inputs):
   expected=data["expected"];baseline=data["baseline"];history=data["history"]
   projected={str(p["player_id"]) for p in expected["players"] if p["status"]!="out" and p["unit"]!="goalie"}
   if projected!=ids:issues.append("lineup_mismatch_"+team);continue
-  if parse_utc(expected["as_of"])>=start or parse_utc(baseline["as_of"])>=start or parse_utc(history["as_of"])>=start:
-   issues.append("late_evidence_"+team);continue
   if not data.get("availability_independently_verified"):
    issues.append("unverified_availability_"+team);continue
+  source_dates=[expected.get("as_of"),baseline.get("as_of"),history.get("as_of")]
+  if any(not stamp for stamp in source_dates):
+   issues.append("missing_source_timestamp_"+team);continue
+  try:
+   if any(parse_utc(stamp)>=start for stamp in source_dates):
+    issues.append("late_evidence_"+team);continue
+  except (TypeError,ValueError):
+   issues.append("invalid_source_timestamp_"+team);continue
   delta=compare(history,baseline,expected,fixture["start_utc"])
   result[team]=delta
   if delta["availability_delta_skater_offense_proxy"] is None:issues.append("incomplete_history_"+team)
