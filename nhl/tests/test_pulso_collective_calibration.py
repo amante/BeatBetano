@@ -4,9 +4,9 @@ from nhl.historical_target_walkforward import timeline
 class TestCollectiveCalibration(unittest.TestCase):
  def rows(self):
   rows=[]
-  for i in range(280):
+  for i in range(560):
    from datetime import date,timedelta
-   day=(date(2025,10,1)+timedelta(days=i)).isoformat()
+   day=(date(2025,10,1)+timedelta(days=i//2)).isoformat()
    rows.append({"game_id":str(i),"date":day,"home":"EDM","away":"COL",
      "ml_winner":"home" if i%3 else "away",
      "rt_result":("home","draw","away")[i%3],
