@@ -1,0 +1,19 @@
+name: PULSO NHL #215 — as-of training coverage
+on:
+  pull_request:
+    paths:
+      - nhl/pulso_training_ledger_215.py
+      - nhl/tests/test_pulso_training_ledger_215.py
+      - .github/workflows/pulso-training-ledger-215.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_training_ledger_215 -v
