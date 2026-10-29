@@ -1,0 +1,21 @@
+name: NHL — Research features 187–190
+on:
+  pull_request:
+    paths:
+      - nhl/research_features_187_190.py
+      - nhl/tests/test_research_features_187_190.py
+      - .github/workflows/nhl-features-187-190.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Run new and existing research tests
+        run: |
+          python -m unittest nhl.tests.test_research_features_187_190 nhl.tests.test_integrated_pregame_research_185_187 nhl.tests.test_integrated_ablation_audit_186 -v
