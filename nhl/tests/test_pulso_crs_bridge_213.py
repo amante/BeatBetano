@@ -17,4 +17,8 @@ class Tests(unittest.TestCase):
   inp={t:{"expected":{"players":[{"player_id":i,"status":"projected","unit":"top6"}]},
       "baseline":{},"history":{},"availability_independently_verified":False} for i,t in [(1,"EDM"),(2,"COL")]}
   self.assertIn("unverified_availability_EDM",integrate(self.fixture,self.coverage,inp)["issues"])
+ def test_verified_but_missing_timestamp_blocks(self):
+  inp={t:{"expected":{"players":[{"player_id":i,"status":"projected","unit":"top6"}]},
+      "baseline":{},"history":{},"availability_independently_verified":True} for i,t in [(1,"EDM"),(2,"COL")]}
+  self.assertIn("missing_source_timestamp_EDM",integrate(self.fixture,self.coverage,inp)["issues"])
 if __name__=="__main__":unittest.main()
