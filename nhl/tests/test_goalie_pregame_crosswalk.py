@@ -6,12 +6,13 @@ class CrosswalkTests(unittest.TestCase):
     "observations":[{"espn_event_id":"1","team":"BOS","home_away":"home",
       "event_start":"2026-10-28T23:00:00Z","source_captured_at":"2026-10-28T20:00:00Z",
       "goalie_status":"confirmed","provider_goalie_name":"Test Goalie",
-      "source_url":"https://site.api.espn.com/x"}]}
+      "source_url":"https://site.api.espn.com/x"},{"espn_event_id":"1","team":"MTL","home_away":"away","event_start":"2026-10-28T23:00Z","source_captured_at":"2026-10-28T20:00:00Z","goalie_status":"unknown","provider_goalie_name":None}]}
   roster=[{"team":"BOS","as_of":"2026-10-28T19:00:00Z","players":[{"player_id":123,"full_name":"Test Goalie","position_group":"goalie"}]}]
   schedule={"fixtures":[{"game_id":"100","home":"BOS","away":"MTL","scheduled_start":"2026-10-28T23:00:00Z"}]}
   x=summarize(espn,schedule,roster)
   self.assertEqual(x["summary"]["identity_linked"],1)
   self.assertEqual(x["summary"]["pregame_identity_usable"],1)
+  self.assertEqual(x["summary"]["fixture_linked"],2)
   self.assertFalse(x["full_crs_eligible"])
  def test_mismatched_team_unusable(self):
   espn={"source":{"source_url":"https://site.api.espn.com/x","retrieved_at":"2026-10-28T20:00:00Z"},
@@ -28,7 +29,7 @@ class CrosswalkTests(unittest.TestCase):
   with tempfile.TemporaryDirectory() as folder:
    d=Path(folder)
    cases={
-     "espn":{"source":{"source_url":"https://site.api.espn.com/x","retrieved_at":"2026-10-28T20:00:00Z"},"observations":[{"espn_event_id":"1","team":"BOS","home_away":"home","event_start":"2026-10-28T23:00:00Z","source_captured_at":"2026-10-28T20:00:00Z","goalie_status":"probable","provider_goalie_name":"Test Goalie"}]},
+     "espn":{"source":{"source_url":"https://site.api.espn.com/x","retrieved_at":"2026-10-28T20:00:00Z"},"observations":[{"espn_event_id":"1","team":"BOS","home_away":"home","event_start":"2026-10-28T23:00Z","source_captured_at":"2026-10-28T20:00:00Z","goalie_status":"probable","provider_goalie_name":"Test Goalie"},{"espn_event_id":"1","team":"MTL","home_away":"away","event_start":"2026-10-28T23:00Z","source_captured_at":"2026-10-28T20:00:00Z","goalie_status":"unknown","provider_goalie_name":None}]},
      "rosters":[{"team":"BOS","as_of":"2026-10-28T19:00:00Z","players":[{"player_id":123,"full_name":"Test Goalie","position_group":"goalie"}]}],
      "schedule":{"fixtures":[{"game_id":"100","home":"BOS","away":"MTL","scheduled_start":"2026-10-28T23:00:00Z"}]}}
    for name,obj in cases.items():(d/(name+".json")).write_text(json.dumps(obj))
