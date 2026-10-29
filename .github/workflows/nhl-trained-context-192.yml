@@ -1,0 +1,44 @@
+name: NHL — Train context coefficients 192
+on:
+  pull_request:
+    paths:
+      - 'nhl/trained_context_192.py'
+      - 'nhl/tests/test_trained_context_192.py'
+      - '.github/workflows/nhl-trained-context-192.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Run coefficient fit and regression tests
+        run: |
+          python -m unittest nhl.tests.test_trained_context_192 nhl.tests.test_integrated_ablation_audit_186 -v
+  train-archived:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Download documented 2811 NHL historical labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .source results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .source
+          test -s .source/nhl_postgame_labels.csv
+      - name: Train chronological fitted ML coefficients and store diagnostics
+        run: |
+          python -m nhl.trained_context_192 --labels .source/nhl_postgame_labels.csv --output results/nhl/trained_context_192.json
+      - uses: actions/upload-artifact@v6
+        with:
+          name: nhl-trained-coefficients-192-${{ github.run_id }}
+          path: results/nhl/trained_context_192.json
+          retention-days: 90
