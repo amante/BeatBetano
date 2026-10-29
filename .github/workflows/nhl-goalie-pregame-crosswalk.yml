@@ -23,7 +23,6 @@ jobs:
         run: |
           mkdir -p results/nhl
           DAY="$(date -u +%F)"
-          python nhl/espn_goalie_provider_capture.py --date "$DAY" --output results/nhl/espn.json --raw-output results/nhl/espn.raw.json
           python nhl/official_roster_snapshot.py --all-teams --out results/nhl/rosters.json
           python - "$DAY" <<'PY'
           import json,sys
@@ -31,6 +30,7 @@ jobs:
           from nhl.pregame_fixture_goalie_verifier import capture_schedule
           Path("results/nhl/schedule.json").write_text(json.dumps(capture_schedule(sys.argv[1]),indent=2))
           PY
+          python nhl/espn_goalie_provider_capture.py --date "$DAY" --output results/nhl/espn.json --raw-output results/nhl/espn.raw.json
           python nhl/goalie_pregame_crosswalk.py --espn results/nhl/espn.json --schedule results/nhl/schedule.json --rosters results/nhl/rosters.json --output results/nhl/crosswalk.json
       - uses: actions/upload-artifact@v6
         if: github.event_name == 'workflow_dispatch'
