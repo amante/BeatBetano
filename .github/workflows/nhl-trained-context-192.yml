@@ -1,0 +1,21 @@
+name: NHL — Train context coefficients 192
+on:
+  pull_request:
+    paths:
+      - 'nhl/trained_context_192.py'
+      - 'nhl/tests/test_trained_context_192.py'
+      - '.github/workflows/nhl-trained-context-192.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Run coefficient fit and regression tests
+        run: |
+          python -m unittest nhl.tests.test_trained_context_192 nhl.tests.test_integrated_ablation_audit_186 -v
