@@ -38,4 +38,12 @@ class V3Tests(unittest.TestCase):
    validate([bad])
   self.assertIn("sog=0",str(e.exception))
   self.assertIn("goals=1",str(e.exception))
+ def test_credited_goal_without_recorded_sog(self):
+  row={"game_id":"2025021109","date":"2026-03-21","player_id":"8484509","team":"EDM","opponent":"LAK","home":True,"rest_days":1,"toi_minutes":10.083333333333334,"shots_on_goal":0,"goals":1}
+  got=validate([row])
+  self.assertEqual(got[0]["goals"],1)
+  self.assertEqual(got[0]["shots_on_goal"],0)
+ def test_negative_goals_still_invalid(self):
+  row={"game_id":"a","date":"2026-03-21","player_id":"1","team":"EDM","opponent":"LAK","home":True,"rest_days":1,"toi_minutes":10,"shots_on_goal":2,"goals":-1}
+  with self.assertRaises(ValueError):validate([row])
 if __name__=="__main__":unittest.main()
