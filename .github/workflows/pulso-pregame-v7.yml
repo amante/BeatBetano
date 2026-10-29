@@ -1,0 +1,19 @@
+name: PULSO NHL — v6 temporal audit and v7 pregame availability gate
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_pregame_v7.py'
+      - 'nhl/tests/test_pulso_pregame_v7.py'
+      - '.github/workflows/pulso-pregame-v7.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_pregame_v7 nhl.tests.test_pulso_player_v5 nhl.tests.test_pulso_player_v4 nhl.tests.test_pulso_player_v3 -v
