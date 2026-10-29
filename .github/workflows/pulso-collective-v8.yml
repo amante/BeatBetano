@@ -1,0 +1,26 @@
+name: PULSO NHL v8-v9 research readiness and publication contract
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_collective_v8.py'
+      - 'nhl/goal_process.py'
+      - 'nhl/tests/test_pulso_collective_v8.py'
+      - 'frontend/pulso-nhl-status.js'
+      - 'frontend/dashboard.html'
+      - '.github/workflows/pulso-collective-v8.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - run: python -m unittest nhl.tests.test_pulso_collective_v8 nhl.tests.test_pulso_pregame_v7 -v
+      - run: node --check frontend/pulso-nhl-status.js
