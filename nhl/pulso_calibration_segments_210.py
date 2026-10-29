@@ -7,6 +7,7 @@ from nhl.pulso_collective_calibration import run
 from nhl.pulso_collective_audit_208 import rows_for_audit
 
 def diagnostics(rows,min_bin=30):
+ if not rows:raise ValueError('No holdout records')
  report={}
  for market,cats in CATEGORIES.items():
   classes={}
