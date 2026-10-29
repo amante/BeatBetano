@@ -30,7 +30,7 @@ def validate(rows):
             sog=int(r["shots_on_goal"]);goals=int(r["goals"])
         except (ValueError,KeyError) as e:raise ValueError("Invalid player game values") from e
         if rest<0 or toi<0 or toi>70 or sog<0 or goals<0 or goals>sog:
-            raise ValueError("Invalid player statistics")
+            raise ValueError(f"Invalid player statistics player={r['player_id']} game={r['game_id']} date={r['date']} toi={toi} sog={sog} goals={goals} rest={rest}")
         out.append({**r,"date":day.isoformat(),"home":home,
                     "rest_days":rest,"toi_minutes":toi,
                     "shots_on_goal":sog,"goals":goals})

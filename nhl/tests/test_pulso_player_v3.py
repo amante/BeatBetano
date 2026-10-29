@@ -32,4 +32,10 @@ class V3Tests(unittest.TestCase):
    if "/club-schedule-season/" in url:return {"games":[]}
    return {"error":"upstream unavailable"}
   with self.assertRaises(ValueError):build(("EDM",),("20262027",),fake)
+ def test_invalid_record_reports_exact_player_game(self):
+  bad={"game_id":"2026020001","date":"2026-10-01","player_id":"8470000","team":"EDM","opponent":"LAK","home":True,"rest_days":0,"toi_minutes":20,"shots_on_goal":0,"goals":1}
+  with self.assertRaisesRegex(ValueError,"player=8470000 game=2026020001") as e:
+   validate([bad])
+  self.assertIn("sog=0",str(e.exception))
+  self.assertIn("goals=1",str(e.exception))
 if __name__=="__main__":unittest.main()
