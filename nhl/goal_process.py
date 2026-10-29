@@ -4,7 +4,10 @@ Unfitted Poisson model: transparent, bounded inputs, no bookmakers.
 Not official/challenger probabilities and not calibrated or bet-authorized.
 """
 import argparse,json,math
-from factor_engine import process
+try:
+ from nhl.factor_engine import process
+except ModuleNotFoundError:
+ from factor_engine import process
 from pathlib import Path
 
 def poisson(mean,kmax=30):
