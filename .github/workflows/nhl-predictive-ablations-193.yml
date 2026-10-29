@@ -1,0 +1,35 @@
+name: NHL — Predictive ablations 193
+on:
+  pull_request:
+    paths:
+      - 'nhl/predictive_ablation_193.py'
+      - 'nhl/tests/test_predictive_ablation_193.py'
+      - '.github/workflows/nhl-predictive-ablations-193.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_predictive_ablation_193 nhl.tests.test_trained_context_192 -v
+      - name: Download source historical labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .source results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .source
+          test -s .source/nhl_postgame_labels.csv
+      - name: Evaluate all factor ablations
+        run: |
+          python -m nhl.predictive_ablation_193 --labels .source/nhl_postgame_labels.csv --output results/nhl/predictive_ablation_193.json
+      - uses: actions/upload-artifact@v6
+        with:
+          name: nhl-ablation-193-${{ github.run_id }}
+          path: results/nhl/predictive_ablation_193.json
+          retention-days: 90
