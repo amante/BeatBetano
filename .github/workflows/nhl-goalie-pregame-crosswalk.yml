@@ -1,0 +1,40 @@
+name: NHL — End-to-end goalie pregame crosswalk
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/goalie_pregame_crosswalk.py
+      - nhl/tests/test_goalie_pregame_crosswalk.py
+      - .github/workflows/nhl-goalie-pregame-crosswalk.yml
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_goalie_pregame_crosswalk -v
+      - name: Capture today's source feeds
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          mkdir -p results/nhl
+          DAY="$(date -u +%F)"
+          python nhl/official_roster_snapshot.py --all-teams --out results/nhl/rosters.json
+          python - "$DAY" <<'PY'
+          import json,sys
+          from pathlib import Path
+          from nhl.pregame_fixture_goalie_verifier import capture_schedule
+          Path("results/nhl/schedule.json").write_text(json.dumps(capture_schedule(sys.argv[1]),indent=2))
+          PY
+          python nhl/espn_goalie_provider_capture.py --date "$DAY" --output results/nhl/espn.json --raw-output results/nhl/espn.raw.json
+          python nhl/goalie_pregame_crosswalk.py --espn results/nhl/espn.json --schedule results/nhl/schedule.json --rosters results/nhl/rosters.json --output results/nhl/crosswalk.json
+      - uses: actions/upload-artifact@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: nhl-goalie-crosswalk-${{ github.run_id }}
+          path: results/nhl/*.json
+          retention-days: 30
