@@ -1,0 +1,36 @@
+name: PULSO PLAYER — NHL sourced historical replay v2
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'nhl/pulso_player_ingest_v2.py'
+      - 'nhl/tests/test_pulso_player_ingest_v2.py'
+      - 'nhl/data/player_ids_seed.json'
+      - '.github/workflows/pulso-player-ingest-v2.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_player_ingest_v2 nhl.tests.test_pulso_player_v1 -v
+  replay-seed:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Download NHL player game logs and evaluate
+        run: python -m nhl.pulso_player_ingest_v2 --players nhl/data/player_ids_seed.json --output-dir results/nhl/player_v2 --start 2025-10-01
+      - uses: actions/upload-artifact@v6
+        with:
+          name: pulso-player-nhl-v2-${{ github.run_id }}
+          path: results/nhl/player_v2/
+          retention-days: 90
