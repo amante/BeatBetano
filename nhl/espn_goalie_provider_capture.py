@@ -70,10 +70,15 @@ def reconcile(report,rosters,official_schedule):
   roster=indexed.get(team)
   errors=[]
   if not roster:errors.append("roster_missing")
-  games=[g for g in official_schedule["fixtures"] if team in (g["home"],g["away"])
-         and (g["home"] if row.get("home_away")=="home" else g["away"])==team
-         and g["scheduled_start"]==row.get("event_start")]
-  if len(games)!=1:errors.append("fixture_mismatch")
+  paired=[x for x in report["observations"] if x.get("espn_event_id")==row.get("espn_event_id")]
+  paired_teams={aliases.get(x["team"],x["team"]) for x in paired}
+  if row.get("home_away") not in ("home","away") or len(paired)!=2 or len(paired_teams)!=2:
+   errors.append("espn_event_teams_incomplete")
+  games=[g for g in official_schedule["fixtures"]
+         if {g["home"],g["away"]}==paired_teams
+         and g[row["home_away"]]==team
+         and timepoint(g["scheduled_start"])==timepoint(row["event_start"])] if "espn_event_teams_incomplete" not in errors else []
+   if len(games)!=1:errors.append("fixture_mismatch")
   if games and timepoint(row["source_captured_at"])>=timepoint(games[0]["scheduled_start"]):
    errors.append("source_after_start")
   if roster and timepoint(roster["as_of"])>timepoint(row["source_captured_at"]):
