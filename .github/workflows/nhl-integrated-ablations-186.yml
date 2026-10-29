@@ -1,0 +1,37 @@
+name: NHL — Integrated ablations historical research
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/integrated_ablation_audit_186.py
+      - nhl/tests/test_integrated_ablation_audit_186.py
+      - .github/workflows/nhl-integrated-ablations-186.yml
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_integrated_ablation_audit_186 nhl.tests.test_integrated_pregame_research_185_187 -v
+      - name: Acquire archived historical labels
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .source results/nhl
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .source
+      - name: Compute schedule-context ablations and missing module coverage
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python nhl/integrated_ablation_audit_186.py --labels .source/nhl_postgame_labels.csv --output results/nhl/integrated_ablation_audit_186.json
+      - uses: actions/upload-artifact@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: nhl-integrated-ablations-186-${{ github.run_id }}
+          path: results/nhl/integrated_ablation_audit_186.json
+          retention-days: 90
