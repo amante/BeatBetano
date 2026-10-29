@@ -47,6 +47,7 @@ def evaluate(rows,positions,start="2025-10-01"):
   weights={k:select_weights(training,k) for k in ("toi_minutes","shots_on_goal","goals")}
   weight_schedule[season]={"weights":weights,"prior_season_examples":len(training)}
   for r in by_season[season]:
+   if r["date"]<start:continue  # season group alone does not enforce target cutoff
    estimate={k:max(0.,blend(r["predictions"]["recent10"][k],r["predictions"]["contextual"][k],weights[k])) for k in weights}
    # Shots-volume * past personal goal-per-shot conversion (Bayesian prior):
    # prior goal/shots must be reconstructed from earlier game outcomes, NOT
