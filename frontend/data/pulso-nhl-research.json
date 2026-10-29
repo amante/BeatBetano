@@ -1,97 +1,9 @@
 {
-  "generated_at_utc": "2026-10-29T22:57:23.687633+00:00",
+  "generated_at_utc": "2026-10-29T23:02:19.459887+00:00",
   "date": "2026-10-29",
   "data_kind": "source_readiness_only",
-  "game_count": 11,
+  "game_count": 8,
   "games": [
-    {
-      "sport": "nhl",
-      "game_id": "2026020204",
-      "home": "TBL",
-      "away": "WPG",
-      "start_utc": "2026-10-29T23:00:00Z",
-      "status": "unavailable",
-      "probabilities": null,
-      "readiness_issues": [
-        "roster_snapshot_not_connected",
-        "goalie_identity_and_confirmation_not_verified",
-        "team_rate_model_not_calibrated"
-      ],
-      "goalie_provider_observations": {
-        "TBL": {
-          "status": "unknown",
-          "source_count": 0
-        },
-        "WPG": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Stuart Skinner",
-          "confirmed_as_official": false
-        }
-      },
-      "odds_used_in_model": false,
-      "official": false
-    },
-    {
-      "sport": "nhl",
-      "game_id": "2026020205",
-      "home": "PIT",
-      "away": "UTA",
-      "start_utc": "2026-10-29T23:00:00Z",
-      "status": "unavailable",
-      "probabilities": null,
-      "readiness_issues": [
-        "roster_snapshot_not_connected",
-        "goalie_identity_and_confirmation_not_verified",
-        "team_rate_model_not_calibrated"
-      ],
-      "goalie_provider_observations": {
-        "PIT": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Arturs Silovs",
-          "confirmed_as_official": false
-        },
-        "UTA": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Sebastian Cossa",
-          "confirmed_as_official": false
-        }
-      },
-      "odds_used_in_model": false,
-      "official": false
-    },
-    {
-      "sport": "nhl",
-      "game_id": "2026020206",
-      "home": "CAR",
-      "away": "CBJ",
-      "start_utc": "2026-10-29T23:00:00Z",
-      "status": "unavailable",
-      "probabilities": null,
-      "readiness_issues": [
-        "roster_snapshot_not_connected",
-        "goalie_identity_and_confirmation_not_verified",
-        "team_rate_model_not_calibrated"
-      ],
-      "goalie_provider_observations": {
-        "CAR": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Pyotr Kochetkov",
-          "confirmed_as_official": false
-        },
-        "CBJ": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Jet Greaves",
-          "confirmed_as_official": false
-        }
-      },
-      "odds_used_in_model": false,
-      "official": false
-    },
     {
       "sport": "nhl",
       "game_id": "2026020203",
@@ -330,6 +242,18 @@
     }
   ],
   "official_predictions": 0,
+  "goalie_identity_audit": {
+    "observations": 22,
+    "source_confirmed": 19,
+    "error_roster_missing": 6,
+    "error_source_after_start": 6,
+    "error_goalie_name_missing": 6,
+    "identity_linked": 16,
+    "fixture_linked": 16,
+    "pregame_identity_usable": 16
+  },
+  "official_roster_teams_captured": 16,
+  "roster_capture_errors": {},
   "limitations": [
     "NHL official schedule is not a player lineup or goalie confirmation.",
     "ESPN assertions are provider observations, not independently verified starting-goalie declarations.",
