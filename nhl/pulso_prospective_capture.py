@@ -11,6 +11,8 @@ from nhl.espn_goalie_provider_capture import read as read_espn,extract as extrac
 from nhl.pulso_pregame_v7 import parse_utc
 
 def assemble(schedule,espn_observations,at=None):
+ if not isinstance(espn_observations,list) or any(not isinstance(row,dict) for row in espn_observations):
+  raise ValueError("Expected the ESPN observations list, not the complete report")
  now=parse_utc(at) if at else datetime.now(timezone.utc)
  output=[]
  for f in schedule["fixtures"]:
@@ -27,7 +29,7 @@ def assemble(schedule,espn_observations,at=None):
   for team,rows in matching.items():
    statuses[team]={"status":"unknown","source_count":len(rows)}
    if len(rows)==1:
-    statuses[team]["status"]=rows[0].get("status","unknown")
+    statuses[team]["status"]=rows[0].get("goalie_status","unknown")
     statuses[team]["provider_goalie_name"]=rows[0].get("provider_goalie_name")
     # Provider assertion is not independently verified source confirmation.
     statuses[team]["confirmed_as_official"]=False
@@ -45,14 +47,15 @@ def main():
  args=p.parse_args()
  schedule=capture_schedule(args.date)
  raw,metadata=read_espn(args.date)
- observations=extract_espn(json.loads(raw),metadata)
+ espn_report=extract_espn(json.loads(raw),metadata)
+ observations=espn_report["observations"]
  captured=datetime.now(timezone.utc).isoformat()
  if parse_utc(schedule["captured_at"])>parse_utc(captured):raise ValueError("Schedule captured in future")
  # Only forthcoming fixtures are reported; never mark past games as pregame.
  games=assemble(schedule,observations,captured)
  output=Path(args.output_dir);output.mkdir(parents=True,exist_ok=True)
  (output/"schedule_evidence.json").write_text(json.dumps(schedule,indent=2))
- (output/"goalie_observations.json").write_text(json.dumps({"metadata":metadata,"observations":observations},indent=2))
+ (output/"goalie_observations.json").write_text(json.dumps(espn_report,indent=2))
  (output/"espn_raw_sha256.txt").write_text(hashlib.sha256(raw).hexdigest()+"\n")
  report={"generated_at_utc":captured,"date":args.date,"data_kind":"source_readiness_only",
   "game_count":len(games),"games":games,"official_predictions":0,

@@ -6,13 +6,16 @@ class TestCapture(unittest.TestCase):
   now=datetime.now(timezone.utc)
   start=(now+timedelta(hours=4)).isoformat()
   schedule={"fixtures":[{"game_id":"123","home":"EDM","away":"COL","scheduled_start":start,"game_state":"FUT"}]}
-  observations=[{"team":"EDM","event_start":start,"status":"confirmed","provider_goalie_name":"Example"}]
+  observations=[{"team":"EDM","event_start":start,"goalie_status":"confirmed","provider_goalie_name":"Example"}]
   output=assemble(schedule,observations,now.isoformat())
   self.assertEqual(len(output),1)
   self.assertEqual(output[0]["status"],"unavailable")
+  self.assertEqual(output[0]["goalie_provider_observations"]["EDM"]["status"],"confirmed")
   self.assertIsNone(output[0]["probabilities"])
   self.assertFalse(output[0]["goalie_provider_observations"]["EDM"]["confirmed_as_official"])
   self.assertEqual(output[0]["goalie_provider_observations"]["COL"]["status"],"unknown")
+ def test_full_espn_report_is_rejected(self):
+  with self.assertRaises(ValueError):assemble({"fixtures":[]},{"observations":[]})
  def test_started_game_is_not_republished(self):
   now=datetime.now(timezone.utc)
   schedule={"fixtures":[{"game_id":"1","home":"EDM","away":"COL","scheduled_start":(now-timedelta(seconds=1)).isoformat(),"game_state":"FUT"}]}
