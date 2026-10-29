@@ -4,7 +4,10 @@ Uses only documented current-season observations. Unknown starters, verified
 units, matchup injuries and PP opportunities produce no invented adjustment.
 """
 import math
-from module_audit import context
+try:
+ from nhl.module_audit import context
+except ModuleNotFoundError:
+ from module_audit import context
 
 def bounded(x,lo,hi):
     return max(lo,min(hi,x))
