@@ -1,0 +1,21 @@
+name: NHL — Evidence gated audit 191
+on:
+  pull_request:
+    paths:
+      - 'nhl/evidence_gated_audit_191.py'
+      - 'nhl/tests/test_evidence_gated_audit_191.py'
+      - '.github/workflows/nhl-evidence-191.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Regression tests and evidence cutoff tests
+        run: |
+          python -m unittest nhl.tests.test_evidence_gated_audit_191 nhl.tests.test_research_features_187_190 nhl.tests.test_integrated_ablation_audit_186 -v
