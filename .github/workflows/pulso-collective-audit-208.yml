@@ -1,0 +1,57 @@
+name: PULSO NHL #208 — uncertainty calibration and ledger audit
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_collective_audit_208.py'
+      - 'nhl/tests/test_pulso_collective_audit_208.py'
+      - '.github/workflows/pulso-collective-audit-208.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_collective_audit_208 -v
+  real-audit:
+    if: github.event_name == 'workflow_dispatch'
+    needs: verify
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Download official archived labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_labels results/nhl/208
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern labels_manifest.json --dir .nhl_labels
+      - name: Verify source provenance and audit
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          from nhl.historical_target_walkforward import read_labels
+          root=Path(".nhl_labels")
+          m=json.loads((root/"labels_manifest.json").read_text())
+          p=root/"nhl_postgame_labels.csv"
+          if hashlib.sha256(p.read_bytes()).hexdigest()!=m.get("sha256") or m.get("games")!=2811:raise SystemExit("Historical labels integrity failure")
+          read_labels(p)
+          PY
+          python -m nhl.pulso_collective_audit_208 --labels .nhl_labels/nhl_postgame_labels.csv --out results/nhl/208/audit.json
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: pulso-nhl-208-calibration-${{ github.run_id }}
+          path: results/nhl/208/
+          retention-days: 90
+          if-no-files-found: warn
