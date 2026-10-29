@@ -11,12 +11,14 @@ try:
  from nhl.quantitative_roster_delta import compare
  from nhl.roster_aware_units import timepoint
  from nhl.historical_target_walkforward import CATEGORIES,prediction
- from nhl.all_module_historical_audit import DIV,RIVALS
 except ModuleNotFoundError:
  from quantitative_roster_delta import compare
  from roster_aware_units import timepoint
  from historical_target_walkforward import CATEGORIES,prediction
- from all_module_historical_audit import DIV,RIVALS
+
+DIVISIONS={"Atlantic":"BOS BUF DET FLA MTL OTT TBL TOR","Metropolitan":"CAR CBJ NJD NYI NYR PHI PIT WSH","Central":"CHI COL DAL MIN NSH STL UTA WPG","Pacific":"ANA CGY EDM LAK SEA SJS VAN VGK"}
+DIV={x:division for division,teams in DIVISIONS.items() for x in teams.split()}
+RIVALS={frozenset(p.split("-")) for p in ("BOS-MTL","BOS-TOR","EDM-CGY","PIT-PHI","PIT-WSH","NYR-NYI","NYR-NJD","TOR-OTT","LAK-ANA","VGK-SJS","FLA-TBL")}
 
 def unit_evidence(history,baseline,expected,as_of):
  r=compare(history,baseline,expected,as_of)
