@@ -1,0 +1,18 @@
+name: PULSO NHL #213 — CRS evidence integration
+on:
+  pull_request:
+    paths:
+      - nhl/pulso_crs_bridge_213.py
+      - nhl/tests/test_pulso_crs_bridge_213.py
+      - .github/workflows/pulso-crs-bridge-213.yml
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_crs_bridge_213 -v
