@@ -1,0 +1,19 @@
+name: PULSO NHL — outcome-only collective chronological calibration
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_collective_calibration.py'
+      - 'nhl/tests/test_pulso_collective_calibration.py'
+      - '.github/workflows/pulso-collective-calibration.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_collective_calibration nhl.tests.test_historical_target_walkforward -v
