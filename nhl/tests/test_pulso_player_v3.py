@@ -16,4 +16,20 @@ class V3Tests(unittest.TestCase):
   r=validate([{"game_id":"1","date":"2026-10-01","player_id":"97","team":"EDM","opponent":"LAK","home":True,"rest_days":1,"toi_minutes":20,"shots_on_goal":3,"goals":0}])
   result=evaluate(r,{"97":"C"},start="2026-10-01")
   self.assertEqual(result["observations"],0)
+ def test_missing_season_is_not_fabricated(self):
+  from nhl.pulso_player_v3 import build
+  def fake(url):
+   if "/roster/" in url:return {"forwards":[{"id":97,"positionCode":"C"}],"defensemen":[]}
+   if "/club-schedule-season/" in url:return {"games":[{"id":1,"gameType":2,"gameDate":"2026-10-01"},{"id":2,"gameType":2,"gameDate":"2026-10-04"}]}
+   return {"playerId":97,"seasonId":20262027,"gameLog":None}
+  rows,positions,sources=build(("EDM",),("20262027",),fake)
+  self.assertEqual(rows,[])
+  self.assertTrue(any(x.get("empty") for x in sources if x["kind"]=="player_log"))
+ def test_provider_error_does_not_count_as_no_games(self):
+  from nhl.pulso_player_v3 import build
+  def fake(url):
+   if "/roster/" in url:return {"forwards":[{"id":97,"positionCode":"C"}],"defensemen":[]}
+   if "/club-schedule-season/" in url:return {"games":[]}
+   return {"error":"upstream unavailable"}
+  with self.assertRaises(ValueError):build(("EDM",),("20262027",),fake)
 if __name__=="__main__":unittest.main()
