@@ -1,0 +1,20 @@
+name: PULSO PLAYER — NHL pregame research
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_player_v1.py'
+      - 'nhl/tests/test_pulso_player_v1.py'
+      - '.github/workflows/pulso-player-nhl.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Validate pregame cutoff and projection behavior
+        run: python -m unittest nhl.tests.test_pulso_player_v1 -v
