@@ -1,0 +1,60 @@
+name: NHL — Goalie real-data coverage audit
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/goalie_real_data_audit.py
+      - nhl/tests/test_goalie_real_data_audit.py
+      - .github/workflows/nhl-goalie-real-data-audit.yml
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Unit and regression tests
+        run: python -m unittest nhl.tests.test_goalie_real_data_audit nhl.tests.test_goalie_daily_evidence nhl.tests.test_goalie_pregame_crosswalk -v
+      - name: Fetch audited historical goalie-by-ID snapshots
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p results/nhl
+          gh run download 40627704266 --repo "$GITHUB_REPOSITORY" --name nhl-official-roster-goalie-toi-40627704266 --dir results/nhl
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          folder=Path("results/nhl")
+          history=folder/"individual_goalie_toi_history.json"
+          manifest=json.loads((folder/"individual_goalie_toi_history_manifest.json").read_text())
+          if manifest["games"]!=2811 or hashlib.sha256(history.read_bytes()).hexdigest()!=manifest["sha256"]:
+            raise SystemExit("Historical goalie artifact verification failed")
+          PY
+      - name: Fetch current official roster and ESPN pregame observations
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          DAY="$(date -u +%F)"
+          python nhl/official_roster_snapshot.py --all-teams --out results/nhl/current_rosters.json
+          python - "$DAY" <<'PY'
+          import json,sys
+          from pathlib import Path
+          from nhl.pregame_fixture_goalie_verifier import capture_schedule
+          Path("results/nhl/schedule.json").write_text(json.dumps(capture_schedule(sys.argv[1]),indent=2))
+          PY
+          python nhl/espn_goalie_provider_capture.py --date "$DAY" --output results/nhl/espn.json --raw-output results/nhl/espn_raw.json
+          python nhl/goalie_pregame_crosswalk.py --espn results/nhl/espn.json --schedule results/nhl/schedule.json --rosters results/nhl/current_rosters.json --output results/nhl/crosswalk.json
+      - name: Audit goalie ratings and backup coverage
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python nhl/goalie_real_data_audit.py --crosswalk results/nhl/crosswalk.json --history results/nhl/individual_goalie_toi_history.json --rosters results/nhl/current_rosters.json --output results/nhl/goalie_real_data_audit.json
+      - uses: actions/upload-artifact@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: nhl-goalie-real-audit-${{ github.run_id }}
+          path: results/nhl/*.json
+          retention-days: 30
