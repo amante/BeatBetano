@@ -1,22 +1,22 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark"><title>BeatBetano | Sports Intelligence</title>
-<link rel="stylesheet" href="./styles.css"><link rel="stylesheet" href="./daily.css"></head>
+<meta name="color-scheme" content="dark"><title>PULSO | Sports Intelligence</title>
+<link rel="stylesheet" href="./styles.css"><link rel="stylesheet" href="./daily.css"><link rel="stylesheet" href="./pulso-theme.css"><meta name="theme-color" content="#102c44"><link rel="icon" href="./pulso-mark.svg"></head>
 <body>
 <div class="shell">
 <aside class="sidebar" aria-label="Navegación principal">
-  <a class="brand" href="./index.html"><span class="brand-mark">B</span><span><strong>BEATBETANO</strong><small>SPORTS INTELLIGENCE</small></span></a>
+  <a class="brand" href="./index.html"><span class="brand-mark"><img class="pulso-emblem" src="./pulso-mark.svg" alt=""></span><span><strong>PULSO</strong><small>SPORTS INTELLIGENCE</small></span></a>
   <div class="nav-label">WORKSPACE</div>
   <button class="nav active" type="button" data-nav="overview"><span>◫</span> Visión general</button>
   <button class="nav" type="button" data-nav="games"><span>▦</span> Partidos y modelos</button>
   <button class="nav" type="button" data-nav="calibration"><span>◷</span> Calibración</button>
   <div class="nav-label second">DISCIPLINA</div><div id="sport-nav"></div>
-  <div class="aside-bottom"><span class="signal"></span><span>Modo investigación<small>Solo evidencia verificada</small></span></div>
+  <div class="aside-bottom"><span class="signal"></span><span>Pregame first<small>Sin pronósticos inventados</small></span></div>
 </aside>
 <div class="workspace">
 <header class="topbar"><button type="button" id="menu" class="mobile-menu" aria-label="Abrir menú">☰</button><span class="breadcrumb">PLATAFORMA <span>/</span> <b id="crumb">VISIÓN GENERAL</b></span><div class="top-actions"><span class="pill">SIN CUOTAS</span><a class="upload" href="./index.html">← Cambiar deporte</a></div></header>
 <main><section class="daily-panel" id="daily-panel"><div class="daily-head"><div><div class="eyebrow">AGENDA DEPORTIVA · CHILE</div><h2 id="daily-label">Partidos del día</h2></div><div class="daily-controls"><label for="daily-date">Fecha</label><input type="date" id="daily-date" value="2026-10-27"></div></div><div class="metrics" id="daily-stats"></div><div id="feed-message" class="daily-source" role="status"></div><div id="daily-results"></div><div class="daily-yesterday"><h3 id="yesterday-label">Predicciones de ayer</h3><div id="yesterday-results"></div></div></section>
 <section class="panel simulation-panel" aria-labelledby="simulation-title"><div class="section-header"><div><div class="eyebrow">SIMULADOR DEPORTIVO</div><h3 id="simulation-title">Preparar simulación</h3><p>Selecciona el alcance de los partidos antes de ejecutar.</p></div></div><fieldset class="simulation-options"><legend>Alcance</legend><label><input type="radio" name="simulation-scope" value="all" checked> Todos los partidos del día de este deporte</label><label><input type="radio" name="simulation-scope" value="selected"> Seleccionar partidos</label></fieldset><div id="simulation-selection" hidden><p>Marca los encuentros que deseas analizar:</p><div id="simulation-games"></div></div><button id="run-simulation" type="button" class="primary">Ejecutar simulación</button><p id="simulation-status" role="status" aria-live="polite"></p></section>
 <section id="messages" class="messages" role="status" aria-live="polite"></section>
-</main><footer>BEATBETANO SPORTS INTELLIGENCE <span>RESEARCH INTERFACE · NO BETTING ADVICE</span></footer></div></div>
+</main><footer>PULSO SPORTS INTELLIGENCE <span>RESEARCH INTERFACE · NO BETTING ADVICE</span></footer></div></div>
 <script src="./daily.js" defer></script></body></html>
