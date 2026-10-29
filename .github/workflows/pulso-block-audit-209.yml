@@ -1,0 +1,55 @@
+name: PULSO NHL #209 — temporal blocks and evidence ledger
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_block_audit_209.py'
+      - 'nhl/pulso_prospective_ledger_209.py'
+      - 'nhl/tests/test_pulso_209.py'
+      - '.github/workflows/pulso-block-audit-209.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_209 -v
+  real-audit:
+    if: github.event_name == 'workflow_dispatch'
+    needs: verify
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Load archived labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_labels results/nhl/209
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern labels_manifest.json --dir .nhl_labels
+      - name: Verify historical source SHA and evaluate
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          root=Path(".nhl_labels")
+          m=json.loads((root/"labels_manifest.json").read_text())
+          file=root/"nhl_postgame_labels.csv"
+          if m.get("games")!=2811 or m.get("sha256")!=hashlib.sha256(file.read_bytes()).hexdigest():
+            raise SystemExit("NHL label release integrity mismatch")
+          PY
+          python -m nhl.pulso_block_audit_209 --labels .nhl_labels/nhl_postgame_labels.csv --out results/nhl/209/temporal_audit.json
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: pulso-nhl-209-temporal-${{ github.run_id }}
+          path: results/nhl/209/
+          if-no-files-found: warn
+          retention-days: 90
