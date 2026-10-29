@@ -33,10 +33,10 @@ class V3Tests(unittest.TestCase):
    return {"error":"upstream unavailable"}
   with self.assertRaises(ValueError):build(("EDM",),("20262027",),fake)
  def test_invalid_record_reports_exact_player_game(self):
-  bad={"game_id":"2026020001","date":"2026-10-01","player_id":"8470000","team":"EDM","opponent":"LAK","home":True,"rest_days":0,"toi_minutes":20,"shots_on_goal":0,"goals":1}
+  bad={"game_id":"2026020001","date":"2026-10-01","player_id":"8470000","team":"EDM","opponent":"LAK","home":True,"rest_days":0,"toi_minutes":20,"shots_on_goal":-1,"goals":1}
   with self.assertRaisesRegex(ValueError,"player=8470000 game=2026020001") as e:
    validate([bad])
-  self.assertIn("sog=0",str(e.exception))
+  self.assertIn("sog=-1",str(e.exception))
   self.assertIn("goals=1",str(e.exception))
  def test_credited_goal_without_recorded_sog(self):
   row={"game_id":"2025021109","date":"2026-03-21","player_id":"8484509","team":"EDM","opponent":"LAK","home":True,"rest_days":1,"toi_minutes":10.083333333333334,"shots_on_goal":0,"goals":1}
