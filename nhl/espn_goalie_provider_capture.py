@@ -53,7 +53,10 @@ def extract(data,metadata):
    "notice":"Source confirmed does not mean NHL verified; cross-check roster identity, fixture and pregame timestamp."}
 
 def reconcile(report,rosters,official_schedule):
- from nhl.roster_aware_units import timepoint
+ try:
+  from nhl.roster_aware_units import timepoint
+ except ModuleNotFoundError:
+  from roster_aware_units import timepoint
  import unicodedata
  def norm(x):
   s=unicodedata.normalize("NFKD",str(x).casefold())
