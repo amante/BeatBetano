@@ -9,10 +9,35 @@ import argparse,json,math
 from pathlib import Path
 try:
  from nhl.historical_target_walkforward import read_labels,timeline,metrics,TUNE_START,TUNE_END,TEST_START
- from nhl.schedule_context_ablations import context,adjust
+ from nhl.integrated_pregame_research_185_187 import DIV,RIVALS
 except ModuleNotFoundError:
  from historical_target_walkforward import read_labels,timeline,metrics,TUNE_START,TUNE_END,TEST_START
- from schedule_context_ablations import context,adjust
+ from integrated_pregame_research_185_187 import DIV,RIVALS
+
+from collections import defaultdict
+from datetime import date
+
+def context(rows):
+ days=defaultdict(list)
+ for r in rows:days[r["date"]].append(r)
+ last={};out={}
+ for day in sorted(days):
+  today=date.fromisoformat(day)
+  for g in days[day]:
+   h,a=g["home"],g["away"]
+   hr=(today-last[h]).days-1 if h in last else None
+   ar=(today-last[a]).days-1 if a in last else None
+   differential=max(-4,min(4,hr-ar)) if hr is not None and ar is not None else 0
+   out[g["game_id"]]={"rest":differential,"division":int(DIV.get(h) is not None and DIV[h]==DIV.get(a)),
+    "rivalry":int(frozenset((h,a)) in RIVALS),"rest_known":hr is not None and ar is not None}
+  for g in days[day]:
+   last[g["home"]]=today;last[g["away"]]=today
+ return out
+
+def adjust(p,ctx,coefficients):
+ x=math.log(max(1e-8,p)/max(1e-8,1-p))
+ x+=coefficients[0]*ctx["rest"]+coefficients[1]*ctx["division"]+coefficients[2]*ctx["rivalry"]
+ return 1/(1+math.exp(-max(-30,min(30,x))))
 
 GRID=(-0.06,-0.03,0.,0.03,0.06)
 CONFIGS={
