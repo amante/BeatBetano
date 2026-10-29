@@ -1,0 +1,7 @@
+# PULSO NHL #218 — real prospective outcome-only research forecasts
+
+The daily source-capture workflow now loads SHA256-verified immutable 2,811-game official postgame labels and emits five *experimental* market predictions for each fixture that has not started. Labels are filtered to STRICTLY EARLIER game calendar dates. Fixed hyperparameters are those selected in #206/#207 before this prospective deployment; no refitting using evaluation outcomes. Markets: ML, RT (home/draw/away), first-to-+3, home3, away3. NO sportsbook odds or player/goalie/CRS covariates.
+
+Forecasts are individually validated through #208's source/timestamp normalization gate, saved under unique GitHub run-id path (one file per game-market), included in Actions artifacts, and committed to main. The #217 scorer can subsequently evaluate these stored envelopes against official NHL labels; it must NOT count source-readiness-only entries.
+
+Data integrity caveats: SHA-256 is not an external proof of capture time; protected main and Actions logs are needed for auditability. The source attestation flag covers the GitHub-release historical outcomes and the source-readiness schedule captured during this workflow, not lineup confirmation. This model has historical-score features only, and is NOT the official calibrated 14-module model. Publish readiness and picks separately; do not label as official or profitable. If release validation fails, stop rather than synthesize data.
