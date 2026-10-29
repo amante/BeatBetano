@@ -1,0 +1,19 @@
+name: NHL — Goalie daily historical evidence
+on:
+  pull_request:
+    paths:
+      - nhl/goalie_daily_evidence.py
+      - nhl/tests/test_goalie_daily_evidence.py
+      - .github/workflows/nhl-goalie-daily-evidence.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_goalie_daily_evidence -v
