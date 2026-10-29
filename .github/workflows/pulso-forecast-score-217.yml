@@ -1,0 +1,18 @@
+name: PULSO NHL #217 — verified forecast scorer
+on:
+  pull_request:
+    paths:
+      - nhl/pulso_forecast_score_217.py
+      - nhl/tests/test_pulso_forecast_score_217.py
+      - .github/workflows/pulso-forecast-score-217.yml
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_forecast_score_217 -v
