@@ -13,7 +13,7 @@ class Tests(unittest.TestCase):
   self.assertEqual(result["train"],4)
  def test_larger_temporal_cohort_is_gate_ready(self):
   from datetime import date,timedelta
-  rows=[self.row(i,(date(2025,10,1)+timedelta(days=i//3)).isoformat()) for i in range(450)]
+  rows=[self.row(i,(date(2025,10,1)+timedelta(days=i//3)).isoformat()) for i in range(600)]
   result=audit({"status":"training_dataset_research_only","rows":rows})
   self.assertTrue(result["training_permitted"])
   self.assertTrue(result["train"]>=200)
