@@ -1,0 +1,50 @@
+name: PULSO NHL #229 — verified historical sporting statistics
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  historical-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Download archived official-source records
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_archive
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern 'nhl-complete-2811-source.tar.gz' --pattern 'SHA256SUMS' \
+            --dir .nhl_archive
+          cd .nhl_archive
+          grep -F 'nhl-complete-2811-source.tar.gz' SHA256SUMS | sha256sum --check
+      - name: Securely extract historical match archive
+        run: |
+          mkdir -p .nhl_archive/games
+          python - <<'PY'
+          import tarfile
+          path='.nhl_archive/nhl-complete-2811-source.tar.gz'
+          with tarfile.open(path,'r:gz') as archive:
+              members=archive.getmembers()
+              if any(not m.isfile() or m.name.startswith('/') or '..' in m.name.split('/') for m in members):
+                  raise SystemExit('Unsafe archive entry')
+              if sum(m.name.endswith('.json') for m in members)!=2811:\n                  raise SystemExit('Unexpected number of JSON game records')
+              archive.extractall('.nhl_archive/games',filter='data')
+          PY
+      - name: Compute strictly prior-date team snapshots
+        run: |
+          python -m nhl.prior_player_goalie_stats \
+            --archive .nhl_archive/games-flat --expected 2811 \
+            --output .nhl_archive/team_prior_history.json \
+            --manifest .nhl_archive/team_prior_history_manifest.json
+      - uses: actions/upload-artifact@v6
+        with:
+          name: pulso-nhl-prior-team-sporting-history
+          path: |
+            .nhl_archive/team_prior_history.json
+            .nhl_archive/team_prior_history_manifest.json
+          retention-days: 90
