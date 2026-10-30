@@ -35,7 +35,7 @@ def main():
  p=argparse.ArgumentParser()
  p.add_argument("--coverage-dir",required=True);p.add_argument("--out",required=True)
  a=p.parse_args();root=Path(a.coverage_dir)
- reports=[json.loads(path.read_text()) for path in sorted(root.glob("**/collective_coverage.json"))]
+ reports=[json.loads(path.read_text()) for path in sorted(root.glob("**/*collective_coverage.json"))]
  result=summarize(reports)
  dest=Path(a.out);dest.parent.mkdir(parents=True,exist_ok=True)
  dest.write_text(json.dumps(result,indent=2))
