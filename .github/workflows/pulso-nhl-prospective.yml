@@ -41,6 +41,17 @@ jobs:
         run: |
           DAY="${REQUESTED_DAY:-$(date -u +%F)}"
           python -m nhl.pulso_prospective_capture --date "$DAY" --output-dir "results/pulso/nhl/$DAY" --public-status frontend/data/pulso-nhl-research.json
+      - name: Audit fixture-attested player and goalie identities
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m unittest nhl.tests.test_pulso_fixture_identity_248 -v
+          python -m nhl.pulso_fixture_identity_248 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" \
+            --goalies "results/pulso/nhl/$DAY/goalie_identity_crosswalk.json" \
+            --editorial "results/pulso/nhl/$DAY/editorial_lineup_observations.json" \
+            --out "results/pulso/nhl/$DAY/fixture_identity_248.json"
       - name: Normalize observed NHL sporting source evidence
         run: |
           DAY="${{ inputs.day }}"
