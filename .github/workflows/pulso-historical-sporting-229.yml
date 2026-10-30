@@ -108,6 +108,13 @@ jobs:
           python -m nhl.pulso_historical_coverage_237 \
             --dataset .nhl_archive/team_training_rows.json \
             --out .nhl_archive/team_coverage_report.json
+      - name: Fit gated ML-only team sporting research challenger
+        run: |
+          python -m unittest nhl.tests.test_pulso_sporting_challenger_238 -v
+          python -m nhl.pulso_sporting_challenger_238 \
+            --dataset .nhl_archive/team_training_rows.json \
+            --coverage .nhl_archive/team_coverage_report.json \
+            --out .nhl_archive/team_ml_challenger_research.json
       - uses: actions/upload-artifact@v6
         with:
           name: pulso-nhl-prior-team-sporting-history
@@ -117,4 +124,5 @@ jobs:
             .nhl_archive/team_training_rows.json
             .nhl_archive/team_training_manifest.json
             .nhl_archive/team_coverage_report.json
+            .nhl_archive/team_ml_challenger_research.json
           retention-days: 90
