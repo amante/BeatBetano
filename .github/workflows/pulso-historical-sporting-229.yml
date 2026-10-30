@@ -66,7 +66,7 @@ jobs:
           from pathlib import Path
           import re,shutil
           paths=[p for p in Path('.nhl_archive/games').rglob('*.json')
-                 if re.fullmatch(r'[0-9]{10}\\.json',p.name)]
+                 if re.fullmatch(r'[0-9]{10}\.json',p.name)]
           if len(paths)!=2811:raise SystemExit(f'Expected 2811 games, found {len(paths)}')
           if len({p.name for p in paths})!=2811:raise SystemExit('Duplicate game IDs')
           for path in paths:shutil.copyfile(path,Path('.nhl_archive/games-flat')/path.name)
