@@ -41,6 +41,15 @@ jobs:
         run: |
           DAY="${REQUESTED_DAY:-$(date -u +%F)}"
           python -m nhl.pulso_prospective_capture --date "$DAY" --output-dir "results/pulso/nhl/$DAY" --public-status frontend/data/pulso-nhl-research.json
+      - name: Normalize observed NHL sporting source evidence
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.pulso_sporting_bridge_226 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --crosswalk "results/pulso/nhl/$DAY/goalie_identity_crosswalk.json" \
+            --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" \
+            --out "results/pulso/nhl/$DAY/sporting_bridge.json"
       - name: Audit fixture-level sporting evidence coverage
         run: |
           DAY="${{ inputs.day }}"
