@@ -20,7 +20,7 @@ jobs:
       - name: Audit captured data already available in repository
         run: |
           python -m nhl.pulso_coverage_gate_225 \
-            --coverage-dir results/pulso/nhl \
+            --coverage-dir frontend/data/nhl-coverage \
             --out /tmp/pulso-coverage-readiness.json
           cat /tmp/pulso-coverage-readiness.json
       - uses: actions/upload-artifact@v4
