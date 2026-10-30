@@ -1,0 +1,121 @@
+{
+  "sha256": "6616239bc2f8e2fdc7420d7e6a91c247e938f4e7b847bf005adcea5a166dab65",
+  "payload": {
+    "run_id": "41091515531",
+    "source_report": {
+      "generated_at_utc": "2026-10-30T16:37:19.967748+00:00",
+      "date": "2026-10-30",
+      "data_kind": "source_readiness_only",
+      "game_count": 3,
+      "games": [
+        {
+          "sport": "nhl",
+          "game_id": "2026020214",
+          "home": "VGK",
+          "away": "NJD",
+          "start_utc": "2026-10-30T22:00:00Z",
+          "status": "unavailable",
+          "probabilities": null,
+          "readiness_issues": [
+            "roster_snapshot_not_connected",
+            "goalie_identity_and_confirmation_not_verified",
+            "team_rate_model_not_calibrated"
+          ],
+          "goalie_provider_observations": {
+            "VGK": {
+              "status": "projected",
+              "source_count": 1,
+              "provider_goalie_name": "Carter Hart",
+              "confirmed_as_official": false
+            },
+            "NJD": {
+              "status": "unknown",
+              "source_count": 0
+            }
+          },
+          "odds_used_in_model": false,
+          "official": false
+        },
+        {
+          "sport": "nhl",
+          "game_id": "2026020215",
+          "home": "FLA",
+          "away": "WPG",
+          "start_utc": "2026-10-30T23:00:00Z",
+          "status": "unavailable",
+          "probabilities": null,
+          "readiness_issues": [
+            "roster_snapshot_not_connected",
+            "goalie_identity_and_confirmation_not_verified",
+            "team_rate_model_not_calibrated"
+          ],
+          "goalie_provider_observations": {
+            "FLA": {
+              "status": "confirmed",
+              "source_count": 1,
+              "provider_goalie_name": "Akira Schmid",
+              "confirmed_as_official": false
+            },
+            "WPG": {
+              "status": "projected",
+              "source_count": 1,
+              "provider_goalie_name": "Nico Daws",
+              "confirmed_as_official": false
+            }
+          },
+          "odds_used_in_model": false,
+          "official": false
+        },
+        {
+          "sport": "nhl",
+          "game_id": "2026020216",
+          "home": "CGY",
+          "away": "SEA",
+          "start_utc": "2026-10-31T00:00:00Z",
+          "status": "unavailable",
+          "probabilities": null,
+          "readiness_issues": [
+            "roster_snapshot_not_connected",
+            "goalie_identity_and_confirmation_not_verified",
+            "team_rate_model_not_calibrated"
+          ],
+          "goalie_provider_observations": {
+            "CGY": {
+              "status": "confirmed",
+              "source_count": 1,
+              "provider_goalie_name": "Dustin Wolf",
+              "confirmed_as_official": false
+            },
+            "SEA": {
+              "status": "projected",
+              "source_count": 1,
+              "provider_goalie_name": "Philipp Grubauer",
+              "confirmed_as_official": false
+            }
+          },
+          "odds_used_in_model": false,
+          "official": false
+        }
+      ],
+      "official_predictions": 0,
+      "goalie_identity_audit": {
+        "observations": 6,
+        "identity_linked": 6,
+        "fixture_linked": 6,
+        "pregame_identity_usable": 6,
+        "source_confirmed": 2
+      },
+      "official_roster_teams_captured": 6,
+      "roster_capture_errors": {},
+      "nhlcom_editorial_lineup_blocks": 6,
+      "nhlcom_editorial_source_error": null,
+      "limitations": [
+        "NHL official schedule is not a player lineup or goalie confirmation.",
+        "ESPN assertions are provider observations, not independently verified starting-goalie declarations.",
+        "No trained team goal rate is used; all game probabilities remain unavailable."
+      ]
+    }
+  },
+  "immutable_by_policy": true,
+  "storage": "git append-only filename; protected branch permissions required"
+}
