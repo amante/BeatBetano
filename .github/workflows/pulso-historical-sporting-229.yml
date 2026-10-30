@@ -122,6 +122,13 @@ jobs:
             --challenger .nhl_archive/team_ml_challenger_research.json \
             --labels .nhl_archive/nhl_postgame_labels.csv \
             --out .nhl_archive/team_ml_benchmark_239.json
+      - name: Audit uncertainty with paired date-cluster bootstrap
+        run: |
+          python -m unittest nhl.tests.test_pulso_robustness_240 -v
+          python -m nhl.pulso_robustness_240 \
+            --challenger .nhl_archive/team_ml_challenger_research.json \
+            --labels .nhl_archive/nhl_postgame_labels.csv \
+            --out .nhl_archive/team_ml_robustness_240.json
       - uses: actions/upload-artifact@v6
         with:
           name: pulso-nhl-prior-team-sporting-history
@@ -133,4 +140,5 @@ jobs:
             .nhl_archive/team_coverage_report.json
             .nhl_archive/team_ml_challenger_research.json
             .nhl_archive/team_ml_benchmark_239.json
+            .nhl_archive/team_ml_robustness_240.json
           retention-days: 90
