@@ -49,8 +49,14 @@ jobs:
                       raise SystemExit('Unsafe archive entry: '+m.name)
                   if m.isfile() and not m.name.endswith('.json'):
                       raise SystemExit('Unexpected non-JSON file: '+m.name)
-              if sum(m.isfile() and m.name.endswith('.json') for m in members)!=2811:
-                  raise SystemExit('Unexpected number of JSON game records')
+              import re
+              game_files=[m for m in members if m.isfile() and
+                          re.fullmatch(r'[0-9]{10}\\.json', PurePosixPath(m.name).name)]
+              other_json=[m.name for m in members if m.isfile() and m.name.endswith('.json') and m not in game_files]
+              print('Historical TAR inventory:',len(game_files),'game-ID JSON files,',
+                    len(other_json),'other JSON files; examples:',other_json[:12],flush=True)
+              if len(game_files)!=2811:
+                  raise SystemExit('Expected 2811 game-ID JSON records; found '+str(len(game_files)))
               archive.extractall('.nhl_archive/games',filter='data')
           PY
       - name: Compute strictly prior-date team snapshots
