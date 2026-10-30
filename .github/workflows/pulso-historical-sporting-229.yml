@@ -43,7 +43,8 @@ jobs:
               members=archive.getmembers()
               if any(not m.isfile() or m.name.startswith('/') or '..' in m.name.split('/') for m in members):
                   raise SystemExit('Unsafe archive entry')
-              if sum(m.name.endswith('.json') for m in members)!=2811:\n                  raise SystemExit('Unexpected number of JSON game records')
+              if sum(m.name.endswith('.json') for m in members)!=2811:
+                  raise SystemExit('Unexpected number of JSON game records')
               archive.extractall('.nhl_archive/games',filter='data')
           PY
       - name: Compute strictly prior-date team snapshots
