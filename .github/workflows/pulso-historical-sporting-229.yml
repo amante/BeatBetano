@@ -41,9 +41,15 @@ jobs:
           path='.nhl_archive/nhl-complete-2811-source.tar.gz'
           with tarfile.open(path,'r:gz') as archive:
               members=archive.getmembers()
-              if any(not m.isfile() or m.name.startswith('/') or '..' in m.name.split('/') for m in members):
-                  raise SystemExit('Unsafe archive entry')
-              if sum(m.name.endswith('.json') for m in members)!=2811:
+              from pathlib import PurePosixPath
+              for m in members:
+                  name=PurePosixPath(m.name)
+                  if (name.is_absolute() or '..' in name.parts or
+                      not (m.isdir() or m.isfile())):
+                      raise SystemExit('Unsafe archive entry: '+m.name)
+                  if m.isfile() and not m.name.endswith('.json'):
+                      raise SystemExit('Unexpected non-JSON file: '+m.name)
+              if sum(m.isfile() and m.name.endswith('.json') for m in members)!=2811:
                   raise SystemExit('Unexpected number of JSON game records')
               archive.extractall('.nhl_archive/games',filter='data')
           PY
