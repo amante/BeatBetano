@@ -1,0 +1,45 @@
+name: PULSO NHL — paired prospective ML evaluation
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 12 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: pulso-nhl-ml-evaluation
+  cancel-in-progress: false
+jobs:
+  evaluate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Verify prospective comparison guards
+        run: python -m unittest nhl.tests.test_pulso_prospective_compare_242 -v
+      - name: Score NHL finals against previously frozen forecasts
+        run: |
+          mapfile -t DAYS < <(for n in 0 1 2 3 4 5 6; do date -u -d "$n days ago" +%F; done)
+          python -m nhl.pulso_prospective_compare_242 \
+            --baseline-dir frontend/data/nhl-forecasts \
+            --shadow-dir frontend/data/nhl-shadow \
+            --days "${DAYS[@]}" \
+            --out frontend/data/pulso-nhl-ml-comparison.json
+      - uses: actions/upload-artifact@v6
+        with:
+          name: pulso-nhl-ml-comparison-${{ github.run_id }}
+          path: frontend/data/pulso-nhl-ml-comparison.json
+          retention-days: 90
+      - name: Publish comparison status
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f frontend/data/pulso-nhl-ml-comparison.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data(nhl): prospective paired ML evaluation ${{ github.run_id }}"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
