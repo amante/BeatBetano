@@ -26,7 +26,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add frontend/data/pulso-nhl-prospective-audit.json
+          git add -f frontend/data/pulso-nhl-prospective-audit.json
           if ! git diff --cached --quiet; then
             git commit -m 'data(nhl): update official prospective postmortem'
             git push origin HEAD:main
