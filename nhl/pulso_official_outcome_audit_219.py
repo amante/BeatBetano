@@ -65,8 +65,20 @@ def main():
  p.add_argument("--forecast-dir",required=True);p.add_argument("--out",required=True)
  a=p.parse_args()
  forecasts=[json.loads(x.read_text()) for x in sorted(Path(a.forecast_dir).glob("**/*.json"))]
+ # The scorer requires one issuance per fixture/model/market. Retain the earliest
+ # verifiably frozen envelope; later daily runs may capture the same fixture.
+ from nhl.pulso_pregame_v7 import parse_utc
+ from nhl.pulso_collective_audit_208 import freeze_prediction
+ earliest={}
+ for envelope in forecasts:
+  if envelope.get("sha256")!=freeze_prediction(envelope["record"])["sha256"]:raise ValueError("Tampered envelope")
+  record=envelope["record"];key=(str(record["game_id"]),record["model_version"],record["market"])
+  if key not in earliest or parse_utc(record["prediction_as_of_utc"])<parse_utc(earliest[key]["record"]["prediction_as_of_utc"]):earliest[key]=envelope
+ forecasts=list(earliest.values())
  if not forecasts:raise ValueError("No frozen forecast files")
  output=audit(forecasts)
+ output["unique_frozen_forecasts"]=len(forecasts)
+ output["selection_policy"]="earliest valid pregame prediction per game/model/market"
  path=Path(a.out);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(output,indent=2))
  print(json.dumps({"scored":output["scored"],"games_official":output["official_results_retrieved"],
   "pending":len(output["pending_games"]),"errors":output["source_errors"],"metrics":output["metrics"]},indent=2))
