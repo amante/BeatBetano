@@ -1,0 +1,84 @@
+name: PULSO NHL — experimental challenger shadow ML
+on:
+  workflow_dispatch:
+    inputs:
+      day:
+        description: 'UTC schedule day YYYY-MM-DD, blank for current UTC day'
+        required: false
+        type: string
+  schedule:
+    - cron: '35 14 * * *'
+    - cron: '35 20 * * *'
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: pulso-nhl-shadow-ml
+  cancel-in-progress: false
+jobs:
+  shadow:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Test sporting shadow guards
+        run: python -m unittest nhl.tests.test_pulso_prospective_shadow_241 -v
+      - name: Capture official future NHL fixture identities
+        env:
+          REQUESTED_DAY: ${{ inputs.day }}
+        run: |
+          DAY="${REQUESTED_DAY:-$(date -u +%F)}"
+          python - "$DAY" <<'PY'
+          import json,sys
+          from pathlib import Path
+          from nhl.pregame_fixture_goalie_verifier import capture_schedule
+          Path(".nhl_shadow").mkdir(exist_ok=True)
+          Path(".nhl_shadow/schedule.json").write_text(json.dumps(capture_schedule(sys.argv[1])))
+          PY
+      - name: Download frozen previously trained ML challenger
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_shadow/trained
+          gh run download 41073894805 --repo "$GITHUB_REPOSITORY" \
+            --name pulso-nhl-prior-team-sporting-history \
+            --dir .nhl_shadow/trained
+          python - <<'PY'
+          from pathlib import Path
+          matches=list(Path('.nhl_shadow/trained').rglob('team_ml_challenger_research.json'))
+          if len(matches)!=1:raise SystemExit('Exactly one frozen training artifact required')
+          Path('.nhl_shadow/model_path.txt').write_text(str(matches[0]))
+          PY
+      - name: Download original historical source records
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern nhl-complete-2811-source.tar.gz --pattern SHA256SUMS \
+            --dir .nhl_shadow
+      - name: Predict eligible future games in shadow mode
+        run: |
+          python -m nhl.pulso_prospective_shadow_241 \
+            --schedule .nhl_shadow/schedule.json \
+            --archive .nhl_shadow/nhl-complete-2811-source.tar.gz \
+            --checksums .nhl_shadow/SHA256SUMS \
+            --trained-model "$(cat .nhl_shadow/model_path.txt)" \
+            --out "frontend/data/nhl-shadow/run-${{ github.run_id }}/shadow.json"
+      - uses: actions/upload-artifact@v6
+        with:
+          name: pulso-nhl-shadow-ml-${{ github.run_id }}
+          path: frontend/data/nhl-shadow/run-${{ github.run_id }}/shadow.json
+          retention-days: 90
+      - name: Preserve immutable research shadow output
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f "frontend/data/nhl-shadow/run-${{ github.run_id }}/shadow.json"
+          git commit -m "data(nhl): pregame challenger shadow ML run ${{ github.run_id }}"
+          git pull --rebase origin main
+          git push origin HEAD:main
