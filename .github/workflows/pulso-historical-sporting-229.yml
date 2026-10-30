@@ -51,13 +51,25 @@ jobs:
                       raise SystemExit('Unexpected non-JSON file: '+m.name)
               import re
               game_files=[m for m in members if m.isfile() and
-                          re.fullmatch(r'[0-9]{10}\\.json', PurePosixPath(m.name).name)]
+                          re.fullmatch(r'[0-9]{10}\.json', PurePosixPath(m.name).name)]
               other_json=[m.name for m in members if m.isfile() and m.name.endswith('.json') and m not in game_files]
               print('Historical TAR inventory:',len(game_files),'game-ID JSON files,',
                     len(other_json),'other JSON files; examples:',other_json[:12],flush=True)
               if len(game_files)!=2811:
                   raise SystemExit('Expected 2811 game-ID JSON records; found '+str(len(game_files)))
               archive.extractall('.nhl_archive/games',filter='data')
+          PY
+      - name: Flatten verified game-ID files for historical parser
+        run: |
+          mkdir -p .nhl_archive/games-flat
+          python - <<'PY'
+          from pathlib import Path
+          import re,shutil
+          paths=[p for p in Path('.nhl_archive/games').rglob('*.json')
+                 if re.fullmatch(r'[0-9]{10}\\.json',p.name)]
+          if len(paths)!=2811:raise SystemExit(f'Expected 2811 games, found {len(paths)}')
+          if len({p.name for p in paths})!=2811:raise SystemExit('Duplicate game IDs')
+          for path in paths:shutil.copyfile(path,Path('.nhl_archive/games-flat')/path.name)
           PY
       - name: Compute strictly prior-date team snapshots
         run: |
