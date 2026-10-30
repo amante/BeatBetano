@@ -33,6 +33,21 @@ jobs:
           if actual.lower()!=matched[0].lower():raise SystemExit('Historical archive checksum mismatch')
           print('Verified historical archive SHA256')
           PY
+      - name: Download verified postgame labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" \
+            --pattern 'nhl_postgame_labels.csv' --pattern 'labels_manifest.json' \
+            --dir .nhl_archive
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          m=json.loads(Path('.nhl_archive/labels_manifest.json').read_text())
+          actual=hashlib.sha256(Path('.nhl_archive/nhl_postgame_labels.csv').read_bytes()).hexdigest()
+          if m.get('games')!=2811 or actual!=m.get('sha256'):
+              raise SystemExit('Postgame labels manifest/digest mismatch')
+          PY
       - name: Securely extract historical match archive
         run: |
           mkdir -p .nhl_archive/games
@@ -77,10 +92,22 @@ jobs:
             --archive .nhl_archive/games-flat --expected 2811 \
             --output .nhl_archive/team_prior_history.json \
             --manifest .nhl_archive/team_prior_history_manifest.json
+      - name: Join pre-date sporting history with postgame targets
+        run: |
+          python -m nhl.pulso_historical_training_236 \
+            --history .nhl_archive/team_prior_history.json \
+            --labels .nhl_archive/nhl_postgame_labels.csv \
+            --expected 2811 \
+            --out .nhl_archive/team_training_rows.json \
+            --manifest .nhl_archive/team_training_manifest.json
+      - name: Run historical dataset integrity tests
+        run: python -m unittest nhl.tests.test_pulso_historical_training_236 -v
       - uses: actions/upload-artifact@v6
         with:
           name: pulso-nhl-prior-team-sporting-history
           path: |
             .nhl_archive/team_prior_history.json
             .nhl_archive/team_prior_history_manifest.json
+            .nhl_archive/team_training_rows.json
+            .nhl_archive/team_training_manifest.json
           retention-days: 90
