@@ -1,0 +1,29 @@
+name: PULSO NHL #225 — observed historical readiness
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - nhl/pulso_coverage_gate_225.py
+      - nhl/tests/test_pulso_coverage_gate_225.py
+      - .github/workflows/pulso-observed-coverage-225.yml
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_pulso_coverage_gate_225 -v
+      - name: Audit captured data already available in repository
+        run: |
+          python -m nhl.pulso_coverage_gate_225 \
+            --coverage-dir results/pulso/nhl \
+            --out /tmp/pulso-coverage-readiness.json
+          cat /tmp/pulso-coverage-readiness.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nhl-sporting-coverage-readiness
+          path: /tmp/pulso-coverage-readiness.json
