@@ -102,6 +102,12 @@ jobs:
             --manifest .nhl_archive/team_training_manifest.json
       - name: Run historical dataset integrity tests
         run: python -m unittest nhl.tests.test_pulso_historical_training_236 -v
+      - name: Audit historical sporting sample coverage
+        run: |
+          python -m unittest nhl.tests.test_pulso_historical_coverage_237 -v
+          python -m nhl.pulso_historical_coverage_237 \
+            --dataset .nhl_archive/team_training_rows.json \
+            --out .nhl_archive/team_coverage_report.json
       - uses: actions/upload-artifact@v6
         with:
           name: pulso-nhl-prior-team-sporting-history
@@ -110,4 +116,5 @@ jobs:
             .nhl_archive/team_prior_history_manifest.json
             .nhl_archive/team_training_rows.json
             .nhl_archive/team_training_manifest.json
+            .nhl_archive/team_coverage_report.json
           retention-days: 90
