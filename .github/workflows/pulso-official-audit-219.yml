@@ -1,0 +1,33 @@
+name: PULSO NHL #219 — official prospective postmortem
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 12 * * *'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Test official outcome reconstructor
+        run: python -m unittest nhl.tests.test_pulso_official_outcome_audit_219 -v
+      - name: Audit first confirmed frozen cohort
+        run: |
+          python -m nhl.pulso_official_outcome_audit_219 \
+            --forecast-dir frontend/data/nhl-forecasts/run-40975864805 \
+            --out frontend/data/pulso-nhl-prospective-audit.json
+      - name: Publish only postgame audit, never rewrite source predictions
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add frontend/data/pulso-nhl-prospective-audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'data(nhl): update official prospective postmortem'
+            git push origin HEAD:main
+          fi
