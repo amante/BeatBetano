@@ -51,6 +51,12 @@ jobs:
             --goalies "results/pulso/nhl/$DAY/goalie_identity_crosswalk.json" \
             --editorial "results/pulso/nhl/$DAY/editorial_lineup_observations.json" \
             --out "results/pulso/nhl/$DAY/collective_coverage.json"
+      - name: Preserve fixture-level coverage by immutable run ID
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          mkdir -p frontend/data/nhl-coverage
+          cp "results/pulso/nhl/$DAY/collective_coverage.json" "frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json"
       - name: Freeze unique prospective source ledger entry
         run: |
           DAY="${{ inputs.day }}"
@@ -84,6 +90,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -f frontend/data/pulso-nhl-research.json frontend/data/nhl-ledger/run-${{ github.run_id }}.json
+          git add -f frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json
           if compgen -G 'frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json' > /dev/null; then
             git add -f frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json
           fi
