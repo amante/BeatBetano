@@ -55,7 +55,7 @@ jobs:
           DAY="${{ inputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           mkdir -p "results/pulso/nhl/$DAY"
-          printf '{}\\n' > "results/pulso/nhl/$DAY/verified_sporting_packages.json"
+          echo '{}' > "results/pulso/nhl/$DAY/verified_sporting_packages.json"
           python -m nhl.pulso_quantitative_signals_227 \
             --bridge "results/pulso/nhl/$DAY/sporting_bridge.json" \
             --packages "results/pulso/nhl/$DAY/verified_sporting_packages.json" \
