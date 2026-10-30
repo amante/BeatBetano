@@ -20,7 +20,7 @@ jobs:
       - name: Audit first confirmed frozen cohort
         run: |
           python -m nhl.pulso_official_outcome_audit_219 \
-            --forecast-dir frontend/data/nhl-forecasts/run-40975864805 \
+            --forecast-dir frontend/data/nhl-forecasts \
             --out frontend/data/pulso-nhl-prospective-audit.json
       - name: Publish only postgame audit, never rewrite source predictions
         run: |
