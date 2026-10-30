@@ -67,9 +67,18 @@ jobs:
           python -m nhl.pulso_live_sporting_246 \
             --report "results/pulso/nhl/$DAY/report.json" \
             --out "results/pulso/nhl/$DAY/live_sporting_246.json"
+      - name: Preserve fixture-level individual player and goalie evidence
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          echo '{}' > "results/pulso/nhl/$DAY/verified_lineup_history_packages.json"
+          python -m nhl.pulso_individual_evidence_247 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --packages "results/pulso/nhl/$DAY/verified_lineup_history_packages.json" \
+            --out "results/pulso/nhl/$DAY/individual_evidence_247.json"
       - name: Execute original NHL sporting module integrity contract
         run: |
-          python -m unittest nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_pulso_live_sporting_246 -v
+          python -m unittest nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_pulso_live_sporting_246 nhl.tests.test_pulso_individual_evidence_247 -v
           DAY="${{ inputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_sporting_core_245 \
@@ -77,6 +86,7 @@ jobs:
             --bridge "results/pulso/nhl/$DAY/sporting_bridge.json" \
             --packages "results/pulso/nhl/$DAY/verified_sporting_packages.json" \
             --live-sporting "results/pulso/nhl/$DAY/live_sporting_246.json" \
+            --individual-evidence "results/pulso/nhl/$DAY/individual_evidence_247.json" \
             --out "results/pulso/nhl/$DAY/sporting_core_manifest.json"
       - name: Audit fixture-level sporting evidence coverage
         run: |
