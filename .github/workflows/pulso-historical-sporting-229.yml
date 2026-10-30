@@ -21,7 +21,18 @@ jobs:
             --pattern 'nhl-complete-2811-source.tar.gz' --pattern 'SHA256SUMS' \
             --dir .nhl_archive
           cd .nhl_archive
-          grep -F 'nhl-complete-2811-source.tar.gz' SHA256SUMS | sha256sum --check
+          # The release checksum manifest references output/<asset>; gh downloads flat.
+          # Verify the original recorded hash against the downloaded basename.
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          rows=[x.strip().split(maxsplit=1) for x in Path('SHA256SUMS').read_text().splitlines() if x.strip()]
+          matched=[digest for digest,name in rows if name.lstrip('*').removeprefix('./').endswith('/nhl-complete-2811-source.tar.gz')]
+          if len(matched)!=1:raise SystemExit('Expected exactly one historical tarball checksum')
+          actual=hashlib.sha256(Path('nhl-complete-2811-source.tar.gz').read_bytes()).hexdigest()
+          if actual.lower()!=matched[0].lower():raise SystemExit('Historical archive checksum mismatch')
+          print('Verified historical archive SHA256')
+          PY
       - name: Securely extract historical match archive
         run: |
           mkdir -p .nhl_archive/games
