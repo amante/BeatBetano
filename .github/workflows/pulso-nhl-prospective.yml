@@ -60,15 +60,23 @@ jobs:
             --bridge "results/pulso/nhl/$DAY/sporting_bridge.json" \
             --packages "results/pulso/nhl/$DAY/verified_sporting_packages.json" \
             --out "results/pulso/nhl/$DAY/quantitative_signals.json"
+      - name: Capture official NHL prior-day team form and observed PP/PK
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.pulso_live_sporting_246 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --out "results/pulso/nhl/$DAY/live_sporting_246.json"
       - name: Execute original NHL sporting module integrity contract
         run: |
-          python -m unittest nhl.tests.test_pulso_sporting_core_245 -v
+          python -m unittest nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_pulso_live_sporting_246 -v
           DAY="${{ inputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_sporting_core_245 \
             --report "results/pulso/nhl/$DAY/report.json" \
             --bridge "results/pulso/nhl/$DAY/sporting_bridge.json" \
             --packages "results/pulso/nhl/$DAY/verified_sporting_packages.json" \
+            --live-sporting "results/pulso/nhl/$DAY/live_sporting_246.json" \
             --out "results/pulso/nhl/$DAY/sporting_core_manifest.json"
       - name: Audit fixture-level sporting evidence coverage
         run: |

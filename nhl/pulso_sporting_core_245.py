@@ -35,12 +35,15 @@ def contribution(name,source,source_asof,observed,applied=False,effect=None,bloc
  return {"module":name,"source":source,"as_of":source_asof,"observed":observed,
          "applied_to_sporting_probability":applied,"probability_delta":effect,
          "blocker":blocker if not applied else None}
-def integrate(report,bridge,packages,unit_research=None):
+def integrate(report,bridge,packages,unit_research=None,live_sporting=None):
  if report.get("data_kind")!="source_readiness_only" or report.get("official_predictions")!=0:
   raise ValueError("Raw pregame source report required")
  asof=parse_utc(report["generated_at_utc"])
  if bridge.get("kind")!="sporting_source_bridge" or parse_utc(bridge["as_of"])!=asof:
   raise ValueError("Bridge and capture timestamps disagree")
+ if live_sporting is not None and (live_sporting.get('kind')!='nhl_live_sporting_observations_246' or parse_utc(live_sporting['observed_at_utc'])!=asof):
+  raise ValueError('Live sporting timestamp mismatch')
+ live_by_id={str(g['game_id']):g for g in live_sporting.get('games',[])} if live_sporting else {}
  quant=verified_signals(bridge,packages)
  seen=set();out=[]
  for fixture in report["games"]:
@@ -69,6 +72,11 @@ def integrate(report,bridge,packages,unit_research=None):
   unit_obs=units.get("units",{})
   if unit_obs and not isinstance(unit_obs,dict):raise ValueError("Malformed unit observations")
   if unit_obs and set(unit_obs)-set(UNITS):raise ValueError("Unrecognized unit")
+  current=live_by_id.get(gid)
+  if current and any(current[k]!=fixture[k] for k in ('home','away','start_utc')):raise ValueError('Live fixture mismatch')
+  current_sides=current['sides'] if current else {}
+  for team in details:
+   details[team]['official_prior_day_team_form']=current_sides.get(team)
   ctx=rivalry_context(fixture["home"],fixture["away"])
   annotations={
    "crs":{"observed":both("crs"),"blocker":"no fitted and complete roster strength valuation"},
@@ -91,6 +99,7 @@ def integrate(report,bridge,packages,unit_research=None):
   out.append({"game_id":gid,"home":fixture["home"],"away":fixture["away"],
     "start_utc":fixture["start_utc"],"as_of_utc":report["generated_at_utc"],
     "module_manifest":modules,"teams":details,"context":ctx,"unit_research":unit_obs,
+    "official_prior_day_team_form_source":live_sporting.get("source_url") if live_sporting else None,
     "sporting_goal_rates":None,"sporting_probabilities":None,"official":False,
     "sporting_model_status":"blocked_missing_verified_fitted_effects",
     "no_silent_fallback":True,"odds_used":False})
@@ -104,9 +113,10 @@ def main():
  p=argparse.ArgumentParser()
  for x in ("report","bridge","packages","out"):p.add_argument("--"+x,required=True)
  p.add_argument("--unit-research")
+ p.add_argument("--live-sporting")
  a=p.parse_args()
  load=lambda path:json.loads(Path(path).read_text())
- result=integrate(load(a.report),load(a.bridge),load(a.packages),load(a.unit_research) if a.unit_research else None)
+ result=integrate(load(a.report),load(a.bridge),load(a.packages),load(a.unit_research) if a.unit_research else None,load(a.live_sporting) if a.live_sporting else None)
  dest=Path(a.out);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_text(json.dumps(result,indent=2))
  print(json.dumps({"fixtures":len(result["games"]),"modules":result["module_count"],"official_predictions":0}))
 if __name__=="__main__":main()
