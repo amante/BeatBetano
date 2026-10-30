@@ -3,19 +3,23 @@
 Historical team goalie save percentages DO NOT describe the projected starter.
 They stay separate from #227 player-goalie numerical signal.
 """
-import argparse,json,math
+import argparse,csv,json,math
 from pathlib import Path
 from nhl.pulso_pregame_v7 import parse_utc
 
-def join(report,archive):
+def join(report,archive,labels):
+ identities={str(x["game_id"]):x for x in labels}
+ if len(identities)!=len(labels):raise ValueError("Duplicate history identities")
  if report.get("kind")!="sporting_source_bridge":raise ValueError("Expected sporting source bridge")
  by_team={}
  for entry in archive:
   if entry.get("source_class")!="earlier_dates_postgame_boxscores_only":raise ValueError("Unverified historical source")
   d=entry["date"]
+  identity=identities.get(str(entry["game_id"]))
+  if identity is None or identity["date"]!=d:raise ValueError("Missing or mismatched historical fixture identity")
   for side in ("home","away"):
    rec=entry.get(side,{})
-   team=rec.get("team")
+   team=identity[side]
    if team:
     key=(d,team)
     if key in by_team:raise ValueError("Duplicate historical team/date")
@@ -47,9 +51,10 @@ def join(report,archive):
   "note":"Aggregates include prior team goalies, not the actual starting goalie."}
 def main():
  p=argparse.ArgumentParser()
- for k in ("bridge","history","out"):p.add_argument("--"+k,required=True)
+ for k in ("bridge","history","labels","out"):p.add_argument("--"+k,required=True)
  a=p.parse_args()
- data=join(json.loads(Path(a.bridge).read_text()),json.loads(Path(a.history).read_text()))
+ with Path(a.labels).open(newline="") as source:labels=list(csv.DictReader(source))
+ data=join(json.loads(Path(a.bridge).read_text()),json.loads(Path(a.history).read_text()),labels)
  out=Path(a.out);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(data,indent=2))
  print(json.dumps({"fixtures":len(data["games"]),"with_history":sum(1 for g in data["games"].values() for t in g["teams"].values() if t["features"] is not None)}))
 if __name__=="__main__":main()
