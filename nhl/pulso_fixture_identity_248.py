@@ -59,8 +59,8 @@ def reconcile(report,rosters,goalies,editorial):
    if len(valid)!=1:issues.append("no_unique_fixture_linked_goalie_player_id")
    source_confirmed=(len(valid)==1 and valid[0].get("goalie_status")=="confirmed")
    if not source_confirmed:issues.append("goalie_not_source_reported_confirmed")
-   if not goalie.get("independent_starter_confirmation",False):
-    issues.append("goalie_not_independently_confirmed")
+   # This source crosswalk is not independent starter confirmation.
+   issues.append("goalie_not_independently_confirmed")
    teams[team]={"roster_candidate_count":sum(len(v) for v in name_map.values()),
      "unique_roster_name_matches":sum(len(v)==1 for v in name_map.values()),
      "source_goalie_player_id":valid[0]["nhl_player_id"] if len(valid)==1 else None,
