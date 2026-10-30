@@ -41,6 +41,16 @@ jobs:
         run: |
           DAY="${REQUESTED_DAY:-$(date -u +%F)}"
           python -m nhl.pulso_prospective_capture --date "$DAY" --output-dir "results/pulso/nhl/$DAY" --public-status frontend/data/pulso-nhl-research.json
+      - name: Audit fixture-level sporting evidence coverage
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.pulso_evidence_coverage_222_223 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" \
+            --goalies "results/pulso/nhl/$DAY/goalie_identity_crosswalk.json" \
+            --editorial "results/pulso/nhl/$DAY/editorial_lineup_observations.json" \
+            --out "results/pulso/nhl/$DAY/collective_coverage.json"
       - name: Freeze unique prospective source ledger entry
         run: |
           DAY="${{ inputs.day }}"
