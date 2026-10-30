@@ -2,20 +2,52 @@
 (async function(){
  const root=document.getElementById("pulso-nhl-research");
  if(!root || new URLSearchParams(location.search).get("sport")!=="nhl")return;
- const line=document.createElement("p");
- line.textContent="Estado del motor: sin predicciones colectivas verificadas publicadas.";
- root.append(line);
+ const status=document.createElement("p");status.textContent="Consultando predicciones NHL verificables…";root.append(status);
+ const section=(title)=>{const block=document.createElement("section");const h=document.createElement("h4");h.textContent=title;block.append(h);root.append(block);return block;};
+ const p=(parent,value)=>{const el=document.createElement("p");el.textContent=value;parent.append(el);return el;};
+ const percent=value=>(value*100).toFixed(1)+" %";
+ async function get(path){const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw new Error(String(response.status));return response.json();}
  try{
-  const response=await fetch("./data/pulso-nhl-research.json",{cache:"no-store"});
-  if(!response.ok)return;
-  const doc=await response.json();
-  if(!Array.isArray(doc.games))return;
-  line.textContent="Motor NHL experimental: "+doc.games.length+" registros de investigación. No son pronósticos oficiales ni recomendaciones de apuesta.";
-  for(const g of doc.games){
-   const row=document.createElement("p");
-   const state=g.status==="research_only_not_calibrated"?"Simulación experimental sin calibrar":"Predicción no disponible";
-   row.textContent=[g.away,g.home].join(" @ ")+" — "+state+(Array.isArray(g.readiness_issues)&&g.readiness_issues.length?" ("+g.readiness_issues.join(", ")+")":"");
-   root.append(row);
-  }
- }catch(_){line.textContent="Motor NHL: no hay resultados de investigación verificados disponibles.";}
+  const baseline=await get("./data/nhl-baseline-latest.json");
+  if(baseline.kind!=="published_experimental_outcome_baseline" || !Array.isArray(baseline.games))throw new Error("Baseline inválido");
+  const block=section("Baseline operativo experimental · probabilidades ML");
+  p(block,"Modelo outcome-only basado exclusivamente en resultados históricos; no equivale al modelo NHL deportivo completo.");
+  if(!baseline.games.length)p(block,"No hay partidos elegibles para pronóstico en esta captura.");
+  baseline.games.forEach(g=>{
+   const row=document.createElement("div");row.className="nhl-model-row";
+   const name=document.createElement("strong");name.textContent=g.away+" @ "+g.home;row.append(name);
+   p(row,"ML "+g.home+": "+percent(g.p_home_ml)+" · "+g.away+": "+percent(g.p_away_ml));
+   p(row,"Congelado: "+new Date(g.prediction_as_of_utc).toLocaleString("es-CL",{dateStyle:"medium",timeStyle:"short"}));
+   block.append(row);
+  });
+ }catch(_){p(section("Baseline ML"),"Aún no se ha publicado una captura verificable del baseline.");}
+ try{
+  const latest=await get("./data/nhl-shadow/latest.json");
+  if(latest.kind!=="prospective_challenger_shadow" || !Array.isArray(latest.games))throw new Error("Formato shadow inválido");
+  status.textContent="NHL · Challenger ML experimental (modo sombra). No es modelo oficial ni recomendación de apuesta.";
+  const predictions=section("Pronósticos congelados del challenger");
+  p(predictions,"Modelo: "+latest.model_version+" · Fecha de captura: "+new Date(latest.generated_at_utc).toLocaleString("es-CL",{dateStyle:"medium",timeStyle:"short"}));
+  const valid=latest.games.filter(x=>x.status==="shadow_prediction");
+  if(!valid.length)p(predictions,"No hay pronósticos elegibles publicados en esta ejecución.");
+  valid.forEach(g=>{
+   const row=document.createElement("div");row.className="nhl-model-row";
+   const h=document.createElement("strong");h.textContent=g.away+" @ "+g.home;row.append(h);
+   p(row,"ML "+g.home+": "+percent(g.p_home_ml)+" · "+g.away+": "+percent(g.p_away_ml));
+   p(row,"Inicio: "+new Date(g.start_utc).toLocaleString("es-CL",{dateStyle:"medium",timeStyle:"short"})+" · Investigación; sin cuotas.");
+   predictions.append(row);
+  });
+  const blocked=latest.games.filter(x=>x.status==="blocked");
+  if(blocked.length)p(predictions,blocked.length+" partidos bloqueados por evidencia insuficiente.");
+ }catch(_){status.textContent="NHL: aún no hay una publicación del último pronóstico experimental. No se muestran probabilidades no verificadas.";}
+ const evaluation=section("Baseline vs. challenger · seguimiento prospectivo");
+ try{
+  const report=await get("./data/pulso-nhl-ml-comparison.json");
+  if(report.status!=="prospective_paired_ml_evaluation")throw new Error("Reporte no válido");
+  p(evaluation,"Partidos completados comparables: "+report.paired_completed+". Pendientes con ambos pronósticos: "+report.paired_awaiting_official_final.length+".");
+  if(report.metrics){
+   p(evaluation,"Brier: baseline "+report.metrics.brier.baseline.toFixed(4)+" / challenger "+report.metrics.brier.challenger.toFixed(4)+".");
+   p(evaluation,"Log Loss: baseline "+report.metrics.log_loss.baseline.toFixed(4)+" / challenger "+report.metrics.log_loss.challenger.toFixed(4)+".");
+  }else p(evaluation,"Esperando resultados finales y pronósticos comparables. No hay métricas prospectivas disponibles.");
+  p(evaluation,"Solo se puntúan predicciones anteriores al inicio y encuentros con marcador final oficial.");
+ }catch(_){p(evaluation,"Comparación prospectiva aún no publicada. Sin resultados inventados.");}
 })();
