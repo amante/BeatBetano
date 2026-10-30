@@ -50,6 +50,16 @@ jobs:
             --crosswalk "results/pulso/nhl/$DAY/goalie_identity_crosswalk.json" \
             --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" \
             --out "results/pulso/nhl/$DAY/sporting_bridge.json"
+      - name: Produce gated quantitative sporting research vector
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          mkdir -p "results/pulso/nhl/$DAY"
+          printf '{}\\n' > "results/pulso/nhl/$DAY/verified_sporting_packages.json"
+          python -m nhl.pulso_quantitative_signals_227 \
+            --bridge "results/pulso/nhl/$DAY/sporting_bridge.json" \
+            --packages "results/pulso/nhl/$DAY/verified_sporting_packages.json" \
+            --out "results/pulso/nhl/$DAY/quantitative_signals.json"
       - name: Audit fixture-level sporting evidence coverage
         run: |
           DAY="${{ inputs.day }}"
