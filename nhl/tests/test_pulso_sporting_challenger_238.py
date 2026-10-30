@@ -23,7 +23,7 @@ class Challenger238(unittest.TestCase):
   with self.assertRaises(ValueError):run([],{"status":"unknown","games":0})
  def test_same_day_separated_by_date(self):
   rows=[{"date":"2025-01-%02d"%d,"game_id":str(d*100+i),"x":[.1,.2],"y":i%2}
-        for d in range(1,11) for i in range(30)]
+        for d in range(1,21) for i in range(30)]
   a,b,cut=split(rows)
   self.assertLess(max(r["date"] for r in a),min(r["date"] for r in b))
 if __name__=="__main__":unittest.main()
