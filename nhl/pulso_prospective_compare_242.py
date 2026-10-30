@@ -101,7 +101,7 @@ def evaluate(baseline,challenger,finals):
    "limitations":"Matching pregame snapshots; provenance is repository run-specific filenames, not independent trusted timestamp attestation."}
 
 def read_official(day):
- if not re.fullmatch(r"20\\d{2}-\\d{2}-\\d{2}",day):raise ValueError("Invalid day")
+ if not re.fullmatch(r"20[0-9]{2}-[0-9]{2}-[0-9]{2}",day):raise ValueError("Invalid day")
  url="https://api-web.nhle.com/v1/score/"+day
  with urlopen(Request(url,headers={"User-Agent":"PULSO-NHL-prospective/1.0"}),timeout=25) as f:
   return json.loads(f.read(2000000))
