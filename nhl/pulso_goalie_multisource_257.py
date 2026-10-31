@@ -42,7 +42,7 @@ def fetch(url=URL):
   raw=response.read(4000000)
   if response.read(1):raise ValueError("Oversized response")
  p=Plain();p.feed(raw.decode("utf-8","replace"))
- return [x.strip() for x in p.parts.__str__().splitlines() if x.strip()] if False else [x.strip() for x in "".join(p.parts).splitlines() if x.strip()],{"source_url":url,"retrieved_at":datetime.now(timezone.utc).isoformat(),"sha256":hashlib.sha256(raw).hexdigest()}
+ return [x.strip() for x in "".join(p.parts).splitlines() if x.strip()],{"source_url":url,"retrieved_at":datetime.now(timezone.utc).isoformat(),"sha256":hashlib.sha256(raw).hexdigest()}
 def extract(lines,report,rosters,metadata):
  at=parse_utc(report["generated_at_utc"]);captured=parse_utc(metadata["retrieved_at"])
  if captured<at:raise ValueError("Old provider capture")
