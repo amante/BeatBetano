@@ -86,6 +86,7 @@ def audit(report,identity,individual,team_form,goalie_daily=None):
 def main():
  p=argparse.ArgumentParser()
  for name in ("report","identity","individual","team-form","out"):p.add_argument("--"+name,required=True)
+ p.add_argument("--goalie-daily")
  a=p.parse_args()
  load=lambda name:json.loads(Path(getattr(a,name.replace("-","_"))).read_text())
  result=audit(load("report"),load("identity"),load("individual"),load("team-form"),load("goalie-daily") if a.goalie_daily else None)
