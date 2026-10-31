@@ -60,6 +60,7 @@ def audit(report,identity,individual,team_form,goalie_daily=None):
    status={"roster_candidates":has_roster,"goalie_identity":has_goalie,
     "goalie_confirmed":confirmed,"lineup":has_lineup,
     "individual_history":has_individual,"individual_metrics":has_delta,
+    "goalie_candidate_metrics":has_goalie_metrics,
     "team_form":has_team,"sporting_probability":False}
    failures=set(idt["blockers"]+ip["blockers"]+ft["blocked"])
    for key,value in status.items():
@@ -69,6 +70,7 @@ def audit(report,identity,individual,team_form,goalie_daily=None):
    records[team]={"evidence":status,"blockers":sorted(failures),
     "goalie_nhl_player_id":idt["source_goalie_player_id"],
     "goalie_source_status":idt["source_goalie_status"],
+    "goalie_candidate_evidence":goalie_candidate,
     "source_team_form":ft.get("features",{}).get("source_url") if has_team else None,
     "source_attestation":"roster_identity_not_lineup_confirmation"}
   games.append({"game_id":gid,"home":f["home"],"away":f["away"],
