@@ -71,6 +71,16 @@ jobs:
             --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
             --external "results/pulso/nhl/$DAY/external_goalie_observations_257.json" \
             --out "results/pulso/nhl/$DAY/goalie_states_255.json"
+      - name: Prepare goalie-conditional scenario matrix
+        run: |
+          python -m unittest nhl.tests.test_pulso_goalie_scenarios_258 -v
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.pulso_goalie_scenarios_258 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
+            --external "results/pulso/nhl/$DAY/external_goalie_observations_257.json" \
+            --out "results/pulso/nhl/$DAY/goalie_scenarios_258.json"
       - name: Capture individual candidate goalie history before puck drop
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_history_251 -v
