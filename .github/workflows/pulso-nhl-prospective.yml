@@ -114,6 +114,7 @@ jobs:
             --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
             --individual "results/pulso/nhl/$DAY/individual_evidence_247.json" \
             --team-form "results/pulso/nhl/$DAY/live_sporting_246.json" \
+            --goalie-daily "results/pulso/nhl/$DAY/goalie_daily_253.json" \
             --out "results/pulso/nhl/$DAY/source_coverage_249.json"
       - name: Execute original NHL sporting module integrity contract
         run: |
@@ -126,6 +127,8 @@ jobs:
             --packages "results/pulso/nhl/$DAY/verified_sporting_packages.json" \
             --live-sporting "results/pulso/nhl/$DAY/live_sporting_246.json" \
             --individual-evidence "results/pulso/nhl/$DAY/individual_evidence_247.json" \
+            --goalie-daily "results/pulso/nhl/$DAY/goalie_daily_253.json" \
+            --goalie-identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
             --out "results/pulso/nhl/$DAY/sporting_core_manifest.json"
       - name: Audit fixture-level sporting evidence coverage
         run: |
