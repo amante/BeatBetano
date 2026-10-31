@@ -55,6 +55,8 @@ def audit(report,identity,individual,team_form,goalie_daily=None):
    has_delta=has_individual and isinstance(ip.get("availability_delta"),dict) and all(
     v is not None for v in ip["availability_delta"].values())
    has_team=ft["status"]=="observed_not_calibrated"
+   goalie_candidate=goalie_index.get(gid,{}).get(team)
+   has_goalie_metrics=bool(goalie_candidate and goalie_candidate["observed"])
    status={"roster_candidates":has_roster,"goalie_identity":has_goalie,
     "goalie_confirmed":confirmed,"lineup":has_lineup,
     "individual_history":has_individual,"individual_metrics":has_delta,
