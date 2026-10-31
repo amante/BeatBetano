@@ -37,10 +37,11 @@ def classify(report,identity,external=None):
     state="unconfirmed"
    else:state="unconfirmed"
    corroboration=ext.get((str(f["game_id"]),team))
-   if corroboration is not None and corroboration["player_id"]!=pid:corroboration=None
+   external_conflict=bool(corroboration and corroboration["player_id"]!=pid)
    counts[state]+=1
    teams[team]={"state":state,"candidate_player_id":pid,"independently_confirmed":state=="confirmed",
     "external_provider_observation":corroboration,
+    "candidate_disagreement":external_conflict,
     "reported_confirmed_by_external_source":bool(corroboration and corroboration["provider_status"]=="confirmed"),
     "time_to_puck_drop_minutes":int((start-at).total_seconds()//60),
     "normal_pregame_uncertainty":state in ("probable","unconfirmed"),
