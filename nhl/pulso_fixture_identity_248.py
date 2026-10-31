@@ -48,15 +48,19 @@ def reconcile(report,rosters,goalies,editorial):
      name_map[normalize(p.get("full_name",""))].append(p["player_id"])
    else:issues.append("missing_official_roster_identity_pool")
    if not editorial_verified:issues.append("editorial_lineup_not_fixture_attested_or_player_ids_unresolved")
-   matching=[g for g in obs if g.get("team")==team and str(g.get("game_id"))==str(f["game_id"])
+   matching=[g for g in obs if g.get("team")==team and str(g.get("nhl_game_id"))==str(f["game_id"])
       and g.get("matchup_verified") is True]
    valid=[]
    for g in matching:
     if g.get("usable_pregame_identity") is not True:continue
+    if not g.get("source_captured_at") or parse_utc(g["source_captured_at"])>issued:continue
+    if parse_utc(g["source_captured_at"])>=start:continue
+    if g.get("validation_errors"):continue
     pid=g.get("nhl_player_id")
     if type(pid) is not int or not rec or pid not in {p["player_id"] for p in rec["players"]}:continue
     valid.append(g)
-   if len(valid)!=1:issues.append("no_unique_fixture_linked_goalie_player_id")
+   unique={v["nhl_player_id"] for v in valid}
+   if len(unique)!=1 or len(valid)!=1:issues.append("no_unique_fixture_linked_goalie_player_id")
    source_confirmed=(len(valid)==1 and valid[0].get("goalie_status")=="confirmed")
    if not source_confirmed:issues.append("goalie_not_source_reported_confirmed")
    # This source crosswalk is not independent starter confirmation.

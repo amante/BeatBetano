@@ -8,8 +8,9 @@ class FixtureIdentity248(unittest.TestCase):
   self.rosters={"rosters":[{"team":team,"as_of":"2026-10-30T13:00:00Z",
     "source_url":"https://api-web.nhle.com/v1/roster/"+team+"/current",
     "players":[{"player_id":i,"full_name":"Joe Goalie"}]} for i,team in [(123,"BOS"),(456,"MTL")]]}
-  self.goalies={"observations":[{"game_id":"1","team":"BOS","nhl_player_id":123,
-   "matchup_verified":True,"usable_pregame_identity":True,"goalie_status":"confirmed"}]}
+  self.goalies={"observations":[{"nhl_game_id":"1","team":"BOS","nhl_player_id":123,
+   "matchup_verified":True,"usable_pregame_identity":True,"goalie_status":"confirmed",
+   "source_captured_at":"2026-10-30T13:15:00Z","validation_errors":[]}]}
  def test_linked_source_goalie_not_independent_confirmation(self):
   x=reconcile(self.report,self.rosters,self.goalies,{})
   a=x["games"][0]["teams"]["BOS"]
@@ -18,7 +19,15 @@ class FixtureIdentity248(unittest.TestCase):
   self.assertIsNone(a["expected_lineup"])
   self.assertIn("goalie_not_independently_confirmed",a["blockers"])
  def test_cross_fixture_goalie_rejected(self):
-  self.goalies["observations"][0]["game_id"]="2"
+  self.goalies["observations"][0]["nhl_game_id"]="2"
+  x=reconcile(self.report,self.rosters,self.goalies,{})
+  self.assertIsNone(x["games"][0]["teams"]["BOS"]["source_goalie_player_id"])
+ def test_late_goalie_source_rejected(self):
+  self.goalies["observations"][0]["source_captured_at"]="2026-10-30T15:00:00Z"
+  x=reconcile(self.report,self.rosters,self.goalies,{})
+  self.assertIsNone(x["games"][0]["teams"]["BOS"]["source_goalie_player_id"])
+ def test_goalie_with_validation_error_rejected(self):
+  self.goalies["observations"][0]["validation_errors"]=["roster_after_source"]
   x=reconcile(self.report,self.rosters,self.goalies,{})
   self.assertIsNone(x["games"][0]["teams"]["BOS"]["source_goalie_player_id"])
  def test_late_roster_rejected(self):
