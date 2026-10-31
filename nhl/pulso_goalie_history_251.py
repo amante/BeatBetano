@@ -68,9 +68,9 @@ def collect(report,identity,fetcher=fetch):
    pid,result,error=task.result()
    if error:responses[pid]={"status":"blocked","reason":"fetch_"+error};continue
    payload,meta=result
-   if parse_utc(meta["retrieved_at"])>at:
-    # Captured after the frozen prediction timestamp; retroactive attribution prohibited.
-    responses[pid]={"status":"blocked","reason":"source_after_prediction_freeze"}
+   retrieved=parse_utc(meta["retrieved_at"])
+   if retrieved<at or any(retrieved>=parse_utc(f["start_utc"]) for f in report["games"]):
+    responses[pid]={"status":"blocked","reason":"source_outside_valid_pregame_window"}
     continue
    try:summary=metrics(payload,at.date().isoformat())
    except (KeyError,TypeError,ValueError) as exc:
@@ -92,7 +92,7 @@ def collect(report,identity,fetcher=fetch):
   "observed_team_sides":sum(t["status"]=="observed" for g in games for t in g["teams"].values()),
   "official_predictions":0,"odds_used":False,
   "limitations":["Historical candidate goalie save rates only, not GSAx or confirmed starters.",
-    "Only HTTP reads fetched no later than frozen prediction as-of may be used."]}
+    "Game-log HTTP capture has its own timestamp after report generation and before every fixture puck drop; it must not be backdated to original report as-of."]}
 def main():
  p=argparse.ArgumentParser()
  for name in ("report","identity","out"):p.add_argument("--"+name,required=True)
