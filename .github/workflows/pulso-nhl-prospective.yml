@@ -61,6 +61,14 @@ jobs:
             --report "results/pulso/nhl/$DAY/report.json" \
             --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
             --out "results/pulso/nhl/$DAY/goalie_history_251.json"
+      - name: Compute non-calibrated goalie performance indicators
+        run: |
+          python -m unittest nhl.tests.test_pulso_goalie_daily_253 -v
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.pulso_goalie_daily_253 \
+            --history "results/pulso/nhl/$DAY/goalie_history_251.json" \
+            --out "results/pulso/nhl/$DAY/goalie_daily_253.json"
       - name: Normalize observed NHL sporting source evidence
         run: |
           DAY="${{ inputs.day }}"
