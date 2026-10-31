@@ -30,8 +30,17 @@ def metrics(data,cutoff):
   date=row.get("gameDate")
   if not isinstance(date,str) or len(date)!=10:raise ValueError("Game missing date")
   if date>=cutoff:continue
-  saves=row.get("saves");shots=row.get("shotsAgainst")
-  if type(saves) is not int or type(shots) is not int or shots<=0 or saves<0 or saves>shots:
+  shots=row.get("shotsAgainst");against=row.get("goalsAgainst");saves=row.get("saves")
+  # NHL web game logs commonly expose shotsAgainst + goalsAgainst + savePctg,
+  # not an explicit saves field; derive saves only when both inputs are valid.
+  if type(shots) is not int or shots<=0:
+   bad+=1;continue
+  if saves is None and type(against) is int and 0<=against<=shots:
+   saves=shots-against
+  if type(saves) is not int or saves<0 or saves>shots or (type(against) is int and saves+against!=shots):
+   bad+=1;continue
+  pct=row.get("savePctg")
+  if pct is not None and (type(pct) not in (int,float) or not 0<=pct<=1 or abs(saves/shots-pct)>0.002):
    bad+=1;continue
   valid.append({"date":date,"saves":saves,"shots":shots,
     "game_id":str(row.get("gameId",""))})
