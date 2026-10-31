@@ -63,7 +63,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/external_goalie_observations_257.json"
       - name: Classify goalie certainty without artificial PASS
         run: |
-          python -m unittest nhl.tests.test_pulso_goalie_states_255 -v
+          python -m unittest nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 -v
           DAY="${{ inputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_states_255 \
