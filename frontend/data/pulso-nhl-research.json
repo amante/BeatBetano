@@ -1,67 +1,9 @@
 {
-  "generated_at_utc": "2026-10-31T17:06:22.730581+00:00",
+  "generated_at_utc": "2026-10-31T18:27:42.507891+00:00",
   "date": "2026-10-31",
   "data_kind": "source_readiness_only",
-  "game_count": 8,
+  "game_count": 6,
   "games": [
-    {
-      "sport": "nhl",
-      "game_id": "2026020219",
-      "home": "NSH",
-      "away": "TBL",
-      "start_utc": "2026-10-31T18:00:00Z",
-      "status": "unavailable",
-      "probabilities": null,
-      "readiness_issues": [
-        "roster_snapshot_not_connected",
-        "goalie_identity_and_confirmation_not_verified",
-        "team_rate_model_not_calibrated"
-      ],
-      "goalie_provider_observations": {
-        "NSH": {
-          "status": "projected",
-          "source_count": 1,
-          "provider_goalie_name": "Juuse Saros",
-          "confirmed_as_official": false
-        },
-        "TBL": {
-          "status": "unknown",
-          "source_count": 0
-        }
-      },
-      "odds_used_in_model": false,
-      "official": false
-    },
-    {
-      "sport": "nhl",
-      "game_id": "2026020220",
-      "home": "NYI",
-      "away": "EDM",
-      "start_utc": "2026-10-31T18:00:00Z",
-      "status": "unavailable",
-      "probabilities": null,
-      "readiness_issues": [
-        "roster_snapshot_not_connected",
-        "goalie_identity_and_confirmation_not_verified",
-        "team_rate_model_not_calibrated"
-      ],
-      "goalie_provider_observations": {
-        "NYI": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Ilya Sorokin",
-          "confirmed_as_official": false
-        },
-        "EDM": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Tristan Jarry",
-          "confirmed_as_official": false
-        }
-      },
-      "odds_used_in_model": false,
-      "official": false
-    },
     {
       "sport": "nhl",
       "game_id": "2026020221",
@@ -109,7 +51,7 @@
           "source_count": 0
         },
         "OTT": {
-          "status": "projected",
+          "status": "confirmed",
           "source_count": 1,
           "provider_goalie_name": "Samuel Ersson",
           "confirmed_as_official": false
@@ -223,7 +165,7 @@
       ],
       "goalie_provider_observations": {
         "COL": {
-          "status": "projected",
+          "status": "confirmed",
           "source_count": 1,
           "provider_goalie_name": "Mackenzie Blackwood",
           "confirmed_as_official": false
@@ -242,17 +184,17 @@
   "official_predictions": 0,
   "goalie_identity_audit": {
     "observations": 20,
-    "source_confirmed": 10,
-    "error_roster_missing": 4,
-    "error_source_after_start": 4,
-    "error_goalie_name_missing": 4,
-    "identity_linked": 16,
-    "fixture_linked": 16,
-    "pregame_identity_usable": 16
+    "source_confirmed": 15,
+    "error_roster_missing": 8,
+    "error_source_after_start": 8,
+    "error_goalie_name_missing": 8,
+    "identity_linked": 12,
+    "fixture_linked": 12,
+    "pregame_identity_usable": 12
   },
-  "official_roster_teams_captured": 16,
+  "official_roster_teams_captured": 12,
   "roster_capture_errors": {},
-  "nhlcom_editorial_lineup_blocks": 16,
+  "nhlcom_editorial_lineup_blocks": 24,
   "nhlcom_editorial_source_error": null,
   "limitations": [
     "NHL official schedule is not a player lineup or goalie confirmation.",
