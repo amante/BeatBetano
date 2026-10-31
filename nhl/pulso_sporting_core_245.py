@@ -130,7 +130,7 @@ def main():
  p.add_argument("--goalie-identity")
  a=p.parse_args()
  load=lambda path:json.loads(Path(path).read_text())
- result=integrate(load(a.report),load(a.bridge),load(a.packages),load(a.unit_research) if a.unit_research else None,load(a.live_sporting) if a.live_sporting else None,load(a.individual_evidence) if a.individual_evidence else None)
+ result=integrate(load(a.report),load(a.bridge),load(a.packages),load(a.unit_research) if a.unit_research else None,load(a.live_sporting) if a.live_sporting else None,load(a.individual_evidence) if a.individual_evidence else None, load(a.goalie_daily) if a.goalie_daily else None, load(a.goalie_identity) if a.goalie_identity else None)
  dest=Path(a.out);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_text(json.dumps(result,indent=2))
  print(json.dumps({"fixtures":len(result["games"]),"modules":result["module_count"],"official_predictions":0}))
 if __name__=="__main__":main()
