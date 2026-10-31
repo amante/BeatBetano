@@ -3,7 +3,14 @@ import argparse,json
 from pathlib import Path
 from nhl.pulso_pregame_v7 import parse_utc
 
-def classify(report,identity):
+def classify(report,identity,external=None):
+ ext={}
+ if external is not None:
+  if external.get("kind")!="nhl_external_goalie_observations_257" or parse_utc(external["as_of_utc"])!=parse_utc(report["generated_at_utc"]):raise ValueError("External source mismatch")
+  for ob in external["observations"]:
+   key=(str(ob["game_id"]),ob["team"])
+   if key in ext:raise ValueError("Ambiguous external goalie evidence")
+   ext[key]=ob
  at=parse_utc(report["generated_at_utc"])
  if identity.get("kind")!="nhl_fixture_identity_gate_248" or parse_utc(identity["as_of_utc"])!=at:
   raise ValueError("Invalid identity source or as-of")
@@ -29,8 +36,13 @@ def classify(report,identity):
     # Identity crosswalk failure is not automatically an API outage or a declaration.
     state="unconfirmed"
    else:state="unconfirmed"
+   corroboration=ext.get((str(f["game_id"]),team))
+   external_conflict=bool(corroboration and corroboration["player_id"]!=pid)
    counts[state]+=1
    teams[team]={"state":state,"candidate_player_id":pid,"independently_confirmed":state=="confirmed",
+    "external_provider_observation":corroboration,
+    "candidate_disagreement":external_conflict,
+    "reported_confirmed_by_external_source":bool(corroboration and corroboration["provider_status"]=="confirmed"),
     "time_to_puck_drop_minutes":int((start-at).total_seconds()//60),
     "normal_pregame_uncertainty":state in ("probable","unconfirmed"),
     "auto_pass":False,"ml_penalty":None,
@@ -42,8 +54,9 @@ def classify(report,identity):
 def main():
  p=argparse.ArgumentParser()
  for k in ("report","identity","out"):p.add_argument("--"+k,required=True)
+ p.add_argument("--external")
  a=p.parse_args()
- result=classify(json.loads(Path(a.report).read_text()),json.loads(Path(a.identity).read_text()))
+ result=classify(json.loads(Path(a.report).read_text()),json.loads(Path(a.identity).read_text()),json.loads(Path(a.external).read_text()) if a.external else None)
  dest=Path(a.out);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_text(json.dumps(result,indent=2))
  print(json.dumps(result["counts"]))
 if __name__=="__main__":main()
