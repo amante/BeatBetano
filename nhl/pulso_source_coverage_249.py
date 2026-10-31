@@ -88,7 +88,7 @@ def main():
  for name in ("report","identity","individual","team-form","out"):p.add_argument("--"+name,required=True)
  a=p.parse_args()
  load=lambda name:json.loads(Path(getattr(a,name.replace("-","_"))).read_text())
- result=audit(load("report"),load("identity"),load("individual"),load("team-form"))
+ result=audit(load("report"),load("identity"),load("individual"),load("team-form"),load("goalie-daily") if a.goalie_daily else None)
  out=Path(a.out);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(result,indent=2))
  print(json.dumps({"fixtures":result["fixtures"],"coverage":result["coverage"],"official_predictions":0}))
 if __name__=="__main__":main()
