@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m unittest nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 -v
+      - run: python -m unittest nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 -v
   capture:
     if: github.event_name != 'pull_request'
     needs: test
