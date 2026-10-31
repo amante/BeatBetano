@@ -9,11 +9,12 @@ import argparse,json
 from collections import Counter
 from pathlib import Path
 from nhl.pulso_pregame_v7 import parse_utc
+from nhl.pulso_goalie_integration_254 import join as goalie_join
 
 BLOCKS=("roster_candidates","goalie_identity","goalie_confirmed","lineup",
-        "individual_history","individual_metrics","team_form","sporting_probability")
+        "individual_history","individual_metrics","goalie_candidate_metrics","team_form","sporting_probability")
 
-def audit(report,identity,individual,team_form):
+def audit(report,identity,individual,team_form,goalie_daily=None):
  if report.get("data_kind")!="source_readiness_only" or report.get("official_predictions")!=0:
   raise ValueError("Only sourced unpromoted pregame capture")
  at=parse_utc(report["generated_at_utc"])
@@ -30,6 +31,7 @@ def audit(report,identity,individual,team_form):
    if gid in current:raise ValueError("Repeated fixture in evidence")
    current[gid]=row
   by_id.append(current)
+ goalie_index=goalie_join(report,identity,goalie_daily) if goalie_daily is not None else {}
  games=[];totals=Counter();blockers=Counter()
  for f in report["games"]:
   gid=str(f["game_id"])
@@ -53,9 +55,12 @@ def audit(report,identity,individual,team_form):
    has_delta=has_individual and isinstance(ip.get("availability_delta"),dict) and all(
     v is not None for v in ip["availability_delta"].values())
    has_team=ft["status"]=="observed_not_calibrated"
+   goalie_candidate=goalie_index.get(gid,{}).get(team)
+   has_goalie_metrics=bool(goalie_candidate and goalie_candidate["observed"])
    status={"roster_candidates":has_roster,"goalie_identity":has_goalie,
     "goalie_confirmed":confirmed,"lineup":has_lineup,
     "individual_history":has_individual,"individual_metrics":has_delta,
+    "goalie_candidate_metrics":has_goalie_metrics,
     "team_form":has_team,"sporting_probability":False}
    failures=set(idt["blockers"]+ip["blockers"]+ft["blocked"])
    for key,value in status.items():
@@ -65,6 +70,7 @@ def audit(report,identity,individual,team_form):
    records[team]={"evidence":status,"blockers":sorted(failures),
     "goalie_nhl_player_id":idt["source_goalie_player_id"],
     "goalie_source_status":idt["source_goalie_status"],
+    "goalie_candidate_evidence":goalie_candidate,
     "source_team_form":ft.get("features",{}).get("source_url") if has_team else None,
     "source_attestation":"roster_identity_not_lineup_confirmation"}
   games.append({"game_id":gid,"home":f["home"],"away":f["away"],
@@ -80,9 +86,10 @@ def audit(report,identity,individual,team_form):
 def main():
  p=argparse.ArgumentParser()
  for name in ("report","identity","individual","team-form","out"):p.add_argument("--"+name,required=True)
+ p.add_argument("--goalie-daily")
  a=p.parse_args()
  load=lambda name:json.loads(Path(getattr(a,name.replace("-","_"))).read_text())
- result=audit(load("report"),load("identity"),load("individual"),load("team-form"))
+ result=audit(load("report"),load("identity"),load("individual"),load("team-form"),load("goalie-daily") if a.goalie_daily else None)
  out=Path(a.out);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(result,indent=2))
  print(json.dumps({"fixtures":result["fixtures"],"coverage":result["coverage"],"official_predictions":0}))
 if __name__=="__main__":main()
