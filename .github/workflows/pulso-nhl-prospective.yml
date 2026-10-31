@@ -87,6 +87,17 @@ jobs:
             --report "results/pulso/nhl/$DAY/report.json" \
             --packages "results/pulso/nhl/$DAY/verified_lineup_history_packages.json" \
             --out "results/pulso/nhl/$DAY/individual_evidence_247.json"
+      - name: Audit real fixture-level sporting source coverage
+        run: |
+          python -m unittest nhl.tests.test_pulso_source_coverage_249 -v
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.pulso_source_coverage_249 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
+            --individual "results/pulso/nhl/$DAY/individual_evidence_247.json" \
+            --team-form "results/pulso/nhl/$DAY/live_sporting_246.json" \
+            --out "results/pulso/nhl/$DAY/source_coverage_249.json"
       - name: Execute original NHL sporting module integrity contract
         run: |
           python -m unittest nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_pulso_live_sporting_246 nhl.tests.test_pulso_individual_evidence_247 -v
