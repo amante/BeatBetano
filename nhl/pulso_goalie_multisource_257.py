@@ -82,8 +82,13 @@ def extract(lines,report,rosters,metadata):
 def main():
  p=argparse.ArgumentParser()
  for k in ("report","rosters","out"):p.add_argument("--"+k,required=True)
- a=p.parse_args();rows,meta=fetch()
- out=extract(rows,json.loads(Path(a.report).read_text()),json.loads(Path(a.rosters).read_text()),meta)
+ a=p.parse_args()
+ report=json.loads(Path(a.report).read_text());rosters=json.loads(Path(a.rosters).read_text())
+ try:
+  rows,meta=fetch()
+  out=extract(rows,report,rosters,meta)
+ except (OSError,TimeoutError,UnicodeError,ValueError) as exc:
+  out={"kind":"nhl_external_goalie_observations_257","as_of_utc":report["generated_at_utc"],"observations":[],"source_error":type(exc).__name__,"official_predictions":0,"note":"External provider unavailable; normal pregame lineup process unaffected."}
  path=Path(a.out);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(out,indent=2))
  print(json.dumps({"matched_goalie_observations":len(out["observations"]),"official_predictions":0}))
 if __name__=="__main__":main()
