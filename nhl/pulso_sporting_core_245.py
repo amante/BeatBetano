@@ -126,6 +126,8 @@ def main():
  p.add_argument("--unit-research")
  p.add_argument("--live-sporting")
  p.add_argument("--individual-evidence")
+ p.add_argument("--goalie-daily")
+ p.add_argument("--goalie-identity")
  a=p.parse_args()
  load=lambda path:json.loads(Path(path).read_text())
  result=integrate(load(a.report),load(a.bridge),load(a.packages),load(a.unit_research) if a.unit_research else None,load(a.live_sporting) if a.live_sporting else None,load(a.individual_evidence) if a.individual_evidence else None)
