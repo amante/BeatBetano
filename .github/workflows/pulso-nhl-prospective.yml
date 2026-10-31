@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m unittest nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 -v
+      - run: python -m unittest nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 -v
   capture:
     if: github.event_name != 'pull_request'
     needs: test
@@ -52,15 +52,6 @@ jobs:
             --goalies "results/pulso/nhl/$DAY/goalie_identity_crosswalk.json" \
             --editorial "results/pulso/nhl/$DAY/editorial_lineup_observations.json" \
             --out "results/pulso/nhl/$DAY/fixture_identity_248.json"
-      - name: Classify goalie certainty without artificial PASS
-        run: |
-          python -m unittest nhl.tests.test_pulso_goalie_states_255 -v
-          DAY="${{ inputs.day }}"
-          DAY="${DAY:-$(date -u +%F)}"
-          python -m nhl.pulso_goalie_states_255 \
-            --report "results/pulso/nhl/$DAY/report.json" \
-            --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
-            --out "results/pulso/nhl/$DAY/goalie_states_255.json"
       - name: Cross-check external named goalie statuses
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_multisource_257 -v
@@ -70,6 +61,16 @@ jobs:
             --report "results/pulso/nhl/$DAY/report.json" \
             --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" \
             --out "results/pulso/nhl/$DAY/external_goalie_observations_257.json"
+      - name: Classify goalie certainty without artificial PASS
+        run: |
+          python -m unittest nhl.tests.test_pulso_goalie_states_255 -v
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.pulso_goalie_states_255 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
+            --external "results/pulso/nhl/$DAY/external_goalie_observations_257.json" \
+            --out "results/pulso/nhl/$DAY/goalie_states_255.json"
       - name: Capture individual candidate goalie history before puck drop
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_history_251 -v
