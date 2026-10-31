@@ -8,6 +8,7 @@ import argparse,json,math
 from pathlib import Path
 from nhl.module_audit import context as rivalry_context
 from nhl.pulso_pregame_v7 import parse_utc
+from nhl.pulso_goalie_integration_254 import join as goalie_join
 from nhl.pulso_quantitative_signals_227 import compute as verified_signals
 
 MODULES={
@@ -35,7 +36,7 @@ def contribution(name,source,source_asof,observed,applied=False,effect=None,bloc
  return {"module":name,"source":source,"as_of":source_asof,"observed":observed,
          "applied_to_sporting_probability":applied,"probability_delta":effect,
          "blocker":blocker if not applied else None}
-def integrate(report,bridge,packages,unit_research=None,live_sporting=None,individual_evidence=None):
+def integrate(report,bridge,packages,unit_research=None,live_sporting=None,individual_evidence=None,goalie_daily=None,goalie_identity=None):
  if report.get("data_kind")!="source_readiness_only" or report.get("official_predictions")!=0:
   raise ValueError("Raw pregame source report required")
  asof=parse_utc(report["generated_at_utc"])
@@ -47,6 +48,7 @@ def integrate(report,bridge,packages,unit_research=None,live_sporting=None,indiv
  if individual_evidence is not None and (individual_evidence.get('kind')!='nhl_individual_player_goalie_evidence_247' or parse_utc(individual_evidence['as_of_utc'])!=asof):
   raise ValueError('Individual evidence timestamp mismatch')
  individual_by_id={str(g['game_id']):g for g in individual_evidence.get('games',[])} if individual_evidence else {}
+ goalie_index=goalie_join(report,goalie_identity,goalie_daily) if goalie_daily is not None and goalie_identity is not None else {}
  quant=verified_signals(bridge,packages)
  seen=set();out=[]
  for fixture in report["games"]:
@@ -84,6 +86,8 @@ def integrate(report,bridge,packages,unit_research=None,live_sporting=None,indiv
   if individual and (individual["home"]!=fixture["home"] or individual["away"]!=fixture["away"]):raise ValueError("Individual fixture mismatch")
   for team in details:
    details[team]["individual_player_goalie_evidence"]=individual["teams"].get(team) if individual else None
+  for team in details:
+   details[team]["candidate_goalie_daily_evidence"]=goalie_index.get(gid,{}).get(team)
   ctx=rivalry_context(fixture["home"],fixture["away"])
   annotations={
    "crs":{"observed":both("crs"),"blocker":"no fitted and complete roster strength valuation"},
