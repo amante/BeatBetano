@@ -78,6 +78,14 @@ jobs:
           python -m nhl.pulso_goalie_daily_253 \
             --history "results/pulso/nhl/$DAY/goalie_history_251.json" \
             --out "results/pulso/nhl/$DAY/goalie_daily_253.json"
+      - name: Publish readable goalie-by-team report
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.pulso_goalie_display_256 \
+            --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
+            --daily "results/pulso/nhl/$DAY/goalie_daily_253.json" \
+            --out "results/pulso/nhl/$DAY/goalie_names_256.txt"
       - name: Normalize observed NHL sporting source evidence
         run: |
           DAY="${{ inputs.day }}"
