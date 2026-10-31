@@ -9,11 +9,12 @@ import argparse,json
 from collections import Counter
 from pathlib import Path
 from nhl.pulso_pregame_v7 import parse_utc
+from nhl.pulso_goalie_integration_254 import join as goalie_join
 
 BLOCKS=("roster_candidates","goalie_identity","goalie_confirmed","lineup",
-        "individual_history","individual_metrics","team_form","sporting_probability")
+        "individual_history","individual_metrics","goalie_candidate_metrics","team_form","sporting_probability")
 
-def audit(report,identity,individual,team_form):
+def audit(report,identity,individual,team_form,goalie_daily=None):
  if report.get("data_kind")!="source_readiness_only" or report.get("official_predictions")!=0:
   raise ValueError("Only sourced unpromoted pregame capture")
  at=parse_utc(report["generated_at_utc"])
@@ -30,6 +31,7 @@ def audit(report,identity,individual,team_form):
    if gid in current:raise ValueError("Repeated fixture in evidence")
    current[gid]=row
   by_id.append(current)
+ goalie_index=goalie_join(report,identity,goalie_daily) if goalie_daily is not None else {}
  games=[];totals=Counter();blockers=Counter()
  for f in report["games"]:
   gid=str(f["game_id"])
