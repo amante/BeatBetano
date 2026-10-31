@@ -106,7 +106,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/individual_evidence_247.json"
       - name: Audit real fixture-level sporting source coverage
         run: |
-          python -m unittest nhl.tests.test_pulso_source_coverage_249 -v
+          python -m unittest nhl.tests.test_pulso_source_coverage_249 nhl.tests.test_pulso_goalie_integration_254 -v
           DAY="${{ inputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_source_coverage_249 \
