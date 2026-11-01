@@ -1,0 +1,126 @@
+{
+  "kind": "nhl_prospective_snapshot_276",
+  "run_id": "41362433670",
+  "date": "2026-11-01",
+  "slate": {
+    "kind": "nhl_research_daily_presentation_275",
+    "date": "2026-11-01",
+    "source_schedule": "https://api-web.nhle.com/v1/score/2026-11-01",
+    "official_schedule_games": 5,
+    "experimental_predicted_games": 1,
+    "games": [
+      {
+        "game_id": "2026020227",
+        "home": "CAR",
+        "away": "WPG",
+        "start_utc": "2026-11-01T18:00:00Z",
+        "status": "not_pregame_at_capture",
+        "ml": null,
+        "rt": null,
+        "home_plus3": null,
+        "away_plus3": null,
+        "first_to_plus3": null,
+        "home_win_ml": null,
+        "away_win_ml": null,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": null,
+        "probability_status": "not_available"
+      },
+      {
+        "game_id": "2026020228",
+        "home": "WSH",
+        "away": "MIN",
+        "start_utc": "2026-11-01T20:30:00Z",
+        "status": "not_pregame_at_capture",
+        "ml": null,
+        "rt": null,
+        "home_plus3": null,
+        "away_plus3": null,
+        "first_to_plus3": null,
+        "home_win_ml": null,
+        "away_win_ml": null,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": null,
+        "probability_status": "not_available"
+      },
+      {
+        "game_id": "2026020229",
+        "home": "PHI",
+        "away": "UTA",
+        "start_utc": "2026-11-01T21:00:00Z",
+        "status": "not_pregame_at_capture",
+        "ml": null,
+        "rt": null,
+        "home_plus3": null,
+        "away_plus3": null,
+        "first_to_plus3": null,
+        "home_win_ml": null,
+        "away_win_ml": null,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": null,
+        "probability_status": "not_available"
+      },
+      {
+        "game_id": "2026020230",
+        "home": "NYR",
+        "away": "EDM",
+        "start_utc": "2026-11-01T23:00:00Z",
+        "status": "not_pregame_at_capture",
+        "ml": null,
+        "rt": null,
+        "home_plus3": null,
+        "away_plus3": null,
+        "first_to_plus3": null,
+        "home_win_ml": null,
+        "away_win_ml": null,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": null,
+        "probability_status": "not_available"
+      },
+      {
+        "game_id": "2026020231",
+        "home": "ANA",
+        "away": "OTT",
+        "start_utc": "2026-11-02T01:00:00Z",
+        "status": "experimental_forecast",
+        "ml": {
+          "home": 0.5351206165283663,
+          "away": 0.4648793834716337
+        },
+        "rt": {
+          "home": 0.40558468916677876,
+          "draw": 0.22356258177153698,
+          "away": 0.3708527290616843
+        },
+        "home_plus3": 0.20799688520982512,
+        "away_plus3": 0.2350295549726762,
+        "first_to_plus3": {
+          "home": 0.22351539872630075,
+          "away": 0.23940433349907717,
+          "none": 0.537080267774622
+        },
+        "home_win_ml": 0.5351206165283663,
+        "away_win_ml": 0.4648793834716337,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": "outcome-only-206-frozen-params",
+        "probability_status": "research_experimental_not_official"
+      }
+    ],
+    "official": false,
+    "odds_used": false,
+    "limitations": [
+      "Outcome-only research baseline, not validated full NHL model",
+      "No goalie-conditioned A/B probabilities",
+      "RT includes regulation draw",
+      "home_plus3 and away_plus3 are not complementary events",
+      "First-to-+3 includes neither team"
+    ]
+  },
+  "slate_sha256": "25f72a7c83f26e0f0cc89d943fdba3744f3552aed57fb41b17d29a058e5e079a",
+  "official": false
+}
