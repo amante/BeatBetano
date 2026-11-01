@@ -1,0 +1,63 @@
+name: NHL historical goalie feature batch #267
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "Start index in 2811 historical game labels"
+        required: true
+        default: "0"
+        type: string
+      count:
+        description: "Games to retrieve (1-300)"
+        required: true
+        default: "100"
+        type: string
+permissions:
+  contents: read
+jobs:
+  historical-batch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Verify chronology tests
+        run: python -m unittest nhl.tests.test_pulso_historical_features_267 -v
+      - name: Download verified NHL historical labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern labels_manifest.json --dir .nhl_labels
+      - name: Validate historical digest and batch bounds
+        env:
+          START: ${{ inputs.start }}
+          COUNT: ${{ inputs.count }}
+        run: |
+          python - <<'PY'
+          import csv,hashlib,json,os
+          from pathlib import Path
+          start,count=int(os.environ["START"]),int(os.environ["COUNT"])
+          if not 0<=start<2811 or not 1<=count<=300:raise ValueError("Invalid window")
+          raw=Path(".nhl_labels/nhl_postgame_labels.csv").read_bytes()
+          meta=json.loads(Path(".nhl_labels/labels_manifest.json").read_text())
+          if meta.get("sha256")!=hashlib.sha256(raw).hexdigest() or meta.get("games")!=2811:raise ValueError("Digest mismatch")
+          with Path(".nhl_labels/nhl_postgame_labels.csv").open(newline="") as f:
+              if len(list(csv.DictReader(f)))!=2811:raise ValueError("Wrong history length")
+          PY
+      - name: Capture boxscores and calculate prior-only features
+        env:
+          START: ${{ inputs.start }}
+          COUNT: ${{ inputs.count }}
+        run: |
+          python -m nhl.pulso_historical_features_267 --labels .nhl_labels/nhl_postgame_labels.csv --cache-dir results/pulso/boxscores-267 --start "$START" --count "$COUNT" --capture --out results/pulso/historical-features-267.json
+      - uses: actions/upload-artifact@v6
+        with:
+          name: nhl-historical-features-267-${{ github.run_id }}
+          path: |
+            results/pulso/historical-features-267.json
+            results/pulso/boxscores-267/
+          retention-days: 90
