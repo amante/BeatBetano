@@ -60,4 +60,4 @@ export default {async fetch(request,env){
   body:JSON.stringify({ref:"main",inputs:{day:input.date}})});
  if(github.status!==204)return json({error:"Workflow dispatch failed",status:github.status},502,cors);
  return json({accepted:true,message:"GitHub Actions workflow dispatch accepted; not yet completed",workflow_url:"https://github.com/amante/BeatBetano/actions/workflows/pulso-nhl-prospective.yml"},202,cors);
-}}};
+}};
