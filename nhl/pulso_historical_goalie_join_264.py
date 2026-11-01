@@ -25,7 +25,7 @@ def build(labels, observations):
         if (rec.get("date")!=label["date"] or rec.get("home")!=label["home"] or
             rec.get("away")!=label["away"]):
             raise ValueError("Historical fixture identity mismatch")
-        if rec.get("source_verified") is not True:
+        if rec.get("source_verified") not in (True, "true", "True", "1"):
             blocked.append({"game_id":gid,"reason":"unverified_sporting_source"});continue
         try:
             asof=date.fromisoformat(rec["feature_as_of_date"])
