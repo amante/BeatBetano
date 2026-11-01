@@ -87,15 +87,19 @@ async function runSimulation(){
  const games=scope==="all"?candidates:candidates.filter(g=>selected.has(String(g.id)));
  const status=$("simulation-status");
  if(!games.length){status.textContent="Selecciona al menos un encuentro que aún no haya comenzado.";return;}
- if(!runtime.simulation_endpoint){status.textContent="Simulación pendiente: el backend de ejecución aún no está conectado. No se ejecutó ningún modelo.";return;}
+ if(sport==="nhl"&&scope!=="all"){status.textContent="El workflow NHL actual solo admite la jornada completa. Selecciona «Todos los partidos».";return;}
+ if(!runtime.simulation_endpoint){status.textContent="Ejecución protegida aún no configurada. Utiliza el enlace a GitHub Actions en el panel NHL.";return;}
  const url=new URL(runtime.simulation_endpoint,location.href);
- if(url.origin!==location.origin||url.protocol!=="https:"){status.textContent="Endpoint no autorizado: debe ser HTTPS y del mismo origen.";return;}
- const button=$("run-simulation");button.disabled=true;status.textContent="Enviando solicitud de simulación…";
+ const authorizedOrigin=runtime.simulation_endpoint_origin || location.origin;
+ if(url.protocol!=="https:"||url.origin!==authorizedOrigin||url.pathname!=="/api/nhl/run"||sport!=="nhl"){
+  status.textContent="Endpoint de ejecución no autorizado.";return;
+ }
+ const button=$("run-simulation");button.disabled=true;status.textContent="Solicitando ejecución protegida…";
  try{
-  const response=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"same-origin",
+  const response=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",
    body:JSON.stringify({sport,date:$("daily-date").value,scope,event_ids:games.map(g=>String(g.id))})});
   if(!response.ok)throw Error("HTTP "+response.status);
-  const data=await response.json();status.textContent=data.job_id?"Simulación solicitada. Trabajo: "+data.job_id:"Solicitud recibida; espera la confirmación del motor.";
+  const data=await response.json();status.textContent=data.accepted?"Solicitud aceptada por GitHub Actions. Comprueba la ejecución en el enlace del panel NHL; todavía no hay resultado.":"No se confirmó la solicitud.";
  }catch(err){status.textContent="No se pudo ejecutar: "+err.message;}finally{button.disabled=false;}
 }
 async function load(){
