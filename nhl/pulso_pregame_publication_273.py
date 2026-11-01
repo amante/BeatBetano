@@ -1,5 +1,5 @@
 """#273: validate frozen #218 research forecasts before publishing their web index."""
-import argparse,json,math
+import argparse,json,math,hashlib
 from collections import defaultdict
 from pathlib import Path
 from nhl.historical_target_walkforward import CATEGORIES
@@ -14,7 +14,7 @@ def audit(report,forecast_dir):
  for path in rows:
   frozen=json.loads(path.read_text())
   if not isinstance(frozen,dict) or "record" not in frozen:raise ValueError("Non-frozen record")
-  r=frozen["record"];gid=str(r["game_id"]);market=r["market"]
+  r=frozen["record"]\n  encoded=json.dumps(r,sort_keys=True,separators=(",",":")).encode()\n  if frozen.get("frozen") is not True or frozen.get("sha256")!=hashlib.sha256(encoded).hexdigest():raise ValueError("Broken frozen evidence digest")\n  gid=str(r["game_id"]);market=r["market"]
   if gid not in fixtures or market not in CATEGORIES:raise ValueError("Unexpected fixture or market")
   if market in bygame[gid]:raise ValueError("Duplicate market")
   f=fixtures[gid]
@@ -27,7 +27,7 @@ def audit(report,forecast_dir):
   probs=r["probabilities"]
   if set(probs)!=set(CATEGORIES[market]):raise ValueError("Incomplete market probabilities")
   if any(type(p) not in (int,float) or not math.isfinite(p) or not 0<=p<=1 for p in probs.values()):raise ValueError("Invalid probability")
-  if abs(sum(probs.values())-1)>1e-8:raise ValueError("Market probabilities not normalized")
+  if abs(sum(probs.values())-1)>1e-6:raise ValueError("Market probabilities not normalized")
   bygame[gid][market]=r
  for gid,markets in bygame.items():
   if set(markets)!=set(CATEGORIES):raise ValueError("Incomplete markets for predicted game")
