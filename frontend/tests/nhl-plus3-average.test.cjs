@@ -7,7 +7,7 @@ const tests=[
  {status:"pregame_forecast_unavailable",home_plus3:.99,away_plus3:.99}
 ];
 const s=summarize(tests);
-assert.equal(s.count,4);assert.equal(s.mean,.35);
+assert.equal(s.count,4);assert.ok(Math.abs(s.mean-.35)<1e-12);
 assert.equal(higher(.4,s),true);
 assert.equal(higher(.3,s),false);
 assert.equal(higher(.35,s),false);
