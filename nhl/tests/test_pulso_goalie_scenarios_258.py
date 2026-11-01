@@ -20,6 +20,21 @@ class GoalieScenarios258(unittest.TestCase):
  def test_unconfirmed_not_failure(self):
   d=list(self.data());d[2]["observations"]=[]
   self.assertEqual(build(*d)["games"][0]["scenario_count"],1)
+ def test_missing_goalie_team_is_visible(self):
+  d=list(self.data())
+  d[1]["games"][0]["teams"]["BUF"]["source_goalie_player_id"]=None
+  d[2]["observations"]=[ob for ob in d[2]["observations"] if ob["team"]!="BUF"]
+  result=build(*d)
+  game=result["games"][0]
+  self.assertEqual(game["scenario_count"],0)
+  self.assertEqual(game["scenario_status"],"blocked_missing_goalie_identity")
+  self.assertEqual(game["missing_goalie_teams"],["BUF"])
+  self.assertEqual(result["fixtures_without_scenarios"],1)
+  self.assertFalse(result["fixture_coverage_complete"])
+ def test_full_pairing_coverage(self):
+  result=build(*self.data())
+  self.assertEqual(result["fixtures_without_scenarios"],0)
+  self.assertTrue(result["fixture_coverage_complete"])
  def test_fixture_mismatch_blocked(self):
   d=list(self.data());d[1]["games"][0]["home"]="TOR"
   with self.assertRaises(ValueError):build(*d)

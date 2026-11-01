@@ -16,6 +16,16 @@ class GoalieConditioned259(unittest.TestCase):
                 "predictions":[{"game_id":"1","home":"NSH","away":"BUF","home_goalie_id":10,"away_goalie_id":20,
                 "home_goalie_name":"A","away_goalie_name":"B","computed_at_utc":"2026-10-31T14:01:00Z",
                 "start_utc":"2026-10-31T23:00:00Z","odds_used":False,"probabilities":probs}]}
+    def test_zero_pairing_cannot_disappear(self):
+        src=self.source()
+        src["games"][0]["scenarios"]=[]
+        src["games"][0]["scenario_count"]=0
+        src["games"][0]["scenario_status"]="blocked_missing_goalie_identity"
+        src["games"][0]["missing_goalie_teams"]=["BUF"]
+        out=integrate(src)
+        self.assertEqual(out["fixtures_without_scenarios"],1)
+        self.assertFalse(out["fixture_coverage_complete"])
+        self.assertEqual(out["games"][0]["missing_goalie_teams"],["BUF"])
     def test_missing_model_stays_null(self):
         r=integrate(self.source())
         self.assertEqual(r["blocked_scenarios"],1)

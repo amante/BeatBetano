@@ -51,6 +51,8 @@ def integrate(scenarios, model=None):
     for game in scenarios["games"]:
         gid = str(game["game_id"])
         result = {k: game[k] for k in ("game_id", "home", "away", "scenario_count")}
+        result["scenario_status"] = game.get("scenario_status", "pairings_ready" if game["scenario_count"] else "blocked_missing_goalie_identity")
+        result["missing_goalie_teams"] = game.get("missing_goalie_teams", [])
         pairs = []
         for pair in game["scenarios"]:
             h, a = pair["home_goalie"], pair["away_goalie"]
@@ -81,6 +83,8 @@ def integrate(scenarios, model=None):
     return {"kind": "nhl_goalie_conditioned_forecast_259",
             "as_of_utc": scenarios["as_of_utc"], "games": output,
             "scenario_count": sum(g["scenario_count"] for g in output),
+            "fixtures_without_scenarios": sum(g["scenario_count"] == 0 for g in output),
+            "fixture_coverage_complete": all(g["scenario_count"] > 0 for g in output),
             "validated_experimental_scenarios": ready,
             "blocked_scenarios": sum(g["scenario_count"] for g in output) - ready,
             "official_predictions": 0, "odds_used": False,
