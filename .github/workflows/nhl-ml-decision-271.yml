@@ -1,0 +1,37 @@
+name: NHL ML decision gate #271
+on:
+  workflow_dispatch:
+    inputs:
+      ablation_run_id:
+        description: "Successful #270 ablation run"
+        required: true
+        default: "41262606495"
+        type: string
+permissions:
+  contents: read
+  actions: read
+jobs:
+  decision:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Test decision gate
+        run: python -m unittest nhl.tests.test_pulso_ml_decision_271 -v
+      - name: Download source ablation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.ablation_run_id }}
+        run: |
+          if ! [[ "$RUN_ID" =~ ^[0-9]+$ ]]; then exit 1; fi
+          mkdir -p .nhl_ablation
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "nhl-goalie-ablation-270-$RUN_ID" --dir .nhl_ablation
+      - name: Decide eligibility without auto promotion
+        run: python -m nhl.pulso_ml_decision_271 --ablation .nhl_ablation/goalie-ablation-270.json --out results/pulso/nhl-ml-decision-271.json
+      - uses: actions/upload-artifact@v6
+        with:
+          name: nhl-ml-decision-271-${{ github.run_id }}
+          path: results/pulso/nhl-ml-decision-271.json
