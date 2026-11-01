@@ -1,0 +1,43 @@
+name: NHL goalie ML research backtest #269
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Successful historical acquisition run ID (#268)"
+        required: true
+        default: "41260212394"
+        type: string
+permissions:
+  actions: read
+  contents: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Test research backtest
+        run: python -m unittest nhl.tests.test_pulso_goalie_model_269 -v
+      - name: Retrieve archived full-history source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.source_run_id }}
+        run: |
+          if ! [[ "$SOURCE_RUN" =~ ^[0-9]+$ ]]; then echo "Invalid source run" >&2; exit 1; fi
+          mkdir -p .nhl_source
+          gh run download "$SOURCE_RUN" --repo "$GITHUB_REPOSITORY" --name "nhl-historical-sequential-268-$SOURCE_RUN" --dir .nhl_source
+      - name: Evaluate isolated chronological holdout
+        run: |
+          python -m nhl.pulso_goalie_model_269 \
+            --features .nhl_source/historical-features-consolidated-268.json \
+            --out results/pulso/nhl-goalie-ml-backtest-269.json
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: nhl-goalie-ml-backtest-269-${{ github.run_id }}
+          path: results/pulso/nhl-goalie-ml-backtest-269.json
+          if-no-files-found: warn
+          retention-days: 90
