@@ -1,0 +1,55 @@
+name: NHL historical boxscore schema audit #266
+on:
+  workflow_dispatch:
+    inputs:
+      sample_size:
+        description: "Historical games to audit (1-50)"
+        required: true
+        default: "12"
+        type: string
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Validate auditor
+        run: python -m unittest nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_boxscores_265 -v
+      - name: Download verified historical outcome labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern labels_manifest.json --dir .nhl_labels
+      - name: Validate source digest and bounded sample
+        env:
+          LIMIT: ${{ inputs.sample_size }}
+        run: |
+          python - <<'PY'
+          import csv,hashlib,json,os
+          from pathlib import Path
+          n=int(os.environ["LIMIT"])
+          if not 1<=n<=50: raise ValueError("Sample must be 1..50")
+          p=Path(".nhl_labels/nhl_postgame_labels.csv")
+          manifest=json.loads(Path(".nhl_labels/labels_manifest.json").read_text())
+          if manifest.get("games")!=2811 or manifest.get("sha256")!=hashlib.sha256(p.read_bytes()).hexdigest():
+              raise ValueError("Historical release digest mismatch")
+          with p.open(newline="") as f: rows=list(csv.DictReader(f))
+          if len(rows)!=2811: raise ValueError("Unexpected labels count")
+          PY
+      - name: Audit source schema without guessing starters
+        env:
+          LIMIT: ${{ inputs.sample_size }}
+        run: |
+          python -m nhl.pulso_boxscore_schema_audit_266 --labels .nhl_labels/nhl_postgame_labels.csv --limit "$LIMIT" --out results/pulso/nhl-historical-schema-audit-266.json
+      - uses: actions/upload-artifact@v6
+        with:
+          name: nhl-historical-schema-audit-266-${{ github.run_id }}
+          path: results/pulso/nhl-historical-schema-audit-266.json
+          retention-days: 90
