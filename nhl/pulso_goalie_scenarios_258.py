@@ -40,10 +40,15 @@ def build(report,identity,external,forecasts=None):
    scenarios.append({"home_goalie":h,"away_goalie":a,
     "probabilities":{m:None for m in MARKETS},"prediction_status":"awaiting_fitted_sporting_model",
     "auto_pass":False})
+  missing=[team for team in (f["home"],f["away"]) if not candidates[team]]
   games.append({"game_id":gid,"home":f["home"],"away":f["away"],"goalie_candidates":candidates,
-   "scenarios":scenarios,"scenario_count":len(scenarios)})
+   "scenarios":scenarios,"scenario_count":len(scenarios),
+   "scenario_status":"blocked_missing_goalie_identity" if missing else "pairings_ready",
+   "missing_goalie_teams":missing})
  return {"kind":"nhl_goalie_conditional_scenarios_258","as_of_utc":report["generated_at_utc"],
    "games":games,"official_predictions":0,"odds_used":False,
+   "fixtures_total":len(games),"fixtures_without_scenarios":sum(g["scenario_count"]==0 for g in games),
+   "fixture_coverage_complete":all(g["scenario_count"]>0 for g in games),
    "note":"Precomputes exact goalie pairings; percentages remain unavailable until validated calibrated sporting model."}
 def main():
  p=argparse.ArgumentParser()
