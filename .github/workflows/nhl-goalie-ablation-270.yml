@@ -1,0 +1,39 @@
+name: NHL goalie feature ablation #270
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Historical full data source run"
+        required: true
+        default: "41260212394"
+        type: string
+permissions:
+  actions: read
+  contents: read
+jobs:
+  ablation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Test
+        run: python -m unittest nhl.tests.test_pulso_goalie_ablation_270 -v
+      - name: Download source feature evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.source_run_id }}
+        run: |
+          if ! [[ "$RUN_ID" =~ ^[0-9]+$ ]]; then exit 1; fi
+          mkdir -p .nhl_source
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "nhl-historical-sequential-268-$RUN_ID" --dir .nhl_source
+      - name: Evaluate identical historical holdout
+        run: python -m nhl.pulso_goalie_ablation_270 --features .nhl_source/historical-features-consolidated-268.json --out results/pulso/goalie-ablation-270.json
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: nhl-goalie-ablation-270-${{ github.run_id }}
+          path: results/pulso/goalie-ablation-270.json
+          if-no-files-found: warn
