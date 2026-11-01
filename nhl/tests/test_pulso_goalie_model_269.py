@@ -4,7 +4,7 @@ from nhl.pulso_goalie_model_269 import evaluate,split,score,train,predict
 class GoalieModel269(unittest.TestCase):
  def sample(self):
   rows=[]
-  for i in range(450):
+  for i in range(600):
    d=(date(2024,10,1)+timedelta(days=i)).isoformat()
    prior=(date(2024,9,30)+timedelta(days=i)).isoformat()
    rows.append({"game_id":str(i),"date":d,"feature_as_of_date":prior,
@@ -18,7 +18,7 @@ class GoalieModel269(unittest.TestCase):
   "eligible_count":len(rows),"calibrated":False,"odds_used":False}
  def test_eval_finite_chronological(self):
   r=evaluate(self.sample())
-  self.assertEqual(r["fit_n"]+r["validation_n"]+r["holdout_n"],450)
+  self.assertEqual(r["fit_n"]+r["validation_n"]+r["holdout_n"],600)
   self.assertFalse(r["automatic_promotion"])
   self.assertGreater(r["calibrated_holdout"]["log_loss"],0)
  def test_holdout_labels_do_not_change_fit(self):
