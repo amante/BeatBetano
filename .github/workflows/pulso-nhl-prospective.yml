@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m unittest nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 -v
+      - run: python -m unittest nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 -v
   capture:
     if: github.event_name != 'pull_request'
     needs: test
@@ -81,6 +81,14 @@ jobs:
             --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
             --external "results/pulso/nhl/$DAY/external_goalie_observations_257.json" \
             --out "results/pulso/nhl/$DAY/goalie_scenarios_258.json"
+      - name: Integrate goalie-conditioned predictions with strict validation gate
+        run: |
+          python -m unittest nhl.tests.test_pulso_goalie_conditioned_259 -v
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.pulso_goalie_conditioned_259 \
+            --scenarios "results/pulso/nhl/$DAY/goalie_scenarios_258.json" \
+            --out "results/pulso/nhl/$DAY/goalie_conditioned_259.json"
       - name: Capture individual candidate goalie history before puck drop
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_history_251 -v
