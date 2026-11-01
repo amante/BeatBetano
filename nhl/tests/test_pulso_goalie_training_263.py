@@ -26,13 +26,13 @@ class GoalieTraining263(unittest.TestCase):
     def test_strict_chronological_splits(self):
         from datetime import date,timedelta
         data=[]
-        for i in range(10):
+        for i in range(15):
             day=date(2026,10,1)+timedelta(days=i)
             for j in range(20):
                 data.append(row(i*20+j,day.isoformat(),(day-timedelta(days=1)).isoformat()))
         out=audit(data,minimum_train=60,minimum_holdout=20)
         self.assertEqual(out["status"],"eligible_for_fitting")
-        self.assertEqual(out["training_rows"],200)
+        self.assertEqual(out["training_rows"],300)
         self.assertTrue(out["fit_through"] < out["validation_through"])
         self.assertFalse(out["validated_model"])
 if __name__=="__main__":unittest.main()
