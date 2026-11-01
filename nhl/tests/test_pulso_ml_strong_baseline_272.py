@@ -4,6 +4,8 @@ from nhl.pulso_ml_strong_baseline_272 import evaluate
 from nhl.tests.test_pulso_goalie_model_269 import GoalieModel269
 def sample():
  report=GoalieModel269().sample()
+ for r in report['eligible_rows']:
+  r['home']='X';r['away']='Y'
  labels=[{"game_id":str(i+10000),"date":(date(2023,1,1)+timedelta(days=i//10)).isoformat(),
           "home":"X","away":"Y","ml_winner":"home" if i%2 else "away"} for i in range(2211)]
  labels += [{k:r[k] for k in ("game_id","date","home","away","ml_winner")} for r in report["eligible_rows"]]
