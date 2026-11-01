@@ -63,7 +63,7 @@ def produce(labels,records,min_goalie_shots=50,min_team_games=5):
                 updates.append((player,name,*totals))
             if len(side_data)!=2:
                 blocked.append({"game_id":gid,"reason":"invalid_starter_stats"});continue
-            if any(side_data[s]["prior_shots"]<min_goalie_shots or side_data[s]["team_prior_games"]<min_team_games for s in ("home","away")):
+            if any(side_data[s]["prior_shots"]<max(1,min_goalie_shots) or side_data[s]["team_prior_games"]<max(1,min_team_games) for s in ("home","away")):
                 blocked.append({"game_id":gid,"reason":"insufficient_prior_sample"})
             else:
                 feature_date=(date.fromisoformat(day)-timedelta(days=1)).isoformat()
