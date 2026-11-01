@@ -230,7 +230,7 @@ jobs:
         run: |
           python -m nhl.pulso_web_baseline_243 \
             --forecast-dir "frontend/data/nhl-forecasts/run-${{ github.run_id }}" \
-            --out frontend/data/nhl-baseline-latest.json frontend/data/nhl-prediction-snapshots/run-${{ github.run_id }}.json
+            --out frontend/data/nhl-baseline-latest.json
       - name: Publish complete official day slate with explicit forecast availability
         run: |
           DAY="${{ inputs.day }}"
@@ -263,7 +263,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -f frontend/data/pulso-nhl-research.json frontend/data/nhl-daily-predictions-latest.json frontend/data/nhl-complete-slate-latest.json frontend/data/nhl-ledger/run-${{ github.run_id }}.json frontend/data/nhl-baseline-latest.json
-          git add -f frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json
+          git add -f frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json frontend/data/nhl-prediction-snapshots/run-${{ github.run_id }}.json
           if compgen -G 'frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json' > /dev/null; then
             git add -f frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json
           fi
