@@ -1,4 +1,4 @@
-import unittest,tempfile,json
+import unittest,tempfile,json,hashlib
 from pathlib import Path
 from nhl.pulso_pregame_publication_273 import audit
 from nhl.historical_target_walkforward import CATEGORIES
@@ -14,7 +14,8 @@ class Publication273(unittest.TestCase):
    "point_in_time_sources_verified":True,"historical_labels_sha256":"a"*64,
    "prediction_as_of_utc":"2026-11-01T14:00:00+00:00","source_asof_utc":"2026-11-01T14:00:00+00:00"}
   if modify:modify(r)
-  (root/(market+".json")).write_text(json.dumps({"record":r}))
+  encoded=json.dumps(r,sort_keys=True,separators=(",",":")).encode()
+  (root/(market+".json")).write_text(json.dumps({"record":r,"sha256":hashlib.sha256(encoded).hexdigest(),"frozen":True}))
  def test_complete_markets(self):
   with tempfile.TemporaryDirectory() as d:
    root=Path(d)
