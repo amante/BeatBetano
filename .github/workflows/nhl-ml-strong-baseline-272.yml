@@ -1,0 +1,55 @@
+name: NHL #272 matched historical baseline evaluation
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Full historical features #268 run"
+        required: true
+        default: "41260212394"
+        type: string
+permissions:
+  contents: read
+  actions: read
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Research comparison tests
+        run: python -m unittest nhl.tests.test_pulso_ml_strong_baseline_272 -v
+      - name: Fetch verified historical sources
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.source_run_id }}
+        run: |
+          if ! [[ "$RUN_ID" =~ ^[0-9]+$ ]]; then exit 1; fi
+          mkdir -p .nhl_source
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name "nhl-historical-sequential-268-$RUN_ID" --dir .nhl_source
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .nhl_source
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern labels_manifest.json --dir .nhl_source
+      - name: Verify immutable label digest
+        run: |
+          python - <<'PY'
+          import json,hashlib
+          from pathlib import Path
+          base=Path(".nhl_source")
+          manifest=json.loads((base/"labels_manifest.json").read_text())
+          assert manifest["games"]==2811
+          assert hashlib.sha256((base/"nhl_postgame_labels.csv").read_bytes()).hexdigest()==manifest["sha256"]
+          PY
+      - name: Compare models on same held-out games
+        run: |
+          python -m nhl.pulso_ml_strong_baseline_272 \
+            --features .nhl_source/historical-features-consolidated-268.json \
+            --labels .nhl_source/nhl_postgame_labels.csv \
+            --out results/pulso/ml-strong-baseline-272.json
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: nhl-ml-strong-baseline-272-${{ github.run_id }}
+          path: results/pulso/ml-strong-baseline-272.json
+          if-no-files-found: warn
