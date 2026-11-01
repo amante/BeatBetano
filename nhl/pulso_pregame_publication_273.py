@@ -14,7 +14,10 @@ def audit(report,forecast_dir):
  for path in rows:
   frozen=json.loads(path.read_text())
   if not isinstance(frozen,dict) or "record" not in frozen:raise ValueError("Non-frozen record")
-  r=frozen["record"]\n  encoded=json.dumps(r,sort_keys=True,separators=(",",":")).encode()\n  if frozen.get("frozen") is not True or frozen.get("sha256")!=hashlib.sha256(encoded).hexdigest():raise ValueError("Broken frozen evidence digest")\n  gid=str(r["game_id"]);market=r["market"]
+  r=frozen["record"]
+  encoded=json.dumps(r,sort_keys=True,separators=(",",":")).encode()
+  if frozen.get("frozen") is not True or frozen.get("sha256")!=hashlib.sha256(encoded).hexdigest():raise ValueError("Broken frozen evidence digest")
+  gid=str(r["game_id"]);market=r["market"]
   if gid not in fixtures or market not in CATEGORIES:raise ValueError("Unexpected fixture or market")
   if market in bygame[gid]:raise ValueError("Duplicate market")
   f=fixtures[gid]
