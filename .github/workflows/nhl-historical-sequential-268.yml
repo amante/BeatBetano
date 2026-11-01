@@ -1,0 +1,64 @@
+name: NHL historical goalie sequential acquisition #268
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "Starting historical fixture index"
+        required: true
+        default: "0"
+        type: string
+      stop:
+        description: "Exclusive end index; 2811 means full dataset"
+        required: true
+        default: "2811"
+        type: string
+      batch_size:
+        description: "Games per consecutive batch (1-300)"
+        required: true
+        default: "100"
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: nhl-historical-sequential-acquisition
+  cancel-in-progress: false
+jobs:
+  acquire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Verify sequential logic
+        run: python -m unittest nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_historical_features_267 -v
+      - name: Download immutable historical labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .nhl_labels
+          gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern labels_manifest.json --dir .nhl_labels
+      - name: Sequential capture and single consolidated feature report
+        env:
+          START: ${{ inputs.start }}
+          STOP: ${{ inputs.stop }}
+          SIZE: ${{ inputs.batch_size }}
+        run: |
+          python -m nhl.pulso_historical_sequential_268 \
+            --labels .nhl_labels/nhl_postgame_labels.csv \
+            --manifest .nhl_labels/labels_manifest.json \
+            --cache-dir results/pulso/historical-boxscores-268 \
+            --start "$START" --stop "$STOP" --batch-size "$SIZE" --delay 1 \
+            --out results/pulso/historical-features-consolidated-268.json
+      - name: Upload historical source evidence even on partial failure
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: nhl-historical-sequential-268-${{ github.run_id }}
+          path: |
+            results/pulso/historical-boxscores-268/
+            results/pulso/historical-features-consolidated-268.json
+          if-no-files-found: warn
+          retention-days: 90
