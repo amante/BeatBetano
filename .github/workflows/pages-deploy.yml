@@ -37,6 +37,8 @@ jobs:
           node --check frontend/portal.js
           node --check frontend/daily.js
           node --check frontend/nhl-five-market.js
+          node --check frontend/nhl-plus3-average.js
+          node --test frontend/tests/nhl-plus3-average.test.cjs
           node --check backend/nhl-dispatch-worker.mjs
           python -m py_compile frontend/collect_daily.py frontend/merge_daily_history.py
           python -m unittest discover -s frontend/tests -v
