@@ -29,6 +29,8 @@
      data.games.some(g=>!g.game_id||!g.home||!g.away||!g.start_utc))throw new Error("Reporte no verificado");
   source.textContent="Calendario NHL "+data.date+" · "+data.games.length+" partidos oficiales · "+data.experimental_predicted_games+" con los cinco mercados. Datos de la última ejecución publicada.";
   if(!data.games.length){root.append(make("p","Sin partidos programados en la fecha de la captura.","daily-empty"));return;}
+  const plus3=window.PulsoNhlPlus3.summarize(data.games);
+  root.append(make("p",plus3.count?"Promedio +3 de la jornada: "+pct(plus3.mean)+" · "+plus3.count+" pronósticos de equipos. ↑ Sobre promedio destaca valores estrictamente superiores; no indica valor de apuesta.":"Sin probabilidades +3 para calcular un promedio.","daily-source"));
   for(const g of data.games){
    const card=make("section",undefined,"nhl-model-row");
    card.append(make("strong",g.away+" @ "+g.home));
@@ -51,7 +53,17 @@
    head.append(headRow);table.append(head);
    const body=make("tbody");
    for(const cells of rows){const tr=make("tr");for(const [i,c] of cells.entries())tr.append(make(i===0?"th":"td",c));body.append(tr);}
-   table.append(body);card.append(table);root.append(card);
+   table.append(body);
+   const plus3row=body.children[2];
+   for(const [index,value] of [[1,g.home_plus3],[2,g.away_plus3]]){
+    if(window.PulsoNhlPlus3.higher(value,plus3)){
+     const cell=plus3row.children[index];
+     cell.classList.add("nhl-plus3-above-average");
+     cell.append(make("span"," ↑ Sobre promedio","nhl-plus3-label"));
+     cell.title="Supera el promedio +3 de la jornada ("+pct(plus3.mean)+")";
+    }
+   }
+   card.append(table);root.append(card);
   }
  }catch(e){
   source.textContent="Todavía no se ha publicado una cartelera NHL completa verificable ("+e.message+").";
