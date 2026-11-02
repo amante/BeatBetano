@@ -20,7 +20,8 @@ def digest(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 
-def cohort(repository):
+def cohort(repository, run_id=None):
+    if run_id is not None and not str(run_id).isdigit():raise ValueError('Numeric run ID required')
     root=Path(repository); candidates=defaultdict(list); rejected=[]
     labels={}
     for path in sorted((root/'frontend/data/nhl-postmortems').glob('*.json')):
@@ -37,7 +38,8 @@ def cohort(repository):
             gid=str(g['game_id'])
             if gid in labels:raise ValueError('Duplicate official result')
             labels[gid]=(g,y,sha,report['generated_at_utc'])
-    for path in sorted((root/'nhl/learning/pregame').glob('run-*.json')):
+    paths=(root/'nhl/learning/pregame').glob('run-'+str(run_id)+'.json' if run_id is not None else 'run-*.json')
+    for path in sorted(paths):
         run=path.stem.removeprefix('run-') if hasattr(str,'removeprefix') else path.stem[4:]
         try:
             if not run.isdigit():raise ValueError('Invalid run ID')
