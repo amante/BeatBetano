@@ -1,8 +1,7 @@
 name: PULSO NHL #219 — official prospective postmortem
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '15 12 * * *'
+  # Legacy aggregate audit: the dated automatic close is nhl-daily-postmortem.yml.
 permissions:
   contents: write
 jobs:

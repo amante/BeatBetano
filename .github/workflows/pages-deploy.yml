@@ -11,7 +11,7 @@ on:
   schedule:
     - cron: '20 9,21 * * *'
   workflow_run:
-    workflows: ['PULSO NHL — prospective pregame source capture']
+    workflows: ['PULSO NHL — prospective pregame source capture', 'NHL — daily postmortem and learning log']
     types: [completed]
   pull_request:
     paths:
@@ -44,6 +44,7 @@ jobs:
           node --check frontend/portal.js
           node --check frontend/daily.js
           node --check frontend/nhl-layout.js
+          node --check frontend/nhl-postmortem.js
           node --test frontend/tests/nhl-calendar.test.mjs
           node --check frontend/nhl-five-market.js
           node --test backend/tests/*.test.mjs frontend/tests/nhl-dispatch.test.cjs

@@ -47,3 +47,17 @@ Run with Node 22: `node --test backend/tests/*.test.mjs frontend/tests/*.test.cj
 The public `nhl-schedule.json` contains verified fixtures in Santiago dates from yesterday through seven days ahead. `node frontend/collect-nhl-schedule.mjs` fetches two official NHL schedule weeks, validates coverage and normalizes IDs, states and final scores. It uses no credentials and contains no predictions. Pages regenerates this file before upload, twice daily, and after successful main-branch NHL capture runs. Failed collection fails deployment rather than publishing an invented empty schedule.
 
 Changing the date updates the agenda, pending count, run date and forecast panel. Forecasts from a different capture day are hidden; future probabilities appear only after that day's real workflow runs and Pages completes. The dispatcher still submits the selected calendar day unchanged and only supports full-slate runs today through +7. Missing calendars and days with no pending games disable the run action. The workflow_run publication checks success and the same repository/main branch, checks out trusted main, and never consumes triggering-run artifacts.
+
+## Automated dated postmortem
+
+`NHL — daily postmortem and learning log` runs at 12:15 and 18:15 UTC (09:15/15:15 in Santiago during the current UTC−3 period; local times shift with DST). GitHub cron may be delayed. Each run retries the previous seven Santiago dates. Manual dispatch accepts one past/present `day` for backfills; it never dispatches the prediction model.
+
+The process verifies frozen hashes and timestamps, retains the earliest issuance per game/model/market, and checks final scoreboard/PBP labels through both existing reconstructors. Live games remain pending. Source errors are recorded and warned rather than scored. Temporary source regression never replaces a previously complete report; corrections that still contain verified finals create a new revision. Identical source/report inputs do not create duplicate revisions or extra observations.
+
+- `reports/nhl/daily/<date>/revisions/<sha>/`: retained report, selected frozen forecasts, normalized official response payloads compressed with deterministic gzip, and learning observations. The source hashes identify canonical JSON content.
+- `frontend/data/nhl-postmortems/<date>.json` plus `nhl-postmortem-latest.json`: latest public date reports and index.
+- `nhl/learning/postmortems/<date>.json`: postgame labels and signals, quarantined for future chronological training. No automatic parameter changes, retraining or model promotion.
+
+Successful main-branch postmortem runs trigger the existing Pages workflow. It checks repository/branch/success, checks out trusted main and never consumes artifacts from the triggering workflow. The report appears under NHL “Historial y resultados”. The legacy #219 aggregate audit remains available manually; its overlapping schedule is removed. Paired ML evaluation #242 remains separate.
+
+Run locally with Python 3.9+: `python -m nhl.daily_postmortem --date 2026-11-01`. CI uses Python 3.11. Tests cover idempotence, pending→final retries, malformed sequences, cross-source mismatch, source outages, retained revisions, tampered/post-start forecasts, future dates and dates without forecasts.
