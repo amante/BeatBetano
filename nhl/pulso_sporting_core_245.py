@@ -39,13 +39,14 @@ def contribution(name,source,source_asof,observed,applied=False,effect=None,bloc
 def integrate(report,bridge,packages,unit_research=None,live_sporting=None,individual_evidence=None,goalie_daily=None,goalie_identity=None):
  if report.get("data_kind")!="source_readiness_only" or report.get("official_predictions")!=0:
   raise ValueError("Raw pregame source report required")
- asof=parse_utc(report["generated_at_utc"])
- if bridge.get("kind")!="sporting_source_bridge" or parse_utc(bridge["as_of"])!=asof:
+ captured=parse_utc(report["generated_at_utc"])
+ asof=parse_utc(bridge["as_of"])
+ if bridge.get("kind")!="sporting_source_bridge" or asof<captured:
   raise ValueError("Bridge and capture timestamps disagree")
- if live_sporting is not None and (live_sporting.get('kind')!='nhl_live_sporting_observations_246' or parse_utc(live_sporting['observed_at_utc'])!=asof):
+ if live_sporting is not None and (live_sporting.get('kind')!='nhl_live_sporting_observations_246' or parse_utc(live_sporting['observed_at_utc'])!=captured):
   raise ValueError('Live sporting timestamp mismatch')
  live_by_id={str(g['game_id']):g for g in live_sporting.get('games',[])} if live_sporting else {}
- if individual_evidence is not None and (individual_evidence.get('kind')!='nhl_individual_player_goalie_evidence_247' or parse_utc(individual_evidence['as_of_utc'])!=asof):
+ if individual_evidence is not None and (individual_evidence.get('kind')!='nhl_individual_player_goalie_evidence_247' or parse_utc(individual_evidence['as_of_utc'])!=captured):
   raise ValueError('Individual evidence timestamp mismatch')
  individual_by_id={str(g['game_id']):g for g in individual_evidence.get('games',[])} if individual_evidence else {}
  goalie_index=goalie_join(report,goalie_identity,goalie_daily) if goalie_daily is not None and goalie_identity is not None else {}
@@ -104,17 +105,17 @@ def integrate(report,bridge,packages,unit_research=None,live_sporting=None,indiv
    "three_goal_lead":{"observed":False,"blocker":"independent two-sided 3GLP process not fitted"},
    "rescue_dual_fuerte":{"observed":False,"blocker":"market-specific gates not validated"}}
   modules={key:contribution(key,"pregame_source_bridge+quantitative_signals_227" if value["observed"] else None,
-    report["generated_at_utc"] if value["observed"] else None,value["observed"],
+    bridge["as_of"] if value["observed"] else None,value["observed"],
     blocker=value["blocker"]) for key,value in annotations.items()}
   if set(modules)!=set(MODULES):raise AssertionError("Module contract incomplete")
   out.append({"game_id":gid,"home":fixture["home"],"away":fixture["away"],
-    "start_utc":fixture["start_utc"],"as_of_utc":report["generated_at_utc"],
+    "start_utc":fixture["start_utc"],"as_of_utc":bridge["as_of"],
     "module_manifest":modules,"teams":details,"context":ctx,"unit_research":unit_obs,
     "official_prior_day_team_form_source":live_sporting.get("source_url") if live_sporting else None,
     "sporting_goal_rates":None,"sporting_probabilities":None,"official":False,
     "sporting_model_status":"blocked_missing_verified_fitted_effects",
     "no_silent_fallback":True,"odds_used":False})
- return {"kind":"nhl_sporting_core_integrity_245","generated_at_utc":report["generated_at_utc"],
+ return {"kind":"nhl_sporting_core_integrity_245","generated_at_utc":bridge["as_of"],"source_capture_as_of":report["generated_at_utc"],
   "module_contract_version":"nhl-2026-27-original-recovery-v1",
   "model_status":"integrated_evidence_not_calibrated",
   "official_predictions":0,"games":out,"module_count":len(MODULES),

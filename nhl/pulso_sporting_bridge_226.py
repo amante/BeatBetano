@@ -3,14 +3,20 @@ import argparse,json
 from pathlib import Path
 from nhl.pulso_pregame_v7 import parse_utc
 
-def bridge(report,crosswalk,rosters):
- asof=parse_utc(report["generated_at_utc"])
+def bridge(report,crosswalk,rosters,analysis_as_of=None):
+ asof=parse_utc(analysis_as_of or report["generated_at_utc"])
+ if asof<parse_utc(report["generated_at_utc"]):raise ValueError("Analysis precedes capture")
  source_time=crosswalk.get("retrieved_at")
  if source_time and parse_utc(source_time)>asof:raise ValueError("Goalie source arrives after capture")
  roster_rows=rosters.get("rosters",[])
  if isinstance(roster_rows,dict):roster_rows=list(roster_rows.values())
  roster_by_team={r["team"]:r for r in roster_rows if isinstance(r,dict) and r.get("team")}
- observations=crosswalk.get("observations",[])
+ observations=[]
+ for original in crosswalk.get("observations",[]):
+  row=dict(original)
+  if row.get('game_id') is not None and row.get('nhl_game_id') is not None and str(row['game_id'])!=str(row['nhl_game_id']):raise ValueError('Conflicting goalie fixture IDs')
+  if row.get('game_id') is None and row.get('nhl_game_id') is not None:row['game_id']=row['nhl_game_id']
+  observations.append(row)
  games={}
  for fixture in report["games"]:
   gid=str(fixture["game_id"]);start=parse_utc(fixture["start_utc"])
@@ -33,16 +39,17 @@ def bridge(report,crosswalk,rosters):
     "defensive_unit_rating":None,"pp_bayes":None,"pk_bayes":None,"rest_days":None,
     "source_status":"provider_observation_only" if obs else "no_goalie_evidence"}
   games[gid]={"game_id":gid,"home":fixture["home"],"away":fixture["away"],
-   "start_utc":fixture["start_utc"],"as_of":report["generated_at_utc"],
+   "start_utc":fixture["start_utc"],"as_of":asof.isoformat(),
    "teams":teams,"official_probabilities":None}
- return {"kind":"sporting_source_bridge","as_of":report["generated_at_utc"],
+ return {"kind":"sporting_source_bridge","as_of":asof.isoformat(),
   "source_url":crosswalk.get("source_url"),"games":games,"odds_used":False,
   "source_attestation_verified":False,"model_trained":False}
 def main():
  p=argparse.ArgumentParser()
  for k in ("report","crosswalk","rosters","out"):p.add_argument("--"+k,required=True)
+ p.add_argument("--analysis-as-of")
  a=p.parse_args();read=lambda k:json.loads(Path(getattr(a,k)).read_text())
- result=bridge(read("report"),read("crosswalk"),read("rosters"))
+ result=bridge(read("report"),read("crosswalk"),read("rosters"),a.analysis_as_of)
  dest=Path(a.out);dest.parent.mkdir(parents=True,exist_ok=True)
  dest.write_text(json.dumps(result,indent=2))
  print(json.dumps({"fixture_count":len(result["games"]),"verified_model_ready":0}))
