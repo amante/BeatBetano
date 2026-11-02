@@ -35,3 +35,19 @@ test('unsafe endpoint and selected-only requests never dispatch',async()=>{
   const h=harness({});vm.runInContext(assignment,h.context);await vm.runInContext('runSimulation()',h.context);assert.equal(h.calls.length,0);
  }
 });
+
+test('missing daily feed can use the published official NHL slate without inventing scores',()=>{
+ const h=harness({});
+ const slate=JSON.parse(fs.readFileSync('frontend/data/nhl-complete-slate-latest.json','utf8'));
+ h.context.slate=slate;
+ const snapshot=vm.runInContext('nhlScheduleSnapshot(slate)',h.context);
+ assert.equal(snapshot.games.length,slate.games.length);
+ assert.equal(snapshot.games[0].id,String(slate.games[0].game_id));
+ assert.equal(snapshot.games[0].sport,'nhl');
+ assert.equal(snapshot.games.find(g=>g.status==='OFF').completed,true);
+ assert.ok(snapshot.games.every(g=>g.home_score===undefined&&g.away_score===undefined));
+ assert.equal(vm.runInContext('nhlScheduleSnapshot({games:[]})',h.context),null);
+ vm.runInContext('snapshot=nhlScheduleSnapshot(slate)',h.context);
+ h.node('daily-date').value=slate.date;
+ assert.ok(vm.runInContext('activeGames().length',h.context)>0);
+});
