@@ -51,3 +51,14 @@ test('missing daily feed can use the published official NHL slate without invent
  h.node('daily-date').value=slate.date;
  assert.ok(vm.runInContext('activeGames().length',h.context)>0);
 });
+
+test('page load recovers from missing daily feed and retains runner configuration',async()=>{
+ const h=harness({});
+ const slate=JSON.parse(fs.readFileSync('frontend/data/nhl-complete-slate-latest.json','utf8'));
+ const config=JSON.parse(fs.readFileSync('frontend/data/runtime-config.json','utf8'));
+ h.context.fetch=async path=>({ok:!path.endsWith('/daily.json'),status:404,json:async()=>path.includes('nhl-complete-slate')?slate:path.includes('runtime-config')?config:[]});
+ vm.runInContext('renderGames=()=>{}',h.context);
+ await vm.runInContext('load()',h.context);
+ assert.equal(vm.runInContext('snapshot.games.length',h.context),slate.games.length);
+ assert.equal(vm.runInContext('runtime.simulation_endpoint',h.context),config.simulation_endpoint);
+});

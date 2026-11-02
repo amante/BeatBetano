@@ -8,7 +8,7 @@ const localDay=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",
 const previousDay=d=>{const x=new Date(d+"T12:00:00Z");x.setUTCDate(x.getUTCDate()-1);return x.toISOString().slice(0,10);};
 const dayOf=utc=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(utc));
 const make=(tag,content,cls)=>{const el=document.createElement(tag);if(content!==undefined)el.textContent=content;if(cls)el.className=cls;return el;};
-let snapshot=null,history=[],predictions=[],runtime={};
+let snapshot=null,history=[],predictions=[],runtime={},feedFailure="";
 function isGame(g){return g&&g.sport===sport&&g.id!=null&&g.start_utc&&g.home&&g.away;}
 function result(g){if(!g.completed)return null;const a=Number(g.away_score),h=Number(g.home_score);if(g.home_score==null||g.away_score==null||!Number.isFinite(a)||!Number.isFinite(h))return null;return h>a?"home":h<a?"away":"draw";}
 function checkPick(p,g){
@@ -64,7 +64,7 @@ function renderGames(){
  const errors=(snapshot?.errors||[]).filter(x=>x.sport===sport);
  $("feed-message").textContent=snapshot
  ? "Fuente: "+(snapshot.source?snapshot.source+" · ":"")+snapshot.as_of_utc+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario obtenido de las fuentes configuradas.")
- : "No se dispone de una publicación de calendario. El sistema no acepta cargas manuales.";
+ : "No se pudo cargar el calendario. "+feedFailure;
  renderSelection(games);stats();
 }
 function renderSelection(games){
@@ -125,6 +125,7 @@ async function load(){
   const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw Error(path+" "+response.status);return response.json();
  }));
  const got=i=>entries[i].status==="fulfilled"?entries[i].value:null;
+ feedFailure=[0,...(sport==="nhl"?[4]:[])].map(i=>entries[i].status==="rejected"?entries[i].reason.message:"").filter(Boolean).join(" · ");
  snapshot=got(0)||nhlScheduleSnapshot(got(4));history=Array.isArray(got(1))?got(1):[];const p=got(2);
  predictions=Array.isArray(p)?p:Array.isArray(p?.predictions)?p.predictions:[];runtime=got(3)||{};
  renderGames();
