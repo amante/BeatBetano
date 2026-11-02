@@ -32,32 +32,38 @@ async function accessAuthorized(request,env){
  }catch{return false;}
 }
 export default {async fetch(request,env){
- if(!envValid(env))return json({error:"Backend not configured"},503);
  const origin=request.headers.get("Origin");
  const allowed=origin===env.ALLOWED_ORIGIN;
  const cors=allowed?{"Access-Control-Allow-Origin":origin,"Access-Control-Allow-Credentials":"true","Vary":"Origin"}:{};
+ if(!envValid(env))return json({error:"Backend not configured"},503,cors);
+ if(new URL(request.url).pathname!=="/api/nhl/run")return json({error:"Not found"},404,cors);
  if(request.method==="OPTIONS"){
+  const method=request.headers.get("Access-Control-Request-Method");
+  const headers=(request.headers.get("Access-Control-Request-Headers")||"").split(",").map(h=>h.trim().toLowerCase()).filter(Boolean);
+  if(method!=="POST"||headers.some(h=>h!=="content-type"))return json({error:"Preflight forbidden"},403,cors);
   if(!allowed)return json({error:"Origin forbidden"},403);
   return new Response(null,{status:204,headers:{...cors,"Access-Control-Allow-Methods":"POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type","Access-Control-Max-Age":"600"}});
  }
  if(request.method!=="POST")return json({error:"Method not allowed"},405,cors);
  if(!allowed)return json({error:"Origin forbidden"},403);
- if(new URL(request.url).pathname!=="/api/nhl/run")return json({error:"Not found"},404,cors);
  if(!(request.headers.get("Content-Type")||"").startsWith("application/json"))return json({error:"Expected JSON"},415,cors);
  try{if(!await accessAuthorized(request,env))return json({error:"Cloudflare Access authentication required"},401,cors);}
  catch{return json({error:"Identity verification unavailable"},503,cors);}
  let input;try{input=await request.json();}catch{return json({error:"Invalid JSON"},400,cors);}
  if(input?.sport!=="nhl"||input?.scope!=="all"||
-    !Array.isArray(input.event_ids)||!input.event_ids.every(id=>/^\d{8,12}$/.test(id))||
+    !Array.isArray(input.event_ids)||!input.event_ids.length||input.event_ids.length>32||!input.event_ids.every(id=>typeof id==="string"&&/^\d{8,12}$/.test(id))||
     !/^20\d{2}-\d{2}-\d{2}$/.test(input.date||""))return json({error:"Only full-slate NHL runs are supported"},400,cors);
  const day=new Date(input.date+"T00:00:00Z");
- const now=new Date(),today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
+ const localDay=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+ const today=Date.parse(localDay+"T00:00:00Z");
  if(!Number.isFinite(day.valueOf())||day.toISOString().slice(0,10)!==input.date||
-    day.valueOf()<today||day.valueOf()>today+7*86400000)return json({error:"Date must be today through seven days ahead (UTC)"},400,cors);
- const github=await fetch("https://api.github.com/repos/amante/BeatBetano/actions/workflows/pulso-nhl-prospective.yml/dispatches",{
+    day.valueOf()<today||day.valueOf()>today+7*86400000)return json({error:"Date must be today through seven days ahead (America/Santiago)"},400,cors);
+ let github;
+ try{github=await fetch("https://api.github.com/repos/amante/BeatBetano/actions/workflows/pulso-nhl-prospective.yml/dispatches",{
   method:"POST",headers:{"Accept":"application/vnd.github+json","Authorization":"Bearer "+env.GITHUB_TOKEN,
    "X-GitHub-Api-Version":"2022-11-28","User-Agent":"BeatBetano-NHL-runner"},
   body:JSON.stringify({ref:"main",inputs:{day:input.date}})});
+ }catch{return json({error:"Workflow dispatch unavailable; check Actions before retrying"},502,cors);}
  if(github.status!==204)return json({error:"Workflow dispatch failed",status:github.status},502,cors);
  return json({accepted:true,message:"GitHub Actions workflow dispatch accepted; not yet completed",workflow_url:"https://github.com/amante/BeatBetano/actions/workflows/pulso-nhl-prospective.yml"},202,cors);
 }};
