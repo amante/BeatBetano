@@ -9,19 +9,22 @@
    return x;
  };
  const pct=x=>typeof x==="number" && Number.isFinite(x)?(x*100).toFixed(1).replace(".",",")+"%":"—";
+ let published=null,loadError=null;
+ function render(){
+ root.replaceChildren(make("h3","Pronósticos de la jornada"));
  const source=make("p","Cargando captura…","daily-source");
  const meta=make("div",undefined,"nhl-market-meta");
  meta.append(make("span","Experimental","nhl-experimental-badge"),source);root.append(meta);
  const note=make("p","Probabilidades del modelo histórico. Sin cuotas; no equivalen a certeza ni recomendación de apuesta.","nhl-probability-note");
  root.append(note);
- try{
-  const response=await fetch("./data/nhl-daily-predictions-latest.json",{cache:"no-store"});
-  if(!response.ok)throw new Error("HTTP "+response.status);
-  const data=await response.json();
-  if(data.kind!=="nhl_research_daily_presentation_275" || data.official!==false ||
-     data.odds_used!==false || !Array.isArray(data.games) ||
-     data.official_schedule_games!==data.games.length ||
-     data.games.some(g=>!g.game_id||!g.home||!g.away||!g.start_utc))throw new Error("Reporte no verificado");
+ const date=document.getElementById("daily-date").value;
+ if(!published){source.textContent=loadError?"No se pudo cargar la publicación: "+loadError:"Cargando captura…";return;}
+ const data=published;
+ if(date!==data.date){
+  source.textContent="Fecha seleccionada: "+date;
+  root.append(make("p","Aún no hay pronósticos publicados para esta fecha. Si hay encuentros pendientes, ejecuta la jornada seleccionada.","daily-empty"));
+  root.append(make("p","Última captura disponible: "+data.date+". No se muestran probabilidades de otra fecha.","daily-source"));return;
+ }
   source.textContent="Captura del "+data.date+" · "+data.experimental_predicted_games+" encuentro"+(data.experimental_predicted_games===1?"":"s")+" con pronóstico";
   const archive=make("details",undefined,"nhl-archive");
   const excluded=data.games.filter(g=>g.status!=="experimental_forecast");
@@ -79,7 +82,19 @@
   const publication=make("p",undefined,"nhl-publication-note");const link=make("a","Ver ejecuciones en GitHub");
   link.href="https://github.com/amante/BeatBetano/actions/workflows/pulso-nhl-prospective.yml";link.target="_blank";link.rel="noopener noreferrer";
   publication.append(link);root.append(publication);
- }catch(e){
-  source.textContent="Todavía no se ha publicado una cartelera NHL completa verificable ("+e.message+").";
+
  }
+ document.addEventListener("pulso:date-change",render);
+ render();
+ try{
+  const response=await fetch("./data/nhl-daily-predictions-latest.json",{cache:"no-store"});
+  if(!response.ok)throw new Error("HTTP "+response.status);
+  const data=await response.json();
+  if(data.kind!=="nhl_research_daily_presentation_275" || data.official!==false ||
+     data.odds_used!==false || !Array.isArray(data.games) ||
+     data.official_schedule_games!==data.games.length ||
+     data.games.some(g=>!g.game_id||!g.home||!g.away||!g.start_utc))throw new Error("Reporte no verificado");
+  published=data;
+ }catch(e){loadError=e.message;}
+ render();
 })();

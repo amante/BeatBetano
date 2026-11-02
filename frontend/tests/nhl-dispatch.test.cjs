@@ -4,8 +4,9 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('frontend/daily.js','utf8');
 function harness(response){
- const nodes=new Map();const node=id=>{if(!nodes.has(id))nodes.set(id,{value:'',textContent:'',append(x){this.link=x;},addEventListener(){}});return nodes.get(id);};
- const calls=[];const context=vm.createContext({URL,URLSearchParams,Intl,Date,Set,Map,location:{search:'?sport=nhl',href:'https://amante.github.io/BeatBetano/dashboard.html',origin:'https://amante.github.io'},document:{getElementById:node,querySelector:()=>({value:'all'}),querySelectorAll:()=>[],createElement:()=>({})},fetch:async(url,options)=>{calls.push({url,options});if(response instanceof Error)throw response;return response;}});
+ const element=()=>({value:'',textContent:'',children:[],append(...items){this.children.push(...items);this.link=items.at(-1);},replaceChildren(...items){this.children=items;},addEventListener(){}});
+ const nodes=new Map();const node=id=>{if(!nodes.has(id))nodes.set(id,element());return nodes.get(id);};
+ const calls=[];const context=vm.createContext({URL,URLSearchParams,Intl,Date,Set,Map,CustomEvent:class{constructor(type,{detail}){this.type=type;this.detail=detail;}},location:{search:'?sport=nhl',href:'https://amante.github.io/BeatBetano/dashboard.html',origin:'https://amante.github.io'},document:{getElementById:node,querySelector:()=>({value:'all'}),querySelectorAll:()=>[],dispatchEvent:event=>calls.push({event}),createElement:element},fetch:async(url,options)=>{calls.push({url,options});if(response instanceof Error)throw response;return response;}});
  // Load definitions without invoking page initialization or data loading.
  vm.runInContext(source.slice(0,source.indexOf('$("daily-date").addEventListener')),context);
  const config=JSON.parse(fs.readFileSync('frontend/data/runtime-config.json','utf8'));
@@ -61,4 +62,24 @@ test('page load recovers from missing daily feed and retains runner configuratio
  await vm.runInContext('load()',h.context);
  assert.equal(vm.runInContext('snapshot.games.length',h.context),slate.games.length);
  assert.equal(vm.runInContext('runtime.simulation_endpoint',h.context),config.simulation_endpoint);
+});
+
+test('changing date updates calendar, summary, event and dispatch date with no stale IDs',async()=>{
+ const h=harness({ok:true,status:202,headers:new Headers({'Content-Type':'application/json'}),json:async()=>({accepted:true})});
+ const today=vm.runInContext('localDay()',h.context),next=new Date(today+'T12:00:00Z');next.setUTCDate(next.getUTCDate()+1);const tomorrow=next.toISOString().slice(0,10);
+ h.context.calendar={kind:'nhl_calendar',included_dates:[today,tomorrow],games:[{id:'2026020232',sport:'nhl',home:'ANA',away:'OTT',start_utc:tomorrow+'T23:00:00Z',status:'FUT',completed:false}],as_of_utc:new Date().toISOString()};
+ vm.runInContext('nhlCalendar=calendar',h.context);h.node('daily-date').value=tomorrow;
+ vm.runInContext('changeDate()',h.context);
+ assert.match(h.node('daily-label').textContent,/1 partidos/);assert.equal(h.node('run-simulation').disabled,false);assert.match(h.node('run-simulation').textContent,new RegExp(tomorrow));
+ assert.equal(h.calls.find(x=>x.event)?.event.detail.date,tomorrow);
+ await vm.runInContext('runSimulation()',h.context);
+ const request=h.calls.find(x=>x.options);assert.deepEqual(JSON.parse(request.options.body).event_ids,['2026020232']);assert.equal(JSON.parse(request.options.body).date,tomorrow);
+ h.node('daily-date').value='2099-01-01';vm.runInContext('changeDate()',h.context);assert.equal(h.node('run-simulation').disabled,true);assert.match(h.node('nhl-pending-summary').textContent,/no disponible/);
+ h.node('daily-date').value='';assert.doesNotThrow(()=>vm.runInContext('changeDate()',h.context));
+});
+test('a known empty date differs from an unpublished date and disables execution',()=>{
+ const h=harness({});const today=vm.runInContext('localDay()',h.context);
+ h.context.calendar={kind:'nhl_calendar',included_dates:[today],games:[]};vm.runInContext('nhlCalendar=calendar; snapshot=null',h.context);
+ h.node('daily-date').value=today;vm.runInContext('changeDate()',h.context);
+ assert.equal(h.node('run-simulation').disabled,true);assert.match(h.node('daily-results').children[0].textContent,/No hay partidos programados/);
 });

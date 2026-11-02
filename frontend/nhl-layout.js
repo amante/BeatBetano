@@ -8,6 +8,15 @@ if(new URLSearchParams(location.search).get("sport")==="nhl"){
  const main=document.querySelector("main");
  const intro=make("section","nhl-intro");intro.id="nhl-overview";
  intro.append(make("div","eyebrow","PULSO / NHL"),make("h1",null,"Tu jornada, de un vistazo."),make("p","nhl-lead","Encuentros pendientes y probabilidades, antes del inicio."));
+ const toolbar=make("div","nhl-date-toolbar"),dateLabel=make("p","nhl-selected-date");dateLabel.id="nhl-selected-date";
+ const controls=document.querySelector(".daily-controls");
+ const previous=make("button","nhl-date-step","←"),next=make("button","nhl-date-step","→");
+ previous.type=next.type="button";previous.setAttribute("aria-label","Día anterior");next.setAttribute("aria-label","Día siguiente");
+ for(const [button,delta] of [[previous,-1],[next,1]])button.addEventListener("click",()=>{
+  const field=byId("daily-date"),date=new Date((field.value||new Date().toISOString().slice(0,10))+"T12:00:00Z");
+  date.setUTCDate(date.getUTCDate()+delta);field.value=date.toISOString().slice(0,10);field.dispatchEvent(new Event("change",{bubbles:true}));
+ });
+ controls.prepend(previous);controls.append(next);toolbar.append(dateLabel,controls);intro.append(toolbar);
  const summary=make("div","nhl-summary");summary.id="nhl-day-summary";summary.setAttribute("role","status");intro.append(summary);
  const grid=make("div","nhl-workspace-grid");
  const predictions=byId("nhl-five-market");predictions.querySelector("h3").textContent="Pronósticos de la jornada";
