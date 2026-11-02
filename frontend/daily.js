@@ -72,7 +72,7 @@ function renderSelection(games){
  const radio=document.querySelector('input[name="simulation-scope"]:checked');
  $("simulation-selection").hidden=radio?.value!=="selected";
  for(const g of games){
-  if(g.completed)continue;
+  if(g.completed||Date.parse(g.start_utc)<=Date.now())continue;
   const label=make("label",undefined,"selection-item"),check=document.createElement("input");
   check.type="checkbox";check.value=String(g.id);check.name="chosen-game";
   label.append(check,make("span",g.away+" — "+g.home+(sport==="soccer"?" · "+(g.country||"")+" / "+(g.league||""):"")));
@@ -91,16 +91,25 @@ async function runSimulation(){
  if(!runtime.simulation_endpoint){status.textContent="Ejecución protegida aún no configurada. Utiliza el enlace a GitHub Actions en el panel NHL.";return;}
  const url=new URL(runtime.simulation_endpoint,location.href);
  const authorizedOrigin=runtime.simulation_endpoint_origin || location.origin;
- if(url.protocol!=="https:"||url.origin!==authorizedOrigin||url.pathname!=="/api/nhl/run"||sport!=="nhl"){
+ if(url.protocol!=="https:"||url.origin!==authorizedOrigin||url.pathname!=="/api/nhl/run"||url.username||url.password||url.search||url.hash||sport!=="nhl"){
   status.textContent="Endpoint de ejecución no autorizado.";return;
+ }
+ const today=localDay(),last=new Date(today+"T12:00:00Z");last.setUTCDate(last.getUTCDate()+7);
+ if($("daily-date").value<today||$("daily-date").value>last.toISOString().slice(0,10)){
+  status.textContent="Selecciona una fecha entre hoy y siete días más (hora de Santiago).";return;
  }
  const button=$("run-simulation");button.disabled=true;status.textContent="Solicitando ejecución protegida…";
  try{
-  const response=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",
+  const response=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",redirect:"error",
    body:JSON.stringify({sport,date:$("daily-date").value,scope,event_ids:games.map(g=>String(g.id))})});
-  if(!response.ok)throw Error("HTTP "+response.status);
+  if(response.status===401||response.status===403)throw Error("Autenticación requerida o acceso denegado");
+  if(!response.ok)throw Error("El servicio respondió HTTP "+response.status);
+  if(!(response.headers.get("Content-Type")||"").includes("application/json"))throw Error("El servicio no devolvió una confirmación JSON");
   const data=await response.json();status.textContent=data.accepted?"Solicitud aceptada por GitHub Actions. Comprueba la ejecución en el enlace del panel NHL; todavía no hay resultado.":"No se confirmó la solicitud.";
- }catch(err){status.textContent="No se pudo ejecutar: "+err.message;}finally{button.disabled=false;}
+ }catch(err){
+  status.textContent="No se confirmó la ejecución. "+err.message+". Inicia sesión en Cloudflare Access y vuelve aquí. Si persiste, revisa CORS y cookies entre sitios. No reintentes automáticamente: comprueba primero GitHub Actions. ";
+  const login=make("a","Iniciar sesión en Cloudflare Access");login.href=url.href;login.target="_blank";login.rel="noopener noreferrer";status.append(login);
+ }finally{button.disabled=false;}
 }
 async function load(){
  $("daily-date").value=localDay();

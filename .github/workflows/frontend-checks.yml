@@ -3,10 +3,12 @@ on:
   pull_request:
     paths:
       - 'frontend/**'
+      - 'backend/**'
       - '.github/workflows/frontend-checks.yml'
   push:
     paths:
       - 'frontend/**'
+      - 'backend/**'
       - '.github/workflows/frontend-checks.yml'
 permissions:
   contents: read
@@ -22,6 +24,7 @@ jobs:
           node --check frontend/app.js
           node --check frontend/portal.js
           node --check frontend/daily.js
+          node --test backend/tests/*.test.mjs frontend/tests/nhl-dispatch.test.cjs
           ! grep -q 'type="file"' frontend/dashboard.html
           grep -q 'id="run-simulation"' frontend/dashboard.html
           grep -q 'name="simulation-scope"' frontend/dashboard.html
