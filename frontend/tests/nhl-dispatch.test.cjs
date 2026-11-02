@@ -3,6 +3,11 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('frontend/daily.js','utf8');
+// Stable fixtures: publication must not depend on today's live game states.
+const sampleSlate=()=>({kind:'nhl_daily_complete_slate_274',date:'2026-11-02',schedule_captured_at:'2026-11-02T00:00:00Z',games:[
+ {game_id:'2026020232',home:'BOS',away:'VGK',start_utc:'2026-11-03T00:00:00Z',game_state_at_capture:'OFF'},
+ {game_id:'2026020233',home:'FLA',away:'DET',start_utc:'2026-11-03T00:00:00Z',game_state_at_capture:'FUT'}
+]});
 function harness(response){
  const element=()=>({value:'',textContent:'',children:[],append(...items){this.children.push(...items);this.link=items.at(-1);},replaceChildren(...items){this.children=items;},addEventListener(){}});
  const nodes=new Map();const node=id=>{if(!nodes.has(id))nodes.set(id,element());return nodes.get(id);};
@@ -39,7 +44,7 @@ test('unsafe endpoint and selected-only requests never dispatch',async()=>{
 
 test('missing daily feed can use the published official NHL slate without inventing scores',()=>{
  const h=harness({});
- const slate=JSON.parse(fs.readFileSync('frontend/data/nhl-complete-slate-latest.json','utf8'));
+ const slate=sampleSlate();
  h.context.slate=slate;
  const snapshot=vm.runInContext('nhlScheduleSnapshot(slate)',h.context);
  assert.equal(snapshot.games.length,slate.games.length);
@@ -55,7 +60,7 @@ test('missing daily feed can use the published official NHL slate without invent
 
 test('page load recovers from missing daily feed and retains runner configuration',async()=>{
  const h=harness({});
- const slate=JSON.parse(fs.readFileSync('frontend/data/nhl-complete-slate-latest.json','utf8'));
+ const slate=sampleSlate();
  const config=JSON.parse(fs.readFileSync('frontend/data/runtime-config.json','utf8'));
  h.context.fetch=async path=>({ok:!path.endsWith('/daily.json'),status:404,json:async()=>path.includes('nhl-complete-slate')?slate:path.includes('runtime-config')?config:[]});
  vm.runInContext('renderGames=()=>{}',h.context);
@@ -82,4 +87,10 @@ test('a known empty date differs from an unpublished date and disables execution
  h.context.calendar={kind:'nhl_calendar',included_dates:[today],games:[]};vm.runInContext('nhlCalendar=calendar; snapshot=null',h.context);
  h.node('daily-date').value=today;vm.runInContext('changeDate()',h.context);
  assert.equal(h.node('run-simulation').disabled,true);assert.match(h.node('daily-results').children[0].textContent,/No hay partidos programados/);
+});
+
+test('an all-pregame slate remains valid for publication',()=>{
+ const h=harness({});const slate=sampleSlate();slate.games.forEach(g=>{g.game_state_at_capture='FUT';});h.context.slate=slate;
+ const snapshot=vm.runInContext('nhlScheduleSnapshot(slate)',h.context);
+ assert.equal(snapshot.games.length,2);assert.ok(snapshot.games.every(g=>g.completed===false));
 });
