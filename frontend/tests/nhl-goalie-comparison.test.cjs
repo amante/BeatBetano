@@ -39,3 +39,18 @@ test('rendered absent model shows reason without candidate percentage or zero de
  const text=await renderPacket({...packet,games:[missing]});
  assert.match(text,/Modelo con arquero no ejecutado/);assert.match(text,/Falta un modelo/);assert.doesNotMatch(text,/0,00 pp|Con arquero/);
 });
+const {pairings}=require('../nhl-goalie-comparison.js');
+function withPairings(executed=false){
+ const rows=[];
+ for(const h of [1,2])for(const a of [3,4])rows.push({home_goalie:{player_id:h,name:'Home '+h},away_goalie:{player_id:a,name:'Away '+a},status:executed?'experimental_goalie_ml_executed':'goalie_model_not_executed',candidate_p_home:executed?.6:null,candidate_p_away:executed?.4:null,recalibration_p_home:executed?.56:null,delta_vs_baseline_pp:executed?5:null,delta_vs_recalibration_pp:executed?4:null,reasons:executed?[]:['missing_fitted_model']});
+ return {...row,scenario_count:4,pairings:rows,scenario_history_sha256:'history',scenario_inputs_sha256:'sources'};
+}
+test('both potential goalies preserve all four conditional pairings',async()=>{
+ const data=withPairings();assert.equal(pairings(data).length,4);
+ const text=await renderPacket({...packet,games:[data]});assert.match(text,/Ambos arqueros potenciales · 4 cruces/);assert.match(text,/Home 1/);assert.match(text,/Home 2/);assert.match(text,/Away 3/);assert.match(text,/Away 4/);assert.match(text,/Por calcular/);
+ assert.equal(pairings(withPairings(true)).length,4);
+});
+test('duplicate or incomplete pairing matrix is not silently displayed',()=>{
+ const data=withPairings();data.pairings.pop();data.scenario_count=3;assert.equal(pairings(data).length,0);
+ const duplicate=withPairings();duplicate.pairings[3]=duplicate.pairings[0];assert.equal(pairings(duplicate).length,0);
+});

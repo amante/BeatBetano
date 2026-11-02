@@ -102,3 +102,10 @@ Este frontend admite el contrato del PR de inferencia ML; puede publicarse antes
 pero no habrá cifras de candidato hasta que el backend genere una salida compatible.
 El PR de inferencia tampoco incorpora por sí solo parámetros NHL ajustados: el
 artefacto debe entrenarse/evaluarse y revisarse con su contrato antes de activarlo.
+
+La comparación también conserva **todos los cruces de arqueros potenciales** del
+PR #294. Con dos candidatos resueltos por lado son cuatro escenarios, cada uno con
+nombres, porcentajes o bloqueo específico. No se muestra solo el candidato que el
+proveedor prefiera; no se calcula una media suponiendo probabilidades de titularidad.
+La matriz debe ser el producto completo de sus IDs únicos. Los nombres pendientes
+de identidad se conservan como advertencias, sin inventar un jugador o una proyección.

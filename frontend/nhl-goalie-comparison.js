@@ -20,6 +20,25 @@
   if(!finite(row.delta_vs_recalibration_pp)||Math.abs(row.delta_vs_recalibration_pp-100*(row.candidate_p_home-row.recalibration_p_home))>1e-6)return null;
   return row;
  }
+ function pairings(row){
+  if(!Array.isArray(row?.pairings)||row.scenario_count!==row.pairings.length)return [];
+  const seen=new Set(),home=new Set(),away=new Set();
+  for(const p of row.pairings){
+   if(['home_goalie','away_goalie'].some(k=>!Number.isInteger(p[k]?.player_id)||p[k].player_id<=0||typeof p[k].name!=='string'||!p[k].name))return [];
+   const key=p.home_goalie.player_id+':'+p.away_goalie.player_id;
+   if(seen.has(key)||p.home_goalie.player_id===p.away_goalie.player_id)return [];
+   seen.add(key);home.add(p.home_goalie.player_id);away.add(p.away_goalie.player_id);
+   if(p.status==='goalie_model_not_executed'){
+    if(!Array.isArray(p.reasons)||!p.reasons.length||p.reasons.some(x=>typeof x!=='string')||['candidate_p_home','candidate_p_away','recalibration_p_home','delta_vs_baseline_pp','delta_vs_recalibration_pp'].some(k=>p[k]!==null))return [];
+   }else if(p.status==='experimental_goalie_ml_executed'){
+    if(!row.model_sha256||!row.scenario_history_sha256||!row.scenario_inputs_sha256||!row.baseline_forecast_sha256)return [];
+    if(!Number.isFinite(Date.parse(row.baseline_as_of_utc))||!Number.isFinite(Date.parse(row.computed_at_utc))||Date.parse(row.baseline_as_of_utc)>Date.parse(row.computed_at_utc)||Date.parse(row.computed_at_utc)>=Date.parse(row.start_utc))return [];
+    if(['candidate_p_home','candidate_p_away','recalibration_p_home'].some(k=>!finite(p[k])||p[k]<0||p[k]>1)||Math.abs(p.candidate_p_home+p.candidate_p_away-1)>1e-6)return [];
+    if(!finite(p.delta_vs_baseline_pp)||Math.abs(p.delta_vs_baseline_pp-100*(p.candidate_p_home-row.baseline_p_home))>1e-6||!finite(p.delta_vs_recalibration_pp)||Math.abs(p.delta_vs_recalibration_pp-100*(p.candidate_p_home-p.recalibration_p_home))>1e-6)return [];
+   }else return [];
+  }
+  return seen.size===home.size*away.size?row.pairings:[];
+ }
  function reasons(row){
   if(!row)return ['No hay una comparación verificada para esta emisión.'];
   const messages=[];
@@ -35,7 +54,7 @@
   }
   return messages;
  }
- const api={select,reasons};
+ const api={select,reasons,pairings};
  if(typeof module!=='undefined')module.exports=api;
  if(typeof document==='undefined')return;
  let data=null;
@@ -43,6 +62,27 @@
  const make=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;};
  const pct=x=>(100*x).toFixed(1).replace('.',',')+'%';
  const pp=x=>(x>0?'+':'')+x.toFixed(2).replace('.',',')+' pp';
+ function appendPairings(root,row,game){
+  const pairs=pairings(row);
+  const unresolved=Object.entries(row?.unresolved_editorial_candidates||{}).flatMap(([team,names])=>Array.isArray(names)?names.filter(n=>typeof n==='string').map(name=>team+' · '+name):[]);
+  if(!pairs.length&&!unresolved.length)return;
+  const section=make('details',undefined,'nhl-goalie-pairings');section.open=true;
+  section.append(make('summary','Ambos arqueros potenciales · '+pairs.length+' cruces'));
+  section.append(make('p','Cada escenario supone que juega esa pareja. No se elige un titular ni se promedian los cruces.','daily-source'));
+  const grid=make('div',undefined,'nhl-goalie-pair-grid');
+  for(const pair of pairs){
+   const card=make('article',undefined,'nhl-goalie-pair');
+   for(const [team,goalie,value] of [[game.away,pair.away_goalie,pair.candidate_p_away],[game.home,pair.home_goalie,pair.candidate_p_home]]){
+    const line=make('p',undefined,'nhl-goalie-pair-team');line.append(make('span',team+' · '+goalie.name),make('strong',finite(value)?pct(value):'Por calcular'));card.append(line);
+   }
+   if(pair.status==='experimental_goalie_ml_executed')card.append(make('p','Diferencia para '+game.home+': '+pp(pair.delta_vs_baseline_pp)+' frente a la base.','daily-source'));
+   else for(const message of reasons(pair))card.append(make('p',message,'daily-source'));
+   grid.append(card);
+  }
+  section.append(grid);
+  for(const name of unresolved)section.append(make('p','Candidato pendiente de identidad: '+name,'daily-source'));
+  root.append(section);
+ }
  api.create=(slate,game)=>{
   const row=select(data,slate,game),root=make('section',undefined,'nhl-goalie-comparison');
   root.append(make('h5','Comparación con arquero · ganador ML'));
@@ -50,6 +90,7 @@
    root.append(make('p','Modelo con arquero no ejecutado','nhl-goalie-state'));
    for(const message of reasons(row))root.append(make('p',message,'daily-source'));
    root.append(make('p','La probabilidad de arriba usa el modelo histórico y no incorpora al arquero.','daily-source'));
+   appendPairings(root,row,game);
    return root;
   }
   root.append(make('p','Candidato experimental · no reemplaza la probabilidad base','nhl-goalie-state'));
@@ -63,7 +104,7 @@
   const detail=make('details');detail.append(make('summary','Qué incluye la diferencia'));
   detail.append(make('p','Incluye la recalibración del modelo. Frente al mismo control sin datos del arquero, la diferencia para '+game.home+' es '+pp(row.delta_vs_recalibration_pp)+'. No demuestra un efecto causal.','daily-source'));
   detail.append(make('p','Calculado: '+new Date(row.computed_at_utc).toLocaleString('es-CL',{timeZone:'America/Santiago',dateStyle:'short',timeStyle:'short'})+' · Chile. Solo ML; los mercados RT y +3 conservan su modelo.','daily-source'));
-  root.append(detail);return root;
+  root.append(detail);appendPairings(root,row,game);return root;
  };
  scope.PulsoNhlGoalieComparison=api;
 })(typeof window==='undefined'?globalThis:window);
