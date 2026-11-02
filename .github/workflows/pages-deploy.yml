@@ -6,10 +6,12 @@ on:
     paths:
       - 'frontend/**'
       - 'backend/**'
+      - 'nhl/match_context.py'
+      - 'nhl/tests/test_match_context.py'
       - '.github/workflows/pages-deploy.yml'
   workflow_dispatch:
   schedule:
-    - cron: '20 9,21 * * *'
+    - cron: '20 * * * *'
   workflow_run:
     workflows: ['PULSO NHL — prospective pregame source capture', 'NHL — daily postmortem and learning log']
     types: [completed]
@@ -17,6 +19,8 @@ on:
     paths:
       - 'frontend/**'
       - 'backend/**'
+      - 'nhl/match_context.py'
+      - 'nhl/tests/test_match_context.py'
       - '.github/workflows/pages-deploy.yml'
 
 permissions:
@@ -45,6 +49,9 @@ jobs:
           node --check frontend/daily.js
           node --check frontend/nhl-layout.js
           node --check frontend/nhl-postmortem.js
+          node --check frontend/nhl-match-context.js
+          node --test frontend/tests/nhl-match-context.test.cjs
+          python -m unittest nhl.tests.test_match_context -v
           node --test frontend/tests/nhl-calendar.test.mjs
           node --check frontend/nhl-five-market.js
           node --test backend/tests/*.test.mjs frontend/tests/nhl-dispatch.test.cjs
@@ -104,6 +111,11 @@ jobs:
           node-version: '22'
       - name: Refresh public NHL calendar (yesterday through seven days ahead)
         run: node frontend/collect-nhl-schedule.mjs
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Refresh official NHL match context
+        run: python -m nhl.match_context
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload frontend (only public, static files)

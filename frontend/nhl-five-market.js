@@ -51,6 +51,7 @@
     const side=make("div",undefined,"nhl-probability");side.append(make("span",team),make("strong",pct(value)));probabilities.append(side);
    }
    card.append(probabilities);
+   card.append(window.PulsoNhlContext.create(g));
    const extra=make("details",undefined,"nhl-extra-markets");extra.append(make("summary","Ver los cinco mercados y comparación +3"));
    const rows=[
      ["Ganador ML",pct(g.ml.home),pct(g.ml.away),"—"],
@@ -85,6 +86,7 @@
 
  }
  document.addEventListener("pulso:date-change",render);
+ window.PulsoNhlContext.ready.then(render);
  render();
  try{
   const response=await fetch("./data/nhl-daily-predictions-latest.json",{cache:"no-store"});
