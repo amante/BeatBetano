@@ -8,6 +8,11 @@ on:
       - 'backend/**'
       - '.github/workflows/pages-deploy.yml'
   workflow_dispatch:
+  schedule:
+    - cron: '20 9,21 * * *'
+  workflow_run:
+    workflows: ['PULSO NHL — prospective pregame source capture']
+    types: [completed]
   pull_request:
     paths:
       - 'frontend/**'
@@ -39,6 +44,7 @@ jobs:
           node --check frontend/portal.js
           node --check frontend/daily.js
           node --check frontend/nhl-layout.js
+          node --test frontend/tests/nhl-calendar.test.mjs
           node --check frontend/nhl-five-market.js
           node --test backend/tests/*.test.mjs frontend/tests/nhl-dispatch.test.cjs
           node --check frontend/nhl-plus3-average.js
@@ -77,7 +83,7 @@ jobs:
           PY
 
   deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository))
     needs: verify
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -90,6 +96,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Refresh public NHL calendar (yesterday through seven days ahead)
+        run: node frontend/collect-nhl-schedule.mjs
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload frontend (only public, static files)

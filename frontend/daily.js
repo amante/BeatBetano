@@ -8,7 +8,7 @@ const localDay=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",
 const previousDay=d=>{const x=new Date(d+"T12:00:00Z");x.setUTCDate(x.getUTCDate()-1);return x.toISOString().slice(0,10);};
 const dayOf=utc=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(utc));
 const make=(tag,content,cls)=>{const el=document.createElement(tag);if(content!==undefined)el.textContent=content;if(cls)el.className=cls;return el;};
-let snapshot=null,history=[],predictions=[],runtime={},feedFailure="";
+let snapshot=null,history=[],predictions=[],runtime={},feedFailure="",nhlCalendar=null;
 function isGame(g){return g&&g.sport===sport&&g.id!=null&&g.start_utc&&g.home&&g.away;}
 function result(g){if(!g.completed)return null;const a=Number(g.away_score),h=Number(g.home_score);if(g.home_score==null||g.away_score==null||!Number.isFinite(a)||!Number.isFinite(h))return null;return h>a?"home":h<a?"away":"draw";}
 function checkPick(p,g){
@@ -39,7 +39,13 @@ function stats(){
  if(!yesterday.length)root.append(make("p","No hay predicciones verificadas y resueltas del día anterior.","daily-empty"));
  for(const x of yesterday)root.append(make("div",x.game.away+" — "+x.game.home+" | "+(x.won?"✓ Ganada":"✕ Perdida")+" | Predicción: "+x.pick+" | Resultado: "+x.actual,"daily-match"));
 }
-function activeGames(){return(snapshot?.games||[]).filter(g=>isGame(g)&&dayOf(g.start_utc)===$("daily-date").value).sort((a,b)=>a.start_utc.localeCompare(b.start_utc));}
+function selectedSnapshot(){
+ const date=$("daily-date").value;
+ if(sport==="nhl"&&nhlCalendar?.included_dates?.includes(date))return nhlCalendar;
+ return snapshot;
+}
+function selectedDateKnown(){const source=selectedSnapshot();return Boolean(source?.included_dates?.includes($("daily-date").value)||(source?.games||[]).some(g=>isGame(g)&&dayOf(g.start_utc)===$("daily-date").value));}
+function activeGames(){return(selectedSnapshot()?.games||[]).filter(g=>isGame(g)&&dayOf(g.start_utc)===$("daily-date").value).sort((a,b)=>a.start_utc.localeCompare(b.start_utc));}
 function nhlSummary(games){
  const root=$("nhl-day-summary");if(!root)return;
  const pending=games.filter(g=>!g.completed&&Date.parse(g.start_utc)>Date.now());
@@ -47,9 +53,9 @@ function nhlSummary(games){
  $("nhl-pending-summary").textContent=pending.length?pending.length+" encuentro"+(pending.length===1?"":"s")+" pendiente"+(pending.length===1?"":"s")+" de comenzar.":"No hay encuentros pendientes para esta fecha.";
 }
 function renderGames(){
- const games=activeGames(),root=$("daily-results");root.replaceChildren();
+ const games=activeGames(),root=$("daily-results"),source=selectedSnapshot(),known=selectedDateKnown();root.replaceChildren();
  $("daily-label").textContent=title+" · "+$("daily-date").value+" · "+games.length+" partidos";
- if(!games.length)root.append(make("p",snapshot?"Sin partidos confirmados para esta disciplina y fecha.":"No hay calendario disponible; pendiente actualización de las fuentes.","daily-empty"));
+ if(!games.length)root.append(make("p",known?"No hay partidos programados para esta fecha.":"El calendario de esta fecha aún no está publicado. Elige una fecha disponible.","daily-empty"));
  const grouped=new Map();
  for(const g of games){
   const country=sport==="soccer"?(g.country||"País no identificado"):null;
@@ -67,11 +73,19 @@ function renderGames(){
    sec.append(row);
   }root.append(sec);
  }
- const errors=(snapshot?.errors||[]).filter(x=>x.sport===sport);
- $("feed-message").textContent=snapshot
- ? "Fuente: "+(snapshot.source?snapshot.source+" · ":"")+snapshot.as_of_utc+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario obtenido de las fuentes configuradas.")
+ const errors=(source?.errors||[]).filter(x=>x.sport===sport);
+ $("feed-message").textContent=source
+ ? "Fuente: "+(source.source?source.source+" · ":"")+source.as_of_utc+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario obtenido de las fuentes configuradas.")
  : "No se pudo cargar el calendario. "+feedFailure;
  nhlSummary(games);renderSelection(games);stats();
+ if(sport==="nhl"){
+  const date=$("daily-date").value;
+  $("run-simulation").disabled=!known||!games.some(g=>!g.completed&&Date.parse(g.start_utc)>Date.now());
+  $("run-simulation").textContent="Ejecutar jornada · "+date;
+  if(!known&&$("nhl-pending-summary"))$("nhl-pending-summary").textContent="Calendario no disponible para "+date+". No se puede ejecutar todavía.";
+  if($("nhl-selected-date"))$("nhl-selected-date").textContent=new Date(date+"T12:00:00Z").toLocaleDateString("es-CL",{timeZone:"UTC",weekday:"long",day:"numeric",month:"long"});
+  document.dispatchEvent(new CustomEvent("pulso:date-change",{detail:{date,known}}));
+ }
 }
 function renderSelection(games){
  const root=$("simulation-games");root.replaceChildren();
@@ -127,16 +141,22 @@ function nhlScheduleSnapshot(slate){
 }
 async function load(){
  $("daily-date").value=localDay();
- const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json","./data/nhl-complete-slate-latest.json"].map(async path=>{
+ const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json","./data/nhl-complete-slate-latest.json","./data/nhl-schedule.json"].map(async path=>{
   const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw Error(path+" "+response.status);return response.json();
  }));
  const got=i=>entries[i].status==="fulfilled"?entries[i].value:null;
  feedFailure=[0,...(sport==="nhl"?[4]:[])].map(i=>entries[i].status==="rejected"?entries[i].reason.message:"").filter(Boolean).join(" · ");
+ nhlCalendar=got(5)?.kind==="nhl_calendar"&&Array.isArray(got(5).games)&&Array.isArray(got(5).included_dates)?got(5):null;
  snapshot=got(0)||nhlScheduleSnapshot(got(4));history=Array.isArray(got(1))?got(1):[];const p=got(2);
  predictions=Array.isArray(p)?p:Array.isArray(p?.predictions)?p.predictions:[];runtime=got(3)||{};
  renderGames();
 }
-$("daily-date").addEventListener("change",renderGames);
+function changeDate(){
+ const date=$("daily-date").value;
+ if(!/^20\d{2}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+"T12:00:00Z")))return;
+ $("simulation-status").textContent="";renderGames();
+}
+$("daily-date").addEventListener("change",changeDate);
 document.querySelectorAll('input[name="simulation-scope"]').forEach(r=>r.addEventListener("change",()=>renderSelection(activeGames())));
 $("run-simulation").addEventListener("click",runSimulation);
 $("crumb").textContent=title.toUpperCase();

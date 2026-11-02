@@ -25,6 +25,7 @@ jobs:
           node --check frontend/portal.js
           node --check frontend/daily.js
           node --check frontend/nhl-layout.js
+          node --test frontend/tests/nhl-calendar.test.mjs
           node --check frontend/nhl-five-market.js
           node --test backend/tests/*.test.mjs frontend/tests/nhl-dispatch.test.cjs
           ! grep -q 'type="file"' frontend/dashboard.html

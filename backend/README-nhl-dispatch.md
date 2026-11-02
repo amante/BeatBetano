@@ -41,3 +41,9 @@ The selected calendar date is passed unchanged as the NHL schedule day (`inputs.
 Local tests mock JWKS and GitHub using a generated RSA key. They do not prove the deployed Access policy, cookie delivery, stored secret permissions, or production workflow success. A real authenticated POST and final Actions run must be checked separately; do not infer them from an unauthenticated preflight. No secrets are required for local tests.
 
 Run with Node 22: `node --test backend/tests/*.test.mjs frontend/tests/*.test.cjs`. CI also runs the existing Python frontend suite with Python 3.11.
+
+## Calendar selection and automatic publication
+
+The public `nhl-schedule.json` contains verified fixtures in Santiago dates from yesterday through seven days ahead. `node frontend/collect-nhl-schedule.mjs` fetches two official NHL schedule weeks, validates coverage and normalizes IDs, states and final scores. It uses no credentials and contains no predictions. Pages regenerates this file before upload, twice daily, and after successful main-branch NHL capture runs. Failed collection fails deployment rather than publishing an invented empty schedule.
+
+Changing the date updates the agenda, pending count, run date and forecast panel. Forecasts from a different capture day are hidden; future probabilities appear only after that day's real workflow runs and Pages completes. The dispatcher still submits the selected calendar day unchanged and only supports full-slate runs today through +7. Missing calendars and days with no pending games disable the run action. The workflow_run publication checks success and the same repository/main branch, checks out trusted main, and never consumes triggering-run artifacts.
