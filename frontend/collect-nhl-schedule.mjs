@@ -15,7 +15,7 @@ export function normalizeSchedule(weeks,now=new Date()){
     if(!/^\d{10}$/.test(String(g.id))||!g.homeTeam?.abbrev||!g.awayTeam?.abbrev||!Number.isFinite(Date.parse(g.startTimeUTC)))throw Error('Invalid official NHL fixture');
     const local=chileDay(g.startTimeUTC);if(local<first||local>last)continue;
     const completed=['OFF','FINAL'].includes(g.gameState);
-    games.set(String(g.id),{id:String(g.id),sport:'nhl',home:g.homeTeam.abbrev,away:g.awayTeam.abbrev,start_utc:g.startTimeUTC,status:g.gameState,completed,
+    games.set(String(g.id),{id:String(g.id),sport:'nhl',home:g.homeTeam.abbrev,away:g.awayTeam.abbrev,start_utc:g.startTimeUTC,status:g.gameState,completed,venue:g.venue?.default||null,home_name:g.homeTeam.commonName?.default||null,away_name:g.awayTeam.commonName?.default||null,
      home_score:completed&&Number.isFinite(g.homeTeam.score)?g.homeTeam.score:null,away_score:completed&&Number.isFinite(g.awayTeam.score)?g.awayTeam.score:null,source:'NHL official schedule'});
    }
   }

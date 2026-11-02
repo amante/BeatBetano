@@ -61,3 +61,28 @@ The process verifies frozen hashes and timestamps, retains the earliest issuance
 Successful main-branch postmortem runs trigger the existing Pages workflow. It checks repository/branch/success, checks out trusted main and never consumes artifacts from the triggering workflow. The report appears under NHL “Historial y resultados”. The legacy #219 aggregate audit remains available manually; its overlapping schedule is removed. Paired ML evaluation #242 remains separate.
 
 Run locally with Python 3.9+: `python -m nhl.daily_postmortem --date 2026-11-01`. CI uses Python 3.11. Tests cover idempotence, pending→final retries, malformed sequences, cross-source mismatch, source outages, retained revisions, tampered/post-start forecasts, future dates and dates without forecasts.
+
+### Ficha deportiva junto al pronóstico
+
+Pages genera `nhl-match-context.json` con `python -m nhl.match_context` después del
+calendario oficial. La actualización programada de Pages es cada hora (minuto 20
+UTC, sin garantizar puntualidad de GitHub Actions). También se actualiza al publicar
+una nueva captura. El navegador solicita la ficha sin caché al cargar la página;
+para consultar cambios posteriores hay que recargarla. Más de 90 minutos se indica
+como potencialmente desactualizado.
+
+Horario: America/Santiago. Sede/ciudad y árbitros/jueces de línea: endpoints oficiales
+NHL gamecenter `landing` y `right-rail`. Las líneas ofensivas/defensivas, lesionados y
+descartados son observaciones de NHL.com; se requieren ambos equipos del encuentro,
+fecha local coincidente y fecha de modificación válida. Un artículo del día anterior
+nunca rellena el de mañana. Una lista vacía de lesiones publicada significa «ninguno
+reportado»; una fuente ausente significa «por informar». No se deriva un arquero
+titular del orden de nombres ni de estadísticas de temporada.
+
+La ficha expone su propia hora de captura y fuente. Es contexto actualizado separado
+de la hora del pronóstico: no cambia ni recalcula probabilidades históricas. No se
+reconstruye una alineación pregame de encuentros ya iniciados mediante datos actuales.
+El frontend exige coincidencia exacta de ID, equipos y hora de inicio; si faltan
+fuentes, conserva la predicción y comunica la falta de contexto. El colector conserva
+huellas de las respuestas usadas; el JSON público se genera durante la publicación,
+no es un archivo de entrenamiento ni un registro histórico inmutable de alineaciones.
