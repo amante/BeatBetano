@@ -86,3 +86,37 @@ El frontend exige coincidencia exacta de ID, equipos y hora de inicio; si faltan
 fuentes, conserva la predicción y comunica la falta de contexto. El colector conserva
 huellas de las respuestas usadas; el JSON público se genera durante la publicación,
 no es un archivo de entrenamiento ni un registro histórico inmutable de alineaciones.
+
+### Entradas deportivas prospectivas para entrenar y comparar módulos NHL
+
+Antes de emitir los cinco mercados, el workflow conserva por ejecución:
+
+- `nhl/learning/pregame/run-ID.json`: identidades NHL de las líneas proyectadas,
+  lesiones y descartados; arquero observado por el proveedor y su estado; estadísticas
+  previas del arquero (temporada/últimos cinco, con muestras y corte exclusivo).
+- `run-ID.sources.json.gz`: artículo y ESPN originales, más las capturas normalizadas
+  de plantillas, reconciliación y resumen de historial. Se incluyen huellas SHA-256.
+  El historial de arqueros conserva métricas y huella del origen; todavía no conserva
+  cada respuesta original de game-log. Las huellas no certifican por sí solas la hora.
+
+La captura solo admite nombres completos sin ambigüedad, posiciones compatibles,
+ambos equipos del encuentro y fecha de artículo coincidente. Un jugador repetido o
+simultáneamente lesionado/descartado y alineado impide marcar las líneas completas.
+Faltantes permanecen nulos: cero lesionados publicados no equivale a lista ausente.
+El estado «confirmed» de ESPN permanece atribuido al proveedor, sin elevarlo a
+confirmación independiente. Los encuentros iniciados al congelar se excluyen.
+
+La hora del vector es posterior a todas las capturas y anterior a la emisión de
+pronósticos. Vincular con el baseline por run-ID y game-ID, comprobando además
+`feature_as_of_utc <= prediction_as_of_utc < start_utc`; nunca imputar estas
+observaciones a una emisión anterior del mismo encuentro. El post mortem proporciona
+las etiquetas posteriores en otro registro, sin modificar la captura pregame.
+
+Este primer paso construye la evidencia para la comparación, no activa un nuevo
+predictor. `model_eligible`, `training_ready` y `probabilities_modified` permanecen
+falsos y el efecto aplicado es nulo. No hay rating de lesión/línea supuesto ni pesos
+manuales. Próxima etapa: dataset cronológico unido a resultados, política única de
+emisiones, entrenamiento/validación/holdout, candidato de arquero primero y ablaciones
+separadas de bajas y unidades. Comparar siempre con el baseline fuerte en la misma
+cohorte, con calibración e incertidumbre. No promover solo por reunir un número fijo
+de partidos o por un workflow verde.

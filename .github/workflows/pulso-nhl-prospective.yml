@@ -1,5 +1,11 @@
 name: PULSO NHL — prospective pregame source capture
 on:
+  pull_request:
+    paths:
+      - 'nhl/match_context.py'
+      - 'nhl/pulso_prospective_capture.py'
+      - 'nhl/tests/test_player_evidence.py'
+      - '.github/workflows/pulso-nhl-prospective.yml'
   schedule:
     - cron: '10 14 * * *'
     - cron: '10 20 * * *'
@@ -22,7 +28,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m unittest nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
+      - run: python -m unittest nhl.tests.test_player_evidence nhl.tests.test_match_context nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
   capture:
     if: github.event_name != 'pull_request'
     needs: test
@@ -209,6 +215,14 @@ jobs:
           mkdir -p .nhl_labels
           gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern nhl_postgame_labels.csv --dir .nhl_labels
           gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern labels_manifest.json --dir .nhl_labels
+      - name: Freeze player-linked prospective inputs before any forecast issuance
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.match_context \
+            --pregame-evidence-dir "results/pulso/nhl/$DAY" \
+            --run-id "${{ github.run_id }}" \
+            --output "nhl/learning/pregame/run-${{ github.run_id }}.json"
       - name: Freeze experimental five-market predictions before puck drop
         run: |
           DAY="${{ inputs.day }}"
@@ -256,12 +270,14 @@ jobs:
           name: pulso-nhl-pregame-evidence-${{ github.run_id }}
           path: |
             results/pulso/nhl/
+            nhl/learning/pregame/
             frontend/data/nhl-forecasts/run-${{ github.run_id }}/
           retention-days: 90
       - name: Publish source readiness only, no predictions
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f nhl/learning/pregame/run-${{ github.run_id }}.json nhl/learning/pregame/run-${{ github.run_id }}.sources.json.gz
           git add -f frontend/data/pulso-nhl-research.json frontend/data/nhl-daily-predictions-latest.json frontend/data/nhl-complete-slate-latest.json frontend/data/nhl-ledger/run-${{ github.run_id }}.json frontend/data/nhl-baseline-latest.json
           git add -f frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json frontend/data/nhl-prediction-snapshots/run-${{ github.run_id }}.json
           if compgen -G 'frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json' > /dev/null; then

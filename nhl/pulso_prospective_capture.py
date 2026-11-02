@@ -75,9 +75,9 @@ def main():
  observations=espn_report["observations"]
  goalie_identity=crosswalk_goalies(espn_report,schedule,rosters)
  # NHL.com editorial lines are observations only, not game-verified starters.
- editorial=None;editorial_error=None
+ editorial=None;editorial_error=None;editorial_raw=b''
  try:
-  _,editorial=capture_editorial_lineups()
+  editorial_raw,editorial=capture_editorial_lineups()
  except (OSError,ValueError,UnicodeError) as exc:
   editorial_error=type(exc).__name__+': '+str(exc)[:160]
  captured=datetime.now(timezone.utc).isoformat()
@@ -90,6 +90,8 @@ def main():
  (output/"official_roster_candidates.json").write_text(json.dumps({"rosters":rosters,"errors":roster_errors,"game_lineups_confirmed":0},indent=2))
  (output/"goalie_identity_crosswalk.json").write_text(json.dumps(goalie_identity,indent=2))
  (output/"editorial_lineup_observations.json").write_text(json.dumps({'observation':editorial,'fetch_error':editorial_error,'fixture_attested':False,'lineup_confirmed':False},indent=2))
+ (output/"espn_raw.json").write_bytes(raw)
+ (output/"editorial_lineup_raw.html").write_bytes(editorial_raw)
  (output/"espn_raw_sha256.txt").write_text(hashlib.sha256(raw).hexdigest()+"\n")
  report={"generated_at_utc":captured,"date":args.date,"data_kind":"source_readiness_only",
   "game_count":len(games),"games":games,"official_predictions":0,
