@@ -60,6 +60,7 @@ def editorial(raw, now):
 
 
 def build(schedule, raw_article, get=fetch, now=None):
+    live_capture = now is None
     now = now or datetime.now(timezone.utc)
     errors, blocks, published = [], {}, None
     try: published, blocks = editorial(raw_article, now)
@@ -97,7 +98,7 @@ def build(schedule, raw_article, get=fetch, now=None):
             row['sources'].append(dict(url=URL, sha256=hashlib.sha256(raw_article).hexdigest(), published_at=published.isoformat()))
         return row
     with ThreadPoolExecutor(max_workers=4) as pool: games = list(pool.map(game_context, schedule['games']))
-    return dict(kind='nhl_match_context_v1', as_of_utc=now.isoformat(), model_features_used=False, games=games, errors=errors)
+    return dict(kind='nhl_match_context_v1', as_of_utc=(datetime.now(timezone.utc) if live_capture else now).isoformat(), model_features_used=False, games=games, errors=errors)
 
 
 if __name__ == '__main__':
