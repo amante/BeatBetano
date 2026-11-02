@@ -27,6 +27,8 @@ jobs:
           node --check frontend/nhl-layout.js
           node --check frontend/nhl-postmortem.js
           node --check frontend/nhl-match-context.js
+          node --check frontend/nhl-goalie-comparison.js
+          node --test frontend/tests/nhl-goalie-comparison.test.cjs
           node --test frontend/tests/nhl-match-context.test.cjs
           node --test frontend/tests/nhl-calendar.test.mjs
           node --check frontend/nhl-five-market.js

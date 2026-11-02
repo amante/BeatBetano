@@ -83,3 +83,29 @@ that API. If no backend is configured, the button explicitly reports that no
 simulation was executed; it never fabricates a result or calls a public
 unauthenticated GitHub action. Public pages cannot protect restricted sports
 models or private source data.
+
+### Comparación ML con arquero
+
+Cada tarjeta NHL distingue «Probabilidad base» de «Comparación con arquero». El
+widget lee `data/nhl-goalie-comparison-latest.json` sin caché y exige el mismo
+run-ID, fecha, equipos, inicio y probabilidad base que la presentación publicada.
+Comprueba normalización de probabilidades, coherencia de deltas y cronología antes
+de mostrar números. Una comparación de otra emisión nunca se reutiliza.
+
+Si existe candidato ejecutado, muestra base/con arquero/diferencia para ambos
+equipos y detalla la comparación adicional frente al control recalibrado. Solo ML:
+no extrapola ese delta a RT/+3. Si falta el modelo, faltan variables o no hay una
+comparación verificable, muestra «Modelo con arquero no ejecutado» con la causa.
+No transforma la ausencia de cálculo en una probabilidad o delta de cero.
+
+Este frontend admite el contrato del PR de inferencia ML; puede publicarse antes,
+pero no habrá cifras de candidato hasta que el backend genere una salida compatible.
+El PR de inferencia tampoco incorpora por sí solo parámetros NHL ajustados: el
+artefacto debe entrenarse/evaluarse y revisarse con su contrato antes de activarlo.
+
+La comparación también conserva **todos los cruces de arqueros potenciales** del
+PR #294. Con dos candidatos resueltos por lado son cuatro escenarios, cada uno con
+nombres, porcentajes o bloqueo específico. No se muestra solo el candidato que el
+proveedor prefiera; no se calcula una media suponiendo probabilidades de titularidad.
+La matriz debe ser el producto completo de sus IDs únicos. Los nombres pendientes
+de identidad se conservan como advertencias, sin inventar un jugador o una proyección.

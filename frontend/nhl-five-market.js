@@ -45,12 +45,13 @@
    heading.append(identity,make("span",pending?"Por comenzar":"Captura pregame","nhl-upcoming"));card.append(heading);
    const valid=g.ml&&g.rt&&g.first_to_plus3&&typeof g.home_plus3==="number"&&typeof g.away_plus3==="number";
    if(!valid){card.append(make("p","Mercados incompletos: no se muestran probabilidades parciales."));root.append(card);continue;}
-   card.append(make("div","Probabilidad de ganar · incluye desempate","nhl-market-label"));
+   card.append(make("div","Probabilidad base · incluye desempate","nhl-market-label"));
    const probabilities=make("div",undefined,"nhl-ml-grid");
    for(const [team,value] of [[g.away,g.ml.away],[g.home,g.ml.home]]){
     const side=make("div",undefined,"nhl-probability");side.append(make("span",team),make("strong",pct(value)));probabilities.append(side);
    }
    card.append(probabilities);
+   card.append(window.PulsoNhlGoalieComparison.create(data,g));
    card.append(window.PulsoNhlContext.create(g));
    const extra=make("details",undefined,"nhl-extra-markets");extra.append(make("summary","Ver los cinco mercados y comparación +3"));
    const rows=[
@@ -87,6 +88,7 @@
  }
  document.addEventListener("pulso:date-change",render);
  window.PulsoNhlContext.ready.then(render);
+ window.PulsoNhlGoalieComparison.ready.then(render);
  render();
  try{
   const response=await fetch("./data/nhl-daily-predictions-latest.json",{cache:"no-store"});
