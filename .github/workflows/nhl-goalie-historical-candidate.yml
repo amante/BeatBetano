@@ -1,0 +1,42 @@
+name: NHL — reproduce conditional goalie research candidate
+on:
+  pull_request:
+    paths:
+      - 'nhl/goalie_historical_candidate.py'
+      - 'nhl/tests/test_goalie_historical_candidate.py'
+      - 'reports/nhl/goalie-candidate-2026-11-02/**'
+      - '.github/workflows/nhl-goalie-historical-candidate.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reproduce:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_goalie_historical_candidate nhl.tests.test_goalie_ml_inference -v
+      - name: Reconstruct seasonal rates and refit the frozen research protocol
+        run: |
+          python -m nhl.goalie_historical_candidate \
+            --labels reports/nhl/goalie-candidate-2026-11-02/evidence/labels.csv \
+            --manifest reports/nhl/goalie-candidate-2026-11-02/evidence/labels-manifest.json \
+            --cache-zip reports/nhl/goalie-candidate-2026-11-02/evidence/historical-cache.zip \
+            --report-output /tmp/goalie-evaluation.json \
+            --model-output /tmp/goalie-research-parameters.json
+          python - <<'PY'
+          import json, math
+          from pathlib import Path
+          stored=json.loads(Path('reports/nhl/goalie-candidate-2026-11-02/evaluation.json').read_text())
+          replay=json.loads(Path('/tmp/goalie-evaluation.json').read_text())
+          assert stored['metrics']==replay['metrics']
+          assert stored['decision']==replay['decision']=='not_approved_no_incremental_gain'
+          for arm in stored['models']:
+              for field in ('coef','mean','scale'):
+                  a=stored['models'][arm]['model'][field]
+                  b=replay['models'][arm]['model'][field]
+                  assert len(a)==len(b) and all(math.isclose(x,y,rel_tol=1e-9,abs_tol=1e-10) for x,y in zip(a,b))
+          PY

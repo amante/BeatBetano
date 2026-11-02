@@ -54,3 +54,6 @@ test('duplicate or incomplete pairing matrix is not silently displayed',()=>{
  const data=withPairings();data.pairings.pop();data.scenario_count=3;assert.equal(pairings(data).length,0);
  const duplicate=withPairings();duplicate.pairings[3]=duplicate.pairings[0];assert.equal(pairings(duplicate).length,0);
 });
+test('failed numerical evaluation is explained rather than treated as a zero delta',()=>{
+ assert.match(reasons({reasons:['model_failed_incremental_evaluation']})[0],/no mejoró al modelo base/);
+});

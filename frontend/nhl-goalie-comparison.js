@@ -43,7 +43,7 @@
   if(!row)return ['No hay una comparación verificada para esta emisión.'];
   const messages=[];
   for(const reason of row.reasons||[]){
-   const value=reason==='missing_fitted_model'?'Falta un modelo ajustado compatible con los datos actuales.':
+   const value=reason==='model_failed_incremental_evaluation'?'El candidato evaluado no mejoró al modelo base y no se aplica.':reason==='missing_fitted_model'?'Falta un modelo ajustado compatible con los datos actuales.':
     reason.startsWith('invalid_or_incompatible_model')?'El modelo disponible no cumple el contrato de variables.':
     reason==='missing_provider_confirmed_goalie_identity'?'Falta un arquero identificado y confirmado por el proveedor.':
     reason==='missing_prior_goalie_history'?'Falta historial previo del arquero.':

@@ -1,0 +1,80 @@
+{
+  "kind": "nhl_goalie_ml_candidate_v1",
+  "contract": "baseline-logit-plus-season-prior-sv-difference-v1",
+  "features": [
+    "baseline_logit",
+    "home_sv_minus_away_sv"
+  ],
+  "available_at_utc": "2026-11-02T22:54:37.525401+00:00",
+  "training_cutoff": "2025-11-28",
+  "validation_cutoff": "2026-03-02",
+  "evaluation_cutoff": "2026-10-26",
+  "candidate": {
+    "coef": [
+      0.21950031153416924,
+      0.11610005480681322,
+      0.05711347130454902
+    ],
+    "mean": [
+      0.19422993757444473,
+      0.0009638970409268784
+    ],
+    "scale": [
+      0.09682195792432843,
+      0.025093703167920634
+    ]
+  },
+  "recalibration": {
+    "coef": [
+      0.21930186432452162,
+      0.12210909129124341
+    ],
+    "mean": [
+      0.19422993757444473
+    ],
+    "scale": [
+      0.09682195792432843
+    ]
+  },
+  "evaluation_sha256": "506033dbd5ddae65b9643a981ed3c19219eb7de717cffa18f5a3dde5c5e060cd",
+  "evaluation_input_sha256": "e6b30e7a8f879e3c156efc5c8b8b0554970437ed158721fb71a10c8f06027227",
+  "holdout_metrics": {
+    "baseline": {
+      "n": 429,
+      "brier": 0.245599,
+      "log_loss": 0.6843
+    },
+    "recalibration_only": {
+      "n": 429,
+      "brier": 0.245171,
+      "log_loss": 0.683428
+    },
+    "recalibration_plus_goalie": {
+      "n": 429,
+      "brier": 0.246198,
+      "log_loss": 0.685515
+    }
+  },
+  "exposure": "observed_historical_starter_conditional_hypothesis",
+  "feature_cutoff_rule": "strictly_before_nhl_game_date",
+  "minimum_prior_shots": 50,
+  "minimum_prior_games": 1,
+  "decision": "not_approved_no_incremental_gain",
+  "status": "experimental_not_promoted",
+  "automatic_promotion": false,
+  "production_approved": false,
+  "prospectively_validated": false,
+  "provenance": {
+    "source_run_id": "41260212394",
+    "source_artifact_id": 13065631013,
+    "labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+    "cache_zip_sha256": "c7382f94919b7c7a9f5d255dcef5ba91a978cc0d7bb4c31962e6bac21992b5cc",
+    "training_code_sha256": "f684921c5a6da7ae4ac0f6759aeffd0fb8b06075c2c4f16a7890bdd546ad531a"
+  },
+  "limitations": [
+    "Historical starter identity was observed postgame; conditional research, not a pregame lineup backtest.",
+    "These historical holdouts have been inspected in earlier research; this is not independent new evidence.",
+    "Baseline recalibration and goalie contribution must be distinguished."
+  ],
+  "artifact_sha256": "1439713f86c46c0b179187ebe7fc3b978078fea851b7e00ab9957399d3e44c4a"
+}

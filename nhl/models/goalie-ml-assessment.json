@@ -1,0 +1,28 @@
+{
+  "kind": "nhl_goalie_ml_assessment_v1",
+  "decision": "not_approved_no_incremental_gain",
+  "metrics": {
+    "baseline": {
+      "n": 429,
+      "brier": 0.245599,
+      "log_loss": 0.6843
+    },
+    "recalibration_only": {
+      "n": 429,
+      "brier": 0.245171,
+      "log_loss": 0.683428
+    },
+    "recalibration_plus_goalie": {
+      "n": 429,
+      "brier": 0.246198,
+      "log_loss": 0.685515
+    }
+  },
+  "fit_n": 1342,
+  "validation_n": 550,
+  "test_n": 429,
+  "report_path": "reports/nhl/goalie-candidate-2026-11-02/evaluation.json",
+  "report_sha256": "0d308c26e03f95a58783d4f34db9e20d2b82ecff0e9a91efdd5222bdba7b449f",
+  "parameters_deployed": false,
+  "reason": "Candidate failed to improve both baseline and recalibration control on the same retrospective test cohort."
+}

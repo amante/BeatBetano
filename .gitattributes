@@ -1,2 +1,4 @@
 # Preserve upstream snapshot bytes for source hashes, including CRLF endings.
 reports/soccer/base-2026-11-02/history/*.json -text whitespace=cr-at-eol
+# Keep official label bytes intact for reproducible source hashes.
+reports/nhl/goalie-candidate-2026-11-02/evidence/labels.csv -text whitespace=cr-at-eol
