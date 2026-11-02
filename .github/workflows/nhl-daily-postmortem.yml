@@ -1,0 +1,74 @@
+name: NHL — daily postmortem and learning log
+on:
+  schedule:
+    - cron: '15 12,18 * * *'
+  workflow_dispatch:
+    inputs:
+      day:
+        description: 'Santiago date YYYY-MM-DD; blank retries the previous seven days'
+        required: false
+        type: string
+  pull_request:
+    paths:
+      - 'nhl/daily_postmortem.py'
+      - 'nhl/tests/test_daily_postmortem.py'
+      - '.github/workflows/nhl-daily-postmortem.yml'
+permissions:
+  contents: read
+concurrency:
+  group: nhl-daily-postmortem
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest nhl.tests.test_daily_postmortem nhl.tests.test_pulso_official_outcome_audit_219 nhl.tests.test_historical_postgame_labels nhl.tests.test_pulso_forecast_score_217 nhl.tests.test_pulso_prospective_compare_242 -v
+  postmortem:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Audit finals and retain dated research observations
+        env:
+          REQUESTED_DATE: ${{ inputs.day }}
+        run: |
+          if [ -n "$REQUESTED_DATE" ]; then
+            python -m nhl.daily_postmortem --date "$REQUESTED_DATE"
+          else
+            python -m nhl.daily_postmortem --lookback 7
+          fi
+      - name: Retain audit evidence even when a later step fails
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: nhl-daily-postmortem-${{ github.run_id }}
+          path: |
+            reports/nhl/daily/
+            nhl/learning/postmortems/
+            frontend/data/nhl-postmortems/
+            frontend/data/nhl-postmortem-latest.json
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Persist reports, immutable revisions and learning observations
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f reports/nhl/daily nhl/learning/postmortems frontend/data/nhl-postmortems frontend/data/nhl-postmortem-latest.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'data(nhl): daily postmortem and learning observations'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

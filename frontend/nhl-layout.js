@@ -30,7 +30,9 @@ if(new URLSearchParams(location.search).get("sport")==="nhl"){
  run.append(make("p","nhl-run-note","Se procesa la jornada completa. Solo se generan nuevos pronósticos para encuentros que aún no comienzan."));
  grid.append(predictions,run);
  const agenda=byId("daily-panel");agenda.querySelector(".eyebrow").textContent="CALENDARIO · HORA DE CHILE";
- const history=disclosure("Historial y resultados","panel nhl-disclosure",byId("daily-stats"),document.querySelector(".daily-yesterday"));history.id="nhl-history";
+ const legacyHistory=make("div");legacyHistory.hidden=true;legacyHistory.append(byId("daily-stats"),document.querySelector(".daily-yesterday"));
+ const history=disclosure("Historial y resultados","panel nhl-disclosure",legacyHistory);history.id="nhl-history";
+ const postmortem=make("section","nhl-postmortem");postmortem.id="nhl-postmortem";postmortem.setAttribute("aria-live","polite");history.append(postmortem);
  const sources=disclosure("Fuente y actualización del calendario","nhl-source-details",byId("feed-message"));
  agenda.append(sources);
  const research=byId("pulso-nhl-research");research.querySelector("h3").textContent="Comparación de modelos";
