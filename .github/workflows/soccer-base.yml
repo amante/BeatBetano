@@ -1,0 +1,20 @@
+name: Football — baseline research tests
+on:
+  pull_request:
+    paths: ['soccer/**', 'reports/soccer/**', '.github/workflows/soccer-base.yml']
+  push:
+    branches: [main]
+    paths: ['soccer/**', 'reports/soccer/**', '.github/workflows/soccer-base.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m unittest discover -s soccer/tests -v
+      - run: python -m soccer.backtest --history reports/soccer/base-2026-11-02/history --output /tmp/football-backtest.json
