@@ -5,7 +5,7 @@ from pathlib import Path
 from nhl.pulso_pregame_v7 import parse_utc
 
 
-def build(report,crosswalk,history,rosters,analysis_as_of):
+def build(report,crosswalk,history,rosters,analysis_as_of,special_teams=None):
     cutoff=parse_utc(analysis_as_of)
     capture=parse_utc(report['generated_at_utc'])
     if cutoff<capture:raise ValueError('Analysis precedes source capture')
@@ -38,13 +38,25 @@ def build(report,crosswalk,history,rosters,analysis_as_of):
             if any(type(x) is not int for x in (saves,shots,games)) or not 0<=saves<=shots or shots<=0 or games<=0:raise ValueError('Invalid observed goalie counts')
             sides[team]['goalie']=dict(goalie_player_id=pid,identity_independently_verified=True,starter_independently_confirmed=False,source_url=meta['url'],source_sha256=meta['sha256'],as_of=meta['retrieved_at'],prior_saves=saves,prior_shots=shots,prior_games=games,history_cutoff_exclusive=m['cutoff_exclusive'],provider_status=ob.get('goalie_status'))
         packages[gid]=sides
+    if special_teams and special_teams.get('teams'):
+        if special_teams.get('kind')!='nhl_dated_special_teams_counts_v1' or special_teams.get('cutoff_day_completed') is not True:raise ValueError('Unverified special teams cutoff')
+        observed=parse_utc(special_teams['as_of_utc'])
+        if not capture<=observed<=cutoff or special_teams['effective_day']>=capture.date().isoformat():raise ValueError('Special teams source outside analysis cutoff')
+        sources=special_teams['sources']
+        if len(sources)!=3 or any(not s['url'].startswith(('https://api.nhle.com/stats/rest/en/team/','https://api-web.nhle.com/v1/score/')) for s in sources):raise ValueError('Wrong special teams source')
+        for f in report['games']:
+            for team in (f['home'],f['away']):
+                counts=special_teams['teams'].get(team)
+                if counts is None:continue
+                packages[str(f['game_id'])][team]['special_teams']=dict(**counts,events_prior_to_capture=True,source_url=sources[1]['url'],source_urls=[s['url'] for s in sources],as_of=special_teams['as_of_utc'],effective_day=special_teams['effective_day'])
     return packages,excluded
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
     for key in ('report','crosswalk','history','rosters','analysis-as-of','output'):p.add_argument('--'+key,required=True)
+    p.add_argument("--special-teams")
     a=p.parse_args();read=lambda field:json.loads(Path(getattr(a,field)).read_text())
-    packages,excluded=build(read('report'),read('crosswalk'),read('history'),read('rosters')['rosters'],a.analysis_as_of)
+    packages,excluded=build(read('report'),read('crosswalk'),read('history'),read('rosters')['rosters'],a.analysis_as_of,read('special_teams') if a.special_teams else None)
     path=Path(a.output);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(packages,indent=2))
     print(json.dumps(dict(connected_goalie_sides=sum('goalie' in t for g in packages.values() for t in g.values()),excluded=excluded)))

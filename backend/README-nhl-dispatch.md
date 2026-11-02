@@ -206,3 +206,24 @@ Estos cambios reparan conectividad, cobertura y tiempo. No equivalen a 13 efecto
 ajustados ni instalan un artefacto numérico compatible. El modelo conjunto, CRS,
 unidades, equipos especiales y mercados derivados mantienen sus bloqueos explícitos
 hasta disponer de fuentes, parámetros y evaluación. El baseline no se reemplaza.
+
+### PP/PK y contexto de calendario con fuentes fechadas
+
+Antes de establecer `SPORTING_ANALYSIS_AS_OF`, el workflow captura forma de equipo,
+contexto de calendario y conteos oficiales PP/PK. `nhl.special_teams_capture` consulta
+los reportes NHL Stats powerplay/penaltykill con temporada/fase regular/gameDate
+explícitos; exige igualdad de cobertura por equipo y valida denominadores. Confirma
+antes que el día de corte esté terminado mediante el score API. Si no lo está, o si
+la fuente es inválida, deja el bloque indisponible. Se conservan cuerpos originales
+comprimidos, fuentes, hashes y horas de recuperación.
+
+`nhl.sporting_packages` incorpora los conteos reales al gate cuantitativo existente.
+Una tasa suavizada de ese gate es un indicador observado, no un coeficiente ML
+ajustado. El PR no crea un efecto probabilístico PP/PK.
+
+`nhl.schedule_context` verifica cada encuentro contra el calendario oficial de ambos
+equipos y conserva partido anterior, intervalo entre horas de inicio, B2B según fechas
+oficiales y cambio de recinto. No afirma conocer descanso desde el final ni rutas o
+kilómetros de viaje. Un partido previo sin jugar tiene estado planificado, y no se
+trata como carga observada. El core verifica su disponibilidad antes del corte y
+registra la observación; mantiene bloqueado el efecto hasta que se ajuste/evalúe.

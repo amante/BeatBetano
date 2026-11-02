@@ -17,16 +17,18 @@ def last_completed_day(report):
  at=parse_utc(report["generated_at_utc"])
  # Even if games on the capture day are complete, use previous full UTC day.
  return (at.date()-timedelta(days=1)).isoformat()
-def build(report,standings,source_url):
+def build(report,standings,source_url,retrieved_at=None):
  if report.get("data_kind")!="source_readiness_only" or report.get("official_predictions")!=0:
   raise ValueError("Expected unpromoted capture report")
  at=parse_utc(report["generated_at_utc"])
+ retrieved=parse_utc(retrieved_at) if retrieved_at else at
+ if retrieved<at:raise ValueError("Team form source predates capture")
  d=last_completed_day(report)
  if source_url!=HOST+d:raise ValueError("Dated source must match strictly prior day")
  allteams=collect(standings,source_url,at.isoformat())
  games=[]
  for f in report["games"]:
-  if parse_utc(f["start_utc"])<=at:raise ValueError("Game is not future")
+  if parse_utc(f["start_utc"])<=retrieved:raise ValueError("Game is not future")
   sides={}
   for team in (f["home"],f["away"]):
    row=allteams.get(team)
@@ -41,7 +43,7 @@ def build(report,standings,source_url):
     "goal_diff_per_game_shrunk":row["goal_diff_per_game_shrunk"],
     "pp_pct_observed":row["power_play_pct_observed"],
     "pk_pct_observed":row["penalty_kill_pct_observed"],
-    "source_effective_day":d,"source_as_of_utc":at.isoformat(),
+    "source_effective_day":d,"source_as_of_utc":retrieved.isoformat(),
     "source_url":source_url}
    sides[team]={"status":"observed_not_calibrated" if valid else "insufficient_team_history",
     "features":feats,"blocked":[] if valid else ["team_history_under_five_games_or_invalid"]}
@@ -49,7 +51,7 @@ def build(report,standings,source_url):
     "start_utc":f["start_utc"],"sides":sides,"starter_confirmed":False,
     "lineups_confirmed":False,"pp_pk_sustainable_fitted":False,
     "applied_to_ml":False})
- return {"kind":"nhl_live_sporting_observations_246","observed_at_utc":at.isoformat(),
+ return {"kind":"nhl_live_sporting_observations_246","observed_at_utc":at.isoformat(),"source_retrieved_at_utc":retrieved.isoformat(),
   "prior_completed_day":d,"source_url":source_url,"games":games,
   "calibrated":False,"official":False,"official_predictions":0,"odds_used":False,
   "limitations":["Season team-level standings are not current CRS or player availability.",
@@ -67,7 +69,7 @@ def main():
    raw=response.read(2500000)
    if response.read(1):raise ValueError("Standings payload too large")
   standings=json.loads(raw)
- result=build(report,standings,url)
+ result=build(report,standings,url,datetime.now(timezone.utc).isoformat())
  out=Path(a.out);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(result,indent=2))
  print(json.dumps({"games":len(result["games"]),"teams_with_evidence":sum(side["status"]=="observed_not_calibrated" for g in result["games"] for side in g["sides"].values()),"official_predictions":0}))
 if __name__=="__main__":main()

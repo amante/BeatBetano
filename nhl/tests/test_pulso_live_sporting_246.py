@@ -17,6 +17,11 @@ class Live246(unittest.TestCase):
   self.stats["standings"]=self.stats["standings"][:1]
   x=build(self.report,self.stats,HOST+"2026-10-29")
   self.assertEqual(x["games"][0]["sides"]["MTL"]["status"],"missing")
+ def test_real_retrieval_time_preserved_and_not_backdated(self):
+  x=build(self.report,self.stats,HOST+"2026-10-29","2026-10-30T16:10:00Z")
+  self.assertEqual(x["source_retrieved_at_utc"],"2026-10-30T16:10:00+00:00")
+  self.assertEqual(x["games"][0]["sides"]["BOS"]["features"]["source_as_of_utc"],x["source_retrieved_at_utc"])
+  with self.assertRaises(ValueError):build(self.report,self.stats,HOST+"2026-10-29","2026-10-31T02:00:00Z")
  def test_integrated_as_observed_not_applied(self):
   live=build(self.report,self.stats,HOST+"2026-10-29")
   at=self.report["generated_at_utc"]
