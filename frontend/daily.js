@@ -63,7 +63,7 @@ function renderGames(){
  }
  const errors=(snapshot?.errors||[]).filter(x=>x.sport===sport);
  $("feed-message").textContent=snapshot
- ? "Fuente: "+snapshot.as_of_utc+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario obtenido de las fuentes configuradas.")
+ ? "Fuente: "+(snapshot.source?snapshot.source+" · ":"")+snapshot.as_of_utc+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario obtenido de las fuentes configuradas.")
  : "No se dispone de una publicación de calendario. El sistema no acepta cargas manuales.";
  renderSelection(games);stats();
 }
@@ -111,13 +111,21 @@ async function runSimulation(){
   const login=make("a","Iniciar sesión en Cloudflare Access");login.href=url.href;login.target="_blank";login.rel="noopener noreferrer";status.append(login);
  }finally{button.disabled=false;}
 }
+function nhlScheduleSnapshot(slate){
+ if(sport!=="nhl"||slate?.kind!=="nhl_daily_complete_slate_274"||!Array.isArray(slate.games)||!slate.schedule_captured_at)return null;
+ const games=slate.games.filter(g=>g.game_id&&g.home&&g.away&&Number.isFinite(Date.parse(g.start_utc))).map(g=>({
+  id:String(g.game_id),sport:"nhl",home:g.home,away:g.away,start_utc:g.start_utc,
+  completed:["OFF","FINAL"].includes(g.game_state_at_capture),status:g.game_state_at_capture||"Estado no disponible"
+ }));
+ return {games,as_of_utc:slate.schedule_captured_at,errors:[],source:"Calendario oficial NHL publicado"};
+}
 async function load(){
  $("daily-date").value=localDay();
- const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json"].map(async path=>{
+ const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json","./data/nhl-complete-slate-latest.json"].map(async path=>{
   const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw Error(path+" "+response.status);return response.json();
  }));
  const got=i=>entries[i].status==="fulfilled"?entries[i].value:null;
- snapshot=got(0);history=Array.isArray(got(1))?got(1):[];const p=got(2);
+ snapshot=got(0)||nhlScheduleSnapshot(got(4));history=Array.isArray(got(1))?got(1):[];const p=got(2);
  predictions=Array.isArray(p)?p:Array.isArray(p?.predictions)?p.predictions:[];runtime=got(3)||{};
  renderGames();
 }
