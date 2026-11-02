@@ -9,16 +9,11 @@
    return x;
  };
  const pct=x=>typeof x==="number" && Number.isFinite(x)?(x*100).toFixed(1).replace(".",",")+"%":"—";
- const source=make("p","Cargando resultados de la última captura NHL…","daily-source");
- root.append(source);
- const control=make("p");
- const link=make("a","Ejecutar nueva captura pregame en GitHub Actions");
- link.href="https://github.com/amante/BeatBetano/actions/workflows/pulso-nhl-prospective.yml";
- link.target="_blank";link.rel="noopener noreferrer";
- control.append(link,document.createTextNode(" · Requiere permisos en GitHub; la página pública no ejecuta workflows por sí sola."));
- root.append(control);
- const warn=make("p","Modelo histórico experimental #218; no incorpora probabilidades condicionadas por arquero, cuotas ni validación del modelo deportivo completo.","daily-source");
- root.append(warn);
+ const source=make("p","Cargando captura…","daily-source");
+ const meta=make("div",undefined,"nhl-market-meta");
+ meta.append(make("span","Experimental","nhl-experimental-badge"),source);root.append(meta);
+ const note=make("p","Probabilidades del modelo histórico. Sin cuotas; no equivalen a certeza ni recomendación de apuesta.","nhl-probability-note");
+ root.append(note);
  try{
   const response=await fetch("./data/nhl-daily-predictions-latest.json",{cache:"no-store"});
   if(!response.ok)throw new Error("HTTP "+response.status);
@@ -27,20 +22,33 @@
      data.odds_used!==false || !Array.isArray(data.games) ||
      data.official_schedule_games!==data.games.length ||
      data.games.some(g=>!g.game_id||!g.home||!g.away||!g.start_utc))throw new Error("Reporte no verificado");
-  source.textContent="Calendario NHL "+data.date+" · "+data.games.length+" partidos oficiales · "+data.experimental_predicted_games+" con los cinco mercados. Datos de la última ejecución publicada.";
+  source.textContent="Captura del "+data.date+" · "+data.experimental_predicted_games+" encuentro"+(data.experimental_predicted_games===1?"":"s")+" con pronóstico";
+  const archive=make("details",undefined,"nhl-archive");
+  const excluded=data.games.filter(g=>g.status!=="experimental_forecast");
+  archive.append(make("summary",excluded.length+" encuentro"+(excluded.length===1?"":"s")+" sin pronóstico pregame"));
   if(!data.games.length){root.append(make("p","Sin partidos programados en la fecha de la captura.","daily-empty"));return;}
   const plus3=window.PulsoNhlPlus3.summarize(data.games);
-  root.append(make("p",plus3.count?"Promedio +3 de la jornada: "+pct(plus3.mean)+" · "+plus3.count+" pronósticos de equipos. ↑ Sobre promedio destaca valores estrictamente superiores; no indica valor de apuesta.":"Sin probabilidades +3 para calcular un promedio.","daily-source"));
+  const plus3Note=make("p",plus3.count?"Promedio +3 de la jornada: "+pct(plus3.mean)+" · "+plus3.count+" pronósticos de equipos. ↑ Sobre promedio destaca valores estrictamente superiores; no indica valor de apuesta.":"Sin probabilidades +3 para calcular un promedio.","daily-source");
   for(const g of data.games){
-   const card=make("section",undefined,"nhl-model-row");
-   card.append(make("strong",g.away+" @ "+g.home));
-   card.append(make("p","Inicio Chile: "+new Date(g.start_utc).toLocaleString("es-CL",{timeZone:"America/Santiago",dateStyle:"medium",timeStyle:"short"})));
    if(g.status!=="experimental_forecast"){
-    card.append(make("p",g.status==="not_pregame_at_capture"?"Sin pronóstico: el encuentro ya no estaba en estado pregame.":"Sin pronóstico verificable disponible."));
-    root.append(card);continue;
+    const row=make("div",undefined,"nhl-archive-row");
+    row.append(make("strong",g.away+" — "+g.home),make("span",g.status==="not_pregame_at_capture"?"Ya había comenzado al capturar":"Sin evidencia suficiente"));
+    archive.append(row);continue;
    }
+   const card=make("section",undefined,"nhl-forecast-card");
+   const heading=make("div",undefined,"nhl-forecast-heading"),identity=make("div");
+   identity.append(make("h4",g.away+" — "+g.home),make("p",new Date(g.start_utc).toLocaleString("es-CL",{timeZone:"America/Santiago",dateStyle:"medium",timeStyle:"short"})+" · Chile"));
+   const pending=Date.parse(g.start_utc)>Date.now();
+   heading.append(identity,make("span",pending?"Por comenzar":"Captura pregame","nhl-upcoming"));card.append(heading);
    const valid=g.ml&&g.rt&&g.first_to_plus3&&typeof g.home_plus3==="number"&&typeof g.away_plus3==="number";
    if(!valid){card.append(make("p","Mercados incompletos: no se muestran probabilidades parciales."));root.append(card);continue;}
+   card.append(make("div","Probabilidad de ganar · incluye desempate","nhl-market-label"));
+   const probabilities=make("div",undefined,"nhl-ml-grid");
+   for(const [team,value] of [[g.away,g.ml.away],[g.home,g.ml.home]]){
+    const side=make("div",undefined,"nhl-probability");side.append(make("span",team),make("strong",pct(value)));probabilities.append(side);
+   }
+   card.append(probabilities);
+   const extra=make("details",undefined,"nhl-extra-markets");extra.append(make("summary","Ver los cinco mercados y comparación +3"));
    const rows=[
      ["Ganador ML",pct(g.ml.home),pct(g.ml.away),"—"],
      ["Tiempo regular RT",pct(g.rt.home),pct(g.rt.away),"Empate "+pct(g.rt.draw)],
@@ -63,8 +71,14 @@
      cell.title="Supera el promedio +3 de la jornada ("+pct(plus3.mean)+")";
     }
    }
-   card.append(table);root.append(card);
+   const scroll=make("div",undefined,"nhl-table-scroll");scroll.append(table);extra.append(scroll,plus3Note.cloneNode(true));
+   card.append(extra);root.append(card);
   }
+  if(!data.experimental_predicted_games)root.append(make("p","No hay pronósticos pregame publicados para esta captura.","daily-empty"));
+  if(excluded.length)root.append(archive);
+  const publication=make("p",undefined,"nhl-publication-note");const link=make("a","Ver ejecuciones en GitHub");
+  link.href="https://github.com/amante/BeatBetano/actions/workflows/pulso-nhl-prospective.yml";link.target="_blank";link.rel="noopener noreferrer";
+  publication.append(link);root.append(publication);
  }catch(e){
   source.textContent="Todavía no se ha publicado una cartelera NHL completa verificable ("+e.message+").";
  }
