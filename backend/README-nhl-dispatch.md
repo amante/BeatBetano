@@ -120,3 +120,45 @@ emisiones, entrenamiento/validación/holdout, candidato de arquero primero y abl
 separadas de bajas y unidades. Comparar siempre con el baseline fuerte en la misma
 cohorte, con calibración e incertidumbre. No promover solo por reunir un número fijo
 de partidos o por un workflow verde.
+
+### Cohorte y evaluación prospectiva del arquero
+
+El post mortem reconstruye automáticamente `nhl/learning/goalie-cohort.json` mediante
+`python -m nhl.goalie_prospective_evaluation --output nhl/learning/goalie-cohort.json`.
+Verifica las huellas del paquete deportivo, sus fuentes y el baseline de la misma
+emisión; solo admite `feature_as_of <= prediction_as_of < start`. Selecciona la
+primera emisión elegible por partido, no la mejor. Los resultados oficiales se leen
+del post mortem con huella de revisión verificada; los resultados ausentes permanecen
+pendientes. Las exclusiones y emisiones repetidas se cuentan explícitamente. Esta
+cohorte deportiva es distinta de la selección original del post mortem principal.
+
+El primer experimento exige identidad y estado confirmado POR EL PROVEEDOR en ambos
+arqueros. No lo convierte en confirmación independiente. Usa saves/shots de temporada
+previos y conserva los tiros como cobertura. Por ahora no mezcla lesiones ni líneas.
+
+La evaluación es manual y exige tres fechas explícitas previamente acordadas:
+
+```sh
+python -m nhl.goalie_prospective_evaluation --repo . --output /tmp/goalie-evaluation.json \
+  --fit-through YYYY-MM-DD --validation-through YYYY-MM-DD --test-through YYYY-MM-DD
+```
+
+La salida manual es de creación exclusiva. No escribir sobre una evaluación anterior.
+El programa no certifica que los cortes se hayan decidido antes de ver el holdout;
+conservar el protocolo revisado antes del experimento. El workflow automático solo
+actualiza la cohorte: nunca ajusta modelos a los resultados de la última jornada.
+
+Se comparan tres brazos sobre los mismos juegos: baseline publicado; recalibración
+de su logit; recalibración más diferencia de SV% local/visitante. La regularización
+se selecciona únicamente por log loss de validación entre 0.005/0.02/0.1. Los
+coeficientes usan exclusivamente entrenamiento. Las etiquetas de entrenamiento y
+validación deben estar disponibles antes de las respectivas emisiones posteriores.
+Los mínimos operativos son 400/50/100 juegos y al menos dos fechas por tramo; son un
+control para no ajustar muestras diminutas, no un certificado de potencia/validez.
+Sin cobertura, la salida informa insuficiencia y no contiene modelo ajustado.
+
+La comparación conserva métricas Brier binario/log loss, calibración por deciles,
+predicciones de holdout y diferencias emparejadas del candidato frente a ambos
+controles. Los intervalos usan 1.000 remuestreos por fecha con semilla fija; persiste
+la dependencia entre equipos y el riesgo de inspecciones repetidas. No hay promoción
+automática ni cambios en los pronósticos de PULSO.
