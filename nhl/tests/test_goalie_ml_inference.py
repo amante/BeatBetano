@@ -77,3 +77,14 @@ class GoalieInferenceTests(unittest.TestCase):
             with self.assertRaises(ValueError):infer(temp,'123',wrong,model,AT)
             wrong=slate();wrong['games'][0]['ml']['home']=.6
             with self.assertRaises(ValueError):infer(temp,'123',wrong,model,AT)
+
+class FailedCandidateAssessment(unittest.TestCase):
+    def test_real_evaluation_failure_is_explicit_and_not_a_zero_effect(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp);fixture(root)
+            path=root/'nhl/models/goalie-ml-assessment.json';path.parent.mkdir(parents=True)
+            path.write_text(json.dumps(dict(kind='nhl_goalie_ml_assessment_v1',decision='not_approved_no_incremental_gain',metrics={'baseline':{'brier':.24,'log_loss':.68},'recalibration_only':{'brier':.23,'log_loss':.67},'recalibration_plus_goalie':{'brier':.25,'log_loss':.69}})))
+            r=infer(temp,'123',slate(),at=AT)
+            self.assertIn('model_failed_incremental_evaluation',r['games'][0]['reasons'])
+            self.assertIsNone(r['games'][0]['candidate_p_home'])
+            self.assertIsNone(r['games'][0]['delta_vs_baseline_pp'])

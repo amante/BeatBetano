@@ -1,0 +1,5502 @@
+{
+  "decision": "not_approved_no_incremental_gain",
+  "kind": "nhl_historical_goalie_candidate_evaluation_v1",
+  "status": "retrospective_research_only",
+  "fit_through": "2025-11-28",
+  "validation_through": "2026-03-02",
+  "test_through": "2026-10-26",
+  "fit_n": 1342,
+  "validation_n": 550,
+  "test_n": 429,
+  "models": {
+    "recalibration_only": {
+      "model": {
+        "coef": [
+          0.21930186432452162,
+          0.12210909129124341
+        ],
+        "mean": [
+          0.19422993757444473
+        ],
+        "scale": [
+          0.09682195792432843
+        ]
+      },
+      "penalty": 0.1,
+      "validation_grid": [
+        {
+          "penalty": 0.005,
+          "log_loss": 0.694289
+        },
+        {
+          "penalty": 0.02,
+          "log_loss": 0.693978
+        },
+        {
+          "penalty": 0.1,
+          "log_loss": 0.693087
+        }
+      ]
+    },
+    "recalibration_plus_goalie": {
+      "model": {
+        "coef": [
+          0.21950031153416924,
+          0.11610005480681322,
+          0.05711347130454902
+        ],
+        "mean": [
+          0.19422993757444473,
+          0.0009638970409268784
+        ],
+        "scale": [
+          0.09682195792432843,
+          0.025093703167920634
+        ]
+      },
+      "penalty": 0.1,
+      "validation_grid": [
+        {
+          "penalty": 0.005,
+          "log_loss": 0.694123
+        },
+        {
+          "penalty": 0.02,
+          "log_loss": 0.693818
+        },
+        {
+          "penalty": 0.1,
+          "log_loss": 0.692917
+        }
+      ]
+    }
+  },
+  "metrics": {
+    "baseline": {
+      "n": 429,
+      "brier": 0.245599,
+      "log_loss": 0.6843
+    },
+    "recalibration_only": {
+      "n": 429,
+      "brier": 0.245171,
+      "log_loss": 0.683428
+    },
+    "recalibration_plus_goalie": {
+      "n": 429,
+      "brier": 0.246198,
+      "log_loss": 0.685515
+    }
+  },
+  "input_rows_sha256": "e6b30e7a8f879e3c156efc5c8b8b0554970437ed158721fb71a10c8f06027227",
+  "test_predictions": [
+    {
+      "game_id": "2025020959",
+      "date": "2026-03-03",
+      "y_home_win": 1,
+      "baseline": 0.5643471820040185,
+      "recalibration_only": 0.5746297729262251,
+      "recalibration_plus_goalie": 0.5800461036658292
+    },
+    {
+      "game_id": "2025020960",
+      "date": "2026-03-03",
+      "y_home_win": 1,
+      "baseline": 0.5462885347681514,
+      "recalibration_only": 0.551943484108853,
+      "recalibration_plus_goalie": 0.5625108160359311
+    },
+    {
+      "game_id": "2025020961",
+      "date": "2026-03-03",
+      "y_home_win": 1,
+      "baseline": 0.5166089190747931,
+      "recalibration_only": 0.514536458720255,
+      "recalibration_plus_goalie": 0.523972818309301
+    },
+    {
+      "game_id": "2025020962",
+      "date": "2026-03-03",
+      "y_home_win": 0,
+      "baseline": 0.5606343715960973,
+      "recalibration_only": 0.5699724572270523,
+      "recalibration_plus_goalie": 0.5758678493843651
+    },
+    {
+      "game_id": "2025020963",
+      "date": "2026-03-03",
+      "y_home_win": 1,
+      "baseline": 0.5920565401517234,
+      "recalibration_only": 0.6092349785158947,
+      "recalibration_plus_goalie": 0.6174471296169849
+    },
+    {
+      "game_id": "2025020964",
+      "date": "2026-03-03",
+      "y_home_win": 1,
+      "baseline": 0.5967653811545605,
+      "recalibration_only": 0.6150832907317053,
+      "recalibration_plus_goalie": 0.6073676468403376
+    },
+    {
+      "game_id": "2025020965",
+      "date": "2026-03-03",
+      "y_home_win": 0,
+      "baseline": 0.5195803596211669,
+      "recalibration_only": 0.5182848203889673,
+      "recalibration_plus_goalie": 0.5129130996829481
+    },
+    {
+      "game_id": "2025020966",
+      "date": "2026-03-03",
+      "y_home_win": 1,
+      "baseline": 0.549610793904364,
+      "recalibration_only": 0.5561229183232587,
+      "recalibration_plus_goalie": 0.5608569142618857
+    },
+    {
+      "game_id": "2025020967",
+      "date": "2026-03-03",
+      "y_home_win": 1,
+      "baseline": 0.5279233409444157,
+      "recalibration_only": 0.5288070155372667,
+      "recalibration_plus_goalie": 0.5260567152764335
+    },
+    {
+      "game_id": "2025020968",
+      "date": "2026-03-03",
+      "y_home_win": 0,
+      "baseline": 0.5247761632173785,
+      "recalibration_only": 0.5248382929524206,
+      "recalibration_plus_goalie": 0.5165012030589917
+    },
+    {
+      "game_id": "2025020969",
+      "date": "2026-03-03",
+      "y_home_win": 1,
+      "baseline": 0.5081094965507119,
+      "recalibration_only": 0.5038144406115385,
+      "recalibration_plus_goalie": 0.5027079295738139
+    },
+    {
+      "game_id": "2025020970",
+      "date": "2026-03-04",
+      "y_home_win": 0,
+      "baseline": 0.544645740117164,
+      "recalibration_only": 0.5498760228522712,
+      "recalibration_plus_goalie": 0.5683898177335216
+    },
+    {
+      "game_id": "2025020971",
+      "date": "2026-03-04",
+      "y_home_win": 1,
+      "baseline": 0.5136197491492236,
+      "recalibration_only": 0.5107655772324857,
+      "recalibration_plus_goalie": 0.5130263309845909
+    },
+    {
+      "game_id": "2025020972",
+      "date": "2026-03-04",
+      "y_home_win": 0,
+      "baseline": 0.49520907716650286,
+      "recalibration_only": 0.48754636808646845,
+      "recalibration_plus_goalie": 0.472469503175283
+    },
+    {
+      "game_id": "2025020973",
+      "date": "2026-03-04",
+      "y_home_win": 1,
+      "baseline": 0.5512246874855851,
+      "recalibration_only": 0.558152368875816,
+      "recalibration_plus_goalie": 0.5481892201218699
+    },
+    {
+      "game_id": "2025020974",
+      "date": "2026-03-04",
+      "y_home_win": 0,
+      "baseline": 0.5419076833187262,
+      "recalibration_only": 0.5464290731508616,
+      "recalibration_plus_goalie": 0.5550620267838937
+    },
+    {
+      "game_id": "2025020975",
+      "date": "2026-03-05",
+      "y_home_win": 1,
+      "baseline": 0.49338050022447655,
+      "recalibration_only": 0.4852416281519799,
+      "recalibration_plus_goalie": 0.49041866319919475
+    },
+    {
+      "game_id": "2025020976",
+      "date": "2026-03-05",
+      "y_home_win": 0,
+      "baseline": 0.52647118669016,
+      "recalibration_only": 0.5269758817672958,
+      "recalibration_plus_goalie": 0.5413161666121495
+    },
+    {
+      "game_id": "2025020977",
+      "date": "2026-03-05",
+      "y_home_win": 0,
+      "baseline": 0.5444762156813109,
+      "recalibration_only": 0.5496626469986724,
+      "recalibration_plus_goalie": 0.5458386116634447
+    },
+    {
+      "game_id": "2025020978",
+      "date": "2026-03-05",
+      "y_home_win": 1,
+      "baseline": 0.5502366875154464,
+      "recalibration_only": 0.5569100394379014,
+      "recalibration_plus_goalie": 0.5597603661895681
+    },
+    {
+      "game_id": "2025020979",
+      "date": "2026-03-05",
+      "y_home_win": 1,
+      "baseline": 0.5580157932686043,
+      "recalibration_only": 0.5666853858152563,
+      "recalibration_plus_goalie": 0.5633505549449633
+    },
+    {
+      "game_id": "2025020980",
+      "date": "2026-03-05",
+      "y_home_win": 1,
+      "baseline": 0.5465806297910913,
+      "recalibration_only": 0.5523110320522024,
+      "recalibration_plus_goalie": 0.5437152462949533
+    },
+    {
+      "game_id": "2025020981",
+      "date": "2026-03-05",
+      "y_home_win": 0,
+      "baseline": 0.5429728368551765,
+      "recalibration_only": 0.5477701560651729,
+      "recalibration_plus_goalie": 0.5688799593293362
+    },
+    {
+      "game_id": "2025020982",
+      "date": "2026-03-05",
+      "y_home_win": 1,
+      "baseline": 0.5492484248102245,
+      "recalibration_only": 0.5556671658959416,
+      "recalibration_plus_goalie": 0.5454221100516444
+    },
+    {
+      "game_id": "2025020983",
+      "date": "2026-03-06",
+      "y_home_win": 0,
+      "baseline": 0.5416035435513425,
+      "recalibration_only": 0.546046110108117,
+      "recalibration_plus_goalie": 0.5640811446973716
+    },
+    {
+      "game_id": "2025020984",
+      "date": "2026-03-06",
+      "y_home_win": 0,
+      "baseline": 0.5418809005083515,
+      "recalibration_only": 0.5463953497196239,
+      "recalibration_plus_goalie": 0.5363222388136688
+    },
+    {
+      "game_id": "2025020985",
+      "date": "2026-03-06",
+      "y_home_win": 0,
+      "baseline": 0.5051456255016626,
+      "recalibration_only": 0.5000758971732113,
+      "recalibration_plus_goalie": 0.4900099686450326
+    },
+    {
+      "game_id": "2025020986",
+      "date": "2026-03-06",
+      "y_home_win": 0,
+      "baseline": 0.5518809005083515,
+      "recalibration_only": 0.5589773823491536,
+      "recalibration_plus_goalie": 0.5671427569603396
+    },
+    {
+      "game_id": "2025020987",
+      "date": "2026-03-06",
+      "y_home_win": 1,
+      "baseline": 0.5530173932425922,
+      "recalibration_only": 0.5604059859095413,
+      "recalibration_plus_goalie": 0.5711087827940055
+    },
+    {
+      "game_id": "2025020988",
+      "date": "2026-03-06",
+      "y_home_win": 0,
+      "baseline": 0.5334361134634733,
+      "recalibration_only": 0.5357567085748671,
+      "recalibration_plus_goalie": 0.5267692234976987
+    },
+    {
+      "game_id": "2025020989",
+      "date": "2026-03-06",
+      "y_home_win": 0,
+      "baseline": 0.5234693360548354,
+      "recalibration_only": 0.5231901258503803,
+      "recalibration_plus_goalie": 0.5440762845963418
+    },
+    {
+      "game_id": "2025020990",
+      "date": "2026-03-07",
+      "y_home_win": 1,
+      "baseline": 0.5406825872239243,
+      "recalibration_only": 0.5448863778877171,
+      "recalibration_plus_goalie": 0.5406549245162695
+    },
+    {
+      "game_id": "2025020991",
+      "date": "2026-03-07",
+      "y_home_win": 1,
+      "baseline": 0.5209457451186611,
+      "recalibration_only": 0.5200071087206053,
+      "recalibration_plus_goalie": 0.520002101161728
+    },
+    {
+      "game_id": "2025020992",
+      "date": "2026-03-07",
+      "y_home_win": 1,
+      "baseline": 0.5912250217202433,
+      "recalibration_only": 0.6082011429567962,
+      "recalibration_plus_goalie": 0.6178352715329098
+    },
+    {
+      "game_id": "2025020993",
+      "date": "2026-03-07",
+      "y_home_win": 0,
+      "baseline": 0.5523680083038712,
+      "recalibration_only": 0.5595897273395292,
+      "recalibration_plus_goalie": 0.5495974076216389
+    },
+    {
+      "game_id": "2025020994",
+      "date": "2026-03-07",
+      "y_home_win": 0,
+      "baseline": 0.5404166879610228,
+      "recalibration_only": 0.544551513359458,
+      "recalibration_plus_goalie": 0.5315888106813111
+    },
+    {
+      "game_id": "2025020995",
+      "date": "2026-03-07",
+      "y_home_win": 0,
+      "baseline": 0.5538404819607664,
+      "recalibration_only": 0.5614404422688872,
+      "recalibration_plus_goalie": 0.5528995895029463
+    },
+    {
+      "game_id": "2025020996",
+      "date": "2026-03-07",
+      "y_home_win": 1,
+      "baseline": 0.5604194293291874,
+      "recalibration_only": 0.5697027138720144,
+      "recalibration_plus_goalie": 0.5842352457451394
+    },
+    {
+      "game_id": "2025020997",
+      "date": "2026-03-07",
+      "y_home_win": 0,
+      "baseline": 0.5505510082765559,
+      "recalibration_only": 0.5573052956263909,
+      "recalibration_plus_goalie": 0.56177156190111
+    },
+    {
+      "game_id": "2025020998",
+      "date": "2026-03-07",
+      "y_home_win": 1,
+      "baseline": 0.5376407500532218,
+      "recalibration_only": 0.5410549371025988,
+      "recalibration_plus_goalie": 0.538865460529238
+    },
+    {
+      "game_id": "2025020999",
+      "date": "2026-03-07",
+      "y_home_win": 0,
+      "baseline": 0.5125977410947002,
+      "recalibration_only": 0.5094762920116849,
+      "recalibration_plus_goalie": 0.49633349376361724
+    },
+    {
+      "game_id": "2025021000",
+      "date": "2026-03-07",
+      "y_home_win": 0,
+      "baseline": 0.5257951033313868,
+      "recalibration_only": 0.5261232998321431,
+      "recalibration_plus_goalie": 0.539110922379579
+    },
+    {
+      "game_id": "2025021001",
+      "date": "2026-03-08",
+      "y_home_win": 1,
+      "baseline": 0.5455375628354014,
+      "recalibration_only": 0.5509984477679959,
+      "recalibration_plus_goalie": 0.5531584551998092
+    },
+    {
+      "game_id": "2025021002",
+      "date": "2026-03-08",
+      "y_home_win": 1,
+      "baseline": 0.5587388829674147,
+      "recalibration_only": 0.5675932586546809,
+      "recalibration_plus_goalie": 0.5703414531585392
+    },
+    {
+      "game_id": "2025021003",
+      "date": "2026-03-08",
+      "y_home_win": 1,
+      "baseline": 0.5404535576944955,
+      "recalibration_only": 0.5445979465311873,
+      "recalibration_plus_goalie": 0.5560654829474301
+    },
+    {
+      "game_id": "2025021004",
+      "date": "2026-03-08",
+      "y_home_win": 1,
+      "baseline": 0.6089630615917829,
+      "recalibration_only": 0.6301796417405771,
+      "recalibration_plus_goalie": 0.6460499733467188
+    },
+    {
+      "game_id": "2025021005",
+      "date": "2026-03-08",
+      "y_home_win": 0,
+      "baseline": 0.5272956629576534,
+      "recalibration_only": 0.5280155486884144,
+      "recalibration_plus_goalie": 0.5183749288088761
+    },
+    {
+      "game_id": "2025021006",
+      "date": "2026-03-08",
+      "y_home_win": 0,
+      "baseline": 0.5634798734839692,
+      "recalibration_only": 0.5735421923884545,
+      "recalibration_plus_goalie": 0.5684442411012252
+    },
+    {
+      "game_id": "2025021007",
+      "date": "2026-03-08",
+      "y_home_win": 0,
+      "baseline": 0.5470325050629166,
+      "recalibration_only": 0.5528796009409976,
+      "recalibration_plus_goalie": 0.5357477081467652
+    },
+    {
+      "game_id": "2025020828",
+      "date": "2026-03-09",
+      "y_home_win": 0,
+      "baseline": 0.5587800159326277,
+      "recalibration_only": 0.5676448987892391,
+      "recalibration_plus_goalie": 0.5691315588589021
+    },
+    {
+      "game_id": "2025021008",
+      "date": "2026-03-09",
+      "y_home_win": 0,
+      "baseline": 0.5206220419202163,
+      "recalibration_only": 0.5195987983626736,
+      "recalibration_plus_goalie": 0.5182935310628808
+    },
+    {
+      "game_id": "2025021009",
+      "date": "2026-03-09",
+      "y_home_win": 1,
+      "baseline": 0.5780667043527417,
+      "recalibration_only": 0.5918007027161749,
+      "recalibration_plus_goalie": 0.5839302000327607
+    },
+    {
+      "game_id": "2025021010",
+      "date": "2026-03-09",
+      "y_home_win": 1,
+      "baseline": 0.4961249017185218,
+      "recalibration_only": 0.4887008147397462,
+      "recalibration_plus_goalie": 0.5069100344068693
+    },
+    {
+      "game_id": "2025021011",
+      "date": "2026-03-09",
+      "y_home_win": 0,
+      "baseline": 0.48954211418880716,
+      "recalibration_only": 0.480405081746884,
+      "recalibration_plus_goalie": 0.4861825676142134
+    },
+    {
+      "game_id": "2025021012",
+      "date": "2026-03-10",
+      "y_home_win": 1,
+      "baseline": 0.5564059315482465,
+      "recalibration_only": 0.5646636338980331,
+      "recalibration_plus_goalie": 0.5690621017895912
+    },
+    {
+      "game_id": "2025021013",
+      "date": "2026-03-10",
+      "y_home_win": 1,
+      "baseline": 0.5935768710389517,
+      "recalibration_only": 0.6111243781599024,
+      "recalibration_plus_goalie": 0.62237460552158
+    },
+    {
+      "game_id": "2025021014",
+      "date": "2026-03-10",
+      "y_home_win": 1,
+      "baseline": 0.537285480310475,
+      "recalibration_only": 0.5406073563226577,
+      "recalibration_plus_goalie": 0.5335096938301221
+    },
+    {
+      "game_id": "2025021015",
+      "date": "2026-03-10",
+      "y_home_win": 0,
+      "baseline": 0.590265612760806,
+      "recalibration_only": 0.607007900072306,
+      "recalibration_plus_goalie": 0.6203821261071879
+    },
+    {
+      "game_id": "2025021016",
+      "date": "2026-03-10",
+      "y_home_win": 1,
+      "baseline": 0.5480788763966236,
+      "recalibration_only": 0.5541960329093888,
+      "recalibration_plus_goalie": 0.5505902934020374
+    },
+    {
+      "game_id": "2025021017",
+      "date": "2026-03-10",
+      "y_home_win": 1,
+      "baseline": 0.5273517054760378,
+      "recalibration_only": 0.5280862164952024,
+      "recalibration_plus_goalie": 0.5231530963080031
+    },
+    {
+      "game_id": "2025021018",
+      "date": "2026-03-10",
+      "y_home_win": 1,
+      "baseline": 0.6008531641106998,
+      "recalibration_only": 0.6201513107243178,
+      "recalibration_plus_goalie": 0.6068958594767169
+    },
+    {
+      "game_id": "2025021019",
+      "date": "2026-03-10",
+      "y_home_win": 0,
+      "baseline": 0.5380589483940564,
+      "recalibration_only": 0.5415817742541646,
+      "recalibration_plus_goalie": 0.5353329664017149
+    },
+    {
+      "game_id": "2025021020",
+      "date": "2026-03-10",
+      "y_home_win": 1,
+      "baseline": 0.564787590340208,
+      "recalibration_only": 0.5751819454137461,
+      "recalibration_plus_goalie": 0.5949432355221828
+    },
+    {
+      "game_id": "2025021021",
+      "date": "2026-03-10",
+      "y_home_win": 1,
+      "baseline": 0.5398058930316995,
+      "recalibration_only": 0.5437822562711925,
+      "recalibration_plus_goalie": 0.5505861111895803
+    },
+    {
+      "game_id": "2025021022",
+      "date": "2026-03-10",
+      "y_home_win": 0,
+      "baseline": 0.5817168813655559,
+      "recalibration_only": 0.5963575474119509,
+      "recalibration_plus_goalie": 0.5988418242437843
+    },
+    {
+      "game_id": "2025021023",
+      "date": "2026-03-10",
+      "y_home_win": 0,
+      "baseline": 0.5629418792606649,
+      "recalibration_only": 0.5728674496582192,
+      "recalibration_plus_goalie": 0.5822352721875631
+    },
+    {
+      "game_id": "2025021024",
+      "date": "2026-03-10",
+      "y_home_win": 0,
+      "baseline": 0.5633559705715903,
+      "recalibration_only": 0.5733868031950249,
+      "recalibration_plus_goalie": 0.5787694718839734
+    },
+    {
+      "game_id": "2025021025",
+      "date": "2026-03-11",
+      "y_home_win": 0,
+      "baseline": 0.5522194648891751,
+      "recalibration_only": 0.5594029986635379,
+      "recalibration_plus_goalie": 0.5486365725906964
+    },
+    {
+      "game_id": "2025021026",
+      "date": "2026-03-11",
+      "y_home_win": 1,
+      "baseline": 0.5125327798735083,
+      "recalibration_only": 0.509394342192253,
+      "recalibration_plus_goalie": 0.4809661794502527
+    },
+    {
+      "game_id": "2025021027",
+      "date": "2026-03-12",
+      "y_home_win": 0,
+      "baseline": 0.5958047036478409,
+      "recalibration_only": 0.6138910208813139,
+      "recalibration_plus_goalie": 0.6142763997020494
+    },
+    {
+      "game_id": "2025021028",
+      "date": "2026-03-12",
+      "y_home_win": 0,
+      "baseline": 0.5467850958047037,
+      "recalibration_only": 0.5525683049925656,
+      "recalibration_plus_goalie": 0.5656766224068287
+    },
+    {
+      "game_id": "2025021029",
+      "date": "2026-03-12",
+      "y_home_win": 1,
+      "baseline": 0.5678053397923105,
+      "recalibration_only": 0.5789638956060411,
+      "recalibration_plus_goalie": 0.5838978097577732
+    },
+    {
+      "game_id": "2025021030",
+      "date": "2026-03-12",
+      "y_home_win": 1,
+      "baseline": 0.5715286534958666,
+      "recalibration_only": 0.5836259939403454,
+      "recalibration_plus_goalie": 0.585636739312278
+    },
+    {
+      "game_id": "2025021031",
+      "date": "2026-03-12",
+      "y_home_win": 1,
+      "baseline": 0.5659618159618159,
+      "recalibration_only": 0.5766538670901112,
+      "recalibration_plus_goalie": 0.5704035142718099
+    },
+    {
+      "game_id": "2025021032",
+      "date": "2026-03-12",
+      "y_home_win": 0,
+      "baseline": 0.5500530696609128,
+      "recalibration_only": 0.5566791312348914,
+      "recalibration_plus_goalie": 0.5506798245575283
+    },
+    {
+      "game_id": "2025021033",
+      "date": "2026-03-12",
+      "y_home_win": 0,
+      "baseline": 0.5971213007043626,
+      "recalibration_only": 0.6155248958766488,
+      "recalibration_plus_goalie": 0.6287573366673105
+    },
+    {
+      "game_id": "2025021034",
+      "date": "2026-03-12",
+      "y_home_win": 1,
+      "baseline": 0.5580333528216265,
+      "recalibration_only": 0.5667074343075005,
+      "recalibration_plus_goalie": 0.5715374850176298
+    },
+    {
+      "game_id": "2025021035",
+      "date": "2026-03-12",
+      "y_home_win": 0,
+      "baseline": 0.5631249650857494,
+      "recalibration_only": 0.5730970822634693,
+      "recalibration_plus_goalie": 0.576771392200102
+    },
+    {
+      "game_id": "2025021036",
+      "date": "2026-03-12",
+      "y_home_win": 0,
+      "baseline": 0.552974802974803,
+      "recalibration_only": 0.5603524541691622,
+      "recalibration_plus_goalie": 0.5535753342340323
+    },
+    {
+      "game_id": "2025021037",
+      "date": "2026-03-12",
+      "y_home_win": 0,
+      "baseline": 0.5753011198555753,
+      "recalibration_only": 0.5883447321429504,
+      "recalibration_plus_goalie": 0.5810932146181258
+    },
+    {
+      "game_id": "2025021038",
+      "date": "2026-03-12",
+      "y_home_win": 1,
+      "baseline": 0.5273560503823662,
+      "recalibration_only": 0.5280916952711431,
+      "recalibration_plus_goalie": 0.5319059846796802
+    },
+    {
+      "game_id": "2025021039",
+      "date": "2026-03-12",
+      "y_home_win": 1,
+      "baseline": 0.570119208277103,
+      "recalibration_only": 0.5818617244881903,
+      "recalibration_plus_goalie": 0.5583922994989299
+    },
+    {
+      "game_id": "2025021040",
+      "date": "2026-03-12",
+      "y_home_win": 0,
+      "baseline": 0.4912295402491481,
+      "recalibration_only": 0.4825310767189491,
+      "recalibration_plus_goalie": 0.47800846814193537
+    },
+    {
+      "game_id": "2025021041",
+      "date": "2026-03-13",
+      "y_home_win": 0,
+      "baseline": 0.5386295638909686,
+      "recalibration_only": 0.5423005819988246,
+      "recalibration_plus_goalie": 0.5518306286668255
+    },
+    {
+      "game_id": "2025021042",
+      "date": "2026-03-13",
+      "y_home_win": 1,
+      "baseline": 0.5232411543837532,
+      "recalibration_only": 0.5229023330975995,
+      "recalibration_plus_goalie": 0.5314943402414692
+    },
+    {
+      "game_id": "2025021043",
+      "date": "2026-03-14",
+      "y_home_win": 1,
+      "baseline": 0.5697323742292915,
+      "recalibration_only": 0.5813773876713516,
+      "recalibration_plus_goalie": 0.5727663314753985
+    },
+    {
+      "game_id": "2025021044",
+      "date": "2026-03-14",
+      "y_home_win": 0,
+      "baseline": 0.5888844502147209,
+      "recalibration_only": 0.6052893691437018,
+      "recalibration_plus_goalie": 0.6056610234442348
+    },
+    {
+      "game_id": "2025021045",
+      "date": "2026-03-14",
+      "y_home_win": 1,
+      "baseline": 0.5250770090088097,
+      "recalibration_only": 0.5252177033678113,
+      "recalibration_plus_goalie": 0.5208669772859388
+    },
+    {
+      "game_id": "2025021046",
+      "date": "2026-03-14",
+      "y_home_win": 0,
+      "baseline": 0.5344007773816868,
+      "recalibration_only": 0.5369724744438978,
+      "recalibration_plus_goalie": 0.538555744182858
+    },
+    {
+      "game_id": "2025021047",
+      "date": "2026-03-14",
+      "y_home_win": 1,
+      "baseline": 0.5464007900840019,
+      "recalibration_only": 0.5520847387864288,
+      "recalibration_plus_goalie": 0.5568486760584842
+    },
+    {
+      "game_id": "2025021048",
+      "date": "2026-03-14",
+      "y_home_win": 0,
+      "baseline": 0.586179742650344,
+      "recalibration_only": 0.601921519186959,
+      "recalibration_plus_goalie": 0.593389043304376
+    },
+    {
+      "game_id": "2025021049",
+      "date": "2026-03-14",
+      "y_home_win": 0,
+      "baseline": 0.5749130091277379,
+      "recalibration_only": 0.587859506370803,
+      "recalibration_plus_goalie": 0.6089324131937807
+    },
+    {
+      "game_id": "2025021050",
+      "date": "2026-03-14",
+      "y_home_win": 1,
+      "baseline": 0.5266189667717681,
+      "recalibration_only": 0.5271622367871321,
+      "recalibration_plus_goalie": 0.5302723830719105
+    },
+    {
+      "game_id": "2025021051",
+      "date": "2026-03-14",
+      "y_home_win": 1,
+      "baseline": 0.5547496451334577,
+      "recalibration_only": 0.5625828873076055,
+      "recalibration_plus_goalie": 0.5502788211603034
+    },
+    {
+      "game_id": "2025021052",
+      "date": "2026-03-14",
+      "y_home_win": 0,
+      "baseline": 0.5396059797587811,
+      "recalibration_only": 0.5435304655796238,
+      "recalibration_plus_goalie": 0.5414924201137533
+    },
+    {
+      "game_id": "2025021053",
+      "date": "2026-03-14",
+      "y_home_win": 1,
+      "baseline": 0.5720735122263136,
+      "recalibration_only": 0.5843078357008987,
+      "recalibration_plus_goalie": 0.579142921681452
+    },
+    {
+      "game_id": "2025021054",
+      "date": "2026-03-14",
+      "y_home_win": 0,
+      "baseline": 0.5481922680842773,
+      "recalibration_only": 0.554338676728737,
+      "recalibration_plus_goalie": 0.5577571858235363
+    },
+    {
+      "game_id": "2025021055",
+      "date": "2026-03-14",
+      "y_home_win": 0,
+      "baseline": 0.5006534268608703,
+      "recalibration_only": 0.4944104686118746,
+      "recalibration_plus_goalie": 0.48800738890331935
+    },
+    {
+      "game_id": "2025021056",
+      "date": "2026-03-14",
+      "y_home_win": 1,
+      "baseline": 0.5954203979271392,
+      "recalibration_only": 0.6134139421184822,
+      "recalibration_plus_goalie": 0.5854822307349328
+    },
+    {
+      "game_id": "2025021057",
+      "date": "2026-03-15",
+      "y_home_win": 1,
+      "baseline": 0.5654419420242206,
+      "recalibration_only": 0.5760022446168344,
+      "recalibration_plus_goalie": 0.5860517853199279
+    },
+    {
+      "game_id": "2025021059",
+      "date": "2026-03-15",
+      "y_home_win": 0,
+      "baseline": 0.5672837724542669,
+      "recalibration_only": 0.5783104556050362,
+      "recalibration_plus_goalie": 0.5849089567072076
+    },
+    {
+      "game_id": "2025021060",
+      "date": "2026-03-15",
+      "y_home_win": 0,
+      "baseline": 0.5344858192344981,
+      "recalibration_only": 0.5370796472347791,
+      "recalibration_plus_goalie": 0.5502849715531895
+    },
+    {
+      "game_id": "2025021061",
+      "date": "2026-03-15",
+      "y_home_win": 1,
+      "baseline": 0.5873971086670817,
+      "recalibration_only": 0.6034377610264448,
+      "recalibration_plus_goalie": 0.6024262922308204
+    },
+    {
+      "game_id": "2025021062",
+      "date": "2026-03-15",
+      "y_home_win": 1,
+      "baseline": 0.5135820854361436,
+      "recalibration_only": 0.5107180635984262,
+      "recalibration_plus_goalie": 0.5124806274725305
+    },
+    {
+      "game_id": "2025021063",
+      "date": "2026-03-16",
+      "y_home_win": 1,
+      "baseline": 0.5656019065109974,
+      "recalibration_only": 0.5762027569153034,
+      "recalibration_plus_goalie": 0.578652973920048
+    },
+    {
+      "game_id": "2025021064",
+      "date": "2026-03-16",
+      "y_home_win": 1,
+      "baseline": 0.5544149420370919,
+      "recalibration_only": 0.5621623262673313,
+      "recalibration_plus_goalie": 0.5579336966714551
+    },
+    {
+      "game_id": "2025021065",
+      "date": "2026-03-16",
+      "y_home_win": 0,
+      "baseline": 0.5104751215862326,
+      "recalibration_only": 0.5067985907799207,
+      "recalibration_plus_goalie": 0.5181785615771581
+    },
+    {
+      "game_id": "2025021066",
+      "date": "2026-03-16",
+      "y_home_win": 0,
+      "baseline": 0.5716302813077005,
+      "recalibration_only": 0.583753179860319,
+      "recalibration_plus_goalie": 0.5942992625985972
+    },
+    {
+      "game_id": "2025021067",
+      "date": "2026-03-16",
+      "y_home_win": 0,
+      "baseline": 0.5869882319393719,
+      "recalibration_only": 0.6029285734640107,
+      "recalibration_plus_goalie": 0.613026984108472
+    },
+    {
+      "game_id": "2025021068",
+      "date": "2026-03-17",
+      "y_home_win": 0,
+      "baseline": 0.5500212679452481,
+      "recalibration_only": 0.5566391383148431,
+      "recalibration_plus_goalie": 0.5520465811001138
+    },
+    {
+      "game_id": "2025021069",
+      "date": "2026-03-17",
+      "y_home_win": 1,
+      "baseline": 0.5738001852340803,
+      "recalibration_only": 0.5864679205141033,
+      "recalibration_plus_goalie": 0.5761935002534385
+    },
+    {
+      "game_id": "2025021070",
+      "date": "2026-03-17",
+      "y_home_win": 1,
+      "baseline": 0.5513333012028283,
+      "recalibration_only": 0.5582889284897399,
+      "recalibration_plus_goalie": 0.5626949804801697
+    },
+    {
+      "game_id": "2025021071",
+      "date": "2026-03-17",
+      "y_home_win": 0,
+      "baseline": 0.6005053447318149,
+      "recalibration_only": 0.6197204200999681,
+      "recalibration_plus_goalie": 0.6200831867695544
+    },
+    {
+      "game_id": "2025021072",
+      "date": "2026-03-17",
+      "y_home_win": 0,
+      "baseline": 0.4760803155272399,
+      "recalibration_only": 0.4634615338646161,
+      "recalibration_plus_goalie": 0.4650351235507658
+    },
+    {
+      "game_id": "2025021073",
+      "date": "2026-03-17",
+      "y_home_win": 1,
+      "baseline": 0.5868295011949923,
+      "recalibration_only": 0.6027308810336454,
+      "recalibration_plus_goalie": 0.5954764135620526
+    },
+    {
+      "game_id": "2025021074",
+      "date": "2026-03-17",
+      "y_home_win": 1,
+      "baseline": 0.48417208126425704,
+      "recalibration_only": 0.4736422168167122,
+      "recalibration_plus_goalie": 0.47612672062728584
+    },
+    {
+      "game_id": "2025021075",
+      "date": "2026-03-17",
+      "y_home_win": 0,
+      "baseline": 0.5654436911261774,
+      "recalibration_only": 0.5760044371242794,
+      "recalibration_plus_goalie": 0.5549240458111667
+    },
+    {
+      "game_id": "2025021076",
+      "date": "2026-03-17",
+      "y_home_win": 0,
+      "baseline": 0.5101827640866538,
+      "recalibration_only": 0.5064297849815703,
+      "recalibration_plus_goalie": 0.5076253771902169
+    },
+    {
+      "game_id": "2025021077",
+      "date": "2026-03-18",
+      "y_home_win": 0,
+      "baseline": 0.48884011249056863,
+      "recalibration_only": 0.4795207458523405,
+      "recalibration_plus_goalie": 0.48650906923655257
+    },
+    {
+      "game_id": "2025021078",
+      "date": "2026-03-18",
+      "y_home_win": 1,
+      "baseline": 0.5983801746290143,
+      "recalibration_only": 0.6170863254034027,
+      "recalibration_plus_goalie": 0.6034031441535161
+    },
+    {
+      "game_id": "2025021079",
+      "date": "2026-03-18",
+      "y_home_win": 1,
+      "baseline": 0.5533640974585963,
+      "recalibration_only": 0.5608417427666693,
+      "recalibration_plus_goalie": 0.5752933661341729
+    },
+    {
+      "game_id": "2025021080",
+      "date": "2026-03-18",
+      "y_home_win": 0,
+      "baseline": 0.5457669945117645,
+      "recalibration_only": 0.5512871801651384,
+      "recalibration_plus_goalie": 0.5592584874137486
+    },
+    {
+      "game_id": "2025021081",
+      "date": "2026-03-18",
+      "y_home_win": 1,
+      "baseline": 0.5475447371648972,
+      "recalibration_only": 0.5535240640637658,
+      "recalibration_plus_goalie": 0.5569531890978524
+    },
+    {
+      "game_id": "2025021082",
+      "date": "2026-03-18",
+      "y_home_win": 0,
+      "baseline": 0.5670887111062652,
+      "recalibration_only": 0.5780660525981899,
+      "recalibration_plus_goalie": 0.5686896244239057
+    },
+    {
+      "game_id": "2025021083",
+      "date": "2026-03-19",
+      "y_home_win": 1,
+      "baseline": 0.542462545801444,
+      "recalibration_only": 0.5471276978319154,
+      "recalibration_plus_goalie": 0.5502206817760874
+    },
+    {
+      "game_id": "2025021084",
+      "date": "2026-03-19",
+      "y_home_win": 1,
+      "baseline": 0.5500915244593079,
+      "recalibration_only": 0.556727490585628,
+      "recalibration_plus_goalie": 0.5382578880083135
+    },
+    {
+      "game_id": "2025021085",
+      "date": "2026-03-19",
+      "y_home_win": 1,
+      "baseline": 0.542462545801444,
+      "recalibration_only": 0.5471276978319154,
+      "recalibration_plus_goalie": 0.5545806433040118
+    },
+    {
+      "game_id": "2025021086",
+      "date": "2026-03-19",
+      "y_home_win": 1,
+      "baseline": 0.5436606562921054,
+      "recalibration_only": 0.5486360507938909,
+      "recalibration_plus_goalie": 0.5462510299245779
+    },
+    {
+      "game_id": "2025021087",
+      "date": "2026-03-19",
+      "y_home_win": 1,
+      "baseline": 0.5394721049243293,
+      "recalibration_only": 0.5433618468086151,
+      "recalibration_plus_goalie": 0.5367341944710892
+    },
+    {
+      "game_id": "2025021088",
+      "date": "2026-03-19",
+      "y_home_win": 0,
+      "baseline": 0.5790304312117195,
+      "recalibration_only": 0.5930043217274407,
+      "recalibration_plus_goalie": 0.593316688253241
+    },
+    {
+      "game_id": "2025021089",
+      "date": "2026-03-19",
+      "y_home_win": 0,
+      "baseline": 0.547486853768224,
+      "recalibration_only": 0.5534512409104658,
+      "recalibration_plus_goalie": 0.5636755484076705
+    },
+    {
+      "game_id": "2025021090",
+      "date": "2026-03-19",
+      "y_home_win": 0,
+      "baseline": 0.47767246486078957,
+      "recalibration_only": 0.4654636447402595,
+      "recalibration_plus_goalie": 0.4488477600896111
+    },
+    {
+      "game_id": "2025021091",
+      "date": "2026-03-19",
+      "y_home_win": 0,
+      "baseline": 0.5515335388039896,
+      "recalibration_only": 0.5585406794874332,
+      "recalibration_plus_goalie": 0.5456663374284634
+    },
+    {
+      "game_id": "2025021092",
+      "date": "2026-03-19",
+      "y_home_win": 0,
+      "baseline": 0.5132417665806648,
+      "recalibration_only": 0.5102887436722382,
+      "recalibration_plus_goalie": 0.5052815703999418
+    },
+    {
+      "game_id": "2025021093",
+      "date": "2026-03-19",
+      "y_home_win": 0,
+      "baseline": 0.560516169729136,
+      "recalibration_only": 0.5698241205425945,
+      "recalibration_plus_goalie": 0.5882337571831865
+    },
+    {
+      "game_id": "2025021094",
+      "date": "2026-03-20",
+      "y_home_win": 0,
+      "baseline": 0.5484286422665077,
+      "recalibration_only": 0.5546360208048485,
+      "recalibration_plus_goalie": 0.5596175327841943
+    },
+    {
+      "game_id": "2025021095",
+      "date": "2026-03-20",
+      "y_home_win": 1,
+      "baseline": 0.5402343379505382,
+      "recalibration_only": 0.5443218613875184,
+      "recalibration_plus_goalie": 0.5488593594730586
+    },
+    {
+      "game_id": "2025021096",
+      "date": "2026-03-20",
+      "y_home_win": 0,
+      "baseline": 0.4692973433741663,
+      "recalibration_only": 0.45493865476227574,
+      "recalibration_plus_goalie": 0.4433443100804004
+    },
+    {
+      "game_id": "2025021097",
+      "date": "2026-03-20",
+      "y_home_win": 1,
+      "baseline": 0.5357561009825239,
+      "recalibration_only": 0.538680392717668,
+      "recalibration_plus_goalie": 0.539487515950547
+    },
+    {
+      "game_id": "2025021098",
+      "date": "2026-03-20",
+      "y_home_win": 0,
+      "baseline": 0.5487431139695369,
+      "recalibration_only": 0.5550315886930947,
+      "recalibration_plus_goalie": 0.5537001286593669
+    },
+    {
+      "game_id": "2025021099",
+      "date": "2026-03-21",
+      "y_home_win": 1,
+      "baseline": 0.5210591991184144,
+      "recalibration_only": 0.5201502154275771,
+      "recalibration_plus_goalie": 0.5200455192087674
+    },
+    {
+      "game_id": "2025021100",
+      "date": "2026-03-21",
+      "y_home_win": 1,
+      "baseline": 0.5289199165463007,
+      "recalibration_only": 0.5300635722058135,
+      "recalibration_plus_goalie": 0.5300965701779025
+    },
+    {
+      "game_id": "2025021101",
+      "date": "2026-03-21",
+      "y_home_win": 1,
+      "baseline": 0.5110708438637483,
+      "recalibration_only": 0.5075500928555987,
+      "recalibration_plus_goalie": 0.5144264564581462
+    },
+    {
+      "game_id": "2025021102",
+      "date": "2026-03-21",
+      "y_home_win": 0,
+      "baseline": 0.5482747552559781,
+      "recalibration_only": 0.5544424417953292,
+      "recalibration_plus_goalie": 0.5487690338038047
+    },
+    {
+      "game_id": "2025021103",
+      "date": "2026-03-21",
+      "y_home_win": 0,
+      "baseline": 0.5176866476678098,
+      "recalibration_only": 0.515895999235545,
+      "recalibration_plus_goalie": 0.5120642785261503
+    },
+    {
+      "game_id": "2025021104",
+      "date": "2026-03-21",
+      "y_home_win": 1,
+      "baseline": 0.5648219939264715,
+      "recalibration_only": 0.5752250772377256,
+      "recalibration_plus_goalie": 0.563800157130867
+    },
+    {
+      "game_id": "2025021105",
+      "date": "2026-03-21",
+      "y_home_win": 1,
+      "baseline": 0.5444750768450739,
+      "recalibration_only": 0.5496612135581509,
+      "recalibration_plus_goalie": 0.5428329353923375
+    },
+    {
+      "game_id": "2025021106",
+      "date": "2026-03-21",
+      "y_home_win": 1,
+      "baseline": 0.545341474445952,
+      "recalibration_only": 0.5507516688696642,
+      "recalibration_plus_goalie": 0.5392583234809236
+    },
+    {
+      "game_id": "2025021107",
+      "date": "2026-03-21",
+      "y_home_win": 0,
+      "baseline": 0.4982803026667306,
+      "recalibration_only": 0.49141815305836584,
+      "recalibration_plus_goalie": 0.4965426182665455
+    },
+    {
+      "game_id": "2025021108",
+      "date": "2026-03-21",
+      "y_home_win": 0,
+      "baseline": 0.5759390748522758,
+      "recalibration_only": 0.5891421983608733,
+      "recalibration_plus_goalie": 0.5873491329757727
+    },
+    {
+      "game_id": "2025021109",
+      "date": "2026-03-21",
+      "y_home_win": 0,
+      "baseline": 0.5336500775863448,
+      "recalibration_only": 0.5360263772167843,
+      "recalibration_plus_goalie": 0.5243968710554948
+    },
+    {
+      "game_id": "2025021111",
+      "date": "2026-03-22",
+      "y_home_win": 0,
+      "baseline": 0.5270497455824704,
+      "recalibration_only": 0.5277054518107782,
+      "recalibration_plus_goalie": 0.5339825511087086
+    },
+    {
+      "game_id": "2025021112",
+      "date": "2026-03-22",
+      "y_home_win": 0,
+      "baseline": 0.5306361500560299,
+      "recalibration_only": 0.5322273118387191,
+      "recalibration_plus_goalie": 0.5432720798389925
+    },
+    {
+      "game_id": "2025021113",
+      "date": "2026-03-22",
+      "y_home_win": 0,
+      "baseline": 0.5368700011810715,
+      "recalibration_only": 0.540083899148723,
+      "recalibration_plus_goalie": 0.5485041840065106
+    },
+    {
+      "game_id": "2025021114",
+      "date": "2026-03-22",
+      "y_home_win": 1,
+      "baseline": 0.547122379046623,
+      "recalibration_only": 0.55299267940777,
+      "recalibration_plus_goalie": 0.553831408844931
+    },
+    {
+      "game_id": "2025021115",
+      "date": "2026-03-22",
+      "y_home_win": 0,
+      "baseline": 0.5690243420170844,
+      "recalibration_only": 0.5804907636424959,
+      "recalibration_plus_goalie": 0.5993550465773729
+    },
+    {
+      "game_id": "2025021116",
+      "date": "2026-03-22",
+      "y_home_win": 1,
+      "baseline": 0.5255338793824142,
+      "recalibration_only": 0.5257938717037856,
+      "recalibration_plus_goalie": 0.5443386627340588
+    },
+    {
+      "game_id": "2025021117",
+      "date": "2026-03-22",
+      "y_home_win": 1,
+      "baseline": 0.5511749050234399,
+      "recalibration_only": 0.558089776688545,
+      "recalibration_plus_goalie": 0.547527533795231
+    },
+    {
+      "game_id": "2025021118",
+      "date": "2026-03-22",
+      "y_home_win": 1,
+      "baseline": 0.5289244205397201,
+      "recalibration_only": 0.5300692509750585,
+      "recalibration_plus_goalie": 0.5316848331861316
+    },
+    {
+      "game_id": "2025021119",
+      "date": "2026-03-23",
+      "y_home_win": 0,
+      "baseline": 0.4997028862478778,
+      "recalibration_only": 0.4932118576316538,
+      "recalibration_plus_goalie": 0.5117152302137946
+    },
+    {
+      "game_id": "2025021120",
+      "date": "2026-03-24",
+      "y_home_win": 0,
+      "baseline": 0.5476672252257949,
+      "recalibration_only": 0.5536781641624232,
+      "recalibration_plus_goalie": 0.5614510191403167
+    },
+    {
+      "game_id": "2025021121",
+      "date": "2026-03-24",
+      "y_home_win": 1,
+      "baseline": 0.5429973449210547,
+      "recalibration_only": 0.5478010106641589,
+      "recalibration_plus_goalie": 0.5585716494301125
+    },
+    {
+      "game_id": "2025021122",
+      "date": "2026-03-24",
+      "y_home_win": 0,
+      "baseline": 0.539527713324115,
+      "recalibration_only": 0.543431887344025,
+      "recalibration_plus_goalie": 0.5557475511061327
+    },
+    {
+      "game_id": "2025021123",
+      "date": "2026-03-24",
+      "y_home_win": 1,
+      "baseline": 0.5641037879691871,
+      "recalibration_only": 0.574324586527968,
+      "recalibration_plus_goalie": 0.5601332854207222
+    },
+    {
+      "game_id": "2025021124",
+      "date": "2026-03-24",
+      "y_home_win": 0,
+      "baseline": 0.5742603060728831,
+      "recalibration_only": 0.5870433560643844,
+      "recalibration_plus_goalie": 0.5951556552025719
+    },
+    {
+      "game_id": "2025021125",
+      "date": "2026-03-24",
+      "y_home_win": 0,
+      "baseline": 0.536566476753852,
+      "recalibration_only": 0.5397014772065051,
+      "recalibration_plus_goalie": 0.5389878961499575
+    },
+    {
+      "game_id": "2025021126",
+      "date": "2026-03-24",
+      "y_home_win": 0,
+      "baseline": 0.4963851739437436,
+      "recalibration_only": 0.4890289182478737,
+      "recalibration_plus_goalie": 0.4792057790351942
+    },
+    {
+      "game_id": "2025021127",
+      "date": "2026-03-24",
+      "y_home_win": 1,
+      "baseline": 0.5435575709135114,
+      "recalibration_only": 0.5485062821437644,
+      "recalibration_plus_goalie": 0.5494789277557144
+    },
+    {
+      "game_id": "2025021128",
+      "date": "2026-03-24",
+      "y_home_win": 1,
+      "baseline": 0.5238581691600259,
+      "recalibration_only": 0.5236805322063312,
+      "recalibration_plus_goalie": 0.5214019116128243
+    },
+    {
+      "game_id": "2025021129",
+      "date": "2026-03-24",
+      "y_home_win": 1,
+      "baseline": 0.5719362516734663,
+      "recalibration_only": 0.5841360762052624,
+      "recalibration_plus_goalie": 0.5803594861505073
+    },
+    {
+      "game_id": "2025021130",
+      "date": "2026-03-24",
+      "y_home_win": 0,
+      "baseline": 0.5526436471718585,
+      "recalibration_only": 0.5599362096586564,
+      "recalibration_plus_goalie": 0.5566187218746079
+    },
+    {
+      "game_id": "2025021131",
+      "date": "2026-03-24",
+      "y_home_win": 1,
+      "baseline": 0.5537330390778599,
+      "recalibration_only": 0.5613054174301949,
+      "recalibration_plus_goalie": 0.5759191739960107
+    },
+    {
+      "game_id": "2025021132",
+      "date": "2026-03-24",
+      "y_home_win": 0,
+      "baseline": 0.5188210713796411,
+      "recalibration_only": 0.517327029825971,
+      "recalibration_plus_goalie": 0.5280122082752473
+    },
+    {
+      "game_id": "2025021133",
+      "date": "2026-03-24",
+      "y_home_win": 1,
+      "baseline": 0.5459174896819425,
+      "recalibration_only": 0.551476568018543,
+      "recalibration_plus_goalie": 0.5516988605686277
+    },
+    {
+      "game_id": "2025021134",
+      "date": "2026-03-24",
+      "y_home_win": 0,
+      "baseline": 0.5043839433560638,
+      "recalibration_only": 0.49911519887435146,
+      "recalibration_plus_goalie": 0.49152199933981294
+    },
+    {
+      "game_id": "2025021135",
+      "date": "2026-03-25",
+      "y_home_win": 0,
+      "baseline": 0.5832173729706935,
+      "recalibration_only": 0.598229185405148,
+      "recalibration_plus_goalie": 0.6064413138189747
+    },
+    {
+      "game_id": "2025021136",
+      "date": "2026-03-25",
+      "y_home_win": 1,
+      "baseline": 0.537333498800364,
+      "recalibration_only": 0.540667852679717,
+      "recalibration_plus_goalie": 0.5364684390401144
+    },
+    {
+      "game_id": "2025021137",
+      "date": "2026-03-26",
+      "y_home_win": 1,
+      "baseline": 0.5598466138047575,
+      "recalibration_only": 0.5689837918538823,
+      "recalibration_plus_goalie": 0.5600510228914946
+    },
+    {
+      "game_id": "2025021138",
+      "date": "2026-03-26",
+      "y_home_win": 0,
+      "baseline": 0.5684624975392086,
+      "recalibration_only": 0.5797870828054424,
+      "recalibration_plus_goalie": 0.5770247451016355
+    },
+    {
+      "game_id": "2025021139",
+      "date": "2026-03-26",
+      "y_home_win": 0,
+      "baseline": 0.5850868502740902,
+      "recalibration_only": 0.6005597609386271,
+      "recalibration_plus_goalie": 0.6005198212291868
+    },
+    {
+      "game_id": "2025021140",
+      "date": "2026-03-26",
+      "y_home_win": 0,
+      "baseline": 0.5281789638932496,
+      "recalibration_only": 0.5291293322637908,
+      "recalibration_plus_goalie": 0.5202550131085389
+    },
+    {
+      "game_id": "2025021141",
+      "date": "2026-03-26",
+      "y_home_win": 1,
+      "baseline": 0.5090059249506254,
+      "recalibration_only": 0.5049452348612494,
+      "recalibration_plus_goalie": 0.5139772429685486
+    },
+    {
+      "game_id": "2025021142",
+      "date": "2026-03-26",
+      "y_home_win": 1,
+      "baseline": 0.5570251177394034,
+      "recalibration_only": 0.5654413214647631,
+      "recalibration_plus_goalie": 0.5391021432301443
+    },
+    {
+      "game_id": "2025021143",
+      "date": "2026-03-26",
+      "y_home_win": 1,
+      "baseline": 0.5762558869701727,
+      "recalibration_only": 0.5895381682868287,
+      "recalibration_plus_goalie": 0.6005104557987185
+    },
+    {
+      "game_id": "2025021144",
+      "date": "2026-03-26",
+      "y_home_win": 0,
+      "baseline": 0.5169068266284149,
+      "recalibration_only": 0.5149122675416796,
+      "recalibration_plus_goalie": 0.5249665420972265
+    },
+    {
+      "game_id": "2025021145",
+      "date": "2026-03-26",
+      "y_home_win": 0,
+      "baseline": 0.5231486880466473,
+      "recalibration_only": 0.5227857096392309,
+      "recalibration_plus_goalie": 0.5197042073516467
+    },
+    {
+      "game_id": "2025021146",
+      "date": "2026-03-26",
+      "y_home_win": 0,
+      "baseline": 0.517015552201588,
+      "recalibration_only": 0.5150494238677659,
+      "recalibration_plus_goalie": 0.5044477270582028
+    },
+    {
+      "game_id": "2025021147",
+      "date": "2026-03-26",
+      "y_home_win": 0,
+      "baseline": 0.5598466138047575,
+      "recalibration_only": 0.5689837918538823,
+      "recalibration_plus_goalie": 0.5801270947880226
+    },
+    {
+      "game_id": "2025021148",
+      "date": "2026-03-26",
+      "y_home_win": 0,
+      "baseline": 0.5407383335499805,
+      "recalibration_only": 0.5449565814787829,
+      "recalibration_plus_goalie": 0.5325046442654419
+    },
+    {
+      "game_id": "2025021149",
+      "date": "2026-03-26",
+      "y_home_win": 0,
+      "baseline": 0.4898475846034616,
+      "recalibration_only": 0.4807899156628418,
+      "recalibration_plus_goalie": 0.4717852446351499
+    },
+    {
+      "game_id": "2025021150",
+      "date": "2026-03-27",
+      "y_home_win": 0,
+      "baseline": 0.5531845674963822,
+      "recalibration_only": 0.5606161032229867,
+      "recalibration_plus_goalie": 0.563159197458091
+    },
+    {
+      "game_id": "2025021152",
+      "date": "2026-03-28",
+      "y_home_win": 1,
+      "baseline": 0.5641796654764142,
+      "recalibration_only": 0.5744197295812249,
+      "recalibration_plus_goalie": 0.5883539926265277
+    },
+    {
+      "game_id": "2025021153",
+      "date": "2026-03-28",
+      "y_home_win": 1,
+      "baseline": 0.5309297912713472,
+      "recalibration_only": 0.5325974906400008,
+      "recalibration_plus_goalie": 0.5417774669920633
+    },
+    {
+      "game_id": "2025021154",
+      "date": "2026-03-28",
+      "y_home_win": 1,
+      "baseline": 0.559198201573623,
+      "recalibration_only": 0.5681698814216611,
+      "recalibration_plus_goalie": 0.5656020955964596
+    },
+    {
+      "game_id": "2025021155",
+      "date": "2026-03-28",
+      "y_home_win": 1,
+      "baseline": 0.524166354439865,
+      "recalibration_only": 0.5240692169344324,
+      "recalibration_plus_goalie": 0.5235173074669763
+    },
+    {
+      "game_id": "2025021156",
+      "date": "2026-03-28",
+      "y_home_win": 0,
+      "baseline": 0.505058074185088,
+      "recalibration_only": 0.4999654684533419,
+      "recalibration_plus_goalie": 0.49564986258829613
+    },
+    {
+      "game_id": "2025021157",
+      "date": "2026-03-28",
+      "y_home_win": 1,
+      "baseline": 0.5655676283252153,
+      "recalibration_only": 0.5761597905616735,
+      "recalibration_plus_goalie": 0.5810430494265788
+    },
+    {
+      "game_id": "2025021158",
+      "date": "2026-03-28",
+      "y_home_win": 0,
+      "baseline": 0.5961285472655515,
+      "recalibration_only": 0.614292985204898,
+      "recalibration_plus_goalie": 0.6066256684363036
+    },
+    {
+      "game_id": "2025021159",
+      "date": "2026-03-28",
+      "y_home_win": 1,
+      "baseline": 0.5609847772975004,
+      "recalibration_only": 0.5704121735053255,
+      "recalibration_plus_goalie": 0.5694067431881784
+    },
+    {
+      "game_id": "2025021160",
+      "date": "2026-03-28",
+      "y_home_win": 1,
+      "baseline": 0.529035895508363,
+      "recalibration_only": 0.5302098013504619,
+      "recalibration_plus_goalie": 0.511816809143627
+    },
+    {
+      "game_id": "2025021161",
+      "date": "2026-03-28",
+      "y_home_win": 0,
+      "baseline": 0.5322307836872767,
+      "recalibration_only": 0.5342374777392215,
+      "recalibration_plus_goalie": 0.532189444844417
+    },
+    {
+      "game_id": "2025021162",
+      "date": "2026-03-28",
+      "y_home_win": 0,
+      "baseline": 0.5567362428842504,
+      "recalibration_only": 0.5650785117484106,
+      "recalibration_plus_goalie": 0.568126698885449
+    },
+    {
+      "game_id": "2025021163",
+      "date": "2026-03-28",
+      "y_home_win": 0,
+      "baseline": 0.5514001127607592,
+      "recalibration_only": 0.5583729290868722,
+      "recalibration_plus_goalie": 0.5577163247431263
+    },
+    {
+      "game_id": "2025021164",
+      "date": "2026-03-28",
+      "y_home_win": 0,
+      "baseline": 0.5354256718661905,
+      "recalibration_only": 0.5382640224811944,
+      "recalibration_plus_goalie": 0.53926397800179
+    },
+    {
+      "game_id": "2025021165",
+      "date": "2026-03-28",
+      "y_home_win": 1,
+      "baseline": 0.543552036199095,
+      "recalibration_only": 0.5484993147350576,
+      "recalibration_plus_goalie": 0.5517535779251089
+    },
+    {
+      "game_id": "2025021166",
+      "date": "2026-03-28",
+      "y_home_win": 0,
+      "baseline": 0.5386205600451043,
+      "recalibration_only": 0.5422892401748276,
+      "recalibration_plus_goalie": 0.5163161648110255
+    },
+    {
+      "game_id": "2025021167",
+      "date": "2026-03-29",
+      "y_home_win": 1,
+      "baseline": 0.49865591397849457,
+      "recalibration_only": 0.49189173580527407,
+      "recalibration_plus_goalie": 0.5129664339344037
+    },
+    {
+      "game_id": "2025021168",
+      "date": "2026-03-29",
+      "y_home_win": 1,
+      "baseline": 0.6076302729528535,
+      "recalibration_only": 0.6285340752434267,
+      "recalibration_plus_goalie": 0.6159026227669153
+    },
+    {
+      "game_id": "2025021169",
+      "date": "2026-03-29",
+      "y_home_win": 0,
+      "baseline": 0.5846517361824533,
+      "recalibration_only": 0.6000174601771183,
+      "recalibration_plus_goalie": 0.5828698566444459
+    },
+    {
+      "game_id": "2025021170",
+      "date": "2026-03-29",
+      "y_home_win": 0,
+      "baseline": 0.5801298567453365,
+      "recalibration_only": 0.594376972760184,
+      "recalibration_plus_goalie": 0.5926149508727128
+    },
+    {
+      "game_id": "2025021171",
+      "date": "2026-03-29",
+      "y_home_win": 1,
+      "baseline": 0.5655434559276762,
+      "recalibration_only": 0.5761294911952055,
+      "recalibration_plus_goalie": 0.5735337911168323
+    },
+    {
+      "game_id": "2025021172",
+      "date": "2026-03-29",
+      "y_home_win": 1,
+      "baseline": 0.4970814132104454,
+      "recalibration_only": 0.48990664311937304,
+      "recalibration_plus_goalie": 0.4697898788670971
+    },
+    {
+      "game_id": "2025021173",
+      "date": "2026-03-30",
+      "y_home_win": 0,
+      "baseline": 0.5483358565153357,
+      "recalibration_only": 0.554519303459941,
+      "recalibration_plus_goalie": 0.5664673198028879
+    },
+    {
+      "game_id": "2025021174",
+      "date": "2026-03-30",
+      "y_home_win": 1,
+      "baseline": 0.5885548816964745,
+      "recalibration_only": 0.6048791710340176,
+      "recalibration_plus_goalie": 0.6115771199430582
+    },
+    {
+      "game_id": "2025021175",
+      "date": "2026-03-30",
+      "y_home_win": 1,
+      "baseline": 0.5515307446942495,
+      "recalibration_only": 0.5585371666236464,
+      "recalibration_plus_goalie": 0.552250030783647
+    },
+    {
+      "game_id": "2025021176",
+      "date": "2026-03-30",
+      "y_home_win": 0,
+      "baseline": 0.5419460801575082,
+      "recalibration_only": 0.5464774201119784,
+      "recalibration_plus_goalie": 0.5468221345129917
+    },
+    {
+      "game_id": "2025021177",
+      "date": "2026-03-30",
+      "y_home_win": 1,
+      "baseline": 0.5100614890331192,
+      "recalibration_only": 0.5062767983402983,
+      "recalibration_plus_goalie": 0.494465914631993
+    },
+    {
+      "game_id": "2025021178",
+      "date": "2026-03-31",
+      "y_home_win": 1,
+      "baseline": 0.5303394105572513,
+      "recalibration_only": 0.5318532183123003,
+      "recalibration_plus_goalie": 0.5277680884612064
+    },
+    {
+      "game_id": "2025021179",
+      "date": "2026-03-31",
+      "y_home_win": 1,
+      "baseline": 0.5523519891736036,
+      "recalibration_only": 0.5595695905026682,
+      "recalibration_plus_goalie": 0.5590931402800341
+    },
+    {
+      "game_id": "2025021180",
+      "date": "2026-03-31",
+      "y_home_win": 0,
+      "baseline": 0.5689424603732673,
+      "recalibration_only": 0.5803882176590269,
+      "recalibration_plus_goalie": 0.5854237623404771
+    },
+    {
+      "game_id": "2025021181",
+      "date": "2026-03-31",
+      "y_home_win": 1,
+      "baseline": 0.547785276205697,
+      "recalibration_only": 0.5538266791583123,
+      "recalibration_plus_goalie": 0.5582575504089788
+    },
+    {
+      "game_id": "2025021182",
+      "date": "2026-03-31",
+      "y_home_win": 1,
+      "baseline": 0.48459661129271725,
+      "recalibration_only": 0.4741766854394862,
+      "recalibration_plus_goalie": 0.49324129780042764
+    },
+    {
+      "game_id": "2025021183",
+      "date": "2026-03-31",
+      "y_home_win": 1,
+      "baseline": 0.5258664525625585,
+      "recalibration_only": 0.5262132771131859,
+      "recalibration_plus_goalie": 0.5174345558705041
+    },
+    {
+      "game_id": "2025021184",
+      "date": "2026-03-31",
+      "y_home_win": 1,
+      "baseline": 0.5653415587253352,
+      "recalibration_only": 0.5758764120949155,
+      "recalibration_plus_goalie": 0.5777594724312749
+    },
+    {
+      "game_id": "2025021185",
+      "date": "2026-03-31",
+      "y_home_win": 0,
+      "baseline": 0.5498341801184903,
+      "recalibration_only": 0.5564038576132028,
+      "recalibration_plus_goalie": 0.5637701585791032
+    },
+    {
+      "game_id": "2025021186",
+      "date": "2026-03-31",
+      "y_home_win": 0,
+      "baseline": 0.48449818708372505,
+      "recalibration_only": 0.4740527699709029,
+      "recalibration_plus_goalie": 0.48240356491173797
+    },
+    {
+      "game_id": "2025021187",
+      "date": "2026-03-31",
+      "y_home_win": 1,
+      "baseline": 0.5593883202458788,
+      "recalibration_only": 0.5684085371943217,
+      "recalibration_plus_goalie": 0.5575070198377796
+    },
+    {
+      "game_id": "2025021188",
+      "date": "2026-04-01",
+      "y_home_win": 0,
+      "baseline": 0.5710840264533165,
+      "recalibration_only": 0.583069506782738,
+      "recalibration_plus_goalie": 0.5963874073435584
+    },
+    {
+      "game_id": "2025021189",
+      "date": "2026-04-01",
+      "y_home_win": 1,
+      "baseline": 0.5487198092009202,
+      "recalibration_only": 0.5550022747841274,
+      "recalibration_plus_goalie": 0.5713956710032987
+    },
+    {
+      "game_id": "2025021190",
+      "date": "2026-04-01",
+      "y_home_win": 1,
+      "baseline": 0.5198390485075811,
+      "recalibration_only": 0.5186111343552015,
+      "recalibration_plus_goalie": 0.5158967539466524
+    },
+    {
+      "game_id": "2025021191",
+      "date": "2026-04-02",
+      "y_home_win": 1,
+      "baseline": 0.5566024297429845,
+      "recalibration_only": 0.5649104430618941,
+      "recalibration_plus_goalie": 0.5500621442405945
+    },
+    {
+      "game_id": "2025021192",
+      "date": "2026-04-02",
+      "y_home_win": 1,
+      "baseline": 0.5815606422129656,
+      "recalibration_only": 0.5961626093441148,
+      "recalibration_plus_goalie": 0.6062076194345494
+    },
+    {
+      "game_id": "2025021193",
+      "date": "2026-04-02",
+      "y_home_win": 1,
+      "baseline": 0.5783960852509402,
+      "recalibration_only": 0.592212114161374,
+      "recalibration_plus_goalie": 0.57358581530185
+    },
+    {
+      "game_id": "2025021194",
+      "date": "2026-04-02",
+      "y_home_win": 1,
+      "baseline": 0.5152011558576342,
+      "recalibration_only": 0.5127605545220368,
+      "recalibration_plus_goalie": 0.5109415630390058
+    },
+    {
+      "game_id": "2025021195",
+      "date": "2026-04-02",
+      "y_home_win": 0,
+      "baseline": 0.49928216120030733,
+      "recalibration_only": 0.4926813562671536,
+      "recalibration_plus_goalie": 0.5004372665623982
+    },
+    {
+      "game_id": "2025021196",
+      "date": "2026-04-02",
+      "y_home_win": 0,
+      "baseline": 0.5245986168965099,
+      "recalibration_only": 0.5246143783266893,
+      "recalibration_plus_goalie": 0.5060536312380758
+    },
+    {
+      "game_id": "2025021197",
+      "date": "2026-04-02",
+      "y_home_win": 1,
+      "baseline": 0.5986535108495178,
+      "recalibration_only": 0.6174252486916098,
+      "recalibration_plus_goalie": 0.6054420047800244
+    },
+    {
+      "game_id": "2025021198",
+      "date": "2026-04-02",
+      "y_home_win": 1,
+      "baseline": 0.5534177163671883,
+      "recalibration_only": 0.5609091314048001,
+      "recalibration_plus_goalie": 0.5598566887585107
+    },
+    {
+      "game_id": "2025021199",
+      "date": "2026-04-02",
+      "y_home_win": 1,
+      "baseline": 0.5404214017066364,
+      "recalibration_only": 0.5445574497898598,
+      "recalibration_plus_goalie": 0.5577659315030453
+    },
+    {
+      "game_id": "2025021200",
+      "date": "2026-04-02",
+      "y_home_win": 1,
+      "baseline": 0.5891897884520414,
+      "recalibration_only": 0.6056693652368512,
+      "recalibration_plus_goalie": 0.5900630410966683
+    },
+    {
+      "game_id": "2025021201",
+      "date": "2026-04-02",
+      "y_home_win": 1,
+      "baseline": 0.575231528288915,
+      "recalibration_only": 0.5882577311058926,
+      "recalibration_plus_goalie": 0.5716707751491669
+    },
+    {
+      "game_id": "2025021202",
+      "date": "2026-04-02",
+      "y_home_win": 1,
+      "baseline": 0.49769258075967343,
+      "recalibration_only": 0.4906771606065515,
+      "recalibration_plus_goalie": 0.4935622750182953
+    },
+    {
+      "game_id": "2025021203",
+      "date": "2026-04-02",
+      "y_home_win": 0,
+      "baseline": 0.5119403890484087,
+      "recalibration_only": 0.508647031419633,
+      "recalibration_plus_goalie": 0.5117252938020339
+    },
+    {
+      "game_id": "2025021204",
+      "date": "2026-04-02",
+      "y_home_win": 0,
+      "baseline": 0.5788954233735577,
+      "recalibration_only": 0.5928357293697526,
+      "recalibration_plus_goalie": 0.5913775340692267
+    },
+    {
+      "game_id": "2025021205",
+      "date": "2026-04-03",
+      "y_home_win": 0,
+      "baseline": 0.5457972439703972,
+      "recalibration_only": 0.5513252473847725,
+      "recalibration_plus_goalie": 0.5545557143012938
+    },
+    {
+      "game_id": "2025021206",
+      "date": "2026-04-03",
+      "y_home_win": 0,
+      "baseline": 0.5584956566688098,
+      "recalibration_only": 0.5672878923347091,
+      "recalibration_plus_goalie": 0.5566771175528009
+    },
+    {
+      "game_id": "2025021207",
+      "date": "2026-04-04",
+      "y_home_win": 1,
+      "baseline": 0.5026954177897573,
+      "recalibration_only": 0.49698560544093084,
+      "recalibration_plus_goalie": 0.4903638140132848
+    },
+    {
+      "game_id": "2025021208",
+      "date": "2026-04-04",
+      "y_home_win": 0,
+      "baseline": 0.5282074613284804,
+      "recalibration_only": 0.5291652645262436,
+      "recalibration_plus_goalie": 0.5156163232394555
+    },
+    {
+      "game_id": "2025021209",
+      "date": "2026-04-04",
+      "y_home_win": 0,
+      "baseline": 0.5311934900542494,
+      "recalibration_only": 0.5329299149436136,
+      "recalibration_plus_goalie": 0.5291810806836085
+    },
+    {
+      "game_id": "2025021210",
+      "date": "2026-04-04",
+      "y_home_win": 1,
+      "baseline": 0.5989184317260027,
+      "recalibration_only": 0.6177537009934787,
+      "recalibration_plus_goalie": 0.6162168986577523
+    },
+    {
+      "game_id": "2025021211",
+      "date": "2026-04-04",
+      "y_home_win": 1,
+      "baseline": 0.5280289330922242,
+      "recalibration_only": 0.5289401580790327,
+      "recalibration_plus_goalie": 0.5355645299028619
+    },
+    {
+      "game_id": "2025021212",
+      "date": "2026-04-04",
+      "y_home_win": 0,
+      "baseline": 0.5232086525461919,
+      "recalibration_only": 0.5228613401081549,
+      "recalibration_plus_goalie": 0.5255985248566736
+    },
+    {
+      "game_id": "2025021213",
+      "date": "2026-04-04",
+      "y_home_win": 1,
+      "baseline": 0.5638154948499775,
+      "recalibration_only": 0.5739630790052628,
+      "recalibration_plus_goalie": 0.5724188829496296
+    },
+    {
+      "game_id": "2025021214",
+      "date": "2026-04-04",
+      "y_home_win": 1,
+      "baseline": 0.5883400089007564,
+      "recalibration_only": 0.6046117028820626,
+      "recalibration_plus_goalie": 0.5950173315808571
+    },
+    {
+      "game_id": "2025021215",
+      "date": "2026-04-04",
+      "y_home_win": 0,
+      "baseline": 0.5389815232086524,
+      "recalibration_only": 0.5427439230955381,
+      "recalibration_plus_goalie": 0.549341068743966
+    },
+    {
+      "game_id": "2025021216",
+      "date": "2026-04-04",
+      "y_home_win": 0,
+      "baseline": 0.47604120017913115,
+      "recalibration_only": 0.4634123537603137,
+      "recalibration_plus_goalie": 0.4602839042628071
+    },
+    {
+      "game_id": "2025021217",
+      "date": "2026-04-04",
+      "y_home_win": 1,
+      "baseline": 0.5326723749436683,
+      "recalibration_only": 0.5347940907667118,
+      "recalibration_plus_goalie": 0.5303608989272866
+    },
+    {
+      "game_id": "2025021218",
+      "date": "2026-04-04",
+      "y_home_win": 0,
+      "baseline": 0.5484452456061288,
+      "recalibration_only": 0.5546569063414553,
+      "recalibration_plus_goalie": 0.5694443301372921
+    },
+    {
+      "game_id": "2025021219",
+      "date": "2026-04-04",
+      "y_home_win": 0,
+      "baseline": 0.5723327305605785,
+      "recalibration_only": 0.5846321877293224,
+      "recalibration_plus_goalie": 0.5707370099528991
+    },
+    {
+      "game_id": "2025021220",
+      "date": "2026-04-04",
+      "y_home_win": 0,
+      "baseline": 0.5438517179023508,
+      "recalibration_only": 0.548876562954059,
+      "recalibration_plus_goalie": 0.5446527751705522
+    },
+    {
+      "game_id": "2025021221",
+      "date": "2026-04-04",
+      "y_home_win": 0,
+      "baseline": 0.559299191374663,
+      "recalibration_only": 0.5682966550444813,
+      "recalibration_plus_goalie": 0.5840185947723477
+    },
+    {
+      "game_id": "2025021222",
+      "date": "2026-04-05",
+      "y_home_win": 0,
+      "baseline": 0.511778143959254,
+      "recalibration_only": 0.5084423571576376,
+      "recalibration_plus_goalie": 0.4998253591994099
+    },
+    {
+      "game_id": "2025021223",
+      "date": "2026-04-05",
+      "y_home_win": 1,
+      "baseline": 0.5305719921104537,
+      "recalibration_only": 0.5321464299558033,
+      "recalibration_plus_goalie": 0.5297097884688752
+    },
+    {
+      "game_id": "2025021224",
+      "date": "2026-04-05",
+      "y_home_win": 1,
+      "baseline": 0.5494399166387556,
+      "recalibration_only": 0.5559080091027229,
+      "recalibration_plus_goalie": 0.5641012315446448
+    },
+    {
+      "game_id": "2025021225",
+      "date": "2026-04-05",
+      "y_home_win": 1,
+      "baseline": 0.5483234714003945,
+      "recalibration_only": 0.5545037238018545,
+      "recalibration_plus_goalie": 0.5623311146224103
+    },
+    {
+      "game_id": "2025021226",
+      "date": "2026-04-05",
+      "y_home_win": 0,
+      "baseline": 0.5322457207921901,
+      "recalibration_only": 0.5342563058848241,
+      "recalibration_plus_goalie": 0.5467132957355282
+    },
+    {
+      "game_id": "2025021227",
+      "date": "2026-04-05",
+      "y_home_win": 1,
+      "baseline": 0.4928361430538499,
+      "recalibration_only": 0.48455559638046053,
+      "recalibration_plus_goalie": 0.5023042377903006
+    },
+    {
+      "game_id": "2025021228",
+      "date": "2026-04-05",
+      "y_home_win": 0,
+      "baseline": 0.5732551845145876,
+      "recalibration_only": 0.5857862339208106,
+      "recalibration_plus_goalie": 0.5780364735224806
+    },
+    {
+      "game_id": "2025021229",
+      "date": "2026-04-06",
+      "y_home_win": 1,
+      "baseline": 0.5385957553480084,
+      "recalibration_only": 0.5422579945186914,
+      "recalibration_plus_goalie": 0.5411264254486242
+    },
+    {
+      "game_id": "2025021230",
+      "date": "2026-04-06",
+      "y_home_win": 1,
+      "baseline": 0.5701414966729296,
+      "recalibration_only": 0.5818896292064716,
+      "recalibration_plus_goalie": 0.5732658908801981
+    },
+    {
+      "game_id": "2025021231",
+      "date": "2026-04-06",
+      "y_home_win": 1,
+      "baseline": 0.5460464201416209,
+      "recalibration_only": 0.5516388146876142,
+      "recalibration_plus_goalie": 0.5438918399065618
+    },
+    {
+      "game_id": "2025021232",
+      "date": "2026-04-06",
+      "y_home_win": 1,
+      "baseline": 0.5746379070607505,
+      "recalibration_only": 0.5875155333385267,
+      "recalibration_plus_goalie": 0.591186859422108
+    },
+    {
+      "game_id": "2025021233",
+      "date": "2026-04-07",
+      "y_home_win": 1,
+      "baseline": 0.5498426437820826,
+      "recalibration_only": 0.5564145016375077,
+      "recalibration_plus_goalie": 0.5625256793371709
+    },
+    {
+      "game_id": "2025021234",
+      "date": "2026-04-07",
+      "y_home_win": 1,
+      "baseline": 0.5404086815179316,
+      "recalibration_only": 0.5445414301401966,
+      "recalibration_plus_goalie": 0.5446325817335159
+    },
+    {
+      "game_id": "2025021235",
+      "date": "2026-04-07",
+      "y_home_win": 0,
+      "baseline": 0.5529872978701329,
+      "recalibration_only": 0.560368159056989,
+      "recalibration_plus_goalie": 0.5564960339755398
+    },
+    {
+      "game_id": "2025021236",
+      "date": "2026-04-07",
+      "y_home_win": 0,
+      "baseline": 0.5372640274298813,
+      "recalibration_only": 0.5405803286885071,
+      "recalibration_plus_goalie": 0.5290161624758586
+    },
+    {
+      "game_id": "2025021237",
+      "date": "2026-04-07",
+      "y_home_win": 1,
+      "baseline": 0.6163550178277329,
+      "recalibration_only": 0.639287486021868,
+      "recalibration_plus_goalie": 0.6278521882553874
+    },
+    {
+      "game_id": "2025021238",
+      "date": "2026-04-07",
+      "y_home_win": 0,
+      "baseline": 0.5011039770432248,
+      "recalibration_only": 0.4949786274042822,
+      "recalibration_plus_goalie": 0.493154491372181
+    },
+    {
+      "game_id": "2025021239",
+      "date": "2026-04-07",
+      "y_home_win": 1,
+      "baseline": 0.5907231469267367,
+      "recalibration_only": 0.6075770008032251,
+      "recalibration_plus_goalie": 0.5973857322008332
+    },
+    {
+      "game_id": "2025021240",
+      "date": "2026-04-07",
+      "y_home_win": 1,
+      "baseline": 0.5543885916072171,
+      "recalibration_only": 0.5621292152691103,
+      "recalibration_plus_goalie": 0.57045845145166
+    },
+    {
+      "game_id": "2025021241",
+      "date": "2026-04-07",
+      "y_home_win": 1,
+      "baseline": 0.5121834200085514,
+      "recalibration_only": 0.508953618601358,
+      "recalibration_plus_goalie": 0.5183481422617995
+    },
+    {
+      "game_id": "2025021242",
+      "date": "2026-04-07",
+      "y_home_win": 0,
+      "baseline": 0.4791534818893488,
+      "recalibration_only": 0.4673264954562124,
+      "recalibration_plus_goalie": 0.4711894716223647
+    },
+    {
+      "game_id": "2025021243",
+      "date": "2026-04-07",
+      "y_home_win": 0,
+      "baseline": 0.5794669615131732,
+      "recalibration_only": 0.5935493942266657,
+      "recalibration_plus_goalie": 0.5863985258074295
+    },
+    {
+      "game_id": "2025021244",
+      "date": "2026-04-08",
+      "y_home_win": 0,
+      "baseline": 0.5135569452617396,
+      "recalibration_only": 0.5106863486948644,
+      "recalibration_plus_goalie": 0.5134207039907513
+    },
+    {
+      "game_id": "2025021245",
+      "date": "2026-04-08",
+      "y_home_win": 0,
+      "baseline": 0.5372697466321333,
+      "recalibration_only": 0.5405875340911382,
+      "recalibration_plus_goalie": 0.5305339097825006
+    },
+    {
+      "game_id": "2025021246",
+      "date": "2026-04-08",
+      "y_home_win": 0,
+      "baseline": 0.49641181071568247,
+      "recalibration_only": 0.4890624974025424,
+      "recalibration_plus_goalie": 0.49197661160515316
+    },
+    {
+      "game_id": "2025021247",
+      "date": "2026-04-09",
+      "y_home_win": 1,
+      "baseline": 0.56796875,
+      "recalibration_only": 0.5791686041982257,
+      "recalibration_plus_goalie": 0.569216009099019
+    },
+    {
+      "game_id": "2025021248",
+      "date": "2026-04-09",
+      "y_home_win": 1,
+      "baseline": 0.53671875,
+      "recalibration_only": 0.53989333363328,
+      "recalibration_plus_goalie": 0.5353550514412405
+    },
+    {
+      "game_id": "2025021249",
+      "date": "2026-04-09",
+      "y_home_win": 1,
+      "baseline": 0.55859375,
+      "recalibration_only": 0.5674110486947713,
+      "recalibration_plus_goalie": 0.5716522915339365
+    },
+    {
+      "game_id": "2025021250",
+      "date": "2026-04-09",
+      "y_home_win": 1,
+      "baseline": 0.54296875,
+      "recalibration_only": 0.5477650108803483,
+      "recalibration_plus_goalie": 0.5462449215886709
+    },
+    {
+      "game_id": "2025021251",
+      "date": "2026-04-09",
+      "y_home_win": 0,
+      "baseline": 0.5384012539184952,
+      "recalibration_only": 0.5420129843331806,
+      "recalibration_plus_goalie": 0.5518974510511244
+    },
+    {
+      "game_id": "2025021253",
+      "date": "2026-04-09",
+      "y_home_win": 0,
+      "baseline": 0.52437106918239,
+      "recalibration_only": 0.5243274008578405,
+      "recalibration_plus_goalie": 0.5114902440571224
+    },
+    {
+      "game_id": "2025021254",
+      "date": "2026-04-09",
+      "y_home_win": 1,
+      "baseline": 0.5384012539184952,
+      "recalibration_only": 0.5420129843331806,
+      "recalibration_plus_goalie": 0.5365740997641418
+    },
+    {
+      "game_id": "2025021255",
+      "date": "2026-04-09",
+      "y_home_win": 0,
+      "baseline": 0.49287974683544306,
+      "recalibration_only": 0.48461054715560814,
+      "recalibration_plus_goalie": 0.5089581505309132
+    },
+    {
+      "game_id": "2025021256",
+      "date": "2026-04-09",
+      "y_home_win": 1,
+      "baseline": 0.5885579937304075,
+      "recalibration_only": 0.6048830446618496,
+      "recalibration_plus_goalie": 0.6041373874159207
+    },
+    {
+      "game_id": "2025021257",
+      "date": "2026-04-09",
+      "y_home_win": 1,
+      "baseline": 0.5603448275862069,
+      "recalibration_only": 0.5696090888464154,
+      "recalibration_plus_goalie": 0.5693827199535515
+    },
+    {
+      "game_id": "2025021258",
+      "date": "2026-04-09",
+      "y_home_win": 1,
+      "baseline": 0.5809748427672956,
+      "recalibration_only": 0.595431624752964,
+      "recalibration_plus_goalie": 0.5944914375735155
+    },
+    {
+      "game_id": "2025021259",
+      "date": "2026-04-09",
+      "y_home_win": 1,
+      "baseline": 0.5101880877742947,
+      "recalibration_only": 0.5064365007399451,
+      "recalibration_plus_goalie": 0.5246759180942872
+    },
+    {
+      "game_id": "2025021260",
+      "date": "2026-04-09",
+      "y_home_win": 1,
+      "baseline": 0.5463836477987422,
+      "recalibration_only": 0.5520631682259567,
+      "recalibration_plus_goalie": 0.5645273608650961
+    },
+    {
+      "game_id": "2025021261",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5450527319686198,
+      "recalibration_only": 0.5503882707673058,
+      "recalibration_plus_goalie": 0.5468780604299138
+    },
+    {
+      "game_id": "2025021262",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5327960092850375,
+      "recalibration_only": 0.5349499243400411,
+      "recalibration_plus_goalie": 0.5461953697336334
+    },
+    {
+      "game_id": "2025021263",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5201306135885575,
+      "recalibration_only": 0.5189789158861974,
+      "recalibration_plus_goalie": 0.5083538835764183
+    },
+    {
+      "game_id": "2025021264",
+      "date": "2026-04-11",
+      "y_home_win": 1,
+      "baseline": 0.530937661372444,
+      "recalibration_only": 0.5326074119614187,
+      "recalibration_plus_goalie": 0.5406858252369326
+    },
+    {
+      "game_id": "2025021265",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5201306135885575,
+      "recalibration_only": 0.5189789158861974,
+      "recalibration_plus_goalie": 0.5199757286235778
+    },
+    {
+      "game_id": "2025021266",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5014480469025924,
+      "recalibration_only": 0.4954125212465136,
+      "recalibration_plus_goalie": 0.48165081845541263
+    },
+    {
+      "game_id": "2025021267",
+      "date": "2026-04-11",
+      "y_home_win": 1,
+      "baseline": 0.5045828431408369,
+      "recalibration_only": 0.4993660651988116,
+      "recalibration_plus_goalie": 0.49640432047822614
+    },
+    {
+      "game_id": "2025021268",
+      "date": "2026-04-11",
+      "y_home_win": 1,
+      "baseline": 0.5623810217560218,
+      "recalibration_only": 0.5721639412485371,
+      "recalibration_plus_goalie": 0.5635693671325304
+    },
+    {
+      "game_id": "2025021269",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5250375061695817,
+      "recalibration_only": 0.525167884874544,
+      "recalibration_plus_goalie": 0.5412859563752236
+    },
+    {
+      "game_id": "2025021270",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5512832615636354,
+      "recalibration_only": 0.5582260141714966,
+      "recalibration_plus_goalie": 0.562288913086866
+    },
+    {
+      "game_id": "2025021271",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5650991520556738,
+      "recalibration_only": 0.5755725375139623,
+      "recalibration_plus_goalie": 0.5717907913336582
+    },
+    {
+      "game_id": "2025021272",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5668595855511743,
+      "recalibration_only": 0.5777789531316705,
+      "recalibration_plus_goalie": 0.5731559490982588
+    },
+    {
+      "game_id": "2025021274",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5606290559561588,
+      "recalibration_only": 0.5699657864827125,
+      "recalibration_plus_goalie": 0.5802261454805233
+    },
+    {
+      "game_id": "2025021275",
+      "date": "2026-04-11",
+      "y_home_win": 0,
+      "baseline": 0.5123810217560217,
+      "recalibration_only": 0.5092028965493884,
+      "recalibration_plus_goalie": 0.5160727553021124
+    },
+    {
+      "game_id": "2025021276",
+      "date": "2026-04-12",
+      "y_home_win": 1,
+      "baseline": 0.569175363297151,
+      "recalibration_only": 0.5806798920837514,
+      "recalibration_plus_goalie": 0.5910225710815366
+    },
+    {
+      "game_id": "2025021277",
+      "date": "2026-04-12",
+      "y_home_win": 0,
+      "baseline": 0.5240790363074546,
+      "recalibration_only": 0.5239590914900625,
+      "recalibration_plus_goalie": 0.5269888395231106
+    },
+    {
+      "game_id": "2025021278",
+      "date": "2026-04-12",
+      "y_home_win": 0,
+      "baseline": 0.5785211576896744,
+      "recalibration_only": 0.5923683241988242,
+      "recalibration_plus_goalie": 0.5989732167742242
+    },
+    {
+      "game_id": "2025021280",
+      "date": "2026-04-12",
+      "y_home_win": 0,
+      "baseline": 0.5473685097145965,
+      "recalibration_only": 0.5533023500414911,
+      "recalibration_plus_goalie": 0.5576448286690627
+    },
+    {
+      "game_id": "2025021281",
+      "date": "2026-04-12",
+      "y_home_win": 1,
+      "baseline": 0.5334540363074546,
+      "recalibration_only": 0.5357792977524027,
+      "recalibration_plus_goalie": 0.5424031572317365
+    },
+    {
+      "game_id": "2025021282",
+      "date": "2026-04-13",
+      "y_home_win": 1,
+      "baseline": 0.5740305876685935,
+      "recalibration_only": 0.58675607559807,
+      "recalibration_plus_goalie": 0.5979825416641366
+    },
+    {
+      "game_id": "2025021283",
+      "date": "2026-04-13",
+      "y_home_win": 1,
+      "baseline": 0.5490305876685935,
+      "recalibration_only": 0.5553931781564626,
+      "recalibration_plus_goalie": 0.5543399972969989
+    },
+    {
+      "game_id": "2025021284",
+      "date": "2026-04-13",
+      "y_home_win": 1,
+      "baseline": 0.5177805876685935,
+      "recalibration_only": 0.5160145021120293,
+      "recalibration_plus_goalie": 0.5251454462605296
+    },
+    {
+      "game_id": "2025021286",
+      "date": "2026-04-13",
+      "y_home_win": 1,
+      "baseline": 0.509937034435981,
+      "recalibration_only": 0.5061198010842731,
+      "recalibration_plus_goalie": 0.5104023558564565
+    },
+    {
+      "game_id": "2025021287",
+      "date": "2026-04-13",
+      "y_home_win": 0,
+      "baseline": 0.5726952603572097,
+      "recalibration_only": 0.5850857705892747,
+      "recalibration_plus_goalie": 0.5907021923053427
+    },
+    {
+      "game_id": "2025021288",
+      "date": "2026-04-13",
+      "y_home_win": 0,
+      "baseline": 0.4974759752459499,
+      "recalibration_only": 0.4904040753149979,
+      "recalibration_plus_goalie": 0.490063168640192
+    },
+    {
+      "game_id": "2025021289",
+      "date": "2026-04-13",
+      "y_home_win": 0,
+      "baseline": 0.5084055876685935,
+      "recalibration_only": 0.504187940234432,
+      "recalibration_plus_goalie": 0.4933329671753969
+    },
+    {
+      "game_id": "2025021290",
+      "date": "2026-04-13",
+      "y_home_win": 1,
+      "baseline": 0.5365305876685935,
+      "recalibration_only": 0.5396562583495408,
+      "recalibration_plus_goalie": 0.5336833903025004
+    },
+    {
+      "game_id": "2025021292",
+      "date": "2026-04-14",
+      "y_home_win": 1,
+      "baseline": 0.5331183462285857,
+      "recalibration_only": 0.5353562022266037,
+      "recalibration_plus_goalie": 0.5199434434925158
+    },
+    {
+      "game_id": "2025021293",
+      "date": "2026-04-14",
+      "y_home_win": 0,
+      "baseline": 0.5269071661043622,
+      "recalibration_only": 0.5275256597316241,
+      "recalibration_plus_goalie": 0.5294121073321599
+    },
+    {
+      "game_id": "2025021294",
+      "date": "2026-04-14",
+      "y_home_win": 1,
+      "baseline": 0.5144848058559149,
+      "recalibration_only": 0.5118568655454344,
+      "recalibration_plus_goalie": 0.49320662754894123
+    },
+    {
+      "game_id": "2025021295",
+      "date": "2026-04-14",
+      "y_home_win": 0,
+      "baseline": 0.5331183462285857,
+      "recalibration_only": 0.5353562022266037,
+      "recalibration_plus_goalie": 0.5378836081560809
+    },
+    {
+      "game_id": "2025021296",
+      "date": "2026-04-14",
+      "y_home_win": 1,
+      "baseline": 0.5565860046280517,
+      "recalibration_only": 0.5648898128759757,
+      "recalibration_plus_goalie": 0.5782395220322065
+    },
+    {
+      "game_id": "2025021297",
+      "date": "2026-04-14",
+      "y_home_win": 1,
+      "baseline": 0.5129722974629427,
+      "recalibration_only": 0.5099488025002298,
+      "recalibration_plus_goalie": 0.5136643890488206
+    },
+    {
+      "game_id": "2025021298",
+      "date": "2026-04-14",
+      "y_home_win": 0,
+      "baseline": 0.5036265030704193,
+      "recalibration_only": 0.4981598826944663,
+      "recalibration_plus_goalie": 0.49860769712092534
+    },
+    {
+      "game_id": "2025021299",
+      "date": "2026-04-14",
+      "y_home_win": 1,
+      "baseline": 0.5486462965391448,
+      "recalibration_only": 0.5549098061182163,
+      "recalibration_plus_goalie": 0.5465930668925129
+    },
+    {
+      "game_id": "2025021300",
+      "date": "2026-04-14",
+      "y_home_win": 1,
+      "baseline": 0.4818196494878648,
+      "recalibration_only": 0.4706811724272821,
+      "recalibration_plus_goalie": 0.4648747272896938
+    },
+    {
+      "game_id": "2025021301",
+      "date": "2026-04-15",
+      "y_home_win": 0,
+      "baseline": 0.533332224476897,
+      "recalibration_only": 0.5356257706424463,
+      "recalibration_plus_goalie": 0.53840322853701
+    },
+    {
+      "game_id": "2025021303",
+      "date": "2026-04-15",
+      "y_home_win": 1,
+      "baseline": 0.5581769449737914,
+      "recalibration_only": 0.5668877314035214,
+      "recalibration_plus_goalie": 0.5602141738764941
+    },
+    {
+      "game_id": "2025021304",
+      "date": "2026-04-15",
+      "y_home_win": 1,
+      "baseline": 0.5519657648495678,
+      "recalibration_only": 0.5590840695465598,
+      "recalibration_plus_goalie": 0.5409671371508604
+    },
+    {
+      "game_id": "2025021305",
+      "date": "2026-04-15",
+      "y_home_win": 1,
+      "baseline": 0.5287631659861708,
+      "recalibration_only": 0.5298659352774256,
+      "recalibration_plus_goalie": 0.5401888165135528
+    },
+    {
+      "game_id": "2025021306",
+      "date": "2026-04-15",
+      "y_home_win": 1,
+      "baseline": 0.569261608353772,
+      "recalibration_only": 0.5807878959305944,
+      "recalibration_plus_goalie": 0.565934895075935
+    },
+    {
+      "game_id": "2025021307",
+      "date": "2026-04-16",
+      "y_home_win": 0,
+      "baseline": 0.5490019439571381,
+      "recalibration_only": 0.5553571503756939,
+      "recalibration_plus_goalie": 0.5587794272452178
+    },
+    {
+      "game_id": "2025021308",
+      "date": "2026-04-16",
+      "y_home_win": 0,
+      "baseline": 0.5955857948888151,
+      "recalibration_only": 0.6136192755177428,
+      "recalibration_plus_goalie": 0.6099753391065746
+    },
+    {
+      "game_id": "2025021309",
+      "date": "2026-04-16",
+      "y_home_win": 0,
+      "baseline": 0.5334739936465791,
+      "recalibration_only": 0.5358044510749633,
+      "recalibration_plus_goalie": 0.528892155856481
+    },
+    {
+      "game_id": "2025021311",
+      "date": "2026-04-16",
+      "y_home_win": 1,
+      "baseline": 0.5490019439571381,
+      "recalibration_only": 0.5553571503756939,
+      "recalibration_plus_goalie": 0.5671594241468041
+    },
+    {
+      "game_id": "2026020054",
+      "date": "2026-10-07",
+      "y_home_win": 1,
+      "baseline": 0.5101878554604469,
+      "recalibration_only": 0.5064362076792247,
+      "recalibration_plus_goalie": 0.5065035873319317
+    },
+    {
+      "game_id": "2026020067",
+      "date": "2026-10-09",
+      "y_home_win": 1,
+      "baseline": 0.5561692219051614,
+      "recalibration_only": 0.5643663045159861,
+      "recalibration_plus_goalie": 0.5602133458893152
+    },
+    {
+      "game_id": "2026020070",
+      "date": "2026-10-10",
+      "y_home_win": 1,
+      "baseline": 0.5662337662337662,
+      "recalibration_only": 0.5769947024001862,
+      "recalibration_plus_goalie": 0.6133566611484673
+    },
+    {
+      "game_id": "2026020071",
+      "date": "2026-10-10",
+      "y_home_win": 1,
+      "baseline": 0.5300522648083623,
+      "recalibration_only": 0.5314912110878547,
+      "recalibration_plus_goalie": 0.4951953529299952
+    },
+    {
+      "game_id": "2026020073",
+      "date": "2026-10-10",
+      "y_home_win": 0,
+      "baseline": 0.5347313237221494,
+      "recalibration_only": 0.5373890357295841,
+      "recalibration_plus_goalie": 0.5377427925060285
+    },
+    {
+      "game_id": "2026020077",
+      "date": "2026-10-10",
+      "y_home_win": 1,
+      "baseline": 0.5056620209059233,
+      "recalibration_only": 0.500727235951353,
+      "recalibration_plus_goalie": 0.44167202746133216
+    },
+    {
+      "game_id": "2026020078",
+      "date": "2026-10-10",
+      "y_home_win": 0,
+      "baseline": 0.48580166011358666,
+      "recalibration_only": 0.4756939686169495,
+      "recalibration_plus_goalie": 0.5014689593739864
+    },
+    {
+      "game_id": "2026020080",
+      "date": "2026-10-10",
+      "y_home_win": 0,
+      "baseline": 0.565312363477501,
+      "recalibration_only": 0.5758398146675603,
+      "recalibration_plus_goalie": 0.5678946061798719
+    },
+    {
+      "game_id": "2026020081",
+      "date": "2026-10-10",
+      "y_home_win": 0,
+      "baseline": 0.5224989078200086,
+      "recalibration_only": 0.5219661589276011,
+      "recalibration_plus_goalie": 0.5598605950499116
+    },
+    {
+      "game_id": "2026020083",
+      "date": "2026-10-10",
+      "y_home_win": 1,
+      "baseline": 0.5618758141554493,
+      "recalibration_only": 0.5715301583534016,
+      "recalibration_plus_goalie": 0.6032570055970474
+    },
+    {
+      "game_id": "2026020084",
+      "date": "2026-10-11",
+      "y_home_win": 0,
+      "baseline": 0.5800051836667373,
+      "recalibration_only": 0.5942213404263376,
+      "recalibration_plus_goalie": 0.601682812889314
+    },
+    {
+      "game_id": "2026020087",
+      "date": "2026-10-12",
+      "y_home_win": 1,
+      "baseline": 0.5565803035149447,
+      "recalibration_only": 0.5648826521778554,
+      "recalibration_plus_goalie": 0.5438337557983305
+    },
+    {
+      "game_id": "2026020089",
+      "date": "2026-10-12",
+      "y_home_win": 1,
+      "baseline": 0.5345096659540112,
+      "recalibration_only": 0.5371096995640738,
+      "recalibration_plus_goalie": 0.5519905340352949
+    },
+    {
+      "game_id": "2026020090",
+      "date": "2026-10-13",
+      "y_home_win": 0,
+      "baseline": 0.5161295739642983,
+      "recalibration_only": 0.5139317641918997,
+      "recalibration_plus_goalie": 0.49608287725230366
+    },
+    {
+      "game_id": "2026020093",
+      "date": "2026-10-13",
+      "y_home_win": 1,
+      "baseline": 0.5708408201649061,
+      "recalibration_only": 0.5827650853701238,
+      "recalibration_plus_goalie": 0.5867085296324224
+    },
+    {
+      "game_id": "2026020094",
+      "date": "2026-10-13",
+      "y_home_win": 0,
+      "baseline": 0.537180150556659,
+      "recalibration_only": 0.5404746549172846,
+      "recalibration_plus_goalie": 0.5068967998289828
+    },
+    {
+      "game_id": "2026020095",
+      "date": "2026-10-13",
+      "y_home_win": 1,
+      "baseline": 0.4994140298007701,
+      "recalibration_only": 0.49284763063953346,
+      "recalibration_plus_goalie": 0.5260372394700871
+    },
+    {
+      "game_id": "2026020097",
+      "date": "2026-10-13",
+      "y_home_win": 1,
+      "baseline": 0.537180150556659,
+      "recalibration_only": 0.5404746549172846,
+      "recalibration_plus_goalie": 0.5454009983421894
+    },
+    {
+      "game_id": "2026020098",
+      "date": "2026-10-13",
+      "y_home_win": 1,
+      "baseline": 0.5070110329308636,
+      "recalibration_only": 0.5024288271643864,
+      "recalibration_plus_goalie": 0.47357426894001975
+    },
+    {
+      "game_id": "2026020100",
+      "date": "2026-10-13",
+      "y_home_win": 0,
+      "baseline": 0.5268494812019943,
+      "recalibration_only": 0.527452918872545,
+      "recalibration_plus_goalie": 0.5822362714083621
+    },
+    {
+      "game_id": "2026020102",
+      "date": "2026-10-13",
+      "y_home_win": 1,
+      "baseline": 0.5254025377194316,
+      "recalibration_only": 0.5256282356021426,
+      "recalibration_plus_goalie": 0.5280919273537147
+    },
+    {
+      "game_id": "2026020103",
+      "date": "2026-10-13",
+      "y_home_win": 0,
+      "baseline": 0.5725811885190675,
+      "recalibration_only": 0.5849430534449299,
+      "recalibration_plus_goalie": 0.6201181410909429
+    },
+    {
+      "game_id": "2026020104",
+      "date": "2026-10-13",
+      "y_home_win": 0,
+      "baseline": 0.5268494812019943,
+      "recalibration_only": 0.527452918872545,
+      "recalibration_plus_goalie": 0.5311990247399048
+    },
+    {
+      "game_id": "2026020105",
+      "date": "2026-10-13",
+      "y_home_win": 0,
+      "baseline": 0.5343666560311675,
+      "recalibration_only": 0.5369294732430084,
+      "recalibration_plus_goalie": 0.4961126876270256
+    },
+    {
+      "game_id": "2026020108",
+      "date": "2026-10-15",
+      "y_home_win": 0,
+      "baseline": 0.5475856257414984,
+      "recalibration_only": 0.5535755056094168,
+      "recalibration_plus_goalie": 0.584665062073191
+    },
+    {
+      "game_id": "2026020111",
+      "date": "2026-10-15",
+      "y_home_win": 1,
+      "baseline": 0.5894676400442604,
+      "recalibration_only": 0.6060151172443348,
+      "recalibration_plus_goalie": 0.585132877459242
+    },
+    {
+      "game_id": "2026020112",
+      "date": "2026-10-15",
+      "y_home_win": 1,
+      "baseline": 0.5627371408930135,
+      "recalibration_only": 0.5726106479622234,
+      "recalibration_plus_goalie": 0.5424758170288709
+    },
+    {
+      "game_id": "2026020113",
+      "date": "2026-10-15",
+      "y_home_win": 1,
+      "baseline": 0.5217621042135785,
+      "recalibration_only": 0.5210368211256313,
+      "recalibration_plus_goalie": 0.4500662898598189
+    },
+    {
+      "game_id": "2026020114",
+      "date": "2026-10-15",
+      "y_home_win": 1,
+      "baseline": 0.479341205151047,
+      "recalibration_only": 0.46756264980930223,
+      "recalibration_plus_goalie": 0.45324075689319193
+    },
+    {
+      "game_id": "2026020116",
+      "date": "2026-10-15",
+      "y_home_win": 1,
+      "baseline": 0.5475856257414984,
+      "recalibration_only": 0.5535755056094168,
+      "recalibration_plus_goalie": 0.5594066000793226
+    },
+    {
+      "game_id": "2026020117",
+      "date": "2026-10-15",
+      "y_home_win": 0,
+      "baseline": 0.5368678443948474,
+      "recalibration_only": 0.5400811817767931,
+      "recalibration_plus_goalie": 0.5447749583413118
+    },
+    {
+      "game_id": "2026020118",
+      "date": "2026-10-15",
+      "y_home_win": 1,
+      "baseline": 0.5852062129749078,
+      "recalibration_only": 0.6007085134699086,
+      "recalibration_plus_goalie": 0.6336360220522196
+    },
+    {
+      "game_id": "2026020119",
+      "date": "2026-10-16",
+      "y_home_win": 1,
+      "baseline": 0.5777775826337419,
+      "recalibration_only": 0.5914395422411511,
+      "recalibration_plus_goalie": 0.585642705035117
+    },
+    {
+      "game_id": "2026020121",
+      "date": "2026-10-17",
+      "y_home_win": 1,
+      "baseline": 0.5449005716303604,
+      "recalibration_only": 0.5501967624038908,
+      "recalibration_plus_goalie": 0.5608757568643568
+    },
+    {
+      "game_id": "2026020124",
+      "date": "2026-10-17",
+      "y_home_win": 1,
+      "baseline": 0.5717385199940329,
+      "recalibration_only": 0.5838886352590386,
+      "recalibration_plus_goalie": 0.5771004304133982
+    },
+    {
+      "game_id": "2026020125",
+      "date": "2026-10-17",
+      "y_home_win": 0,
+      "baseline": 0.5476421344518643,
+      "recalibration_only": 0.5536465981444352,
+      "recalibration_plus_goalie": 0.5317578209244156
+    },
+    {
+      "game_id": "2026020126",
+      "date": "2026-10-17",
+      "y_home_win": 1,
+      "baseline": 0.5523177904471871,
+      "recalibration_only": 0.5595266008179491,
+      "recalibration_plus_goalie": 0.5878665125549755
+    },
+    {
+      "game_id": "2026020127",
+      "date": "2026-10-17",
+      "y_home_win": 1,
+      "baseline": 0.5670185844985554,
+      "recalibration_only": 0.5779781841653667,
+      "recalibration_plus_goalie": 0.5368084194974321
+    },
+    {
+      "game_id": "2026020128",
+      "date": "2026-10-17",
+      "y_home_win": 1,
+      "baseline": 0.5145096043313824,
+      "recalibration_only": 0.5118881493410711,
+      "recalibration_plus_goalie": 0.4714832185588455
+    },
+    {
+      "game_id": "2026020129",
+      "date": "2026-10-17",
+      "y_home_win": 1,
+      "baseline": 0.5416180380663221,
+      "recalibration_only": 0.5460643614886113,
+      "recalibration_plus_goalie": 0.5225887325410625
+    },
+    {
+      "game_id": "2026020130",
+      "date": "2026-10-17",
+      "y_home_win": 0,
+      "baseline": 0.47234092963258717,
+      "recalibration_only": 0.4587615651188305,
+      "recalibration_plus_goalie": 0.43265868050312667
+    },
+    {
+      "game_id": "2026020131",
+      "date": "2026-10-17",
+      "y_home_win": 1,
+      "baseline": 0.5309825484625194,
+      "recalibration_only": 0.5326639980561897,
+      "recalibration_plus_goalie": 0.5649574947536594
+    },
+    {
+      "game_id": "2026020134",
+      "date": "2026-10-17",
+      "y_home_win": 1,
+      "baseline": 0.5743029599940687,
+      "recalibration_only": 0.5870966959527508,
+      "recalibration_plus_goalie": 0.5805388460905969
+    },
+    {
+      "game_id": "2026020136",
+      "date": "2026-10-18",
+      "y_home_win": 1,
+      "baseline": 0.5268028636284268,
+      "recalibration_only": 0.5273941337616643,
+      "recalibration_plus_goalie": 0.4982360111985903
+    },
+    {
+      "game_id": "2026020138",
+      "date": "2026-10-19",
+      "y_home_win": 1,
+      "baseline": 0.4787695314203955,
+      "recalibration_only": 0.4668435114239989,
+      "recalibration_plus_goalie": 0.48465129113937716
+    },
+    {
+      "game_id": "2026020139",
+      "date": "2026-10-19",
+      "y_home_win": 1,
+      "baseline": 0.5747050432082974,
+      "recalibration_only": 0.5875994793733743,
+      "recalibration_plus_goalie": 0.6086234850116619
+    },
+    {
+      "game_id": "2026020141",
+      "date": "2026-10-20",
+      "y_home_win": 0,
+      "baseline": 0.5869973718506588,
+      "recalibration_only": 0.6029399564997477,
+      "recalibration_plus_goalie": 0.5571805901160367
+    },
+    {
+      "game_id": "2026020142",
+      "date": "2026-10-20",
+      "y_home_win": 1,
+      "baseline": 0.48665802461897906,
+      "recalibration_only": 0.4767723686206798,
+      "recalibration_plus_goalie": 0.4653648127412509
+    },
+    {
+      "game_id": "2026020143",
+      "date": "2026-10-20",
+      "y_home_win": 1,
+      "baseline": 0.5453527777051808,
+      "recalibration_only": 0.5507658943154208,
+      "recalibration_plus_goalie": 0.5829640769347993
+    },
+    {
+      "game_id": "2026020144",
+      "date": "2026-10-20",
+      "y_home_win": 0,
+      "baseline": 0.5724612114401205,
+      "recalibration_only": 0.5847929431979576,
+      "recalibration_plus_goalie": 0.6170513158211924
+    },
+    {
+      "game_id": "2026020145",
+      "date": "2026-10-20",
+      "y_home_win": 0,
+      "baseline": 0.5453527777051808,
+      "recalibration_only": 0.5507658943154208,
+      "recalibration_plus_goalie": 0.5682870142516822
+    },
+    {
+      "game_id": "2026020146",
+      "date": "2026-10-20",
+      "y_home_win": 1,
+      "baseline": 0.5260094899638906,
+      "recalibration_only": 0.5263936579875368,
+      "recalibration_plus_goalie": 0.5274091317228348
+    },
+    {
+      "game_id": "2026020147",
+      "date": "2026-10-20",
+      "y_home_win": 1,
+      "baseline": 0.590533500596747,
+      "recalibration_only": 0.6073411222324641,
+      "recalibration_plus_goalie": 0.6142695247504822
+    },
+    {
+      "game_id": "2026020148",
+      "date": "2026-10-20",
+      "y_home_win": 1,
+      "baseline": 0.5242684403557832,
+      "recalibration_only": 0.5241979668708058,
+      "recalibration_plus_goalie": 0.5117035775133598
+    },
+    {
+      "game_id": "2026020149",
+      "date": "2026-10-20",
+      "y_home_win": 1,
+      "baseline": 0.5231104654376759,
+      "recalibration_only": 0.522737501112105,
+      "recalibration_plus_goalie": 0.49245966236261224
+    },
+    {
+      "game_id": "2026020150",
+      "date": "2026-10-20",
+      "y_home_win": 0,
+      "baseline": 0.47164300960396405,
+      "recalibration_only": 0.45788473251801376,
+      "recalibration_plus_goalie": 0.4698937087602095
+    },
+    {
+      "game_id": "2026020151",
+      "date": "2026-10-20",
+      "y_home_win": 0,
+      "baseline": 0.5497210876820421,
+      "recalibration_only": 0.5562616294623185,
+      "recalibration_plus_goalie": 0.5693892066952189
+    },
+    {
+      "game_id": "2026020152",
+      "date": "2026-10-21",
+      "y_home_win": 0,
+      "baseline": 0.5690358569860638,
+      "recalibration_only": 0.5805051844474497,
+      "recalibration_plus_goalie": 0.5624492688065603
+    },
+    {
+      "game_id": "2026020153",
+      "date": "2026-10-21",
+      "y_home_win": 1,
+      "baseline": 0.5630478330339681,
+      "recalibration_only": 0.5730003417720251,
+      "recalibration_plus_goalie": 0.6087875745820179
+    },
+    {
+      "game_id": "2026020155",
+      "date": "2026-10-22",
+      "y_home_win": 1,
+      "baseline": 0.5388479069209547,
+      "recalibration_only": 0.5425756172243349,
+      "recalibration_plus_goalie": 0.5275562589705101
+    },
+    {
+      "game_id": "2026020156",
+      "date": "2026-10-22",
+      "y_home_win": 0,
+      "baseline": 0.5971728260460919,
+      "recalibration_only": 0.6155888203967954,
+      "recalibration_plus_goalie": 0.593633182985711
+    },
+    {
+      "game_id": "2026020157",
+      "date": "2026-10-22",
+      "y_home_win": 1,
+      "baseline": 0.5434414827625098,
+      "recalibration_only": 0.5483601427273476,
+      "recalibration_plus_goalie": 0.5322879630103274
+    },
+    {
+      "game_id": "2026020160",
+      "date": "2026-10-22",
+      "y_home_win": 1,
+      "baseline": 0.5318818632188544,
+      "recalibration_only": 0.5337976582487528,
+      "recalibration_plus_goalie": 0.5416853657380861
+    },
+    {
+      "game_id": "2026020161",
+      "date": "2026-10-22",
+      "y_home_win": 1,
+      "baseline": 0.5573882431489181,
+      "recalibration_only": 0.5658973547260009,
+      "recalibration_plus_goalie": 0.5846541845811459
+    },
+    {
+      "game_id": "2026020162",
+      "date": "2026-10-22",
+      "y_home_win": 1,
+      "baseline": 0.5211164572617988,
+      "recalibration_only": 0.5202224385314227,
+      "recalibration_plus_goalie": 0.49462439764043825
+    },
+    {
+      "game_id": "2026020163",
+      "date": "2026-10-22",
+      "y_home_win": 1,
+      "baseline": 0.5344862588819128,
+      "recalibration_only": 0.5370802012918744,
+      "recalibration_plus_goalie": 0.5466658416805881
+    },
+    {
+      "game_id": "2026020164",
+      "date": "2026-10-22",
+      "y_home_win": 1,
+      "baseline": 0.5076663565328553,
+      "recalibration_only": 0.5032554538993482,
+      "recalibration_plus_goalie": 0.5195937988853239
+    },
+    {
+      "game_id": "2026020165",
+      "date": "2026-10-22",
+      "y_home_win": 0,
+      "baseline": 0.48803908098618426,
+      "recalibration_only": 0.4785117478208874,
+      "recalibration_plus_goalie": 0.4443259878636376
+    },
+    {
+      "game_id": "2026020166",
+      "date": "2026-10-23",
+      "y_home_win": 0,
+      "baseline": 0.48853781302206317,
+      "recalibration_only": 0.47913995105352697,
+      "recalibration_plus_goalie": 0.4754845099074242
+    },
+    {
+      "game_id": "2026020167",
+      "date": "2026-10-23",
+      "y_home_win": 1,
+      "baseline": 0.5531367985685435,
+      "recalibration_only": 0.5605560642757975,
+      "recalibration_plus_goalie": 0.5548860069066598
+    },
+    {
+      "game_id": "2026020168",
+      "date": "2026-10-24",
+      "y_home_win": 0,
+      "baseline": 0.5392541728470837,
+      "recalibration_only": 0.5430873498873988,
+      "recalibration_plus_goalie": 0.563022903373225
+    },
+    {
+      "game_id": "2026020169",
+      "date": "2026-10-24",
+      "y_home_win": 1,
+      "baseline": 0.5362779823708932,
+      "recalibration_only": 0.5393379804984519,
+      "recalibration_plus_goalie": 0.5396534683458803
+    },
+    {
+      "game_id": "2026020170",
+      "date": "2026-10-24",
+      "y_home_win": 1,
+      "baseline": 0.5928256014185123,
+      "recalibration_only": 0.6101908709227141,
+      "recalibration_plus_goalie": 0.6127585255201142
+    },
+    {
+      "game_id": "2026020172",
+      "date": "2026-10-24",
+      "y_home_win": 1,
+      "baseline": 0.5698475966163257,
+      "recalibration_only": 0.5815216575072311,
+      "recalibration_plus_goalie": 0.568113079466609
+    },
+    {
+      "game_id": "2026020173",
+      "date": "2026-10-24",
+      "y_home_win": 1,
+      "baseline": 0.5694293475347908,
+      "recalibration_only": 0.5809979469758476,
+      "recalibration_plus_goalie": 0.5973650548382123
+    },
+    {
+      "game_id": "2026020174",
+      "date": "2026-10-24",
+      "y_home_win": 1,
+      "baseline": 0.5378788121690153,
+      "recalibration_only": 0.5413548456659241,
+      "recalibration_plus_goalie": 0.530095404400712
+    },
+    {
+      "game_id": "2026020175",
+      "date": "2026-10-24",
+      "y_home_win": 0,
+      "baseline": 0.5303256014185123,
+      "recalibration_only": 0.531835809193794,
+      "recalibration_plus_goalie": 0.5446098250069609
+    },
+    {
+      "game_id": "2026020176",
+      "date": "2026-10-24",
+      "y_home_win": 0,
+      "baseline": 0.5471153215514117,
+      "recalibration_only": 0.5529837998026557,
+      "recalibration_plus_goalie": 0.5384270922344666
+    },
+    {
+      "game_id": "2026020177",
+      "date": "2026-10-24",
+      "y_home_win": 1,
+      "baseline": 0.5200882945243848,
+      "recalibration_only": 0.5189255346237943,
+      "recalibration_plus_goalie": 0.49387871566736813
+    },
+    {
+      "game_id": "2026020178",
+      "date": "2026-10-24",
+      "y_home_win": 1,
+      "baseline": 0.548763259266928,
+      "recalibration_only": 0.5550569283685367,
+      "recalibration_plus_goalie": 0.5706899026989702
+    },
+    {
+      "game_id": "2026020179",
+      "date": "2026-10-24",
+      "y_home_win": 0,
+      "baseline": 0.5020579166466272,
+      "recalibration_only": 0.49618162662035836,
+      "recalibration_plus_goalie": 0.4797174649462847
+    },
+    {
+      "game_id": "2026020180",
+      "date": "2026-10-25",
+      "y_home_win": 0,
+      "baseline": 0.50080688542227,
+      "recalibration_only": 0.4946039832270175,
+      "recalibration_plus_goalie": 0.508909870666571
+    },
+    {
+      "game_id": "2026020181",
+      "date": "2026-10-25",
+      "y_home_win": 1,
+      "baseline": 0.5773955773955773,
+      "recalibration_only": 0.5909623057430783,
+      "recalibration_plus_goalie": 0.5914447932431216
+    },
+    {
+      "game_id": "2026020182",
+      "date": "2026-10-25",
+      "y_home_win": 0,
+      "baseline": 0.5443625443625443,
+      "recalibration_only": 0.5495195689951614,
+      "recalibration_plus_goalie": 0.5502440722768496
+    },
+    {
+      "game_id": "2026020186",
+      "date": "2026-10-26",
+      "y_home_win": 1,
+      "baseline": 0.5409890051521751,
+      "recalibration_only": 0.5452722560805662,
+      "recalibration_plus_goalie": 0.5548712169311139
+    }
+  ],
+  "automatic_promotion": false,
+  "prospectively_validated": false,
+  "limitations": [
+    "Historical starter identity was observed postgame; conditional research, not a pregame lineup backtest.",
+    "These historical holdouts have been inspected in earlier research; this is not independent new evidence.",
+    "Baseline recalibration and goalie contribution must be distinguished."
+  ],
+  "excluded": [
+    {
+      "game_id": "2024020001",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020002",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020003",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020004",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020005",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020006",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020007",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020008",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020009",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020010",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020011",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020012",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020013",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020014",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020015",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020016",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020017",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020018",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020019",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020020",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020021",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020022",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020023",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020024",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020025",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020026",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020027",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020028",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020030",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020031",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020032",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020033",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020034",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020035",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020036",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020037",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020038",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020039",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020040",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020041",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020042",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020043",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020044",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020045",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020046",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020047",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020048",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020049",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020050",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020051",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020052",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020053",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020054",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020055",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020056",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020057",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020058",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020059",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020060",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020061",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020062",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020063",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020064",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020065",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020066",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020067",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020068",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020069",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020070",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020071",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020072",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020073",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020074",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020075",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020076",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020077",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020078",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020079",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020080",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020081",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020082",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020083",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020084",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020085",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020086",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020087",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020088",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020089",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020090",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020091",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020092",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020093",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020094",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020095",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020096",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020097",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020098",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020099",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020100",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020101",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020102",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020103",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020104",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020105",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020106",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020107",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020108",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020109",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020110",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020111",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020112",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020113",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020114",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020115",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020116",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020117",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020118",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020119",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020120",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020121",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020122",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020123",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020124",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020125",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020126",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020127",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020128",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020129",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020130",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020131",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020132",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020133",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020134",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020135",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020136",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020137",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020138",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020139",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020140",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020141",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020142",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020143",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020144",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020145",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020146",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020147",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020148",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020149",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020150",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020151",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020152",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020153",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020154",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020155",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020156",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020157",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020158",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020159",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020160",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020161",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020162",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020163",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020164",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020165",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020166",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020167",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020168",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020169",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020170",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020171",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020172",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020173",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020174",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020175",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020176",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020177",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020178",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020179",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020180",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020181",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020182",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020183",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020184",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020185",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020186",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020187",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020188",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020189",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020190",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020191",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020192",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020193",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020194",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020195",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020196",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020197",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020198",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020199",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020200",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020201",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020202",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020203",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020204",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020211",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020228",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020233",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020238",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020271",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020280",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020312",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020344",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020370",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020386",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020441",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020455",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020463",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020474",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020481",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020486",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020491",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020493",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020521",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020536",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020537",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020553",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020566",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020571",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020574",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020581",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020583",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020626",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020632",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020651",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020838",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020848",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020909",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024020911",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024021102",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024021111",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024021177",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024021220",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024021232",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024021244",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024021270",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024021288",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024021290",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2024021311",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020001",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020002",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020003",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020004",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020005",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020006",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020007",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020008",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020009",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020010",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020011",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020012",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020013",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020014",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020015",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020016",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020017",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020018",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020019",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020020",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020021",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020022",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020023",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020024",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020025",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020026",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020027",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020028",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020029",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020030",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020031",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020032",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020033",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020034",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020035",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020036",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020037",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020038",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020040",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020042",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020043",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020044",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020045",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020046",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020047",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020048",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020049",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020050",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020051",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020053",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020055",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020056",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020057",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020059",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020060",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020062",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020063",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020064",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020065",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020066",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020068",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020069",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020070",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020071",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020072",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020074",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020075",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020078",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020080",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020081",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020082",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020086",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020089",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020090",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020092",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020102",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020108",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020109",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020111",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020115",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020122",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020126",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020132",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020138",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020140",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020141",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020143",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020145",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020149",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020163",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020168",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020178",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020184",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020186",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020196",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020206",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020238",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020239",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020245",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020246",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020248",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020250",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020267",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020278",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020279",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020291",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020296",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020303",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020307",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020374",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020384",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020385",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020387",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020409",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020419",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020458",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020484",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020500",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020570",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020585",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020587",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020694",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020699",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020707",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020755",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020768",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020782",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020821",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020864",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025020878",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021058",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021110",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021151",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021252",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021273",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021279",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021285",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021291",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021302",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021310",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2025021312",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020001",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020002",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020003",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020004",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020005",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020006",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020007",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020008",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020009",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020010",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020011",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020012",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020013",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020014",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020015",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020016",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020017",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020018",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020019",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020020",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020021",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020022",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020023",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020024",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020025",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020026",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020027",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020028",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020029",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020030",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020031",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020032",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020033",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020034",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020035",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020036",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020037",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020038",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020039",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020040",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020041",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020042",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020043",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020044",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020045",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020046",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020047",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020048",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020049",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020050",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020051",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020052",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020053",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020055",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020056",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020057",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020058",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020059",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020060",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020061",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020062",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020063",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020064",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020065",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020066",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020068",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020069",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020072",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020074",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020075",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020076",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020079",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020082",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020085",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020086",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020088",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020091",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020092",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020096",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020099",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020101",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020106",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020107",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020109",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020110",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020115",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020120",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020122",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020123",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020132",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020133",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020135",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020137",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020140",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020154",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020158",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020159",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020171",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020183",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020184",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020185",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    },
+    {
+      "game_id": "2026020187",
+      "reason": "insufficient_prior_goalie_history_or_baseline_warmup"
+    }
+  ],
+  "provenance": {
+    "source_run_id": "41260212394",
+    "source_artifact_id": 13065631013,
+    "labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+    "cache_zip_sha256": "c7382f94919b7c7a9f5d255dcef5ba91a978cc0d7bb4c31962e6bac21992b5cc",
+    "training_code_sha256": "f684921c5a6da7ae4ac0f6759aeffd0fb8b06075c2c4f16a7890bdd546ad531a"
+  }
+}

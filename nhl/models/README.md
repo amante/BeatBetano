@@ -20,3 +20,10 @@ capturas pregame demostrada. La ausencia del artefacto es un estado normal y exp
 Una evaluación futura compatible se exporta a una ruta nueva y se propone en un PR
 antes de guardarla aquí. Su `available_at_utc` debe preceder la emisión comparada.
 Reejecutar después de un partido no puede fabricar una predicción pregame.
+
+La evaluación histórica reproducible del 2 de noviembre está en
+`reports/nhl/goalie-candidate-2026-11-02`. Reinicia tasas por temporada y reconstruye
+apariciones previas; ajusta los dos parámetros deportivos/estadísticos y sus controles.
+No mejoró al baseline/control, por lo que sus pesos se conservan para investigación y
+NO se guardan en `goalie-ml-candidate.json`. `goalie-ml-assessment.json` comunica la
+decisión real para que el frontend diga que el candidato evaluado no se aplica.

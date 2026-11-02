@@ -120,8 +120,17 @@ def infer(repository, run_id, slate, model=None, at=None, scenarios=None, scenar
     rows={r['game_id']:r for r in data['rows']+data['pending']}
     rejection={r.get('game_id'):r['reason'] for r in data['excluded']}
     model_issue=None
+    assessment=None
     try:
-        if model is None:model_issue='missing_fitted_model'
+        if model is None:
+            model_issue='missing_fitted_model'
+            assessment_path=Path(repository)/'nhl/models/goalie-ml-assessment.json'
+            if assessment_path.is_file():
+                observed=json.loads(assessment_path.read_text())
+                if observed.get('kind')=='nhl_goalie_ml_assessment_v1' and observed.get('decision')=='not_approved_no_incremental_gain':
+                    metrics=observed['metrics']
+                    if any(metrics['recalibration_plus_goalie'][m]>=metrics[ref][m] for ref in ('baseline','recalibration_only') for m in ('brier','log_loss')):
+                        assessment=observed;model_issue='model_failed_incremental_evaluation'
         else:validate_artifact(model,at)
     except (ValueError,KeyError,TypeError) as error:model_issue='invalid_or_incompatible_model: '+str(error)
     if slate.get('kind')!='nhl_research_daily_presentation_275' or slate.get('official') is not False or slate.get('odds_used') is not False:raise ValueError('Unverified baseline presentation')
@@ -159,9 +168,12 @@ def infer(repository, run_id, slate, model=None, at=None, scenarios=None, scenar
                 if model is not None and not model_issue:result['model_sha256']=model['artifact_sha256']
             except (ValueError,KeyError,TypeError,OSError) as error:
                 result.update(pairings=[],scenario_count=0,scenario_error=str(error)[:160])
+        if assessment and model is None:
+            for item in [result]+result.get('pairings',[]):
+                item['reasons']=['model_failed_incremental_evaluation' if reason=='missing_fitted_model' else reason for reason in item['reasons']]
         output.append(result)
     return dict(kind='nhl_goalie_ml_comparison_v1',run_id=str(run_id),date=slate['date'],as_of_utc=at.isoformat(),games=output,
-        published_baseline_replaced=False,market='ml',official=False,automatic_promotion=False,
+        candidate_assessment=assessment,published_baseline_replaced=False,market='ml',official=False,automatic_promotion=False,
         limitations=['ML-only candidate: RT and +3 retain their original model.','Differences between fitted models are not causal goalie effects.','Provider confirmation is not independent starter verification.'],input_exclusions=data['excluded'])
 
 
