@@ -8,12 +8,13 @@ from pathlib import Path
 from nhl.historical_target_walkforward import CATEGORIES
 from nhl.pulso_pregame_v7 import parse_utc
 
-def present(slate):
+def present(slate,run_id=None):
  if slate.get("kind")!="nhl_daily_complete_slate_274" or slate.get("official") is not False or slate.get("odds_used") is not False:
   raise ValueError("Untrusted daily slate")
  raw=slate["games"]
  if len(raw)!=slate["official_schedule_games"] or len({str(g["game_id"]) for g in raw})!=len(raw):
   raise ValueError("Incomplete or duplicated schedule")
+ if run_id is not None and not str(run_id).isdigit():raise ValueError("Numeric run ID required")
  output=[]
  for g in raw:
   state=g["forecast_status"];markets=g.get("markets")
@@ -42,7 +43,7 @@ def present(slate):
  if sum(g["status"]=="experimental_forecast" for g in output)!=slate["experimental_predicted_games"]:
   raise ValueError("Count mismatch")
  return {"kind":"nhl_research_daily_presentation_275","date":slate["date"],
-   "source_schedule":slate["schedule_source_url"],
+   "source_schedule":slate["schedule_source_url"],"run_id":str(run_id) if run_id is not None else None,
    "official_schedule_games":len(output),"experimental_predicted_games":slate["experimental_predicted_games"],
    "games":output,"official":False,"odds_used":False,
    "limitations":["Outcome-only research baseline, not validated full NHL model",
@@ -51,7 +52,8 @@ def present(slate):
       "First-to-+3 includes neither team"]}
 def main():
  p=argparse.ArgumentParser();p.add_argument("--slate",required=True);p.add_argument("--out",required=True)
- a=p.parse_args();result=present(json.loads(Path(a.slate).read_text()))
+ p.add_argument("--run-id")
+ a=p.parse_args();result=present(json.loads(Path(a.slate).read_text()),a.run_id)
  dest=Path(a.out);dest.parent.mkdir(parents=True,exist_ok=True)
  dest.write_text(json.dumps(result,indent=2))
  print(json.dumps({"official_schedule_games":result["official_schedule_games"],"experimental_predicted_games":result["experimental_predicted_games"],"markets":["ml","rt","home3","away3","first3"]}))

@@ -162,3 +162,25 @@ predicciones de holdout y diferencias emparejadas del candidato frente a ambos
 controles. Los intervalos usan 1.000 remuestreos por fecha con semilla fija; persiste
 la dependencia entre equipos y el riesgo de inspecciones repetidas. No hay promoción
 automática ni cambios en los pronósticos de PULSO.
+
+### Inferencia ML experimental y comparación por emisión
+
+`nhl.goalie_ml_inference` exporta parámetros de la evaluación prospectiva y ejecuta
+el candidato usando el `run_id` exacto de la presentación. El workflow guarda cada
+salida de creación exclusiva en `nhl/learning/goalie-predictions/run-ID.json` y copia
+esa salida a `frontend/data/nhl-goalie-comparison-latest.json`. No modifica el ML del
+baseline. Ningún candidato ML tiene que inventar probabilidades RT/+3/rescate para
+poder ejecutarse.
+
+Modelo compatible ausente/inválido, variables faltantes, captura/artefacto posterior
+a la emisión y encuentros iniciados producen «no ejecutado», probabilidad/delta
+nulos y motivos específicos. El artefacto debe haber estado disponible antes del
+pronóstico baseline comparado. Un artefacto válido calcula las dos probabilidades
+complementarias ML, el control recalibrado y las diferencias en puntos porcentuales.
+La diferencia frente al baseline incluye recalibración; la comparación con el
+control la distingue, sin afirmar causalidad del arquero.
+
+Se requieren las dimensiones exactas de coeficientes, medias y escalas; no se permite
+el truncamiento silencioso de variables. Los parámetros se cargan del archivo
+revisado `nhl/models/goalie-ml-candidate.json`; todavía no existe un artefacto real
+compatible en esa ruta. Ver su README y el informe de compatibilidad de #269.

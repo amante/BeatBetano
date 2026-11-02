@@ -3,6 +3,11 @@ on:
   pull_request:
     paths:
       - 'nhl/match_context.py'
+      - 'nhl/goalie_ml_inference.py'
+      - 'nhl/models/**'
+      - 'nhl/goalie_prospective_evaluation.py'
+      - 'nhl/pulso_research_presentation_275.py'
+      - 'nhl/tests/test_goalie_ml_inference.py'
       - 'nhl/pulso_prospective_capture.py'
       - 'nhl/tests/test_player_evidence.py'
       - '.github/workflows/pulso-nhl-prospective.yml'
@@ -28,7 +33,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m unittest nhl.tests.test_player_evidence nhl.tests.test_match_context nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
+      - run: python -m unittest nhl.tests.test_goalie_ml_inference nhl.tests.test_player_evidence nhl.tests.test_match_context nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
   capture:
     if: github.event_name != 'pull_request'
     needs: test
@@ -258,7 +263,16 @@ jobs:
         run: |
           python -m nhl.pulso_research_presentation_275 \
             --slate frontend/data/nhl-complete-slate-latest.json \
+            --run-id "${{ github.run_id }}" \
             --out frontend/data/nhl-daily-predictions-latest.json
+      - name: Execute compatible goalie ML candidate or record explicit unavailability
+        run: |
+          python -m nhl.goalie_ml_inference run \
+            --run-id "${{ github.run_id }}" \
+            --slate frontend/data/nhl-daily-predictions-latest.json \
+            --model nhl/models/goalie-ml-candidate.json \
+            --output "nhl/learning/goalie-predictions/run-${{ github.run_id }}.json"
+          cp "nhl/learning/goalie-predictions/run-${{ github.run_id }}.json" frontend/data/nhl-goalie-comparison-latest.json
       - name: Freeze append-only daily prediction snapshot for future scoring
         run: |
           python -m nhl.pulso_prospective_monitor_276 freeze \
@@ -271,12 +285,14 @@ jobs:
           path: |
             results/pulso/nhl/
             nhl/learning/pregame/
+            nhl/learning/goalie-predictions/
             frontend/data/nhl-forecasts/run-${{ github.run_id }}/
           retention-days: 90
       - name: Publish source readiness only, no predictions
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f nhl/learning/goalie-predictions/run-${{ github.run_id }}.json frontend/data/nhl-goalie-comparison-latest.json
           git add -f nhl/learning/pregame/run-${{ github.run_id }}.json nhl/learning/pregame/run-${{ github.run_id }}.sources.json.gz
           git add -f frontend/data/pulso-nhl-research.json frontend/data/nhl-daily-predictions-latest.json frontend/data/nhl-complete-slate-latest.json frontend/data/nhl-ledger/run-${{ github.run_id }}.json frontend/data/nhl-baseline-latest.json
           git add -f frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json frontend/data/nhl-prediction-snapshots/run-${{ github.run_id }}.json
