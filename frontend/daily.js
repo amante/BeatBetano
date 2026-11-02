@@ -40,6 +40,12 @@ function stats(){
  for(const x of yesterday)root.append(make("div",x.game.away+" — "+x.game.home+" | "+(x.won?"✓ Ganada":"✕ Perdida")+" | Predicción: "+x.pick+" | Resultado: "+x.actual,"daily-match"));
 }
 function activeGames(){return(snapshot?.games||[]).filter(g=>isGame(g)&&dayOf(g.start_utc)===$("daily-date").value).sort((a,b)=>a.start_utc.localeCompare(b.start_utc));}
+function nhlSummary(games){
+ const root=$("nhl-day-summary");if(!root)return;
+ const pending=games.filter(g=>!g.completed&&Date.parse(g.start_utc)>Date.now());
+ root.replaceChildren(...[games.length+" en la jornada",pending.length+" por comenzar",games.filter(g=>["LIVE","CRIT","STATUS_IN_PROGRESS"].includes(g.status)).length+" en juego",games.filter(g=>g.completed).length+" finalizados"].map(text=>make("span",text,"nhl-summary-chip")));
+ $("nhl-pending-summary").textContent=pending.length?pending.length+" encuentro"+(pending.length===1?"":"s")+" pendiente"+(pending.length===1?"":"s")+" de comenzar.":"No hay encuentros pendientes para esta fecha.";
+}
 function renderGames(){
  const games=activeGames(),root=$("daily-results");root.replaceChildren();
  $("daily-label").textContent=title+" · "+$("daily-date").value+" · "+games.length+" partidos";
@@ -57,7 +63,7 @@ function renderGames(){
   for(const g of items){
    const row=make("div",undefined,"daily-match");
    row.append(make("span",new Date(g.start_utc).toLocaleTimeString("es-CL",{timeZone:"America/Santiago",hour:"2-digit",minute:"2-digit"}),"daily-time"),
-     make("strong",g.away+" — "+g.home),make("span",g.completed?String(g.away_score??"—")+" : "+String(g.home_score??"—"):g.status||"Programado","daily-state"));
+     make("strong",g.away+" — "+g.home),make("span",g.completed?(g.away_score!=null&&g.home_score!=null?g.away_score+" : "+g.home_score:"Finalizado"):({FUT:"Por comenzar",PRE:"Por comenzar",LIVE:"En juego",CRIT:"En juego",STATUS_SCHEDULED:"Por comenzar",STATUS_IN_PROGRESS:"En juego"}[g.status]||g.status||"Programado"),"daily-state"));
    sec.append(row);
   }root.append(sec);
  }
@@ -65,7 +71,7 @@ function renderGames(){
  $("feed-message").textContent=snapshot
  ? "Fuente: "+(snapshot.source?snapshot.source+" · ":"")+snapshot.as_of_utc+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario obtenido de las fuentes configuradas.")
  : "No se pudo cargar el calendario. "+feedFailure;
- renderSelection(games);stats();
+ nhlSummary(games);renderSelection(games);stats();
 }
 function renderSelection(games){
  const root=$("simulation-games");root.replaceChildren();
