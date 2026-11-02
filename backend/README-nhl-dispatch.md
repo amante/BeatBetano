@@ -184,3 +184,25 @@ Se requieren las dimensiones exactas de coeficientes, medias y escalas; no se pe
 el truncamiento silencioso de variables. Los parámetros se cargan del archivo
 revisado `nhl/models/goalie-ml-candidate.json`; todavía no existe un artefacto real
 compatible en esa ruta. Ver su README y el informe de compatibilidad de #269.
+
+### Corrección de conexiones antes de ampliar los 13 módulos
+
+El puente deportivo acepta el `nhl_game_id` que realmente emite el crosswalk y
+rechaza alias de ID contradictorios. El workflow fija un corte de análisis posterior
+a los historiales (con microsegundos), sin alterar las horas originales de captura.
+`nhl.sporting_packages` conecta conteos reales de atajadas/tiros y muestras al módulo
+cuantitativo; no inventa paquetes CRS, PP/PK ni disponibilidad. La identidad del
+arquero se corrobora contra el plantel oficial, sin afirmar titularidad independiente.
+El núcleo conserva la hora de captura y la hora de análisis por separado.
+
+La matriz #258 incorpora ambos arqueros publicados en el artículo NHL.com cuando
+fecha/equipos/IDs coinciden. Un plantel completo no se usa para adivinar candidatos.
+La consulta #260 obtiene historial para todos los IDs de la matriz. La inferencia ML
+conserva cada cruce local×visitante con nombre, resultado condicional o causa concreta
+de bloqueo. No mezcla ni pondera los cruces suponiendo quién jugará. Historial ausente
+en un arquero bloquea solo sus cruces. Candidatos no resueltos quedan listados.
+
+Estos cambios reparan conectividad, cobertura y tiempo. No equivalen a 13 efectos
+ajustados ni instalan un artefacto numérico compatible. El modelo conjunto, CRS,
+unidades, equipos especiales y mercados derivados mantienen sus bloqueos explícitos
+hasta disponer de fuentes, parámetros y evaluación. El baseline no se reemplaza.
