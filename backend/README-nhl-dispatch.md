@@ -236,3 +236,13 @@ The page requests each displayed game's result once on opening or changing date.
 No polling or scheduled capture is used. Without that endpoint, show the existing
 calendar with an explicit unavailable message. The authenticated dispatcher is
 unchanged.
+
+### Individual skater history
+The prospective workflow captures official regular-season player game logs into
+`skater_history.json` and archives raw responses in `.sources.json.gz`. Counts
+include only dates strictly before capture day; responses must be retrieved before
+the fixture starts. Missing TOI, bad counts and failed sources remain explicit.
+Roster teams are identity provenance, not proof that past appearances were played
+for that club. These are player histories, including previous clubs in the season.
+The capture does not manufacture expected deployment, a baseline lineup or #247
+availability packages, and does not promote descriptive indices to probabilities.
