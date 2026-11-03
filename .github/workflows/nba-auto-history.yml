@@ -31,6 +31,9 @@ jobs:
       - run: python -m unittest discover -s multisport/tests -v
       - run: python -m unittest discover -s webresults/tests -v
   generate:
+    permissions:
+      contents: write
+      actions: read
     if: github.event_name == 'workflow_dispatch'
     needs: tests
     runs-on: ubuntu-24.04
@@ -318,3 +321,15 @@ jobs:
             results/nba/prospective/availability_recovery.json
             results/nba/prospective/injury_observation_archive.json
           retention-days: 90
+
+      - name: Publish frozen NBA comparison to PULSO
+        run: |
+          python nba/pulso_publication.py --snapshot results/nba/prospective/snapshot.json --run-id "${{ github.run_id }}" --output frontend/data/nba-predictions-latest.json
+          mkdir -p nba/learning/predictions
+          cp results/nba/prospective/snapshot.json "nba/learning/predictions/run-${{ github.run_id }}.json"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f frontend/data/nba-predictions-latest.json "nba/learning/predictions/run-${{ github.run_id }}.json"
+          git commit -m 'data(nba): publish frozen pregame comparison'
+          git pull --rebase origin main
+          git push origin HEAD:main
