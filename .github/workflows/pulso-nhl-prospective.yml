@@ -299,7 +299,8 @@ jobs:
         run: |
           DAY="${{ inputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
-          python -m nhl.absence_exposure --changes "results/pulso/nhl/$DAY/lineup_changes.json" --output "results/pulso/nhl/$DAY/absence_exposure.json"
+          python -m nhl.absence_exposure --changes "results/pulso/nhl/$DAY/lineup_changes.json" --report "results/pulso/nhl/$DAY/report.json" --output "results/pulso/nhl/$DAY/absence_exposure.json"
+          cp "results/pulso/nhl/$DAY/absence_exposure.json" frontend/data/nhl-absence-exposure.json
       - name: Measure individual coverage and historical lineup features
         run: |
           DAY="${{ inputs.day }}"
@@ -382,7 +383,7 @@ jobs:
           git add -f nhl/learning/goalie-predictions/run-${{ github.run_id }}.json frontend/data/nhl-goalie-comparison-latest.json
           git add -f nhl/learning/lineups/run-${{ github.run_id }}.json nhl/learning/lineups/run-${{ github.run_id }}.sources.json.gz
           git add -f nhl/learning/pregame/run-${{ github.run_id }}.json nhl/learning/pregame/run-${{ github.run_id }}.sources.json.gz
-          git add -f frontend/data/pulso-nhl-research.json frontend/data/nhl-daily-predictions-latest.json frontend/data/nhl-complete-slate-latest.json frontend/data/nhl-ledger/run-${{ github.run_id }}.json frontend/data/nhl-baseline-latest.json
+          git add -f frontend/data/nhl-absence-exposure.json frontend/data/pulso-nhl-research.json frontend/data/nhl-daily-predictions-latest.json frontend/data/nhl-complete-slate-latest.json frontend/data/nhl-ledger/run-${{ github.run_id }}.json frontend/data/nhl-baseline-latest.json
           git add -f frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json frontend/data/nhl-prediction-snapshots/run-${{ github.run_id }}.json
           if compgen -G 'frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json' > /dev/null; then
             git add -f frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json
