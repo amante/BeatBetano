@@ -7,6 +7,7 @@ def summarize(player_id, payload, cutoff_day):
     rows=payload.get('gameLog')
     if not isinstance(rows,list):raise ValueError('Missing game log')
     seen=set();goals=shots=seconds=games=0
+    assists=pim=0;assists_complete=pim_complete=True
     for row in rows:
         day=date.fromisoformat(row['gameDate'])
         if day>=cutoff:continue
@@ -19,8 +20,15 @@ def summarize(player_id, payload, cutoff_day):
         if len(parts)!=2 or not all(x.isdigit() for x in parts):raise ValueError('Missing or invalid TOI')
         minutes,secs=map(int,parts)
         if secs>=60:raise ValueError('Invalid TOI seconds')
+        for key in ('assists','pim'):
+            value=row.get(key)
+            if value is not None and (type(value) is not int or value<0):raise ValueError('Invalid '+key)
+            if key=='assists':
+                assists_complete &= value is not None;assists+=value or 0
+            else:
+                pim_complete &= value is not None;pim+=value or 0
         goals+=g;shots+=s;seconds+=minutes*60+secs;games+=1
-    return dict(player_id=player_id,role='skater',skater_games=games,skater_goals=goals,skater_shots=shots,toi_games=games,toi_seconds=seconds,cutoff_exclusive=cutoff_day,applied_to_probability=False)
+    return dict(player_id=player_id,role='skater',skater_games=games,skater_goals=goals,skater_shots=shots,skater_assists=assists if assists_complete else None,penalty_minutes=pim if pim_complete else None,toi_games=games,toi_seconds=seconds,cutoff_exclusive=cutoff_day,applied_to_probability=False)
 
 def collect(report,rosters,fetcher=None,reference=None):
     from concurrent.futures import ThreadPoolExecutor

@@ -11,6 +11,8 @@ on:
       - 'nhl/prior_lineup_reference.py'
       - 'nhl/lineup_changes.py'
       - 'nhl/lineup_features.py'
+      - 'nhl/absence_exposure.py'
+      - 'nhl/tests/test_absence_exposure.py'
       - 'nhl/freeze_lineup_dataset.py'
       - 'nhl/tests/test_freeze_lineup_dataset.py'
       - 'nhl/tests/test_lineup_features.py'
@@ -293,6 +295,11 @@ jobs:
           DAY="${{ inputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.lineup_changes --evidence "nhl/learning/pregame/run-${{ github.run_id }}.json" --reference "results/pulso/nhl/$DAY/prior_lineup_reference.json" --history "results/pulso/nhl/$DAY/skater_history.json" --output "results/pulso/nhl/$DAY/lineup_changes.json"
+      - name: Quantify absent contributions and conditional replacement minutes
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.absence_exposure --changes "results/pulso/nhl/$DAY/lineup_changes.json" --output "results/pulso/nhl/$DAY/absence_exposure.json"
       - name: Measure individual coverage and historical lineup features
         run: |
           DAY="${{ inputs.day }}"
