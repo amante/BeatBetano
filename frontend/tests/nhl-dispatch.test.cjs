@@ -9,7 +9,7 @@ const sampleSlate=()=>({kind:'nhl_daily_complete_slate_274',date:'2026-11-02',sc
  {game_id:'2026020233',home:'FLA',away:'DET',start_utc:'2026-11-03T00:00:00Z',game_state_at_capture:'FUT'}
 ]});
 function harness(response){
- const element=()=>({value:'',textContent:'',children:[],append(...items){this.children.push(...items);this.link=items.at(-1);},replaceChildren(...items){this.children=items;},addEventListener(){}});
+ const element=()=>({dataset:{},value:'',textContent:'',children:[],append(...items){this.children.push(...items);this.link=items.at(-1);},replaceChildren(...items){this.children=items;},addEventListener(){}});
  const nodes=new Map();const node=id=>{if(!nodes.has(id))nodes.set(id,element());return nodes.get(id);};
  const calls=[];const context=vm.createContext({URL,URLSearchParams,Intl,Date,Set,Map,CustomEvent:class{constructor(type,{detail}){this.type=type;this.detail=detail;}},location:{search:'?sport=nhl',href:'https://amante.github.io/BeatBetano/dashboard.html',origin:'https://amante.github.io'},document:{getElementById:node,querySelector:()=>({value:'all'}),querySelectorAll:()=>[],dispatchEvent:event=>calls.push({event}),createElement:element},fetch:async(url,options)=>{calls.push({url,options});if(response instanceof Error)throw response;return response;}});
  // Load definitions without invoking page initialization or data loading.

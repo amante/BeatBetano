@@ -67,7 +67,7 @@ function renderGames(){
  for(const [group,items] of grouped){
   const sec=make("section",undefined,"daily-group");sec.append(make("h3",group));
   for(const g of items){
-   const row=make("div",undefined,"daily-match");
+   const row=make("div",undefined,"daily-match");if(sport==="nhl"){row.dataset.nhlId=String(g.id).replace(/^nhl[-_:]/,"");row.dataset.home=g.home;row.dataset.away=g.away;}
    row.append(make("span",new Date(g.start_utc).toLocaleTimeString("es-CL",{timeZone:"America/Santiago",hour:"2-digit",minute:"2-digit"}),"daily-time"),
      make("strong",g.away+" — "+g.home),make("span",g.completed?(g.away_score!=null&&g.home_score!=null?g.away_score+" : "+g.home_score:"Finalizado"):({FUT:"Por comenzar",PRE:"Por comenzar",LIVE:"En juego",CRIT:"En juego",STATUS_SCHEDULED:"Por comenzar",STATUS_IN_PROGRESS:"En juego"}[g.status]||g.status||"Programado"),"daily-state"));
    sec.append(row);

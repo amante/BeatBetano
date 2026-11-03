@@ -227,3 +227,12 @@ oficiales y cambio de recinto. No afirma conocer descanso desde el final ni ruta
 kilómetros de viaje. Un partido previo sin jugar tiene estado planificado, y no se
 trata como carga observada. El core verifica su disponibilidad antes del corte y
 registra la observación; mantiene bloqueado el efecto hasta que se ajuste/evalúe.
+
+### On-demand scoreboard
+`nhl-scoreboard-worker.mjs` is a separate public read-only Worker, without cron or
+secrets. Configure ALLOWED_ORIGIN=https://amante.github.io, deploy it, then set
+`nhlScoreboardEndpoint` in frontend/data/runtime-config.json to its HTTPS URL.
+The page requests each displayed game's result once on opening or changing date.
+No polling or scheduled capture is used. Without that endpoint, show the existing
+calendar with an explicit unavailable message. The authenticated dispatcher is
+unchanged.
