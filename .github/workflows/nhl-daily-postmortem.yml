@@ -12,6 +12,8 @@ on:
     paths:
       - 'nhl/daily_postmortem.py'
       - 'nhl/lineup_outcome_dataset.py'
+      - 'nhl/lineup_candidate_evaluation.py'
+      - 'nhl/tests/test_lineup_candidate_evaluation.py'
       - 'nhl/tests/test_lineup_outcome_dataset.py'
       - 'nhl/goalie_prospective_evaluation.py'
       - 'nhl/tests/test_goalie_prospective_evaluation.py'
@@ -30,7 +32,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m unittest nhl.tests.test_lineup_outcome_dataset nhl.tests.test_goalie_prospective_evaluation nhl.tests.test_daily_postmortem nhl.tests.test_pulso_official_outcome_audit_219 nhl.tests.test_historical_postgame_labels nhl.tests.test_pulso_forecast_score_217 nhl.tests.test_pulso_prospective_compare_242 -v
+      - run: python -m unittest nhl.tests.test_lineup_candidate_evaluation nhl.tests.test_lineup_outcome_dataset nhl.tests.test_goalie_prospective_evaluation nhl.tests.test_daily_postmortem nhl.tests.test_pulso_official_outcome_audit_219 nhl.tests.test_historical_postgame_labels nhl.tests.test_pulso_forecast_score_217 nhl.tests.test_pulso_prospective_compare_242 -v
   postmortem:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: test
