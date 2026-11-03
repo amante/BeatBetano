@@ -272,3 +272,9 @@ blocked sides, and distinguish complete observed inputs from training approval.
 Existing runs cannot be overwritten. The 2,811-game goalie archive lacks historical
 skater projections and cannot be relabeled as an independent pregame lineup cohort.
 These records are a prospective research dataset, not an approved trained model.
+
+The skater collector also accepts `--reference prior_lineup_reference.json` to
+capture previous participants absent from today's roster. It deduplicates player
+requests across both identity pools. `identity_candidate_teams` records candidate
+fixture association, not proof that every historical appearance belonged to that
+club. Prior-reference fixture, team and retrieval provenance are checked.
