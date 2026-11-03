@@ -6,20 +6,31 @@
  let index=null,selected=null;
  const reports=new Map();
  const teamNames={ANA:"Anaheim Ducks",BOS:"Boston Bruins",BUF:"Buffalo Sabres",CAR:"Carolina Hurricanes",CBJ:"Columbus Blue Jackets",CGY:"Calgary Flames",CHI:"Chicago Blackhawks",COL:"Colorado Avalanche",DAL:"Dallas Stars",DET:"Detroit Red Wings",EDM:"Edmonton Oilers",FLA:"Florida Panthers",LAK:"Los Angeles Kings",MIN:"Minnesota Wild",MTL:"Montréal Canadiens",NJD:"New Jersey Devils",NSH:"Nashville Predators",NYI:"New York Islanders",NYR:"New York Rangers",OTT:"Ottawa Senators",PHI:"Philadelphia Flyers",PIT:"Pittsburgh Penguins",SEA:"Seattle Kraken",SJS:"San Jose Sharks",STL:"St. Louis Blues",TBL:"Tampa Bay Lightning",TOR:"Toronto Maple Leafs",UTA:"Utah Mammoth",VAN:"Vancouver Canucks",VGK:"Vegas Golden Knights",WPG:"Winnipeg Jets",WSH:"Washington Capitals"};
- function team(code){const el=make("span");el.className="postmortem-team";
+ function team(code,score,winner){const el=make("span");el.className="postmortem-team";
   if(Object.hasOwn(teamNames,code)){const img=make("img");img.src="https://assets.nhle.com/logos/nhl/svg/"+code+"_light.svg";img.alt="";img.width=40;img.height=40;img.loading="lazy";img.addEventListener("error",()=>img.remove());el.append(img);}
-  el.append(make("span",teamNames[code]||code));return el;
+  el.append(make("span",teamNames[code]||code));if(Number.isInteger(score)){const points=make("strong",String(score));points.className="postmortem-score";el.append(points);}if(winner){const trophy=make("span","🏆");trophy.setAttribute("aria-label","Ganador");el.append(trophy);}return el;
  }
  function gamesView(data){const list=make("div");list.className="postmortem-games";
   for(const game of data.games||[]){const card=make("article");card.className="postmortem-game";
-   const title=make("h5");title.append(team(game.away),make("span","vs"),team(game.home));card.append(title);
    const final=game.state==="OFF"||game.state==="FINAL";
-   card.append(make("p",final?"Final: "+game.away+" "+game.away_score+" — "+game.home_score+" "+game.home:"Resultado pendiente"));
-   const winner=game.outcomes?.ml_winner;const label=k=>k==="home"?(teamNames[game.home]||game.home):k==="away"?(teamNames[game.away]||game.away):k==="draw"?"Empate":k==="none"?"Ninguno":k==="yes"?"Sí":k==="no"?"No":k;
-   if(final&&(winner==="home"||winner==="away"))card.append(make("p","Ganó: "+label(winner)+" · Perdió: "+label(winner==="home"?"away":"home")));
+   const winner=game.outcomes?.ml_winner;
+   const title=make("h5");title.append(team(game.away,final?game.away_score:null,final&&winner==="away"),make("span","—"),team(game.home,final?game.home_score:null,final&&winner==="home"));card.append(title);
+   if(!final)card.append(make("p","Resultado pendiente"));
+   const label=k=>k==="home"?(teamNames[game.home]||game.home):k==="away"?(teamNames[game.away]||game.away):k==="draw"?"Empate":k==="none"?"Ninguno":k==="yes"?"Sí":k==="no"?"No":k;
    const rows=(data.market_scores||[]).filter(r=>String(r.game_id)===String(game.game_id));
    if(!rows.length)card.append(make("p","Sin pronóstico guardado para este partido."));
-   for(const row of rows){const probability=row.probabilities?.[row.modal_class];const text=(names[row.market]||row.market)+": "+label(row.modal_class)+(Number.isFinite(probability)?" ("+(probability*100).toFixed(1)+"%)":"")+" · "+(row.modal_correct===true?"Acertado":row.modal_correct===false?"Fallado":"Pendiente");const p=make("p",text);if(row.market==="ml")p.className="postmortem-pick";card.append(p);}
+   for(const row of rows){const probability=row.probabilities?.[row.modal_class];const binary=row.market==="home3"||row.market==="away3";const side=row.market==="home3"?game.home:game.away;
+    const p=make("div");p.className="postmortem-market"+(row.market==="ml"?" postmortem-pick":"");
+    p.append(make("strong",binary?"Ventaja +3":names[row.market]||row.market));
+    const forecast=make("p");forecast.append(make("span","Pronóstico: "));
+    const selectedTeam=binary?side:row.modal_class==="home"?game.home:row.modal_class==="away"?game.away:null;
+    if(selectedTeam)forecast.append(team(selectedTeam));
+    forecast.append(make("span",(binary?(row.modal_class==="yes"?" SÍ alcanza +3":" NO alcanza +3"):selectedTeam?"":label(row.modal_class))+(Number.isFinite(probability)?" ("+(probability*100).toFixed(1)+"%)":"")));p.append(forecast);
+    const actual=make("p");actual.append(make("span","Resultado real: "));
+    const actualTeam=binary?side:row.actual==="home"?game.home:row.actual==="away"?game.away:null;
+    if(actualTeam)actual.append(team(actualTeam));
+    actual.append(make("span",binary?(row.actual==="yes"?" SÍ alcanzó +3":row.actual==="no"?" NO alcanzó +3":"Pendiente"):actualTeam?"":label(row.actual)||"Pendiente"));
+    actual.append(make("strong",row.modal_correct===true?" · ✓ Acertado":row.modal_correct===false?" · ✕ Fallado":" · Pendiente"));p.append(actual);card.append(p);}
    list.append(card);
   }return list;
  }
@@ -40,7 +51,7 @@
   if(!detail){void loadDay(report.date);root.append(make("p","Cargando partidos y pronósticos…"));}
   else if(detail.error)root.append(make("p","No se pudieron cargar los partidos. Recarga la página para volver a intentarlo."));
   else if(detail.loading)root.append(make("p","Cargando partidos y pronósticos…"));
-  else root.append(gamesView(detail));
+  else {root.append(make("p","+3 significa conseguir una ventaja de tres goles, no marcar tres goles en total. En cada línea, el porcentaje corresponde al pronóstico escrito, incluido NO. Ser primero en +3 es un mercado distinto."));root.append(gamesView(detail));}
   const technical=make("details");technical.append(make("summary","Métricas y aprendizaje"));
   const metrics=make("ul");
   for(const row of report.metrics||[])metrics.append(make("li",(names[row.market]||row.market)+": "+row.modal_correct+"/"+row.n+" en la opción más probable · Brier "+row.brier.toFixed(4)));
