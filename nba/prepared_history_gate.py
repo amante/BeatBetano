@@ -3,6 +3,16 @@ import argparse,json
 from datetime import date,datetime,timezone
 from pathlib import Path
 
+def prior_utc_history(rows,target):
+ cutoff=datetime.combine(date.fromisoformat(target),datetime.min.time(),tzinfo=timezone.utc)
+ accepted=[];excluded=[]
+ for row in rows:
+  start=datetime.fromisoformat(row['tipoff_utc'].replace('Z','+00:00'))
+  if start.tzinfo is None:raise ValueError('Missing historical timezone')
+  if start.astimezone(timezone.utc)>=cutoff:excluded.append(str(row.get('game_id','')))
+  else:accepted.append(row)
+ return accepted,excluded
+
 def verify(target,history,audit,players,teams):
  day=date.fromisoformat(target)
  if audit.get("target_date")!=target:raise ValueError("Historical artifact target date differs")
