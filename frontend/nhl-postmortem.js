@@ -22,15 +22,17 @@
    for(const row of rows){const probability=row.probabilities?.[row.modal_class];const binary=row.market==="home3"||row.market==="away3";const side=row.market==="home3"?game.home:game.away;
     const p=make("div");p.className="postmortem-market"+(row.market==="ml"?" postmortem-pick":"");
     p.append(make("strong",binary?"Ventaja +3":names[row.market]||row.market));
-    const forecast=make("p");forecast.append(make("span","Pronóstico: "));
+    const forecast=make("p");
     const selectedTeam=binary?side:row.modal_class==="home"?game.home:row.modal_class==="away"?game.away:null;
     if(selectedTeam)forecast.append(team(selectedTeam));
     forecast.append(make("span",(binary?(row.modal_class==="yes"?" SÍ alcanza +3":" NO alcanza +3"):selectedTeam?"":label(row.modal_class))+(Number.isFinite(probability)?" ("+(probability*100).toFixed(1)+"%)":"")));p.append(forecast);
-    const actual=make("p");actual.append(make("span","Resultado real: "));
-    const actualTeam=binary?side:row.actual==="home"?game.home:row.actual==="away"?game.away:null;
-    if(actualTeam)actual.append(team(actualTeam));
-    actual.append(make("span",binary?(row.actual==="yes"?" SÍ alcanzó +3":row.actual==="no"?" NO alcanzó +3":"Pendiente"):actualTeam?"":label(row.actual)||"Pendiente"));
-    actual.append(make("strong",row.modal_correct===true?" · ✓ Acertado":row.modal_correct===false?" · ✕ Fallado":" · Pendiente"));p.append(actual);card.append(p);}
+    forecast.append(make("strong",row.modal_correct===true?" ✓ Acertado":row.modal_correct===false?" ✕ Fallado":" ◷ Pendiente"));
+    if(row.modal_correct===false){forecast.append(make("span"," · Fue: "));
+     const actualTeam=binary?side:row.actual==="home"?game.home:row.actual==="away"?game.away:null;
+     if(!binary&&actualTeam)forecast.append(team(actualTeam));
+     forecast.append(make("span",binary?(row.actual==="yes"?"SÍ alcanzó +3":"NO alcanzó +3"):actualTeam?"":label(row.actual)));
+    }
+    card.append(p);}
    list.append(card);
   }return list;
  }
