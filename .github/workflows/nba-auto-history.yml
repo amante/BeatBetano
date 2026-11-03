@@ -323,6 +323,7 @@ jobs:
           retention-days: 90
 
       - name: Publish frozen NBA comparison to PULSO
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/pulso_publication.py --snapshot results/nba/prospective/snapshot.json --run-id "${{ github.run_id }}" --output frontend/data/nba-predictions-latest.json
           mkdir -p nba/learning/predictions
