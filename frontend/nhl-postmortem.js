@@ -18,6 +18,8 @@
    if(!final)card.append(make("p","Resultado pendiente"));
    const label=k=>k==="home"?(teamNames[game.home]||game.home):k==="away"?(teamNames[game.away]||game.away):k==="draw"?"Empate":k==="none"?"Ninguno":k==="yes"?"Sí":k==="no"?"No":k;
    const rows=(data.market_scores||[]).filter(r=>String(r.game_id)===String(game.game_id));
+   const graded=rows.filter(r=>typeof r.modal_correct==="boolean"),hits=graded.filter(r=>r.modal_correct).length;
+   if(graded.length){const summary=make("p",hits+"/"+graded.length+" acertados · "+(100*hits/graded.length).toFixed(0)+"% de acierto"+(graded.length<rows.length?" · "+(rows.length-graded.length)+" pendientes":""));summary.className="postmortem-hit-rate";card.append(summary);}
    if(!rows.length)card.append(make("p","Sin pronóstico guardado para este partido."));
    for(const row of rows){const probability=row.probabilities?.[row.modal_class];const binary=row.market==="home3"||row.market==="away3";const side=row.market==="home3"?game.home:game.away;
     const p=make("div");p.className="postmortem-market"+(row.market==="ml"?" postmortem-pick":"");
@@ -26,7 +28,7 @@
     const selectedTeam=binary?side:row.modal_class==="home"?game.home:row.modal_class==="away"?game.away:null;
     if(selectedTeam)forecast.append(team(selectedTeam));
     forecast.append(make("span",(binary?(row.modal_class==="yes"?" SÍ alcanza +3":" NO alcanza +3"):selectedTeam?"":label(row.modal_class))+(Number.isFinite(probability)?" ("+(probability*100).toFixed(1)+"%)":"")));p.append(forecast);
-    forecast.append(make("strong",row.modal_correct===true?" ✓ Acertado":row.modal_correct===false?" ✕ Fallado":" ◷ Pendiente"));
+    const verdict=make("strong",row.modal_correct===true?" ✓ Acertado":row.modal_correct===false?" ⛔ Fallado":" ◷ Pendiente");verdict.className=row.modal_correct===false?"postmortem-miss":row.modal_correct===true?"postmortem-hit":"postmortem-pending";forecast.append(verdict);
     if(row.modal_correct===false){forecast.append(make("span"," · Fue: "));
      const actualTeam=binary?side:row.actual==="home"?game.home:row.actual==="away"?game.away:null;
      if(!binary&&actualTeam)forecast.append(team(actualTeam));
