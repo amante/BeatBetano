@@ -51,6 +51,7 @@
     const side=make("div",undefined,"nhl-probability");side.append(make("span",team),make("strong",pct(value)));probabilities.append(side);
    }
    card.append(probabilities);
+   card.append(window.PulsoNhlMinuteML.create(g));
    card.append(window.PulsoNhlGoalieComparison.create(data,g));
    card.append(window.PulsoNhlContext.create(g));
    card.append(window.PulsoNhlAbsenceExposure.create(g));
@@ -89,6 +90,7 @@
  }
  document.addEventListener("pulso:date-change",render);
  window.PulsoNhlContext.ready.then(render);
+ window.PulsoNhlMinuteML.ready.then(render);
  window.PulsoNhlAbsenceExposure.ready.then(render);
  window.PulsoNhlGoalieComparison.ready.then(render);
  render();

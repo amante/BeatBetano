@@ -12,6 +12,8 @@ on:
       - 'nhl/lineup_changes.py'
       - 'nhl/lineup_features.py'
       - 'nhl/absence_exposure.py'
+      - 'nhl/minute_adjusted_ml.py'
+      - 'nhl/tests/test_minute_adjusted_ml.py'
       - 'nhl/tests/test_absence_exposure.py'
       - 'nhl/freeze_lineup_dataset.py'
       - 'nhl/tests/test_freeze_lineup_dataset.py'
@@ -348,6 +350,8 @@ jobs:
             --slate frontend/data/nhl-complete-slate-latest.json \
             --run-id "${{ github.run_id }}" \
             --out frontend/data/nhl-daily-predictions-latest.json
+      - name: Calculate explicit minute-based Poisson ML sensitivity
+        run: python -m nhl.minute_adjusted_ml --publication frontend/data/nhl-daily-predictions-latest.json --exposure frontend/data/nhl-absence-exposure.json --output frontend/data/nhl-minute-adjusted-ml.json
       - name: Execute compatible goalie ML candidate or record explicit unavailability
         env:
           REQUESTED_DAY: ${{ inputs.day }}
@@ -383,7 +387,7 @@ jobs:
           git add -f nhl/learning/goalie-predictions/run-${{ github.run_id }}.json frontend/data/nhl-goalie-comparison-latest.json
           git add -f nhl/learning/lineups/run-${{ github.run_id }}.json nhl/learning/lineups/run-${{ github.run_id }}.sources.json.gz
           git add -f nhl/learning/pregame/run-${{ github.run_id }}.json nhl/learning/pregame/run-${{ github.run_id }}.sources.json.gz
-          git add -f frontend/data/nhl-absence-exposure.json frontend/data/pulso-nhl-research.json frontend/data/nhl-daily-predictions-latest.json frontend/data/nhl-complete-slate-latest.json frontend/data/nhl-ledger/run-${{ github.run_id }}.json frontend/data/nhl-baseline-latest.json
+          git add -f frontend/data/nhl-minute-adjusted-ml.json frontend/data/nhl-absence-exposure.json frontend/data/pulso-nhl-research.json frontend/data/nhl-daily-predictions-latest.json frontend/data/nhl-complete-slate-latest.json frontend/data/nhl-ledger/run-${{ github.run_id }}.json frontend/data/nhl-baseline-latest.json
           git add -f frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json frontend/data/nhl-prediction-snapshots/run-${{ github.run_id }}.json
           if compgen -G 'frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json' > /dev/null; then
             git add -f frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json
