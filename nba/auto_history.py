@@ -8,6 +8,7 @@ from datetime import date,datetime,timedelta,timezone
 from pathlib import Path
 from espn_games import ingest
 from clean_regular import clean
+from prepared_history_gate import prior_utc_history
 
 COMPLETE_SEASONS=[(2024,"2023-10-24","2024-04-14"),
                   (2025,"2024-10-22","2025-04-13"),
@@ -37,6 +38,7 @@ def build(output,game_date,as_of,root):
                        CURRENT_START.isoformat(),current_end.isoformat())
         if any(int(g["season"])!=2027 for g in current):
             raise ValueError("Current-season source classification wrong")
+    current,excluded_utc_ids=prior_utc_history(current,game_date)
     ids=set()
     all_rows=sorted(clean_history+current,key=lambda g:(g["tipoff_utc"],str(g["game_id"])))
     for g in all_rows:
@@ -48,7 +50,7 @@ def build(output,game_date,as_of,root):
     target.write_text(json.dumps(all_rows,indent=2))
     metadata={"created_at_utc":observed.isoformat(),"target_date":game_date,
        "clean_historical_games":len(clean_history),"current_prior_games":len(current),
-       "source_count":len(all_rows),"cleaning":audit,
+       "source_count":len(all_rows),"excluded_target_utc_game_ids":excluded_utc_ids,"cleaning":audit,
        "restriction":"No games on or after target UTC date"}
     (target.parent/"history_audit.json").write_text(json.dumps(metadata,indent=2))
     return metadata
