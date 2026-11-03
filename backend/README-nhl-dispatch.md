@@ -246,3 +246,12 @@ Roster teams are identity provenance, not proof that past appearances were playe
 for that club. These are player histories, including previous clubs in the season.
 The capture does not manufacture expected deployment, a baseline lineup or #247
 availability packages, and does not promote descriptive indices to probabilities.
+
+### Prior-game lineup reference
+`prior_lineup_reference.json` captures actual participants and TOI from each team's
+previous completed official boxscore, selected by the schedule context. Zero-minute
+bench entries are excluded. Identity, final state and pregame retrieval are checked;
+raw responses and SHA-256 provenance are retained. This is a historical comparison
+reference, not a confirmed/projected next-game lineup or prospective deployment.
+No missing player is automatically classified injured, and #247 packages remain
+blocked until separately sourced expected lineup and deployment are available.
