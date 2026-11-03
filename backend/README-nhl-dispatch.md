@@ -255,3 +255,12 @@ raw responses and SHA-256 provenance are retained. This is a historical comparis
 reference, not a confirmed/projected next-game lineup or prospective deployment.
 No missing player is automatically classified injured, and #247 packages remain
 blocked until separately sourced expected lineup and deployment are available.
+
+### Projected lineup changes
+`lineup_changes.json` joins frozen #290 player identities, prior-game participants
+and #302 player histories by fixture/team/player ID. Complete projected skater
+identities are required. Entries show out/new projected IDs, historical TOI,
+individual prior counts and missing history IDs. Injuries/scratches remain separate
+source assertions. This produces a descriptive comparison; it does not synthesize
+prospective deployment shares or use the old hand-weighted offense index as a
+validated probability contribution. No #247 eligible package is fabricated.
