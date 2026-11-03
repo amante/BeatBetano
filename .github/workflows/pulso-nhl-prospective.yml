@@ -11,6 +11,8 @@ on:
       - 'nhl/prior_lineup_reference.py'
       - 'nhl/lineup_changes.py'
       - 'nhl/lineup_features.py'
+      - 'nhl/freeze_lineup_dataset.py'
+      - 'nhl/tests/test_freeze_lineup_dataset.py'
       - 'nhl/tests/test_lineup_features.py'
       - 'nhl/tests/test_lineup_changes.py'
       - 'nhl/tests/test_prior_lineup_reference.py'
@@ -52,7 +54,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m unittest nhl.tests.test_lineup_features nhl.tests.test_lineup_changes nhl.tests.test_prior_lineup_reference nhl.tests.test_skater_history nhl.tests.test_pulso_live_sporting_246 nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_schedule_context nhl.tests.test_special_teams_capture nhl.tests.test_sporting_connections nhl.tests.test_all_goalie_pairings nhl.tests.test_goalie_ml_inference nhl.tests.test_player_evidence nhl.tests.test_match_context nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
+      - run: python -m unittest nhl.tests.test_freeze_lineup_dataset nhl.tests.test_lineup_features nhl.tests.test_lineup_changes nhl.tests.test_prior_lineup_reference nhl.tests.test_skater_history nhl.tests.test_pulso_live_sporting_246 nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_schedule_context nhl.tests.test_special_teams_capture nhl.tests.test_sporting_connections nhl.tests.test_all_goalie_pairings nhl.tests.test_goalie_ml_inference nhl.tests.test_player_evidence nhl.tests.test_match_context nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
   capture:
     if: github.event_name != 'pull_request'
     needs: test
@@ -296,6 +298,11 @@ jobs:
           DAY="${{ inputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.lineup_features --changes "results/pulso/nhl/$DAY/lineup_changes.json" --output "results/pulso/nhl/$DAY/lineup_features.json"
+      - name: Preserve immutable prospective lineup dataset and source archive
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.freeze_lineup_dataset --directory "results/pulso/nhl/$DAY" --destination "nhl/learning/lineups/run-${{ github.run_id }}.json" --run-id "${{ github.run_id }}"
       - name: Freeze experimental five-market predictions before puck drop
         run: |
           DAY="${{ inputs.day }}"
@@ -366,6 +373,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -f nhl/learning/goalie-predictions/run-${{ github.run_id }}.json frontend/data/nhl-goalie-comparison-latest.json
+          git add -f nhl/learning/lineups/run-${{ github.run_id }}.json nhl/learning/lineups/run-${{ github.run_id }}.sources.json.gz
           git add -f nhl/learning/pregame/run-${{ github.run_id }}.json nhl/learning/pregame/run-${{ github.run_id }}.sources.json.gz
           git add -f frontend/data/pulso-nhl-research.json frontend/data/nhl-daily-predictions-latest.json frontend/data/nhl-complete-slate-latest.json frontend/data/nhl-ledger/run-${{ github.run_id }}.json frontend/data/nhl-baseline-latest.json
           git add -f frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json frontend/data/nhl-prediction-snapshots/run-${{ github.run_id }}.json

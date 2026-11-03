@@ -264,3 +264,11 @@ individual prior counts and missing history IDs. Injuries/scratches remain separ
 source assertions. This produces a descriptive comparison; it does not synthesize
 prospective deployment shares or use the old hand-weighted offense index as a
 validated probability contribution. No #247 eligible package is fabricated.
+
+### Permanent lineup research dataset
+Each prospective run now saves `nhl/learning/lineups/run-ID.json` and a compressed
+source bundle to the repository. Records freeze before scheduled start, preserve
+blocked sides, and distinguish complete observed inputs from training approval.
+Existing runs cannot be overwritten. The 2,811-game goalie archive lacks historical
+skater projections and cannot be relabeled as an independent pregame lineup cohort.
+These records are a prospective research dataset, not an approved trained model.
