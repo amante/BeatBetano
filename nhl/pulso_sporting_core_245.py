@@ -36,7 +36,7 @@ def contribution(name,source,source_asof,observed,applied=False,effect=None,bloc
  return {"module":name,"source":source,"as_of":source_asof,"observed":observed,
          "applied_to_sporting_probability":applied,"probability_delta":effect,
          "blocker":blocker if not applied else None}
-def integrate(report,bridge,packages,unit_research=None,live_sporting=None,individual_evidence=None,goalie_daily=None,goalie_identity=None):
+def integrate(report,bridge,packages,unit_research=None,live_sporting=None,individual_evidence=None,goalie_daily=None,goalie_identity=None,schedule_context=None):
  if report.get("data_kind")!="source_readiness_only" or report.get("official_predictions")!=0:
   raise ValueError("Raw pregame source report required")
  captured=parse_utc(report["generated_at_utc"])
@@ -50,6 +50,10 @@ def integrate(report,bridge,packages,unit_research=None,live_sporting=None,indiv
   raise ValueError('Individual evidence timestamp mismatch')
  individual_by_id={str(g['game_id']):g for g in individual_evidence.get('games',[])} if individual_evidence else {}
  goalie_index=goalie_join(report,goalie_identity,goalie_daily) if goalie_daily is not None and goalie_identity is not None else {}
+ if schedule_context is not None:
+  if schedule_context.get('kind')!='nhl_official_schedule_context_v1' or parse_utc(schedule_context['source_capture_as_of'])!=captured or parse_utc(schedule_context['as_of_utc'])>asof:raise ValueError('Schedule context outside analysis cutoff')
+ schedule_by_id={str(g['game_id']):g for g in (schedule_context or {}).get('games',[])}
+ if len(schedule_by_id)!=len((schedule_context or {}).get('games',[])):raise ValueError('Duplicate schedule context fixture')
  quant=verified_signals(bridge,packages)
  seen=set();out=[]
  for fixture in report["games"]:
@@ -89,6 +93,10 @@ def integrate(report,bridge,packages,unit_research=None,live_sporting=None,indiv
    details[team]["individual_player_goalie_evidence"]=individual["teams"].get(team) if individual else None
   for team in details:
    details[team]["candidate_goalie_daily_evidence"]=goalie_index.get(gid,{}).get(team)
+  schedule=schedule_by_id.get(gid)
+  if schedule and any(schedule[k]!=fixture[k] for k in ('home','away','start_utc')):raise ValueError('Schedule context fixture mismatch')
+  for team in details:details[team]['schedule_context']=(schedule or {}).get('teams',{}).get(team)
+  schedule_observed=bool(schedule and all(schedule.get('teams',{}).get(team,{}).get('status')=='observed_schedule_context' for team in details))
   ctx=rivalry_context(fixture["home"],fixture["away"])
   annotations={
    "crs":{"observed":both("crs"),"blocker":"no fitted and complete roster strength valuation"},
@@ -97,7 +105,7 @@ def integrate(report,bridge,packages,unit_research=None,live_sporting=None,indiv
    "defensive_units":{"observed":all(k in unit_obs for k in UNITS[3:]),"blocker":"defensive ratings and deployment not fitted"},
    "goalie_daily":{"observed":both("goalie"),"blocker":"goalie identity, fatigue/GSAx and fitted delta incomplete"},
    "special_teams":{"observed":both("special_teams"),"blocker":"fitted opponent PP/PK matchup coefficient missing"},
-   "venue_rest_travel":{"observed":False,"blocker":"complete verified rest/travel/B2B observations and fitted effects missing"},
+   "venue_rest_travel":{"observed":schedule_observed,"blocker":"schedule gaps/B2B/venues observed when available; actual rest, travel routes and fitted effects missing"},
    "division_rivalry":{"observed":ctx["divisional"] or ctx["rivalry"],"blocker":"rivalry contextual probability coefficients uncalibrated"},
    "quality_momentum":{"observed":False,"blocker":"opponent-adjusted quality momentum coefficient not fitted"},
    "sporting_ml":{"observed":False,"blocker":"no validated joint sporting ML weights"},
@@ -124,6 +132,7 @@ def integrate(report,bridge,packages,unit_research=None,live_sporting=None,indiv
 def main():
  p=argparse.ArgumentParser()
  for x in ("report","bridge","packages","out"):p.add_argument("--"+x,required=True)
+ p.add_argument("--schedule-context")
  p.add_argument("--unit-research")
  p.add_argument("--live-sporting")
  p.add_argument("--individual-evidence")
@@ -131,7 +140,7 @@ def main():
  p.add_argument("--goalie-identity")
  a=p.parse_args()
  load=lambda path:json.loads(Path(path).read_text())
- result=integrate(load(a.report),load(a.bridge),load(a.packages),load(a.unit_research) if a.unit_research else None,load(a.live_sporting) if a.live_sporting else None,load(a.individual_evidence) if a.individual_evidence else None, load(a.goalie_daily) if a.goalie_daily else None, load(a.goalie_identity) if a.goalie_identity else None)
+ result=integrate(load(a.report),load(a.bridge),load(a.packages),load(a.unit_research) if a.unit_research else None,load(a.live_sporting) if a.live_sporting else None,load(a.individual_evidence) if a.individual_evidence else None, load(a.goalie_daily) if a.goalie_daily else None, load(a.goalie_identity) if a.goalie_identity else None,load(a.schedule_context) if a.schedule_context else None)
  dest=Path(a.out);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_text(json.dumps(result,indent=2))
  print(json.dumps({"fixtures":len(result["games"]),"modules":result["module_count"],"official_predictions":0}))
 if __name__=="__main__":main()

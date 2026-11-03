@@ -5,6 +5,11 @@ on:
       - 'nhl/match_context.py'
       - 'nhl/goalie_ml_inference.py'
       - 'nhl/sporting_packages.py'
+      - 'nhl/special_teams_capture.py'
+      - 'nhl/schedule_context.py'
+      - 'nhl/tests/test_schedule_context.py'
+      - 'nhl/pulso_live_sporting_246.py'
+      - 'nhl/tests/test_special_teams_capture.py'
       - 'nhl/pulso_sporting_bridge_226.py'
       - 'nhl/pulso_sporting_core_245.py'
       - 'nhl/tests/test_sporting_connections.py'
@@ -39,7 +44,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m unittest nhl.tests.test_sporting_connections nhl.tests.test_all_goalie_pairings nhl.tests.test_goalie_ml_inference nhl.tests.test_player_evidence nhl.tests.test_match_context nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
+      - run: python -m unittest nhl.tests.test_pulso_live_sporting_246 nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_schedule_context nhl.tests.test_special_teams_capture nhl.tests.test_sporting_connections nhl.tests.test_all_goalie_pairings nhl.tests.test_goalie_ml_inference nhl.tests.test_player_evidence nhl.tests.test_match_context nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
   capture:
     if: github.event_name != 'pull_request'
     needs: test
@@ -139,7 +144,30 @@ jobs:
             --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
             --daily "results/pulso/nhl/$DAY/goalie_daily_253.json" \
             --out "results/pulso/nhl/$DAY/goalie_names_256.txt"
-      - name: Establish analysis cutoff after goalie source retrieval
+      - name: Capture official NHL prior-day team form and observed PP/PK
+        run: |
+          DAY="${{ inputs.day }}"
+          DAY="${DAY:-$(date -u +%F)}"
+          python -m nhl.pulso_live_sporting_246 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --out "results/pulso/nhl/$DAY/live_sporting_246.json"
+      - name: Capture official schedule gaps, B2B and venue context
+        env:
+          REQUESTED_DAY: ${{ inputs.day }}
+        run: |
+          DAY="${REQUESTED_DAY:-$(date -u +%F)}"
+          python -m nhl.schedule_context \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --output "results/pulso/nhl/$DAY/schedule_context.json"
+      - name: Capture official dated PP and PK counts
+        env:
+          REQUESTED_DAY: ${{ inputs.day }}
+        run: |
+          DAY="${REQUESTED_DAY:-$(date -u +%F)}"
+          python -m nhl.special_teams_capture \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --output "results/pulso/nhl/$DAY/special_teams_counts.json"
+      - name: Establish analysis cutoff after sporting source retrieval
         run: python -c 'from datetime import datetime,timezone; print("SPORTING_ANALYSIS_AS_OF="+datetime.now(timezone.utc).isoformat())' >> "$GITHUB_ENV"
       - name: Normalize observed NHL sporting source evidence
         run: |
@@ -162,18 +190,12 @@ jobs:
             --history "results/pulso/nhl/$DAY/goalie_history_251.json" \
             --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" \
             --analysis-as-of "$SPORTING_ANALYSIS_AS_OF" \
+            --special-teams "results/pulso/nhl/$DAY/special_teams_counts.json" \
             --output "results/pulso/nhl/$DAY/verified_sporting_packages.json"
           python -m nhl.pulso_quantitative_signals_227 \
             --bridge "results/pulso/nhl/$DAY/sporting_bridge.json" \
             --packages "results/pulso/nhl/$DAY/verified_sporting_packages.json" \
             --out "results/pulso/nhl/$DAY/quantitative_signals.json"
-      - name: Capture official NHL prior-day team form and observed PP/PK
-        run: |
-          DAY="${{ inputs.day }}"
-          DAY="${DAY:-$(date -u +%F)}"
-          python -m nhl.pulso_live_sporting_246 \
-            --report "results/pulso/nhl/$DAY/report.json" \
-            --out "results/pulso/nhl/$DAY/live_sporting_246.json"
       - name: Preserve fixture-level individual player and goalie evidence
         run: |
           DAY="${{ inputs.day }}"
@@ -208,6 +230,7 @@ jobs:
             --individual-evidence "results/pulso/nhl/$DAY/individual_evidence_247.json" \
             --goalie-daily "results/pulso/nhl/$DAY/goalie_daily_253.json" \
             --goalie-identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
+            --schedule-context "results/pulso/nhl/$DAY/schedule_context.json" \
             --out "results/pulso/nhl/$DAY/sporting_core_manifest.json"
       - name: Audit fixture-level sporting evidence coverage
         run: |
