@@ -32,4 +32,10 @@ def build(changes):
 if __name__=='__main__':
  import argparse,json
  from pathlib import Path
- p=argparse.ArgumentParser();p.add_argument('--changes',required=True);p.add_argument('--output',required=True);a=p.parse_args();Path(a.output).write_text(json.dumps(build(json.loads(Path(a.changes).read_text())),indent=2))
+ p=argparse.ArgumentParser();p.add_argument('--changes',required=True);p.add_argument('--output',required=True);p.add_argument('--report');a=p.parse_args();result=build(json.loads(Path(a.changes).read_text()))
+ if a.report:
+  from datetime import datetime,timezone
+  report=json.loads(Path(a.report).read_text());fixtures={str(g['game_id']):g for g in report['games']};result['as_of_utc']=datetime.now(timezone.utc).isoformat()
+  for g in result['games']:
+   f=fixtures[str(g['game_id'])];g.update({k:f[k] for k in ('home','away','start_utc')})
+ Path(a.output).write_text(json.dumps(result,indent=2))
