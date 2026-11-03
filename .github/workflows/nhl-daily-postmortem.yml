@@ -11,6 +11,8 @@ on:
   pull_request:
     paths:
       - 'nhl/daily_postmortem.py'
+      - 'nhl/lineup_outcome_dataset.py'
+      - 'nhl/tests/test_lineup_outcome_dataset.py'
       - 'nhl/goalie_prospective_evaluation.py'
       - 'nhl/tests/test_goalie_prospective_evaluation.py'
       - 'nhl/tests/test_daily_postmortem.py'
@@ -28,7 +30,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m unittest nhl.tests.test_goalie_prospective_evaluation nhl.tests.test_daily_postmortem nhl.tests.test_pulso_official_outcome_audit_219 nhl.tests.test_historical_postgame_labels nhl.tests.test_pulso_forecast_score_217 nhl.tests.test_pulso_prospective_compare_242 -v
+      - run: python -m unittest nhl.tests.test_lineup_outcome_dataset nhl.tests.test_goalie_prospective_evaluation nhl.tests.test_daily_postmortem nhl.tests.test_pulso_official_outcome_audit_219 nhl.tests.test_historical_postgame_labels nhl.tests.test_pulso_forecast_score_217 nhl.tests.test_pulso_prospective_compare_242 -v
   postmortem:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: test
@@ -54,12 +56,15 @@ jobs:
           fi
       - name: Join frozen goalie inputs to same-emission baseline and official finals
         run: python -m nhl.goalie_prospective_evaluation --output nhl/learning/goalie-cohort.json
+      - name: Join frozen lineup features to official final labels
+        run: python -m nhl.lineup_outcome_dataset --output nhl/learning/lineup-cohort.json
       - name: Retain audit evidence even when a later step fails
         if: always()
         uses: actions/upload-artifact@v6
         with:
           name: nhl-daily-postmortem-${{ github.run_id }}
           path: |
+            nhl/learning/lineup-cohort.json
             nhl/learning/goalie-cohort.json
             reports/nhl/daily/
             nhl/learning/postmortems/
@@ -71,7 +76,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -f nhl/learning/goalie-cohort.json reports/nhl/daily nhl/learning/postmortems frontend/data/nhl-postmortems frontend/data/nhl-postmortem-latest.json
+          git add -f nhl/learning/lineup-cohort.json nhl/learning/goalie-cohort.json reports/nhl/daily nhl/learning/postmortems frontend/data/nhl-postmortems frontend/data/nhl-postmortem-latest.json
           if ! git diff --cached --quiet; then
             git commit -m 'data(nhl): daily postmortem and learning observations'
             git pull --rebase origin main
