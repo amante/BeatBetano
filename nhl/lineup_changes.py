@@ -28,7 +28,8 @@ def build(evidence,reference,history):
     if rec['cutoff_exclusive']>history['cutoff_exclusive'] or rec['cutoff_exclusive']>=start.date().isoformat():raise ValueError('Invalid historical cutoff')
     if parse_utc(rec['source']['retrieved_at'])>=start:raise ValueError('Late player history')
     return rec
-   def entry(pid):return dict(player_id=pid,name=(new.get(pid) or old[pid]).get('name'),history=observed(pid),previous_toi_seconds=old.get(pid,{}).get('observed_toi_seconds'))
+   roles={p["player_id"]:role for role in ("forwards","defense") for line in side["projected"][role] for p in line}
+   def entry(pid):return dict(position_group=roles.get(pid,old.get(pid,{}).get("role")),player_id=pid,name=(new.get(pid) or old[pid]).get('name'),history=observed(pid),previous_toi_seconds=old.get(pid,{}).get('observed_toi_seconds'))
    teams[team]=dict(status='projected_changes_observed_not_calibrated',out_of_projection=[entry(p) for p in sorted(old.keys()-new.keys())],new_in_projection=[entry(p) for p in sorted(new.keys()-old.keys())],projected_players=[entry(p) for p in sorted(new)],reported_injuries=side['projected'].get('injuries'),reported_scratches=side['projected'].get('scratches'),missing_history_ids=[p for p in sorted(old.keys()|new.keys()) if observed(p) is None],reference_source=prior['source'],editorial_source=game.get('editorial_source'),applied_to_probability=False)
   games.append(dict(game_id=game['game_id'],teams=teams))
  return dict(kind='nhl_projected_lineup_changes_v1',games=games,probabilities_modified=False,limitations=['Out of projection does not establish injury.','Historical TOI is not expected deployment.','Player effects remain unfitted; no probability delta is applied.'])
