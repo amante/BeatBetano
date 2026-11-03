@@ -30,3 +30,12 @@ class HistoryTests(unittest.TestCase):
         from nhl.skater_history import collect
         report=dict(data_kind='source_readiness_only',official_predictions=0,generated_at_utc='2026-11-02T18:00:00Z',games=[dict(home='BOS',away='MTL',start_utc='2026-11-02T23:00:00Z')])
         with self.assertRaises(ValueError):collect(report,dict(rosters=[dict(team='BOS',as_of='2026-11-02T19:00:00Z',source_url='https://api-web.nhle.com/v1/roster/BOS/current',players=[])]))
+    def test_previous_participant_missing_from_current_roster_is_captured(self):
+        from nhl.skater_history import collect
+        report=dict(data_kind='source_readiness_only',official_predictions=0,generated_at_utc='2026-11-02T18:00:00Z',games=[dict(game_id='1',home='BOS',away='MTL',start_utc='2026-11-02T23:00:00Z')])
+        reference=dict(kind='nhl_prior_lineup_reference_v1',games=[dict(game_id='1',teams=dict(BOS=dict(players=[dict(player_id=123,role='forward')],source=dict(url='https://api-web.nhle.com/v1/gamecenter/2/boxscore',retrieved_at='2026-11-02T18:01:00Z'))))])
+        def fetch(pid,season):return {'gameLog':[self.row()]},dict(url=f'https://api-web.nhle.com/v1/player/{pid}/game-log/{season}/2',retrieved_at='2026-11-02T18:02:00Z')
+        x,_=collect(report,dict(rosters=[]),fetch,reference)
+        self.assertIn('123',x['players'])
+        reference['games'][0]['teams']['CAR']=reference['games'][0]['teams'].pop('BOS')
+        with self.assertRaises(ValueError):collect(report,dict(rosters=[]),fetch,reference)

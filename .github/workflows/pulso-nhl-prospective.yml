@@ -215,7 +215,7 @@ jobs:
         run: |
           DAY="${{ inputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
-          python -m nhl.skater_history --report "results/pulso/nhl/$DAY/report.json" --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" --output "results/pulso/nhl/$DAY/skater_history.json"
+          python -m nhl.skater_history --report "results/pulso/nhl/$DAY/report.json" --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" --reference "results/pulso/nhl/$DAY/prior_lineup_reference.json" --output "results/pulso/nhl/$DAY/skater_history.json"
       - name: Preserve fixture-level individual player and goalie evidence
         run: |
           DAY="${{ inputs.day }}"

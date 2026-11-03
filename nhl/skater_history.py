@@ -22,7 +22,7 @@ def summarize(player_id, payload, cutoff_day):
         goals+=g;shots+=s;seconds+=minutes*60+secs;games+=1
     return dict(player_id=player_id,role='skater',skater_games=games,skater_goals=goals,skater_shots=shots,toi_games=games,toi_seconds=seconds,cutoff_exclusive=cutoff_day,applied_to_probability=False)
 
-def collect(report,rosters,fetcher=None):
+def collect(report,rosters,fetcher=None,reference=None):
     from concurrent.futures import ThreadPoolExecutor
     from nhl.pulso_goalie_history_251 import fetch,season_for
     from nhl.pulso_pregame_v7 import parse_utc
@@ -43,6 +43,22 @@ def collect(report,rosters,fetcher=None):
             pid=player['player_id']
             if type(pid) is not int or pid<=0:raise ValueError('Invalid player ID')
             pool.setdefault(pid,set()).add(team)
+    if reference is not None:
+        if reference.get('kind')!='nhl_prior_lineup_reference_v1':raise ValueError('Invalid prior reference')
+        fixtures={str(g['game_id']):g for g in report['games']}
+        for game in reference['games']:
+            fixture=fixtures.get(str(game['game_id']))
+            if fixture is None:raise ValueError('Reference fixture mismatch')
+            for team,side in game['teams'].items():
+                if team not in (fixture['home'],fixture['away']):raise ValueError('Reference team mismatch')
+                if not side.get('players'):continue
+                source=side['source']
+                if parse_utc(source['retrieved_at'])>=starts[team] or not source['url'].startswith('https://api-web.nhle.com/v1/gamecenter/'):raise ValueError('Invalid reference source')
+                for player in side['players']:
+                    if player['role']=='goalie':continue
+                    pid=player['player_id']
+                    if type(pid) is not int or pid<=0:raise ValueError('Invalid reference player')
+                    pool.setdefault(pid,set()).add(team)
     season=season_for(at.date().isoformat());cutoff=at.date().isoformat()
     def one(item):
         pid,clubs=item
@@ -51,7 +67,7 @@ def collect(report,rosters,fetcher=None):
             stamp=parse_utc(source['retrieved_at'])
             if stamp<at or any(stamp>=starts[t] for t in clubs):raise ValueError('Source outside pregame capture window')
             if source['url']!=f'https://api-web.nhle.com/v1/player/{pid}/game-log/{season}/2':raise ValueError('Unexpected history source')
-            return str(pid),dict(summarize(pid,payload,cutoff),source=source,roster_teams=sorted(clubs)),payload,None
+            return str(pid),dict(summarize(pid,payload,cutoff),source=source,identity_candidate_teams=sorted(clubs)),payload,None
         except (OSError,ValueError,KeyError,TypeError) as e:return str(pid),None,None,str(e)[:160]
     with ThreadPoolExecutor(max_workers=4) as executor:rows=list(executor.map(one,pool.items()))
     return dict(kind='nhl_skater_history_capture_v1',source_capture_as_of=report['generated_at_utc'],season=season,cutoff_exclusive=cutoff,players={pid:r for pid,r,_,e in rows if e is None},errors={pid:e for pid,_,_,e in rows if e is not None},missing_roster_teams=sorted(teams-seen),applied_to_probability=False,limitations=['Roster identity is not an expected lineup.','Historical TOI is not expected deployment.','Independent baseline lineup and fitted player effects remain required.']),{pid:p for pid,_,p,e in rows if e is None}
@@ -61,6 +77,7 @@ if __name__=='__main__':
     from pathlib import Path
     p=argparse.ArgumentParser()
     for name in ('report','rosters','output'):p.add_argument('--'+name,required=True)
-    a=p.parse_args();result,raw=collect(json.loads(Path(a.report).read_text()),json.loads(Path(a.rosters).read_text()))
+    p.add_argument('--reference')
+    a=p.parse_args();result,raw=collect(json.loads(Path(a.report).read_text()),json.loads(Path(a.rosters).read_text()),reference=json.loads(Path(a.reference).read_text()) if a.reference else None)
     out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(result,indent=2));out.with_suffix('.sources.json.gz').write_bytes(gzip.compress(json.dumps(raw).encode(),mtime=0))
     print(json.dumps(dict(players=len(result['players']),errors=len(result['errors']))))
