@@ -9,7 +9,7 @@ def build(captures,postmortems):
         if report.get('kind')!='nhl_daily_postmortem':raise ValueError('Postmortem required')
         for game in report.get('games',[]):
             if game.get('state') not in ('OFF','FINAL'):continue
-            gid=str(game['game_id']);outcome=game.get('outcomes',{}).get('ml_winner')
+            gid=str(game['game_id']);outcomes=game.get('outcomes') or {};outcome=outcomes.get('ml_winner')
             if outcome not in ('home','away'):continue
             value=dict(home=game['home'],away=game['away'],start_utc=game['start_utc'],ml_winner=outcome)
             if gid in labels and labels[gid]!=value:raise ValueError('Conflicting final labels')
