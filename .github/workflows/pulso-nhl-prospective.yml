@@ -317,41 +317,6 @@ jobs:
           DAY="${{ inputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.freeze_lineup_dataset --directory "results/pulso/nhl/$DAY" --destination "nhl/learning/lineups/run-${{ github.run_id }}.json" --run-id "${{ github.run_id }}"
-      - name: Assemble and run integrated NHL scenarios from pregame evidence
-        env:
-          REQUESTED_DAY: ${{ inputs.day }}
-        run: |
-          DAY="${REQUESTED_DAY:-$(date -u +%F)}"
-          python -m nhl.joint_match_input_builder_321 \
-            --report "results/pulso/nhl/$DAY/report.json" \
-            --context "nhl/learning/pregame/run-${{ github.run_id }}.json" \
-            --changes "results/pulso/nhl/$DAY/lineup_changes.json" \
-            --goalies "results/pulso/nhl/$DAY/all_goalie_candidates_260.json" \
-            --special-teams "results/pulso/nhl/$DAY/special_teams_counts.json" \
-            --cutoff "$DAY" \
-            --output "results/pulso/nhl/$DAY/joint_match_inputs_321.json"
-          RUN_DAY="$DAY" python - <<'PY'
-          import json, os
-          from pathlib import Path
-          from nhl.joint_match_engine_320 import run
-          directory = Path("results/pulso/nhl") / os.environ["RUN_DAY"]
-          batch = json.loads((directory / "joint_match_inputs_321.json").read_text())
-          executed, blocked = [], list(batch["blocked_games"])
-          for inputs in batch["games"]:
-              try:
-                  executed.append(run(inputs))
-              except (ValueError, KeyError, TypeError) as error:
-                  blocked.append({"game_id": inputs["game_id"], "home": inputs["home"],
-                    "away": inputs["away"], "reason": str(error)[:240]})
-          result = {"kind":"nhl_joint_match_daily_runs_v322", "date":batch["date"],
-            "generated_at_utc":batch["generated_at_utc"], "games":executed,
-            "blocked_games":blocked, "official":False, "calibrated":False,
-            "odds_used":False, "public_base_replaced":False,
-            "note":"Internal execution evidence only; not the public PULSO forecast feed."}
-          (directory / "joint_match_runs_322.json").write_text(json.dumps(result, indent=2) + "\n")
-          print(json.dumps({"executed":len(executed), "blocked":len(blocked),
-            "official":False, "calibrated":False}))
-          PY
       - name: Freeze experimental five-market predictions before puck drop
         run: |
           DAY="${{ inputs.day }}"
@@ -436,3 +401,62 @@ jobs:
             git pull --rebase origin main
             git push origin HEAD:main
           fi
+
+  integrated-model:
+    if: github.event_name != 'pull_request'
+    needs: capture
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v6
+        with:
+          name: pulso-nhl-pregame-evidence-${{ github.run_id }}
+          path: .
+      - name: Assemble and run integrated NHL scenarios from captured evidence
+        env:
+          REQUESTED_DAY: ${{ inputs.day }}
+        run: |
+          DAY="${REQUESTED_DAY:-$(date -u +%F)}"
+          python -m nhl.joint_match_input_builder_321 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --context "nhl/learning/pregame/run-${{ github.run_id }}.json" \
+            --changes "results/pulso/nhl/$DAY/lineup_changes.json" \
+            --goalies "results/pulso/nhl/$DAY/all_goalie_candidates_260.json" \
+            --special-teams "results/pulso/nhl/$DAY/special_teams_counts.json" \
+            --cutoff "$DAY" \
+            --output "results/pulso/nhl/$DAY/joint_match_inputs_321.json"
+          RUN_DAY="$DAY" python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from nhl.joint_match_engine_320 import run
+          directory = Path("results/pulso/nhl") / os.environ["RUN_DAY"]
+          batch = json.loads((directory / "joint_match_inputs_321.json").read_text())
+          executed, blocked = [], list(batch["blocked_games"])
+          for inputs in batch["games"]:
+              try:
+                  executed.append(run(inputs))
+              except (ValueError, KeyError, TypeError) as error:
+                  blocked.append({"game_id": inputs["game_id"], "home": inputs["home"],
+                    "away": inputs["away"], "reason": str(error)[:240]})
+          result = {"kind":"nhl_joint_match_daily_runs_v322", "date":batch["date"],
+            "generated_at_utc":batch["generated_at_utc"], "games":executed,
+            "blocked_games":blocked, "official":False, "calibrated":False,
+            "odds_used":False, "public_base_replaced":False,
+            "note":"Internal execution evidence only; not the public PULSO forecast feed."}
+          (directory / "joint_match_runs_322.json").write_text(json.dumps(result, indent=2) + "\n")
+          print(json.dumps({"executed":len(executed), "blocked":len(blocked),
+            "official":False, "calibrated":False}))
+          PY
+      - uses: actions/upload-artifact@v6
+        with:
+          name: pulso-nhl-joint-model-${{ github.run_id }}
+          path: results/pulso/nhl/
+          retention-days: 90
