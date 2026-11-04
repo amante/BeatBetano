@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-import joint_input_builder_321 as builder
+import nhl.joint_match_input_builder_321 as builder
 
 class BuilderTests(unittest.TestCase):
     def test_season_uses_nhl_season_boundary(self):
