@@ -9,6 +9,9 @@ class DatasetTests(unittest.TestCase):
   x=build([later,c],[p]);self.assertEqual(len(x['rows']),1);self.assertEqual(x['rows'][0]['feature_as_of_utc'],c['records'][0]['frozen_at_utc']);self.assertEqual(x['rows'][0]['target_ml_home'],1)
  def test_pending_and_incomplete_not_training_rows(self):
   c,p=self.inputs();self.assertEqual(build([c],[])['rows'],[]);c['records'][0]['complete_observed_inputs']=False;self.assertEqual(build([c],[p])['rows'],[])
+ def test_null_outcomes_are_skipped_and_do_not_block_other_labels(self):
+  c,p=self.inputs();p['games'].append(dict(game_id='2',home='TOR',away='OTT',start_utc='2026-11-03T01:00:00Z',state='OFF',outcomes=None))
+  result=build([c],[p]);self.assertEqual(len(result['rows']),1);self.assertEqual(result['rows'][0]['target_ml_home'],1)
  def test_poststart_and_identity_mismatch_rejected(self):
   c,p=self.inputs();p['games'][0]['home']='CAR'
   with self.assertRaises(ValueError):build([c],[p])
