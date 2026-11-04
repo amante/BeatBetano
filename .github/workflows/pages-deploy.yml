@@ -57,6 +57,8 @@ jobs:
           python -m unittest nhl.tests.test_match_context -v
           node --test frontend/tests/nhl-calendar.test.mjs
           node --check frontend/nhl-five-market.js
+          node --check frontend/nhl-joint-model.js
+          node frontend/tests/nhl-joint-model.test.cjs
           node --test backend/tests/*.test.mjs frontend/tests/nhl-dispatch.test.cjs
           node --check frontend/nhl-plus3-average.js
           node --test frontend/tests/nhl-plus3-average.test.cjs

@@ -1,0 +1,13 @@
+const assert=require('assert');
+const {validate,selectDate}=require('../nhl-joint-model.js');
+const scenario={home_goalie:{name:'Goalie H',starter_confirmed:false},away_goalie:{name:'Goalie A',starter_confirmed:false},expected_goals:{home:3.1,away:2.8},markets:{illustrative_ml:{home:.55,away:.45},regulation:{home:.43,draw:.18,away:.39},three_goal_lead:{home:.38,away:.32},first_to_three_goal_lead:{home:.4,away:.34}}};
+const game={game_id:'2026020123',home:'BOS',away:'MTL',start_utc:'2026-11-05T00:00:00Z',captured_at_utc:'2026-11-04T20:00:00Z',status:'conditional_unvalidated_scenarios',publishable:false,calibrated:false,scenario_count:1,scenarios:[scenario]};
+const feed={kind:'nhl_joint_match_daily_runs_v322',date:'2026-11-04',generated_at_utc:'2026-11-04T20:01:00Z',published_at_utc:'2026-11-04T20:02:00Z',run_id:'123',official:false,calibrated:false,odds_used:false,public_base_replaced:false,games:[game],blocked_games:[]};
+assert.strictEqual(validate(feed),true,'accepts conditional scenarios');
+assert.strictEqual(selectDate(feed,'2026-11-04').length,1,'selects matching slate date');
+assert.strictEqual(selectDate(feed,'2026-11-03'),null,'does not reuse another date');
+assert.strictEqual(validate({...feed,games:[{...game,scenarios:[{...scenario,markets:{...scenario.markets,illustrative_ml:{home:.6,away:.45}}}]}]}),false,'rejects invalid probability sums');
+assert.strictEqual(validate({...feed,games:[game,game]}),false,'rejects duplicate games');
+assert.strictEqual(validate({...feed,games:[{...game,captured_at_utc:game.start_utc}]}),false,'rejects post-start capture');
+assert.strictEqual(validate({...feed,public_base_replaced:true}),false,'rejects baseline replacement flag');
+console.log('7 integrated feed checks passed');
