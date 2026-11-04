@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from prospective import generate
-from reproducible_slate import build, markdown
+from reproducible_slate import build, markdown, digest
 
 ROOT=Path(__file__).resolve().parents[2]/'reports'/'nba-2026-11-04'
 
@@ -17,7 +17,17 @@ class Nov4ArchiveTests(unittest.TestCase):
         for name,expected in load('manifest')['files'].items():
             self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),expected,name)
         snap=load('snapshot')
-        self.assertEqual(generate(load('history'),load('fixtures'),snap['created_at_utc']),snap)
+        self.assertEqual(digest({k:v for k,v in snap.items() if k!='content_sha256'}),snap['content_sha256'])
+        replay=generate(load('history'),load('fixtures'),snap['created_at_utc'])
+        # libm exp/pow can differ by one ULP between macOS and Linux.
+        # Preserve original archive bytes/digest, compare probabilities at
+        # 1e-12 absolute tolerance, and require every other field to be exact.
+        for expected,actual in zip(snap['predictions'],replay['predictions']):
+            for key in ('elo_p_home','challenger_p_home','hybrid_p_home'):
+                self.assertAlmostEqual(actual[key],expected[key],delta=1e-12)
+                actual[key]=expected[key]
+        replay['content_sha256']=snap['content_sha256']
+        self.assertEqual(replay,snap)
         self.assertEqual(len(snap['predictions']),13)
         self.assertEqual(load('history_audit')['cleaning']['coverage_verified'],True)
         self.assertEqual(len([g for g in load('history') if g['season']!=2027]),3690)

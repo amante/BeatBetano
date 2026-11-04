@@ -96,7 +96,7 @@ python -m unittest discover -s nba/tests -v
 
 Outputs use exclusive creation; choose new output paths. Recompute the frozen
 MLs with `prospective.generate(history, fixtures, snapshot.created_at_utc)`;
-its digest must equal the archived snapshot digest. `manifest.json` records
+replayed probabilities must agree within 1e-12 absolute tolerance. macOS and Linux libm can differ by one floating-point ULP; all other fields must match exactly. The original snapshot's own digest is verified byte-for-byte without changing it. `manifest.json` records
 SHA-256 of every source/derived artifact before manifest creation. Scoreboard
 and summary adapters whitelist sports fields; bookmaker data is not archived
 or consumed as model input.
@@ -115,7 +115,7 @@ No web publication, model promotion or merge is performed by this PR.
 
 ## Validation limits
 
-Unit tests and exact replay establish arithmetic, identity, missing-data,
+Unit tests and replay (ML tolerance 1e-12) establish arithmetic, identity, missing-data,
 minute-budget, hash and timestamp controls. They do not validate predictive
 calibration. Today's outcomes were unavailable at freeze. No postgame accuracy,
 Brier improvement, or sporting-model superiority is claimed. Existing Elo and
