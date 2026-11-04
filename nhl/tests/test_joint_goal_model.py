@@ -13,4 +13,4 @@ class JointTests(unittest.TestCase):
  def test_missing_and_unidentifiable_block(self):
   with self.assertRaises(ValueError):predict({},self.side(),self.model())
   with self.assertRaises(ValueError):fit([])
-  with self.assertRaises(ValueError):fit([dict(features=self.side(),regulation_goals=2)]*20)
+  with self.assertRaises(ValueError):fit([dict(game_id=str(i),team='BOS',feature_as_of_utc='2026-11-01T10:00:00Z',start_utc='2026-11-01T20:00:00Z',features=self.side(),regulation_goals=2) for i in range(20)])
