@@ -1,0 +1,149 @@
+{
+  "sha256": "04817349be905719cd530694b4c702755676de7fc604a3d157236cfdf213dc87",
+  "payload": {
+    "run_id": "41909590949",
+    "source_report": {
+      "generated_at_utc": "2026-11-04T20:45:40.761948+00:00",
+      "date": "2026-11-04",
+      "data_kind": "source_readiness_only",
+      "game_count": 4,
+      "games": [
+        {
+          "sport": "nhl",
+          "game_id": "2026020247",
+          "home": "BUF",
+          "away": "OTT",
+          "start_utc": "2026-11-05T00:30:00Z",
+          "status": "unavailable",
+          "probabilities": null,
+          "readiness_issues": [
+            "roster_snapshot_not_connected",
+            "goalie_identity_and_confirmation_not_verified",
+            "team_rate_model_not_calibrated"
+          ],
+          "goalie_provider_observations": {
+            "BUF": {
+              "status": "confirmed",
+              "source_count": 1,
+              "provider_goalie_name": "Colten Ellis",
+              "confirmed_as_official": false
+            },
+            "OTT": {
+              "status": "confirmed",
+              "source_count": 1,
+              "provider_goalie_name": "Samuel Ersson",
+              "confirmed_as_official": false
+            }
+          },
+          "odds_used_in_model": false,
+          "official": false
+        },
+        {
+          "sport": "nhl",
+          "game_id": "2026020248",
+          "home": "FLA",
+          "away": "CHI",
+          "start_utc": "2026-11-05T00:30:00Z",
+          "status": "unavailable",
+          "probabilities": null,
+          "readiness_issues": [
+            "roster_snapshot_not_connected",
+            "goalie_identity_and_confirmation_not_verified",
+            "team_rate_model_not_calibrated"
+          ],
+          "goalie_provider_observations": {
+            "FLA": {
+              "status": "confirmed",
+              "source_count": 1,
+              "provider_goalie_name": "Jacob Markstrom",
+              "confirmed_as_official": false
+            },
+            "CHI": {
+              "status": "confirmed",
+              "source_count": 1,
+              "provider_goalie_name": "Spencer Knight",
+              "confirmed_as_official": false
+            }
+          },
+          "odds_used_in_model": false,
+          "official": false
+        },
+        {
+          "sport": "nhl",
+          "game_id": "2026020249",
+          "home": "LAK",
+          "away": "SJS",
+          "start_utc": "2026-11-05T03:00:00Z",
+          "status": "unavailable",
+          "probabilities": null,
+          "readiness_issues": [
+            "roster_snapshot_not_connected",
+            "goalie_identity_and_confirmation_not_verified",
+            "team_rate_model_not_calibrated"
+          ],
+          "goalie_provider_observations": {
+            "LAK": {
+              "status": "unknown",
+              "source_count": 0
+            },
+            "SJS": {
+              "status": "unknown",
+              "source_count": 0
+            }
+          },
+          "odds_used_in_model": false,
+          "official": false
+        },
+        {
+          "sport": "nhl",
+          "game_id": "2026020250",
+          "home": "SEA",
+          "away": "CGY",
+          "start_utc": "2026-11-05T03:00:00Z",
+          "status": "unavailable",
+          "probabilities": null,
+          "readiness_issues": [
+            "roster_snapshot_not_connected",
+            "goalie_identity_and_confirmation_not_verified",
+            "team_rate_model_not_calibrated"
+          ],
+          "goalie_provider_observations": {
+            "SEA": {
+              "status": "confirmed",
+              "source_count": 1,
+              "provider_goalie_name": "Joey Daccord",
+              "confirmed_as_official": false
+            },
+            "CGY": {
+              "status": "confirmed",
+              "source_count": 1,
+              "provider_goalie_name": "Dustin Wolf",
+              "confirmed_as_official": false
+            }
+          },
+          "odds_used_in_model": false,
+          "official": false
+        }
+      ],
+      "official_predictions": 0,
+      "goalie_identity_audit": {
+        "observations": 8,
+        "source_confirmed": 8,
+        "identity_linked": 8,
+        "fixture_linked": 8,
+        "pregame_identity_usable": 8
+      },
+      "official_roster_teams_captured": 8,
+      "roster_capture_errors": {},
+      "nhlcom_editorial_lineup_blocks": 8,
+      "nhlcom_editorial_source_error": null,
+      "limitations": [
+        "NHL official schedule is not a player lineup or goalie confirmation.",
+        "ESPN assertions are provider observations, not independently verified starting-goalie declarations.",
+        "No trained team goal rate is used; all game probabilities remain unavailable."
+      ]
+    }
+  },
+  "immutable_by_policy": true,
+  "storage": "git append-only filename; protected branch permissions required"
+}
