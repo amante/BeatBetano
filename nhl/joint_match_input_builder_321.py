@@ -98,6 +98,8 @@ def build(report, context, changes, goalies, special, cutoff):
     for gid,f in fixtures.items():
         start=utc(f["start_utc"])
         if start <= observed or start <= utc(report["generated_at_utc"]): continue
+        for captured_at in (context.get("as_of_utc"), changes.get("as_of_utc", report["generated_at_utc"]), goalies.get("as_of_utc"), special.get("as_of_utc")):
+            if captured_at and utc(captured_at) >= start: raise ValueError("Pregame evidence captured after puck drop")
         try:
             cg=context_games.get(gid); lg=change_games.get(gid); gg=goalie_games.get(gid)
             if not cg or (cg["home"],cg["away"])!=(f["home"],f["away"]): raise ValueError("missing/mismatched projected fixture")
@@ -123,7 +125,7 @@ def build(report, context, changes, goalies, special, cutoff):
                     if names is None: unknown.append(code+" "+field+" source missing"); continue
                     for person in names:
                         if not person.get("identity_resolved"): unknown.append(code+" unresolved "+field+": "+str(person.get("name"))); continue
-                        p=player_record(person,code);p["availability"]=field[:-1] if field.endswith("s") else field;absent.append(p)
+                        p=player_record(person,code);p["availability"]="injury" if field=="injuries" else "scratch";absent.append(p)
                 candidates=gg["teams"].get(code,[]);glist=[]
                 for g in candidates:
                     if g.get("status")!="observed": raise ValueError(code+" goalie history unavailable")
@@ -142,6 +144,21 @@ def build(report, context, changes, goalies, special, cutoff):
             captured=datetime.now(timezone.utc)
             if captured>=start: raise ValueError("Assembly completed after puck drop")
             manifest=s1+s2+s3+s4+s5
+            editor=cg.get("editorial_source")
+            if not editor or not editor.get("sha256") or not editor.get("url"): raise ValueError("missing dated editorial lineup provenance")
+            editorial_at=utc(cg["feature_as_of_utc"])
+            if editorial_at>=start: raise ValueError("late editorial lineup capture")
+            manifest.append({"url":editor["url"],"sha256":editor["sha256"],"retrieved_at_utc":editorial_at.isoformat()})
+            for source in special.get("sources",[]):
+                stamp=source.get("retrieved_at_utc") or source.get("retrieved_at")
+                if stamp:
+                    if utc(stamp)>=start: raise ValueError("late special-team source")
+                    manifest.append({"url":source.get("url"),"sha256":source.get("sha256"),"retrieved_at_utc":utc(stamp).isoformat()})
+            for code in (f["home"],f["away"]):
+                ref=change_games[gid]["teams"][code].get("reference_source")
+                if ref and ref.get("retrieved_at"):
+                    if utc(ref["retrieved_at"])>=start: raise ValueError("late prior-lineup reference")
+                    manifest.append({"url":ref.get("url"),"sha256":ref.get("sha256"),"retrieved_at_utc":utc(ref["retrieved_at"]).isoformat()})
             for code in (f["home"],f["away"]):
                 if code not in pp_index or code not in pk_index: raise ValueError(code+" missing PP/PK source counts")
                 stat= special.get("teams",{}).get(code,{})
