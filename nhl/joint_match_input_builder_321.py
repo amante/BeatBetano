@@ -4,6 +4,7 @@ from datetime import datetime, timezone, date, timedelta
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+from nhl.pulso_goalie_multisource_257 import TEAM_NAMES, norm
 
 API = "https://api.nhle.com/stats/rest/en"
 
@@ -54,12 +55,20 @@ def build(report, context, changes, goalies, special, cutoff):
     day=date.fromisoformat(cutoff); season=season_for(cutoff)
     skaters,s1=stat_rows("skater/summary",season,cutoff)
     toi_rows,s2=stat_rows("skater/timeonice",season,cutoff)
-    teams,s3=stat_rows("team/summary",season,cutoff,"teamAbbrevs:ASC")
-    pp_rows,s4=stat_rows("team/powerplay",season,cutoff,"teamAbbrevs:ASC")
-    pk_rows,s5=stat_rows("team/penaltykill",season,cutoff,"teamAbbrevs:ASC")
+    teams,s3=stat_rows("team/summary",season,cutoff,"teamFullName:ASC")
+    pp_rows,s4=stat_rows("team/powerplay",season,cutoff,"teamFullName:ASC")
+    pk_rows,s5=stat_rows("team/penaltykill",season,cutoff,"teamFullName:ASC")
     # Stats API source observations must precede the earliest included fixture.
     observed=max(utc(x["retrieved_at_utc"]) for x in s1+s2+s3+s4+s5)
-    pp_index={str(x.get("teamAbbrevs")):x for x in pp_rows};pk_index={str(x.get("teamAbbrevs")):x for x in pk_rows}
+    name_to_code={norm(v):k for k,v in TEAM_NAMES.items()}
+    def index_teams(rows):
+        result={}
+        for row in rows:
+            code=name_to_code.get(norm(row.get("teamFullName","")))
+            if not code or code in result: raise ValueError("Unmapped/duplicate NHL team summary identity")
+            result[code]=row
+        return result
+    pp_index=index_teams(pp_rows);pk_index=index_teams(pk_rows)
     league_opps=sum(number(x,"timesShorthanded") for x in pk_rows)
     league_pp_goals=sum(number(x,"ppGoalsAgainst") for x in pk_rows)
     if not league_opps: raise ValueError("League PK opportunity sample is empty")
@@ -71,8 +80,7 @@ def build(report, context, changes, goalies, special, cutoff):
         player[pid]=row
     toi_by_id={str(x.get("playerId")):x for x in toi_rows}
     if len(toi_by_id)!=len(toi_rows): raise ValueError("Duplicate NHL TOI identity")
-    team_by_code={str(x.get("teamAbbrevs")):x for x in teams}
-    if len(team_by_code)!=len(teams): raise ValueError("Duplicate NHL team summary")
+    team_by_code=index_teams(teams)
     goalie_games={str(g["game_id"]):g for g in goalies.get("games",[])}
     change_games={str(g["game_id"]):g for g in changes.get("games",[])}
     context_games={str(g["game_id"]):g for g in context.get("games",[])}
