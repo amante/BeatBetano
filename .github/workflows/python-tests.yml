@@ -11,5 +11,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Check syntax
-        run: python -m py_compile validation/backtest.py
+      - name: Check syntax and NHL integrated model
+        run: |
+          python -m py_compile validation/backtest.py nhl/joint_match_engine_320.py
+          python -m unittest nhl.tests.test_joint_match_engine_320 -v
