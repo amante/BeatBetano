@@ -483,8 +483,8 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: |
           DAY="${REQUESTED_DAY:-$(date -u +%F)}"
-          SOURCE="results/pulso/nhl/$DAY/joint_match_runs_322.json"
-          test -s "$SOURCE"
+          SOURCE="$(find . -type f -path "*/$DAY/joint_match_runs_322.json" -print -quit)"
+          test -n "$SOURCE" && test -s "$SOURCE"
           python - "$SOURCE" frontend/data/nhl-joint-model-latest.json "$DAY" "$RUN_ID" <<'PY'
           import json, sys
           from datetime import datetime, timezone
@@ -501,7 +501,7 @@ jobs:
               assert game.get("status") == "conditional_unvalidated_scenarios"
           data["published_at_utc"] = datetime.now(timezone.utc).isoformat()
           data["run_id"] = run_id
-          Path(destination).write_text(json.dumps(data, indent=2) + "\\n")
+          Path(destination).write_text(json.dumps(data, indent=2) + "\n")
           print(json.dumps({"date": day, "games": len(data["games"]),
               "blocked": len(data["blocked_games"]), "official": False, "calibrated": False}))
           PY
