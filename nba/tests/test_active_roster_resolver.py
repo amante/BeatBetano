@@ -14,6 +14,11 @@ class Tests(unittest.TestCase):
   r,st,l=feeds();data=resolve(S,r,st,l)["games"]["1"]["teams"]["OKC"]
   self.assertTrue(data["allocation_ready"])
   self.assertEqual(data["players"][5]["status"],"out")
+ def test_probable_is_not_confirmed_active(self):
+  r,st,l=feeds();st["games"]["1"]["teams"]["OKC"][0]["status"]="probable"
+  data=resolve(S,r,st,l)["games"]["1"]["teams"]["OKC"]
+  self.assertFalse(data["allocation_ready"])
+  self.assertEqual(data["players"][0]["status"],"questionable")
  def test_missing_status_unknown(self):
   r,st,l=feeds();st["games"]["1"]["teams"]["OKC"].pop()
   data=resolve(S,r,st,l)["games"]["1"]["teams"]["OKC"]
