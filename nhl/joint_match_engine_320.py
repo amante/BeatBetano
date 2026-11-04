@@ -342,10 +342,15 @@ def _goalie_scenarios(team):
         saves = _num(sv.get("saves"), "goalie saves")
         if saves > shots:
             raise ValueError("Goalie saves exceed shots against")
+        probability=goalie.get("starter_probability")
+        if probability is not None:
+            probability=_num(probability,"goalie starter probability")
+            if probability>1: raise ValueError("Goalie starter probability exceeds one")
         candidates.append({"id": goalie.get("player_id"), "name": goalie.get("name"),
                            "save_pct": saves / shots, "shots_faced": shots,
                            "source_status": goalie.get("candidate_status"),
-                           "starter_confirmed": bool(goalie.get("independently_confirmed_starter"))})
+                           "starter_confirmed": bool(goalie.get("independently_confirmed_starter")),
+                           "starter_probability": probability})
     if not candidates:
         raise ValueError("No observed goalie rates")
     return candidates
@@ -454,10 +459,30 @@ def run(inputs):
             h = _scoring_rate(home, away, ag, league_pk_rate)
             a = _scoring_rate(away, home, hg, league_pk_rate)
             markets = calculate(h["expected_goals"], a["expected_goals"])
-            scenarios.append({"home_goalie": hg, "away_goalie": ag,
+            weight=(hg["starter_probability"]*ag["starter_probability"]
+                    if hg["starter_probability"] is not None and ag["starter_probability"] is not None else None)
+            scenarios.append({"home_goalie": hg, "away_goalie": ag, "scenario_weight": weight,
                               "expected_goals": {"home": h["expected_goals"], "away": a["expected_goals"]},
                               "home_components": h["components"], "away_components": a["components"],
                               "markets": markets})
+    weighted_summary=None
+    if scenarios and all(s["scenario_weight"] is not None for s in scenarios):
+        weight_total=sum(s["scenario_weight"] for s in scenarios)
+        if math.isclose(weight_total,1.0,abs_tol=1e-8):
+            market_keys=("regulation","illustrative_ml","three_goal_lead","first_to_three_goal_lead")
+            weighted_markets={}
+            for key in market_keys:
+                outcomes=scenarios[0]["markets"][key]
+                weighted_markets[key]={name:sum(s["scenario_weight"]*s["markets"][key][name] for s in scenarios)
+                                       for name in outcomes}
+            weighted_summary={
+                "status":"empirically_weighted_scenarios",
+                "method":"independent home/away candidate starter shares from season-to-date gamesStarted divided by team games played",
+                "scenario_weight_sum":weight_total,
+                "expected_goals":{"home":sum(s["scenario_weight"]*s["expected_goals"]["home"] for s in scenarios),
+                                  "away":sum(s["scenario_weight"]*s["expected_goals"]["away"] for s in scenarios)},
+                "markets":weighted_markets,
+                "calibrated":False,"official":False}
     reconstruction = bool(inputs.get("poststart_reconstruction")) or captured >= start
     return {
         "kind": "nhl_joint_match_scenarios_v1",
@@ -471,6 +496,9 @@ def run(inputs):
         "status": "historical_reconstruction_only" if reconstruction else "conditional_unvalidated_scenarios",
         "publishable": False,
         "scenario_count": len(scenarios),
+        "goalie_start_distribution": {home_code: inputs["teams"][home_code].get("goalie_start_distribution"),
+                                      away_code: inputs["teams"][away_code].get("goalie_start_distribution")},
+        "scenario_weighted_summary": weighted_summary,
         "scenarios": scenarios,
         "minute_distribution": {home_code: home["minute_distribution"],
                                 away_code: away["minute_distribution"]},
@@ -493,7 +521,7 @@ def run(inputs):
             "Assists describe lineup contribution but are not added as independent goals.",
             "PIM affects opportunity volume through an observed roster-to-team exposure ratio, not a fixed minutes-to-power-play conversion.",
             "Schedule, travel and back-to-back context are retained in source inputs but have no estimated coefficient.",
-            "Goalie candidates are shown separately; there is no invented starter probability or blend.",
+            "When candidate goalie starts exactly cover all prior team games, an experimental mix weights paired scenarios by each candidate's current-season gamesStarted share; this is an uncalibrated historical frequency, not a confirmed starter probability. Incomplete coverage leaves the mix unavailable.",
             "The engine must be wired to a fresh pregame capture before use in PULSO; this fixture was captured after puck drop.",
         ],
     }
