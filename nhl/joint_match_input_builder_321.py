@@ -4,6 +4,7 @@ from datetime import datetime, timezone, date, timedelta
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+from urllib.error import HTTPError
 from nhl.pulso_goalie_multisource_257 import TEAM_NAMES, norm
 
 API = "https://api.nhle.com/stats/rest/en"
@@ -18,15 +19,23 @@ def season_for(day):
     return f"{start}{start+1}"
 
 def get_json(url):
-    with urlopen(Request(url, headers={"Accept":"application/json", "User-Agent":"PULSO-NHL-joint/1.0"}), timeout=25) as r:
-        raw = r.read(8_000_001)
-        if len(raw) > 8_000_000: raise ValueError("Oversized official source")
+    try:
+        with urlopen(Request(url, headers={"Accept":"application/json", "User-Agent":"PULSO-NHL-joint/1.0"}), timeout=25) as r:
+            raw = r.read(8_000_001)
+            if len(raw) > 8_000_000: raise ValueError("Oversized official source")
+    except HTTPError as error:
+        details=error.read(4096).decode("utf-8","replace").replace("\n"," ")[:1000]
+        raise ValueError(f"NHL Stats API HTTP {error.code} for {url}: {details}") from error
     return json.loads(raw), {"url":url,"sha256":hashlib.sha256(raw).hexdigest(),"retrieved_at_utc":datetime.now(timezone.utc).isoformat()}
 
 def stat_rows(resource, season, cutoff, sort="playerId:ASC"):
+    # These are season-summary tables, not per-game rows; gameDate is not a
+    # valid dimension here. Keep the fixture cutoff by the source timestamp
+    # gate in build(): every included game's start must be after every query.
+    date.fromisoformat(cutoff)
     rows=[];start=0;total=None; sources=[]
     while total is None or start < total:
-        q=urlencode({"isAggregate":"false","isGame":"false","start":start,"limit":100,"sort":sort,"cayenneExp":f'seasonId={season} and gameTypeId=2 and gameDate<"{cutoff}"'})
+        q=urlencode({"isAggregate":"false","isGame":"false","start":start,"limit":100,"sort":sort,"cayenneExp":f'seasonId={season} and gameTypeId=2'})
         url=f"{API}/{resource}?{q}"; payload,meta=get_json(url); data=payload.get("data")
         if not isinstance(data,list) or type(payload.get("total")) is not int: raise ValueError("Invalid NHL Stats response: "+resource)
         if total is None: total=payload["total"]
