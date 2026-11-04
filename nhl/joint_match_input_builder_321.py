@@ -58,8 +58,9 @@ def build(report, context, changes, goalies, special, cutoff):
     teams,s3=stat_rows("team/summary",season,cutoff,"teamFullName:ASC")
     pp_rows,s4=stat_rows("team/powerplay",season,cutoff,"teamFullName:ASC")
     pk_rows,s5=stat_rows("team/penaltykill",season,cutoff,"teamFullName:ASC")
+    goalie_stats,s6=stat_rows("goalie/summary",season,cutoff)
     # Stats API source observations must precede the earliest included fixture.
-    observed=max(utc(x["retrieved_at_utc"]) for x in s1+s2+s3+s4+s5)
+    observed=max(utc(x["retrieved_at_utc"]) for x in s1+s2+s3+s4+s5+s6)
     name_to_code={norm(v):k for k,v in TEAM_NAMES.items()}
     def index_teams(rows):
         result={}
@@ -81,6 +82,12 @@ def build(report, context, changes, goalies, special, cutoff):
     toi_by_id={str(x.get("playerId")):x for x in toi_rows}
     if len(toi_by_id)!=len(toi_rows): raise ValueError("Duplicate NHL TOI identity")
     team_by_code=index_teams(teams)
+    goalie_rows_by_identity={}
+    for row in goalie_stats:
+        pid=row.get("playerId"); code=row.get("teamAbbrevs")
+        if type(pid) is not int or not isinstance(code,str) or not code:
+            raise ValueError("Invalid NHL goalie summary identity")
+        goalie_rows_by_identity.setdefault((str(pid),code),[]).append(row)
     goalie_games={str(g["game_id"]):g for g in goalies.get("games",[])}
     change_games={str(g["game_id"]):g for g in changes.get("games",[])}
     context_games={str(g["game_id"]):g for g in context.get("games",[])}
@@ -127,23 +134,33 @@ def build(report, context, changes, goalies, special, cutoff):
                         if not person.get("identity_resolved"): unknown.append(code+" unresolved "+field+": "+str(person.get("name"))); continue
                         p=player_record(person,code);p["availability"]="injury" if field=="injuries" else "scratch";absent.append(p)
                 candidates=gg["teams"].get(code,[]);glist=[]
+                team_games=number(teamrow,"gamesPlayed",True)
                 for g in candidates:
                     if g.get("status")!="observed": raise ValueError(code+" goalie history unavailable")
-                    glist.append({"player_id":g["player_id"],"name":g["name"],"status":"observed","candidate_status":g.get("candidate_status"),"independently_confirmed_starter":False,"metrics":{"season_to_date":{"shots_against":g["metrics"]["season_to_date"]["shots_against"],"saves":g["metrics"]["season_to_date"]["saves"]}}})
+                    stat_rows_for_goalie=goalie_rows_by_identity.get((str(g["player_id"]),code),[])
+                    if len(stat_rows_for_goalie)>1: raise ValueError(code+" duplicate goalie start history")
+                    games_started=number(stat_rows_for_goalie[0],"gamesStarted") if stat_rows_for_goalie else 0
+                    if games_started>team_games: raise ValueError(code+" goalie starts exceed team games")
+                    glist.append({"player_id":g["player_id"],"name":g["name"],"status":"observed","candidate_status":g.get("candidate_status"),"independently_confirmed_starter":False,"games_started_before_cutoff":games_started,"team_games_played_before_cutoff":team_games,"metrics":{"season_to_date":{"shots_against":g["metrics"]["season_to_date"]["shots_against"],"saves":g["metrics"]["season_to_date"]["saves"]}}})
                 if not glist: raise ValueError(code+" no goalie candidates")
+                candidate_starts=sum(g["games_started_before_cutoff"] for g in glist)
+                complete_start_coverage=(candidate_starts==team_games)
+                for g in glist:
+                    g["starter_probability"]=g["games_started_before_cutoff"]/team_games if complete_start_coverage else None
+                goalie_start_distribution={"status":"complete_empirical_share" if complete_start_coverage else "incomplete_candidate_coverage","method":"candidate_games_started_divided_by_team_games_played","team_games_played":team_games,"candidate_starts":candidate_starts,"probabilities_sum_to_one":complete_start_coverage}
                 if groups.get("injuries") is None or groups.get("scratches") is None: unknown.append(code+" incomplete availability report")
                 exact=[r for r in skaters if r.get("teamAbbrevs")==code]
                 multi=[r for r in skaters if code in str(r.get("teamAbbrevs","")).split(",") and r.get("teamAbbrevs")!=code]
                 if multi: raise ValueError(code+" traded-player season attribution unresolved")
                 totals={k:sum(number(r,k) for r in exact) for k in ("goals","assists","shots","penaltyMinutes","evGoals","evPoints","ppGoals","ppPoints","shGoals","shPoints")}
                 gp=number(teamrow,"gamesPlayed",True)
-                sides[code]={"projected_lines":lines,"lineup_changes":{"new_in_projection":incoming,"out_of_projection":outgoing},"unavailable_players":absent,"goalie_candidates":glist,"team_summary":teamrow,"special_teams":{"games_played":sp["games_played"],"powerplay_goals":sp["powerplay_goals"],"powerplay_opportunities":sp["powerplay_opportunities"],"opponent_powerplay_goals":sp["opponent_powerplay_goals"],"times_shorthanded":sp["times_shorthanded"]},"team_roster_penalty_minutes":{"total":totals["penaltyMinutes"],"games_played":gp,"unattributed_multi_team_players":0},"team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":0},"schedule":{},"_unknown":unknown}
+                sides[code]={"projected_lines":lines,"lineup_changes":{"new_in_projection":incoming,"out_of_projection":outgoing},"unavailable_players":absent,"goalie_candidates":glist,"goalie_start_distribution":goalie_start_distribution,"team_summary":teamrow,"special_teams":{"games_played":sp["games_played"],"powerplay_goals":sp["powerplay_goals"],"powerplay_opportunities":sp["powerplay_opportunities"],"opponent_powerplay_goals":sp["opponent_powerplay_goals"],"times_shorthanded":sp["times_shorthanded"]},"team_roster_penalty_minutes":{"total":totals["penaltyMinutes"],"games_played":gp,"unattributed_multi_team_players":0},"team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":0},"schedule":{},"_unknown":unknown}
             if unknown: raise ValueError("unresolved real-game inputs: "+"; ".join(unknown))
             cutoff_for_engine=cutoff
             if date.fromisoformat(cutoff_for_engine)>=start.date(): raise ValueError("source cutoff is not strictly before fixture UTC date")
             captured=datetime.now(timezone.utc)
             if captured>=start: raise ValueError("Assembly completed after puck drop")
-            manifest=s1+s2+s3+s4+s5
+            manifest=s1+s2+s3+s4+s5+s6
             editor=cg.get("editorial_source")
             if not editor or not editor.get("sha256") or not editor.get("url"): raise ValueError("missing dated editorial lineup provenance")
             editorial_at=utc(cg["feature_as_of_utc"])
