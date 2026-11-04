@@ -9,8 +9,8 @@ from datetime import datetime,timezone
 from pathlib import Path
 
 OUT={"out","inactive","suspended"}
-IN={"available","active","probable"}
-UNKNOWN={"questionable","doubtful","unknown"}
+IN={"available","active"}
+UNKNOWN={"questionable","doubtful","probable","unknown"}
 def utc(value):
  try:
   d=datetime.fromisoformat(str(value).replace("Z","+00:00"))

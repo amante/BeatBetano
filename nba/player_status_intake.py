@@ -7,6 +7,7 @@ not certify that unmentioned players are available.
 import argparse,json,unicodedata
 from pathlib import Path
 from datetime import datetime,timezone
+from team_identity import same_team
 
 def normalize(s):
  return " ".join("".join(c for c in unicodedata.normalize("NFKD",str(s).casefold()) if not unicodedata.combining(c)).split())
@@ -40,18 +41,24 @@ def reconcile(snapshot,roster,sporting):
    for p in members:
     if p.get("player_id") and p.get("player"):
      by_name.setdefault(normalize(p["player"]),[]).append(str(p["player_id"]))
+   member_ids={str(p["player_id"]) for p in members if p.get("player_id")}
    claims={}
    for row in rows if valid_time and source else []:
-    if row.get("team")!=team:continue
+    if not same_team(row.get("team"),team):continue
+    reported=utc(row.get("reported_at_utc")) if row.get("reported_at_utc") else None
+    if row.get("reported_at_utc") and (not reported or reported>observed):continue
     state=status(row.get("status"))
     if state is None:continue
-    ids=by_name.get(normalize(row.get("player")),[])
+    source_id=str(row.get("player_id") or "")
+    ids=[source_id] if source_id and source_id in member_ids else by_name.get(normalize(row.get("player")),[]) if not source_id else []
     if len(ids)!=1:
      unknown.append({"game_id":gid,"team":team,"player":row.get("player"),"reason":"not_unique_roster_match"})
      continue
     pid=ids[0]
     claims.setdefault(pid,[]).append({"player_id":pid,"status":state,
      "source_url":source,"observed_at_utc":evidence["observed_at_utc"],
+     "identity_match":"provider_id" if source_id else "unique_normalized_name",
+     "reported_at_utc":row.get("reported_at_utc"),
      "confidence":"supplementary_espn_injury_claim_not_official"})
    for pid,observations in claims.items():
     if len({x["status"] for x in observations})>1:

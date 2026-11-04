@@ -6,6 +6,7 @@ import argparse,json,re
 from datetime import datetime,timezone
 from pathlib import Path
 import requests
+from team_identity import canonical
 
 from lineup_source_cascade import cascade,markdown
 URL="https://www.rotowire.com/basketball/nba-lineups.php"
@@ -41,30 +42,32 @@ def parse_rotowire(html,snapshot,observed):
     if tag=="ul":self.list_index=-1
   parser=Parser();parser.feed(html)
   candidates=[];errors=[]
-  fixtures={frozenset((g["home_team"],g["away_team"])):g for g in snapshot["predictions"]}
+  fixtures={frozenset((canonical(g["home_team"]),canonical(g["away_team"]))):g for g in snapshot["predictions"]}
   for block in parser.blocks:
    names=[x.upper() for x in block["abbr"] if re.fullmatch("[A-Z]{2,4}",x.upper())]
    if len(names)!=2:continue
-   game=fixtures.get(frozenset(names))
+   game=fixtures.get(frozenset(canonical(n) for n in names))
    if not game or len(block["lists"])<2:continue
    for team,players in zip(names,block["lists"][:2]):
+    team=next(t for t in (game["home_team"],game["away_team"]) if canonical(t)==canonical(team))
     players=players[:5]
     if len(players)!=5 or len(set(players))!=5:continue
     candidates.append({"game_id":str(game["game_id"]),"team":team,"provider":"rotowire","status":"projected","starters":players,"source_url":URL,"observed_at_utc":observed})
   return candidates,errors
  soup=BeautifulSoup(html,"html.parser")
- fixtures={frozenset((g["home_team"],g["away_team"])):g for g in snapshot["predictions"]}
+ fixtures={frozenset((canonical(g["home_team"]),canonical(g["away_team"]))):g for g in snapshot["predictions"]}
  candidates=[];errors=[]
  for box in soup.select(".lineup"):
   names=[x.get_text(" ",strip=True).upper() for x in box.select(".lineup__abbr")]
   names=[x for x in names if re.fullmatch("[A-Z]{2,4}",x)]
   if len(names)!=2 or names[0]==names[1]:continue
-  game=fixtures.get(frozenset(names))
+  game=fixtures.get(frozenset(canonical(n) for n in names))
   if not game:continue
   lists=box.select(".lineup__list")
   if len(lists)<2:
    errors.append({"game_id":game["game_id"],"error":"missing_lineup_lists"});continue
   for team,section in zip(names,lists[:2]):
+   team=next(t for t in (game["home_team"],game["away_team"]) if canonical(t)==canonical(team))
    players=[]
    for li in section.select("li"):
     # Do not read benched/injured player sections.
