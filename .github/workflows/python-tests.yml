@@ -13,5 +13,5 @@ jobs:
           python-version: '3.11'
       - name: Check syntax and NHL integrated model
         run: |
-          python -m py_compile validation/backtest.py nhl/joint_match_engine_320.py
-          python -m unittest nhl.tests.test_joint_match_engine_320 -v
+          python -m py_compile validation/backtest.py nhl/joint_match_engine_320.py nhl/joint_match_input_builder_321.py
+          python -m unittest nhl.tests.test_joint_match_engine_320 nhl.tests.test_joint_match_input_builder_321 -v
