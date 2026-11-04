@@ -348,7 +348,7 @@ jobs:
             "blocked_games":blocked, "official":False, "calibrated":False,
             "odds_used":False, "public_base_replaced":False,
             "note":"Internal execution evidence only; not the public PULSO forecast feed."}
-          (directory / "joint_match_runs_322.json").write_text(json.dumps(result, indent=2) + "\\n")
+          (directory / "joint_match_runs_322.json").write_text(json.dumps(result, indent=2) + "\n")
           print(json.dumps({"executed":len(executed), "blocked":len(blocked),
             "official":False, "calibrated":False}))
           PY
