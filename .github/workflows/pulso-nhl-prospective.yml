@@ -460,3 +460,56 @@ jobs:
           name: pulso-nhl-joint-model-${{ github.run_id }}
           path: results/pulso/nhl/
           retention-days: 90
+
+  publish-integrated-model:
+    if: github.event_name != 'pull_request'
+    needs: integrated-model
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          token: ${{ github.token }}
+      - uses: actions/download-artifact@v6
+        with:
+          name: pulso-nhl-joint-model-${{ github.run_id }}
+          path: .
+      - name: Validate and publish the latest conditional scenario feed
+        env:
+          REQUESTED_DAY: ${{ inputs.day }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          DAY="${REQUESTED_DAY:-$(date -u +%F)}"
+          SOURCE="results/pulso/nhl/$DAY/joint_match_runs_322.json"
+          test -s "$SOURCE"
+          python - "$SOURCE" frontend/data/nhl-joint-model-latest.json "$DAY" "$RUN_ID" <<'PY'
+          import json, sys
+          from datetime import datetime, timezone
+          from pathlib import Path
+          source, destination, day, run_id = map(str, sys.argv[1:])
+          data = json.loads(Path(source).read_text())
+          assert data.get("kind") == "nhl_joint_match_daily_runs_v322"
+          assert data.get("date") == day
+          assert data.get("official") is False and data.get("calibrated") is False
+          assert data.get("odds_used") is False and data.get("public_base_replaced") is False
+          assert isinstance(data.get("games"), list) and isinstance(data.get("blocked_games"), list)
+          for game in data["games"]:
+              assert game.get("publishable") is False and game.get("calibrated") is False
+              assert game.get("status") == "conditional_unvalidated_scenarios"
+          data["published_at_utc"] = datetime.now(timezone.utc).isoformat()
+          data["run_id"] = run_id
+          Path(destination).write_text(json.dumps(data, indent=2) + "\\n")
+          print(json.dumps({"date": day, "games": len(data["games"]),
+              "blocked": len(data["blocked_games"]), "official": False, "calibrated": False}))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add frontend/data/nhl-joint-model-latest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: publish NHL joint model scenarios"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
