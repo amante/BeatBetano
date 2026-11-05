@@ -1,0 +1,968 @@
+{
+  "schema_version": 1,
+  "history_sha256": "7fbb77052b8b8f10db127ebb063bbf4ae1e7adf1e62c3d04c89d42a922dfecad",
+  "prediction_rows_sha256": "8e7c22565c9af35c01a69824e0a0351573f774323efbc6f8d3b633ab4ee89ddb",
+  "warmup_season_end": 2024,
+  "scored_games": 2460,
+  "evaluation_type": "retrospective_descriptive_not_independent_certification",
+  "groups": {
+    "2025": {
+      "elo": {
+        "n": 1230,
+        "brier": 0.21445232922127105,
+        "log_loss": 0.6167432238513015,
+        "accuracy": 0.6536585365853659,
+        "mean_forecast": 0.5807844075523536,
+        "observed_rate": 0.5439024390243903,
+        "mean_bias": 0.03688196852796331,
+        "ece_10_equal_width": 0.03688196852796336,
+        "maximum_bin_gap": 0.10502242632784445,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "n": 1,
+            "mean_forecast": 0.08745172426287526,
+            "observed_rate": 0.0,
+            "observed_rate_wilson95": [
+              0,
+              0.7934506856227626
+            ],
+            "absolute_gap": 0.08745172426287526
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 18,
+            "mean_forecast": 0.1605779818834,
+            "observed_rate": 0.05555555555555555,
+            "observed_rate_wilson95": [
+              0.009875190978303097,
+              0.25757300781872594
+            ],
+            "absolute_gap": 0.10502242632784445
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 67,
+            "mean_forecast": 0.2570588524141485,
+            "observed_rate": 0.22388059701492538,
+            "observed_rate_wilson95": [
+              0.14063731129193663,
+              0.3370696612077375
+            ],
+            "absolute_gap": 0.03317825539922312
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 148,
+            "mean_forecast": 0.35013982110748837,
+            "observed_rate": 0.34459459459459457,
+            "observed_rate_wilson95": [
+              0.2728344226229872,
+              0.4242180137980808
+            ],
+            "absolute_gap": 0.005545226512893797
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 167,
+            "mean_forecast": 0.45426207178454475,
+            "observed_rate": 0.39520958083832336,
+            "observed_rate_wilson95": [
+              0.32421724536537216,
+              0.4709144501750289
+            ],
+            "absolute_gap": 0.05905249094622139
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 224,
+            "mean_forecast": 0.5518074472313553,
+            "observed_rate": 0.5089285714285714,
+            "observed_rate_wilson95": [
+              0.4438647419799411,
+              0.5736913253868321
+            ],
+            "absolute_gap": 0.04287887580278393
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 246,
+            "mean_forecast": 0.6464452915292237,
+            "observed_rate": 0.5934959349593496,
+            "observed_rate_wilson95": [
+              0.5311358267213729,
+              0.6529809336318927
+            ],
+            "absolute_gap": 0.052949356569874095
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 209,
+            "mean_forecast": 0.7484517258448741,
+            "observed_rate": 0.7129186602870813,
+            "observed_rate_wilson95": [
+              0.648176994191801,
+              0.769974622007076
+            ],
+            "absolute_gap": 0.03553306555779279
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 130,
+            "mean_forecast": 0.8386464121449053,
+            "observed_rate": 0.8384615384615385,
+            "observed_rate_wilson95": [
+              0.7656455219792079,
+              0.8918488058276387
+            ],
+            "absolute_gap": 0.0001848736833668374
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "n": 20,
+            "mean_forecast": 0.9200354545563325,
+            "observed_rate": 0.9,
+            "observed_rate_wilson95": [
+              0.6989663547715128,
+              0.9721335187862319
+            ],
+            "absolute_gap": 0.020035454556332488
+          }
+        ],
+        "calibrated_certified": false
+      },
+      "challenger": {
+        "n": 1230,
+        "brier": 0.21204957646845374,
+        "log_loss": 0.6116028197301053,
+        "accuracy": 0.6585365853658537,
+        "mean_forecast": 0.5772791402482653,
+        "observed_rate": 0.5439024390243903,
+        "mean_bias": 0.03337670122387489,
+        "ece_10_equal_width": 0.038015194448140804,
+        "maximum_bin_gap": 0.07868091916540948,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "n": 4,
+            "mean_forecast": 0.07868091916540948,
+            "observed_rate": 0.0,
+            "observed_rate_wilson95": [
+              0,
+              0.4898908364545973
+            ],
+            "absolute_gap": 0.07868091916540948
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 39,
+            "mean_forecast": 0.1603192429475101,
+            "observed_rate": 0.10256410256410256,
+            "observed_rate_wilson95": [
+              0.04061331344668381,
+              0.23578854462856527
+            ],
+            "absolute_gap": 0.05775514038340754
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 109,
+            "mean_forecast": 0.2582323547438206,
+            "observed_rate": 0.28440366972477066,
+            "observed_rate_wilson95": [
+              0.2081834447828545,
+              0.3753029750915701
+            ],
+            "absolute_gap": 0.026171314980950044
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 132,
+            "mean_forecast": 0.35128631045026626,
+            "observed_rate": 0.3409090909090909,
+            "observed_rate_wilson95": [
+              0.2655691312967705,
+              0.4252469099573323
+            ],
+            "absolute_gap": 0.010377219541175375
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 153,
+            "mean_forecast": 0.4487936795112898,
+            "observed_rate": 0.4444444444444444,
+            "observed_rate_wilson95": [
+              0.36802717394952766,
+              0.5235831175650718
+            ],
+            "absolute_gap": 0.004349235066845369
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 186,
+            "mean_forecast": 0.5523297036361764,
+            "observed_rate": 0.5,
+            "observed_rate_wilson95": [
+              0.4288749533755384,
+              0.5711250466244616
+            ],
+            "absolute_gap": 0.052329703636176395
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 205,
+            "mean_forecast": 0.6498468064592006,
+            "observed_rate": 0.6,
+            "observed_rate_wilson95": [
+              0.5316927231789674,
+              0.6646284490227721
+            ],
+            "absolute_gap": 0.04984680645920059
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 190,
+            "mean_forecast": 0.7483307372579981,
+            "observed_rate": 0.6789473684210526,
+            "observed_rate_wilson95": [
+              0.6095804199337195,
+              0.7412217274175389
+            ],
+            "absolute_gap": 0.06938336883694551
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 170,
+            "mean_forecast": 0.8429961660407999,
+            "observed_rate": 0.8117647058823529,
+            "observed_rate_wilson95": [
+              0.7463603813080039,
+              0.8633905993791285
+            ],
+            "absolute_gap": 0.03123146015844691
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "n": 42,
+            "mean_forecast": 0.9252263627521918,
+            "observed_rate": 0.9047619047619048,
+            "observed_rate_wilson95": [
+              0.7793489419142897,
+              0.9623377511944261
+            ],
+            "absolute_gap": 0.020464457990287066
+          }
+        ],
+        "calibrated_certified": false
+      },
+      "paired_uncertainty": {
+        "week": {
+          "unit": "week",
+          "clusters": 25,
+          "repetitions": 2000,
+          "seed": 20261104,
+          "season_stratified": true,
+          "paired_same_games": true,
+          "brier": {
+            "gain_elo_minus_challenger": 0.002402752752817005,
+            "percentile95": [
+              0.0006326070622257737,
+              0.004242426979773588
+            ]
+          },
+          "log_loss": {
+            "gain_elo_minus_challenger": 0.005140404121198287,
+            "percentile95": [
+              0.001202896409280876,
+              0.009344698968039317
+            ]
+          }
+        },
+        "day": {
+          "unit": "day",
+          "clusters": 163,
+          "repetitions": 2000,
+          "seed": 20261104,
+          "season_stratified": true,
+          "paired_same_games": true,
+          "brier": {
+            "gain_elo_minus_challenger": 0.0024027527528170047,
+            "percentile95": [
+              0.000244166241544543,
+              0.0045236276092927
+            ]
+          },
+          "log_loss": {
+            "gain_elo_minus_challenger": 0.005140404121198286,
+            "percentile95": [
+              8.604180909670161e-05,
+              0.01009664457973073
+            ]
+          }
+        }
+      }
+    },
+    "2026": {
+      "elo": {
+        "n": 1230,
+        "brier": 0.2096728349789761,
+        "log_loss": 0.6081289688491603,
+        "accuracy": 0.6780487804878049,
+        "mean_forecast": 0.5821595063603824,
+        "observed_rate": 0.5544715447154471,
+        "mean_bias": 0.027687961644935394,
+        "ece_10_equal_width": 0.0276879616449354,
+        "maximum_bin_gap": 0.15956231484659358,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "n": 1,
+            "mean_forecast": 0.09731357642950327,
+            "observed_rate": 0.0,
+            "observed_rate_wilson95": [
+              0,
+              0.7934506856227626
+            ],
+            "absolute_gap": 0.09731357642950327
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 13,
+            "mean_forecast": 0.15956231484659358,
+            "observed_rate": 0.0,
+            "observed_rate_wilson95": [
+              0,
+              0.22809537235419838
+            ],
+            "absolute_gap": 0.15956231484659358
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 88,
+            "mean_forecast": 0.2574704775559456,
+            "observed_rate": 0.1590909090909091,
+            "observed_rate_wilson95": [
+              0.0971990232903012,
+              0.24950124943576166
+            ],
+            "absolute_gap": 0.09837956846503651
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 121,
+            "mean_forecast": 0.35494856901449445,
+            "observed_rate": 0.34710743801652894,
+            "observed_rate_wilson95": [
+              0.26817289627494656,
+              0.4354512014445303
+            ],
+            "absolute_gap": 0.007841130997965517
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 197,
+            "mean_forecast": 0.44768904912339247,
+            "observed_rate": 0.39593908629441626,
+            "observed_rate_wilson95": [
+              0.33026446557141376,
+              0.4655944161517882
+            ],
+            "absolute_gap": 0.051749962828976204
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 200,
+            "mean_forecast": 0.5515384961005872,
+            "observed_rate": 0.55,
+            "observed_rate_wilson95": [
+              0.48075615138475697,
+              0.6173593159775166
+            ],
+            "absolute_gap": 0.0015384961005872055
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 223,
+            "mean_forecast": 0.6484794406799532,
+            "observed_rate": 0.6367713004484304,
+            "observed_rate_wilson95": [
+              0.5718275207349578,
+              0.697082758352152
+            ],
+            "absolute_gap": 0.011708140231522779
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 229,
+            "mean_forecast": 0.7450073814478747,
+            "observed_rate": 0.74235807860262,
+            "observed_rate_wilson95": [
+              0.6820438009108449,
+              0.794675424961548
+            ],
+            "absolute_gap": 0.002649302845254664
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 138,
+            "mean_forecast": 0.8422948567300593,
+            "observed_rate": 0.7898550724637681,
+            "observed_rate_wilson95": [
+              0.7144999568711702,
+              0.8495100347429904
+            ],
+            "absolute_gap": 0.052439784266291256
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "n": 20,
+            "mean_forecast": 0.916082626439572,
+            "observed_rate": 0.85,
+            "observed_rate_wilson95": [
+              0.6395811352592431,
+              0.9476312541037835
+            ],
+            "absolute_gap": 0.06608262643957197
+          }
+        ],
+        "calibrated_certified": false
+      },
+      "challenger": {
+        "n": 1230,
+        "brier": 0.2067364121693574,
+        "log_loss": 0.6019079566847244,
+        "accuracy": 0.6869918699186992,
+        "mean_forecast": 0.5777059207825642,
+        "observed_rate": 0.5544715447154471,
+        "mean_bias": 0.023234376067116813,
+        "ece_10_equal_width": 0.04032730545830681,
+        "maximum_bin_gap": 0.09371126563625178,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "n": 5,
+            "mean_forecast": 0.0895632944814094,
+            "observed_rate": 0.0,
+            "observed_rate_wilson95": [
+              0,
+              0.43448246478317476
+            ],
+            "absolute_gap": 0.0895632944814094
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 40,
+            "mean_forecast": 0.16871126563625177,
+            "observed_rate": 0.075,
+            "observed_rate_wilson95": [
+              0.025836025774588198,
+              0.19864233524310543
+            ],
+            "absolute_gap": 0.09371126563625178
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 102,
+            "mean_forecast": 0.2518527757527301,
+            "observed_rate": 0.2647058823529412,
+            "observed_rate_wilson95": [
+              0.18876402411860904,
+              0.3577274874797265
+            ],
+            "absolute_gap": 0.012853106600211106
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 129,
+            "mean_forecast": 0.3519631349162458,
+            "observed_rate": 0.37209302325581395,
+            "observed_rate_wilson95": [
+              0.2935118520317434,
+              0.4580717251665278
+            ],
+            "absolute_gap": 0.020129888339568136
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 181,
+            "mean_forecast": 0.4509092923122723,
+            "observed_rate": 0.3812154696132597,
+            "observed_rate_wilson95": [
+              0.3136236171510597,
+              0.45374458977424803
+            ],
+            "absolute_gap": 0.06969382269901259
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 164,
+            "mean_forecast": 0.5458050229564135,
+            "observed_rate": 0.5365853658536586,
+            "observed_rate_wilson95": [
+              0.4603031878123809,
+              0.6111928542520513
+            ],
+            "absolute_gap": 0.009219657102754963
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 194,
+            "mean_forecast": 0.651523819038371,
+            "observed_rate": 0.6855670103092784,
+            "observed_rate_wilson95": [
+              0.6171674743523708,
+              0.7467602909865129
+            ],
+            "absolute_gap": 0.03404319127090738
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 212,
+            "mean_forecast": 0.7501204420297058,
+            "observed_rate": 0.7028301886792453,
+            "observed_rate_wilson95": [
+              0.6381446458618967,
+              0.7602959524822923
+            ],
+            "absolute_gap": 0.047290253350460554
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 161,
+            "mean_forecast": 0.8507212686857075,
+            "observed_rate": 0.7950310559006211,
+            "observed_rate_wilson95": [
+              0.7261491566855199,
+              0.850162171057193
+            ],
+            "absolute_gap": 0.05569021278508646
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "n": 42,
+            "mean_forecast": 0.9232357951954465,
+            "observed_rate": 0.8809523809523809,
+            "observed_rate_wilson95": [
+              0.7499960973799032,
+              0.9480619667224176
+            ],
+            "absolute_gap": 0.04228341424306559
+          }
+        ],
+        "calibrated_certified": false
+      },
+      "paired_uncertainty": {
+        "week": {
+          "unit": "week",
+          "clusters": 25,
+          "repetitions": 2000,
+          "seed": 20261104,
+          "season_stratified": true,
+          "paired_same_games": true,
+          "brier": {
+            "gain_elo_minus_challenger": 0.002936422809619135,
+            "percentile95": [
+              0.0003031438089421967,
+              0.005597386200044643
+            ]
+          },
+          "log_loss": {
+            "gain_elo_minus_challenger": 0.006221012164434141,
+            "percentile95": [
+              -0.00019845861722446456,
+              0.012486580611164944
+            ]
+          }
+        },
+        "day": {
+          "unit": "day",
+          "clusters": 164,
+          "repetitions": 2000,
+          "seed": 20261104,
+          "season_stratified": true,
+          "paired_same_games": true,
+          "brier": {
+            "gain_elo_minus_challenger": 0.0029364228096191354,
+            "percentile95": [
+              0.0006395223593843333,
+              0.005114061548311695
+            ]
+          },
+          "log_loss": {
+            "gain_elo_minus_challenger": 0.006221012164434141,
+            "percentile95": [
+              0.000695296015281126,
+              0.01148481311008559
+            ]
+          }
+        }
+      }
+    },
+    "pooled": {
+      "elo": {
+        "n": 2460,
+        "brier": 0.21206258210012338,
+        "log_loss": 0.61243609635023,
+        "accuracy": 0.6658536585365854,
+        "mean_forecast": 0.5814719569563677,
+        "observed_rate": 0.5491869918699187,
+        "mean_bias": 0.032284965086449326,
+        "ece_10_equal_width": 0.03228496508644942,
+        "maximum_bin_gap": 0.12789399248086825,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "n": 2,
+            "mean_forecast": 0.09238265034618925,
+            "observed_rate": 0.0,
+            "observed_rate_wilson95": [
+              0,
+              0.6576197724933469
+            ],
+            "absolute_gap": 0.09238265034618925
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 31,
+            "mean_forecast": 0.16015205699699728,
+            "observed_rate": 0.03225806451612903,
+            "observed_rate_wilson95": [
+              0.005717221525416816,
+              0.16194105164724906
+            ],
+            "absolute_gap": 0.12789399248086825
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 155,
+            "mean_forecast": 0.25729254926884626,
+            "observed_rate": 0.1870967741935484,
+            "observed_rate_wilson95": [
+              0.1335455059972715,
+              0.2557826913123677
+            ],
+            "absolute_gap": 0.07019577507529787
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 269,
+            "mean_forecast": 0.3523028638463274,
+            "observed_rate": 0.34572490706319703,
+            "observed_rate_wilson95": [
+              0.2914215412091822,
+              0.40437249112464313
+            ],
+            "absolute_gap": 0.00657795678313039
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 364,
+            "mean_forecast": 0.4507046941355147,
+            "observed_rate": 0.3956043956043956,
+            "observed_rate_wilson95": [
+              0.3467127781582818,
+              0.4466764709936292
+            ],
+            "absolute_gap": 0.05510029853111914
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 424,
+            "mean_forecast": 0.5516805834904274,
+            "observed_rate": 0.5283018867924528,
+            "observed_rate_wilson95": [
+              0.48074505699892395,
+              0.5753504884541835
+            ],
+            "absolute_gap": 0.023378696697974544
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 469,
+            "mean_forecast": 0.647412488246948,
+            "observed_rate": 0.6140724946695096,
+            "observed_rate_wilson95": [
+              0.5692573366120384,
+              0.6570341570883382
+            ],
+            "absolute_gap": 0.03333999357743833
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 438,
+            "mean_forecast": 0.7466509156464429,
+            "observed_rate": 0.728310502283105,
+            "observed_rate_wilson95": [
+              0.6848008409036543,
+              0.767850208488166
+            ],
+            "absolute_gap": 0.018340413363337915
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 268,
+            "mean_forecast": 0.8405250888342753,
+            "observed_rate": 0.8134328358208955,
+            "observed_rate_wilson95": [
+              0.7624829572674451,
+              0.8555243206835327
+            ],
+            "absolute_gap": 0.027092253013379808
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "n": 40,
+            "mean_forecast": 0.9180590404979524,
+            "observed_rate": 0.875,
+            "observed_rate_wilson95": [
+              0.738878801611489,
+              0.945404997490546
+            ],
+            "absolute_gap": 0.043059040497952394
+          }
+        ],
+        "calibrated_certified": false
+      },
+      "challenger": {
+        "n": 2460,
+        "brier": 0.2093929943189055,
+        "log_loss": 0.6067553882074155,
+        "accuracy": 0.6727642276422764,
+        "mean_forecast": 0.5774925305154147,
+        "observed_rate": 0.5491869918699187,
+        "mean_bias": 0.028305538645495846,
+        "ece_10_equal_width": 0.03268818321664567,
+        "maximum_bin_gap": 0.08472668322985388,
+        "reliability_bins": [
+          {
+            "lower": 0.0,
+            "upper": 0.1,
+            "n": 9,
+            "mean_forecast": 0.08472668322985388,
+            "observed_rate": 0.0,
+            "observed_rate_wilson95": [
+              0,
+              0.2991450484195441
+            ],
+            "absolute_gap": 0.08472668322985388
+          },
+          {
+            "lower": 0.1,
+            "upper": 0.2,
+            "n": 79,
+            "mean_forecast": 0.16456836835953112,
+            "observed_rate": 0.08860759493670886,
+            "observed_rate_wilson95": [
+              0.04358529598731306,
+              0.17178342246211697
+            ],
+            "absolute_gap": 0.07596077342282226
+          },
+          {
+            "lower": 0.2,
+            "upper": 0.3,
+            "n": 211,
+            "mean_forecast": 0.2551483876486015,
+            "observed_rate": 0.27488151658767773,
+            "observed_rate_wilson95": [
+              0.2190722899972733,
+              0.3387411761676226
+            ],
+            "absolute_gap": 0.01973312893907625
+          },
+          {
+            "lower": 0.3,
+            "upper": 0.4,
+            "n": 261,
+            "mean_forecast": 0.35162083288747426,
+            "observed_rate": 0.3563218390804598,
+            "observed_rate_wilson95": [
+              0.30069014819638473,
+              0.41612156121661414
+            ],
+            "absolute_gap": 0.004701006192985524
+          },
+          {
+            "lower": 0.4,
+            "upper": 0.5,
+            "n": 334,
+            "mean_forecast": 0.4499401642926609,
+            "observed_rate": 0.4101796407185629,
+            "observed_rate_wilson95": [
+              0.3587418475791398,
+              0.4636600559366619
+            ],
+            "absolute_gap": 0.03976052357409804
+          },
+          {
+            "lower": 0.5,
+            "upper": 0.6,
+            "n": 350,
+            "mean_forecast": 0.5492724246890874,
+            "observed_rate": 0.5171428571428571,
+            "observed_rate_wilson95": [
+              0.46488992090090797,
+              0.5690235725602438
+            ],
+            "absolute_gap": 0.03212956754623031
+          },
+          {
+            "lower": 0.6,
+            "upper": 0.7,
+            "n": 399,
+            "mean_forecast": 0.6506621960340351,
+            "observed_rate": 0.6416040100250626,
+            "observed_rate_wilson95": [
+              0.5934072456843923,
+              0.6871001289309314
+            ],
+            "absolute_gap": 0.009058186008972458
+          },
+          {
+            "lower": 0.7,
+            "upper": 0.8,
+            "n": 402,
+            "mean_forecast": 0.749274561664969,
+            "observed_rate": 0.6915422885572139,
+            "observed_rate_wilson95": [
+              0.644758493108749,
+              0.7347000285698829
+            ],
+            "absolute_gap": 0.05773227310775508
+          },
+          {
+            "lower": 0.8,
+            "upper": 0.9,
+            "n": 331,
+            "mean_forecast": 0.8467536933091683,
+            "observed_rate": 0.8036253776435045,
+            "observed_rate_wilson95": [
+              0.7574498564705597,
+              0.8428342323275196
+            ],
+            "absolute_gap": 0.043128315665663775
+          },
+          {
+            "lower": 0.9,
+            "upper": 1.0,
+            "n": 84,
+            "mean_forecast": 0.924231078973819,
+            "observed_rate": 0.8928571428571429,
+            "observed_rate_wilson95": [
+              0.8087538548365549,
+              0.9425997871233551
+            ],
+            "absolute_gap": 0.03137393611667605
+          }
+        ],
+        "calibrated_certified": false
+      },
+      "paired_uncertainty": {
+        "week": {
+          "unit": "week",
+          "clusters": 50,
+          "repetitions": 2000,
+          "seed": 20261104,
+          "season_stratified": true,
+          "paired_same_games": true,
+          "brier": {
+            "gain_elo_minus_challenger": 0.00266958778121807,
+            "percentile95": [
+              0.0010128071750124005,
+              0.004222032851657722
+            ]
+          },
+          "log_loss": {
+            "gain_elo_minus_challenger": 0.005680708142816213,
+            "percentile95": [
+              0.0018082039345962177,
+              0.009347615261808995
+            ]
+          }
+        },
+        "day": {
+          "unit": "day",
+          "clusters": 327,
+          "repetitions": 2000,
+          "seed": 20261104,
+          "season_stratified": true,
+          "paired_same_games": true,
+          "brier": {
+            "gain_elo_minus_challenger": 0.0026695877812180687,
+            "percentile95": [
+              0.001228362552903199,
+              0.0042103454306324515
+            ]
+          },
+          "log_loss": {
+            "gain_elo_minus_challenger": 0.005680708142816215,
+            "percentile95": [
+              0.0022169601489726272,
+              0.009364403556613445
+            ]
+          }
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Weekly clustering only approximates schedule and within-team dependence.",
+    "Wilson bin intervals assume Bernoulli independence and are descriptive; they are not dependence-adjusted.",
+    "ECE depends on fixed binning and finite sample; no automatic pass threshold is applied.",
+    "Bootstrap intervals do not correct post-selection bias or establish untouched holdout provenance.",
+    "No fitted calibration is evaluated on these same games."
+  ],
+  "independent_validation_passed": false,
+  "automatic_promotion_allowed": false,
+  "no_odds_input": true
+}

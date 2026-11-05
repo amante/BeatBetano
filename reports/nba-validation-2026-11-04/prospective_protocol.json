@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "registered_at_utc": "2026-11-04T22:07:42.261747+00:00",
+  "status": "protocol_frozen_future_observations_not_yet_validated",
+  "forecast_window_start_utc": "2026-11-05T00:00:00+00:00",
+  "forecast_window_end_exclusive_utc": "2027-02-03T00:00:00+00:00",
+  "scope": {
+    "season_end_year": 2027,
+    "competition": "NBA regular season",
+    "exclude_team_aliases": [
+      "NY",
+      "NYK"
+    ],
+    "minimum_completed_paired_games": 500
+  },
+  "models": [
+    "Official_Elo_benchmark",
+    "Challenger_margin_rest_v0.1"
+  ],
+  "locked_model_source_sha256": {
+    "nba/model.py": "fb55cf907138d8f7cff16b470e8d55b6e6fcda5b694d923fdac402e6440529c0",
+    "nba/challenger.py": "a5ae293cf1dee6fa5cf8ade733bf094093fb26083f2615ceb324611a2f3499ed"
+  },
+  "locked_constants": {
+    "elo_home_advantage": 65,
+    "elo_k": 20,
+    "elo_season_retention": 0.75,
+    "challenger_window": 10,
+    "margin_logit": 0.025,
+    "rest_logit": 0.035
+  },
+  "forecast_rule": "Immutable timestamped predictions before actual tipoff; only completed prior game results available at capture may update fixed model state. No lineup/injury correction, hybrid, odds or recalibration.",
+  "cohort_rule": "Preserve an eligibility ledger for every scheduled game in scope, including source failures, missing forecasts, postponed games and pending outcomes. One declared emission per game/model; first valid paired pretip emission is primary. Never select latest or best after outcomes.",
+  "evaluation_rule": "No confirmatory evaluation before window closes. If fewer than 500 paired completed games or eligibility/source audit is unresolved, report insufficient evidence. No optional stopping or extension based on performance.",
+  "primary_metrics": [
+    "paired Brier loss difference",
+    "paired log loss difference"
+  ],
+  "uncertainty": {
+    "method": "season-stratified paired weekly cluster percentile bootstrap",
+    "repetitions": 2000,
+    "seed": 20261104,
+    "sensitivity": "league-date clusters; no model selection from sensitivity"
+  },
+  "calibration_diagnostics": [
+    "fixed equal-width ten reliability bins",
+    "mean bias",
+    "ECE10",
+    "Wilson intervals described as independence-based only"
+  ],
+  "reporting_rule": "Report both metrics, intervals, full coverage and diagnostics even if unfavorable. Historical improvement alone and positive pooled CI do not authorize promotion. Independent audit of coverage, leakage and calibration is required.",
+  "version_rule": "Any coefficient, calibration, selection or model-source change requires a new separately registered cohort; retain this protocol and all emissions.",
+  "collection_status": "Existing prospective machinery can create snapshots, but complete daily cohort capture and durable ledger coverage have not been demonstrated for this future protocol.",
+  "independent_validation_passed": false,
+  "automatic_promotion_allowed": false,
+  "no_odds_input": true
+}
