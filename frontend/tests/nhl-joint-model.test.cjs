@@ -10,4 +10,7 @@ assert.strictEqual(validate({...feed,games:[{...game,scenarios:[{...scenario,mar
 assert.strictEqual(validate({...feed,games:[game,game]}),false,'rejects duplicate games');
 assert.strictEqual(validate({...feed,games:[{...game,captured_at_utc:game.start_utc}]}),false,'rejects post-start capture');
 assert.strictEqual(validate({...feed,public_base_replaced:true}),false,'rejects baseline replacement flag');
-console.log('7 integrated feed checks passed');
+const pendingLineup={game_id:'2026020124',home:'NYR',away:'NJD',category:'lineup_not_confirmed',status:'Alineación aún no confirmada',reason:'NYR lineup evidence incomplete'};
+assert.strictEqual(validate({...feed,blocked_games:[pendingLineup]}),true,'accepts expected lineup-pending status');
+assert.strictEqual(validate({...feed,blocked_games:[{...pendingLineup,category:'unknown'}]}),false,'rejects unknown blocker category');
+console.log('9 integrated feed checks passed');

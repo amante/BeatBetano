@@ -3,6 +3,11 @@ from unittest.mock import patch
 import nhl.joint_match_input_builder_321 as builder
 
 class BuilderTests(unittest.TestCase):
+    def test_expected_missing_lineups_are_labeled_separately_from_other_gaps(self):
+        self.assertEqual(builder.blocker_category('BOS lineup evidence incomplete'),'lineup_not_confirmed')
+        self.assertEqual(builder.blocker_category('BOS projected lines projections incomplete'),'lineup_not_confirmed')
+        self.assertEqual(builder.blocker_category('BOS missing official prior player/TOI stats'),'other_input_unavailable')
+
     def test_season_uses_nhl_season_boundary(self):
         self.assertEqual(builder.season_for('2026-11-03'),'20262027')
         self.assertEqual(builder.season_for('2027-03-01'),'20262027')
