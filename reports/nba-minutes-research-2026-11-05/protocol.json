@@ -1,0 +1,38 @@
+{
+  "registered_at_utc": "2026-11-05T04:17:17.759553+00:00",
+  "evaluation_type": "retrospective_reconstruction_not_independent_certification",
+  "input_file": "reports/nba-2026-11-04/boxscores.json",
+  "input_file_sha256": "e11efb2b6ac9ccd7cdf1220ffa84d310d67de01713b0d65b477a477641081427",
+  "train_tipoff_before": "2026-10-29T00:00:00Z",
+  "validation_tipoff_before": "2026-10-31T00:00:00Z",
+  "test_tipoff_before": "2026-11-04T00:00:00Z",
+  "minimum_prior_appearances": 3,
+  "window": 5,
+  "historical_completion_delay_hours": 6,
+  "features": [
+    "last_minutes",
+    "mean_last_3",
+    "mean_last_5",
+    "prior_appearances_capped_10",
+    "days_since_last_appearance_capped_14"
+  ],
+  "ridge_lambdas": [
+    1,
+    10,
+    100
+  ],
+  "selection_metric": "validation_MAE",
+  "final_fit": "train_plus_validation_only_after_lambda_selection",
+  "bootstrap_unit": "whole_game",
+  "bootstrap_repetitions": 2000,
+  "bootstrap_seed": 20261105,
+  "target": "reported_total_game_minutes_conditional_on_recorded_appearance_including_OT",
+  "not_modeled": [
+    "probability_of_playing",
+    "official_availability",
+    "injury_replacement_interactions",
+    "regulation_240_minute_lineup",
+    "ML_adjustment"
+  ],
+  "production_approved": false
+}
