@@ -14,7 +14,7 @@ not cancelled in progress. GitHub schedules may be delayed or missed.
 
 Every run creates new JSON files in `reports/nba-forward/observations/` and
 `reports/nba-forward/runs/`. No original observation is overwritten. The workflow
-commits only this directory to main and also retains a 120-day artifact. Failure
+commits only this directory to main and also retains a 90-day artifact (the repository retention limit verified in the first main run). Failure
 evidence is persisted even when source errors cause the capture step to fail.
 A blocked push or total runner failure can still leave an operational gap; the
 workflow fails rather than claiming durable success. A later capture cannot
