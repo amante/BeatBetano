@@ -35,3 +35,17 @@ test('full NBA page skips legacy fetch, hides NHL/simulator/stats and keeps date
  assert.equal(elements['daily-label'].textContent,'NBA · 2026-11-04 · 1 partido registrado');
  assert.match(elements['feed-message'].textContent,/registro NBA/);
 });
+
+test('shared NHL markup belongs only to NHL across all five sport routes',()=>{
+ const fs=require('node:fs'),vm=require('node:vm');
+ const html=fs.readFileSync(require.resolve('../dashboard.html'),'utf8');
+ for(const id of ['nhl-five-market','nhl-joint-model','pulso-nhl-research'])assert.match(html,new RegExp('id="'+id+'" data-sport-only="nhl" hidden'));
+ for(const sport of ['nba','nfl','soccer','tennis','nhl']){
+  const panels=[1,2,3].map(()=>({dataset:{sportOnly:'nhl'},style:{},hidden:true}));
+  const element=()=>({textContent:'',append(){},addEventListener(){}});
+  const elements={};const document={getElementById:id=>elements[id]??=element(),querySelectorAll:selector=>selector==='[data-sport-only]'?panels:[],createElement:element};
+  const code=fs.readFileSync(require.resolve('../daily.js'),'utf8').replace(/\nload\(\);\s*$/,'');
+  vm.runInNewContext(code,{document,location:{search:'?sport='+sport},URLSearchParams,Intl,Date});
+  for(const panel of panels){assert.equal(panel.hidden,sport!=='nhl');assert.equal(panel.style.display,sport==='nhl'?'':'none');}
+ }
+});
