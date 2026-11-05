@@ -89,6 +89,17 @@ no es un archivo de entrenamiento ni un registro histórico inmutable de alineac
 
 ### Entradas deportivas prospectivas para entrenar y comparar módulos NHL
 
+### Captura pregame según el calendario NHL
+
+`PULSO NHL — schedule pregame captures` consulta el calendario oficial cada 30
+minutos y agrupa los inicios por fecha de Chile. La primera captura se despacha
+en el primer chequeo desde dos horas antes del primer partido; luego se despacha
+una captura por hora hasta antes del inicio del último partido. Los chequeos
+fuera de esa ventana solo consultan el calendario y no ejecutan el pipeline de
+captura. GitHub Actions puede retrasar una ejecución programada; el primer
+despacho puede ocurrir hasta unos 30 minutos después de la marca de dos horas.
+La ejecución manual del workflow de captura sigue disponible.
+
 Antes de emitir los cinco mercados, el workflow conserva por ejecución:
 
 - `nhl/learning/pregame/run-ID.json`: identidades NHL de las líneas proyectadas,

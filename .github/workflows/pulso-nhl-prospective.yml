@@ -42,9 +42,6 @@ on:
       - 'nhl/pulso_prospective_capture.py'
       - 'nhl/tests/test_player_evidence.py'
       - '.github/workflows/pulso-nhl-prospective.yml'
-  schedule:
-    - cron: '10 14 * * *'
-    - cron: '10 20 * * *'
   workflow_dispatch:
     inputs:
       day:
