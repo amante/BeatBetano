@@ -1,0 +1,30 @@
+name: PULSO NHL — schedule pregame captures
+on:
+  schedule:
+    - cron: '0,30 * * * *'
+  workflow_dispatch:
+permissions:
+  actions: write
+  contents: read
+concurrency:
+  group: pulso-nhl-slate-scheduler
+  cancel-in-progress: false
+jobs:
+  dispatch-pregame-capture:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Check official fixture window in Chile time
+        id: window
+        run: python -m nhl.pulso_nhl_capture_window --github-output "$GITHUB_OUTPUT"
+      - name: Dispatch NHL capture for this slate
+        if: steps.window.outputs.should_run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SLATE_DAY: ${{ steps.window.outputs.day }}
+        run: gh workflow run pulso-nhl-prospective.yml --repo amante/BeatBetano --ref main -f day="$SLATE_DAY"
