@@ -509,7 +509,7 @@ jobs:
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add frontend/data/nhl-joint-model-latest.json
+          git add -f frontend/data/nhl-joint-model-latest.json
           if ! git diff --cached --quiet; then
             git commit -m "data: publish NHL joint model scenarios"
             git pull --rebase origin main
