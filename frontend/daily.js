@@ -141,6 +141,8 @@ function nhlScheduleSnapshot(slate){
 }
 async function load(){
  $("daily-date").value=localDay();
+ // NBA has a separate frozen-cohort source; do not load the legacy shared feed.
+ if(sport==="nba")return;
  const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json","./data/nhl-complete-slate-latest.json","./data/nhl-schedule.json"].map(async path=>{
   const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw Error(path+" "+response.status);return response.json();
  }));
@@ -154,7 +156,7 @@ async function load(){
 function changeDate(){
  const date=$("daily-date").value;
  if(!/^20\d{2}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+"T12:00:00Z")))return;
- $("simulation-status").textContent="";renderGames();
+ $("simulation-status").textContent="";if(sport!=="nba")renderGames();
 }
 $("daily-date").addEventListener("change",changeDate);
 document.querySelectorAll('input[name="simulation-scope"]').forEach(r=>r.addEventListener("change",()=>renderSelection(activeGames())));

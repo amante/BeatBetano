@@ -19,14 +19,27 @@
  if(typeof module!=="undefined")module.exports={validate,forDay,stale};
  if(typeof window==="undefined"||typeof document==="undefined")return;
  if(new URLSearchParams(location.search).get("sport")!=="nba")return;
- const root=document.createElement("section");root.className="panel";document.querySelector("main").prepend(root);
+ const root=document.createElement("section");root.className="panel";
+ const agenda=document.getElementById("daily-results");
+ if(agenda)agenda.replaceChildren(root);else document.querySelector("main").prepend(root);
+ for(const selector of ["#daily-stats",".daily-yesterday",".simulation-panel","#nhl-five-market","#nhl-joint-model","#pulso-nhl-research"]){
+  const panel=document.querySelector(selector);if(panel){panel.hidden=true;panel.style.display="none";}
+ }
  const el=(tag,text)=>{const x=document.createElement(tag);x.textContent=text;return x;};
  const local=x=>new Date(x).toLocaleString("es-CL",{timeZone:"America/Santiago"});
  let data=null,error="";
  function render(){
   root.replaceChildren(el("h2","Pronósticos NBA"));
-  if(!data){root.append(el("p",error||"Cargando el registro NBA…"));return;}
+  if(!data){
+   const label=document.getElementById("daily-label"),source=document.getElementById("feed-message");
+   if(label)label.textContent="NBA · Registro prospectivo";
+   if(source)source.textContent=error||"Cargando el registro NBA…";
+   root.append(el("p",error||"Cargando el registro NBA…"));return;
+  }
   const selected=document.getElementById("daily-date").value,rows=forDay(data,selected);
+  const label=document.getElementById("daily-label"),source=document.getElementById("feed-message");
+  if(label)label.textContent="NBA · "+selected+" · "+rows.length+" partido"+(rows.length===1?" registrado":"s registrados");
+  if(source)source.textContent="Calendario y emisiones del registro NBA · captura "+local(data.last_source_capture_utc)+" · fecha Chile.";
   root.append(el("p","Elo y Challenger experimentales · sin ajustes de lesiones ni alineaciones · Knicks excluido."));
   root.append(el("p","Última captura: "+local(data.last_source_capture_utc)+(stale(data)?" · Datos desactualizados; revisar la fuente.":"")));
   if(data.source_error_count)root.append(el("p","El registro conserva fallos de fuente. La cobertura requiere revisión."));
