@@ -3,6 +3,11 @@ const $=id=>document.getElementById(id);
 const SPORTS={nba:"NBA",nfl:"NFL",nhl:"NHL",soccer:"Fútbol",tennis:"Tenis"};
 const qs=new URLSearchParams(location.search),sport=qs.get("sport");
 if(!Object.hasOwn(SPORTS,sport)){location.replace("./index.html");throw Error("Seleccione una disciplina desde la portada");}
+// Shared markup is owned by one discipline; keep it out of every other route.
+document.querySelectorAll('[data-sport-only]').forEach(panel=>{
+ const visible=panel.dataset.sportOnly===sport;
+ panel.hidden=!visible;panel.style.display=visible?"":"none";
+});
 const title=SPORTS[sport];
 const localDay=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const previousDay=d=>{const x=new Date(d+"T12:00:00Z");x.setUTCDate(x.getUTCDate()-1);return x.toISOString().slice(0,10);};
