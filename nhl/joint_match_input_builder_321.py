@@ -9,6 +9,13 @@ from nhl.pulso_goalie_multisource_257 import TEAM_NAMES, norm
 
 API = "https://api.nhle.com/stats/rest/en"
 
+def blocker_category(reason):
+    """Separate expected pregame lineup timing from source/data failures."""
+    text = str(reason).lower()
+    if "lineup evidence incomplete" in text or "projected" in text and ("incomplete" in text or "missing" in text):
+        return "lineup_not_confirmed"
+    return "other_input_unavailable"
+
 def utc(value):
     d = datetime.fromisoformat(value.replace("Z", "+00:00"))
     if d.tzinfo is None: raise ValueError("Source timestamps must include timezone")
@@ -203,7 +210,13 @@ def build(report, context, changes, goalies, special, cutoff):
             manifest+=goalie_sources
             if any(utc(x["retrieved_at_utc"])>=start for x in manifest): raise ValueError("Post-start source")
             output.append({"kind":"nhl_joint_match_inputs_v1","game_id":gid,"home":f["home"],"away":f["away"],"start_utc":f["start_utc"],"cutoff_exclusive":cutoff_for_engine,"captured_at_utc":captured.isoformat(),"poststart_reconstruction":False,"league_context":{"powerplay_goals_allowed_per_opportunity":league_pk_rate},"teams":sides,"unknowns":unknown,"source_manifest":manifest})
-        except (KeyError,TypeError,ValueError) as e: blocked.append({"game_id":gid,"home":f["home"],"away":f["away"],"reason":str(e)[:240]})
+        except (KeyError,TypeError,ValueError) as e:
+            reason=str(e)[:240]
+            category=blocker_category(reason)
+            blocked.append({"game_id":gid,"home":f["home"],"away":f["away"],
+                            "category":category,
+                            "status":"Alineación aún no confirmada" if category=="lineup_not_confirmed" else "Escenario integrado pendiente",
+                            "reason":reason})
     return {"kind":"nhl_joint_match_input_batch_v321","date":cutoff,"season":season,"generated_at_utc":datetime.now(timezone.utc).isoformat(),"games":output,"blocked_games":blocked,"official":False,"calibrated":False,"odds_used":False}
 
 def main():
