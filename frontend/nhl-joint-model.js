@@ -21,7 +21,7 @@
     if(!m||!sumToOne([m.illustrative_ml&&m.illustrative_ml.home,m.illustrative_ml&&m.illustrative_ml.away])||!sumToOne([m.regulation&&m.regulation.home,m.regulation&&m.regulation.draw,m.regulation&&m.regulation.away])||!inRange(m.three_goal_lead&&m.three_goal_lead.home)||!inRange(m.three_goal_lead&&m.three_goal_lead.away)||!inRange(m.first_to_three_goal_lead&&m.first_to_three_goal_lead.home)||!inRange(m.first_to_three_goal_lead&&m.first_to_three_goal_lead.away)||m.first_to_three_goal_lead.home+m.first_to_three_goal_lead.away>1.00001)return false;
    }
   }
-  return data.blocked_games.every(x=>x&&x.game_id&&x.home&&x.away&&typeof x.reason==="string");
+  return data.blocked_games.every(x=>x&&x.game_id&&x.home&&x.away&&typeof x.reason==="string"&&(!x.category||["lineup_not_confirmed","other_input_unavailable"].includes(x.category)));
  }
  function weighted(game){
   const scenarios=game&&game.scenarios;if(!Array.isArray(scenarios)||!scenarios.length)return null;
@@ -55,11 +55,22 @@
   if(!validate(feed)){status.textContent="La publicación integrada no superó la validación. No se muestran sus probabilidades.";return;}
   if(!feed.date){status.textContent="Aún no hay una ejecución diaria publicada.";return;}
   const date=dateInput&&dateInput.value||feed.date;
-  status.textContent="Última captura: "+feed.date+" · "+feed.games.length+" partidos con escenarios · "+feed.blocked_games.length+" bloqueados · publicada "+new Date(feed.published_at_utc).toLocaleString("es-CL",{timeZone:"America/Santiago",dateStyle:"short",timeStyle:"short"})+" (Chile)";
+  const lineupPending=feed.blocked_games.filter(g=>g.category==="lineup_not_confirmed").length;
+  const otherPending=feed.blocked_games.length-lineupPending;
+  status.textContent="Última captura: "+feed.date+" · "+feed.games.length+" partidos con escenarios integrados · "+lineupPending+" alineaciones por confirmar · "+otherPending+" pendientes por otros datos · publicada "+new Date(feed.published_at_utc).toLocaleString("es-CL",{timeZone:"America/Santiago",dateStyle:"short",timeStyle:"short"})+" (Chile)";
   if(date!==feed.date){root.append(make("p","No hay escenarios publicados para "+date+". La última captura es del "+feed.date+". No mostramos datos de otra fecha.","daily-empty"));return;}
   if(!feed.games.length&&!feed.blocked_games.length)root.append(make("p","La captura no encontró partidos elegibles para esta fecha.","daily-empty"));
   feed.games.forEach(game=>{const match=make("section",undefined,"nhl-joint-game");match.append(make("h4",game.away+" @ "+game.home));match.append(make("p",new Date(game.start_utc).toLocaleString("es-CL",{timeZone:"America/Santiago",dateStyle:"medium",timeStyle:"short"})+" · "+game.scenario_count+" combinaciones de arqueros","nhl-joint-kicker"));const mix=weighted(game);if(mix){const card=make("article",undefined,"nhl-joint-scenario");card.append(make("h5","Estimación combinada · titularidades históricas"));card.append(make("p","Goles esperados · "+game.home+" "+mix.expected_goals.home.toFixed(2)+" — "+mix.expected_goals.away.toFixed(2)+" "+game.away,"nhl-joint-goals"));const m=mix.markets;card.append(make("p","Ganador ilustrativo · "+game.home+" "+pct(m.illustrative_ml.home)+" · "+game.away+" "+pct(m.illustrative_ml.away)));card.append(make("p","Tiempo regular · "+game.home+" "+pct(m.regulation.home)+" · Empate "+pct(m.regulation.draw)+" · "+game.away+" "+pct(m.regulation.away)));card.append(make("p","Alcanza ventaja de +3 · "+game.home+" "+pct(m.three_goal_lead.home)+" · "+game.away+" "+pct(m.three_goal_lead.away)));card.append(make("p","Primero en +3 · "+game.home+" "+pct(m.first_to_three_goal_lead.home)+" · "+game.away+" "+pct(m.first_to_three_goal_lead.away)));match.append(card);}else{match.append(make("p","Sin estimación combinada: las titularidades históricas no cubren todos los partidos previos del equipo.","nhl-joint-footnote"));}game.scenarios.forEach((s,i)=>match.append(addScenario(game,s,i)));root.append(match);});
-  if(feed.blocked_games.length){const details=make("details",undefined,"nhl-joint-blocked");details.append(make("summary",feed.blocked_games.length+" partidos sin escenario por falta o ambigüedad de fuentes"));feed.blocked_games.forEach(g=>details.append(make("p",g.away+" @ "+g.home+" · "+g.reason)));root.append(details);}
+  if(feed.blocked_games.length){
+   const pending=feed.blocked_games.filter(g=>g.category==="lineup_not_confirmed");
+   if(pending.length){
+    const details=make("details",undefined,"nhl-joint-blocked");details.append(make("summary",pending.length+" partidos: alineación aún no confirmada"));
+    pending.forEach(g=>details.append(make("p",g.away+" @ "+g.home+" · Alineación aún no confirmada.")));
+    root.append(details,make("p","El baseline de PULSO permanece vigente. El ajuste por líneas se incorpora cuando exista una proyección confirmada.","nhl-joint-footnote"));
+   }
+   const other=feed.blocked_games.filter(g=>g.category!=="lineup_not_confirmed");
+   if(other.length){const details=make("details",undefined,"nhl-joint-blocked");details.append(make("summary",other.length+" escenarios integrados pendientes por otras fuentes"));other.forEach(g=>details.append(make("p",g.away+" @ "+g.home+" · "+g.reason)));root.append(details);}
+  }
   root.append(make("p","La estimación combinada usa la proporción de partidos iniciados por cada candidato en la temporada actual. Solo aparece si el historial de candidatos cubre todos los partidos previos del equipo. Es una frecuencia descriptiva sin calibración; el modelo sigue siendo experimental y no oficial.","nhl-joint-footnote"));
  }
  doc.addEventListener("pulso:date-change",render);if(dateInput)dateInput.addEventListener("change",render);render();
