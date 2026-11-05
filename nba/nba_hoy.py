@@ -5,7 +5,7 @@ import math
 from pathlib import Path
 
 
-def assemble(snapshot, integrated, injury_lineups=None):
+def assemble(snapshot, integrated, injury_lineups=None, postmortem=None):
     injury_lineups = injury_lineups or {}
     if integrated.get("statistical_snapshot_sha256") != snapshot.get("content_sha256"):
         raise ValueError("Integrated results do not match statistical snapshot")
@@ -20,6 +20,17 @@ def assemble(snapshot, integrated, injury_lineups=None):
     if not isinstance(intake, dict):
         raise ValueError("Injury/lineup mapping invalid")
     games = []
+    research = {}
+    if postmortem is not None:
+        from postmortem_engine import verify_seal, VERSION
+        verify_seal(postmortem)
+        if postmortem.get("model_version") != VERSION:
+            raise ValueError("Unsupported postmortem model version")
+        if postmortem.get("baseline_snapshot_sha256") != snapshot.get("content_sha256"):
+            raise ValueError("Postmortem report / baseline mismatch")
+        research = {str(g["game_id"]): g for g in postmortem["games"]}
+        if len(research) != len(postmortem["games"]) or set(research) != set(fixtures):
+            raise ValueError("Postmortem report must cover the complete slate")
     for gid, p in fixtures.items():
         row = matched[gid]
         if (p["home_team"], p["away_team"]) != (row["home_team"], row["away_team"]):
@@ -35,7 +46,13 @@ def assemble(snapshot, integrated, injury_lineups=None):
         )
         if final is not None and not approved:
             raise ValueError("Unapproved numerical final for game " + gid)
-        home = round(final, 6) if approved else None
+        # The post-mortem gate is mandatory for both teams, ML and +20. This
+        # research estimator cannot authorize production, even with full inputs.
+        gate = research.get(gid)
+        if gate and (gate["home_team"],gate["away_team"],gate["tipoff_utc"]) != (p["home_team"],p["away_team"],p["tipoff_utc"]):
+            raise ValueError("Postmortem fixture identity mismatch")
+        gate_reasons = gate.get("missing", []) if gate else ["Missing two-sided replacement and score-path evaluation"]
+        home = None
         games.append({
             "game_id": gid, "tipoff_utc": p["tipoff_utc"],
             "home_team": p["home_team"], "away_team": p["away_team"],
@@ -43,9 +60,15 @@ def assemble(snapshot, integrated, injury_lineups=None):
             "challenger_baseline_p_home": row.get("challenger_p_home"),
             "hybrid_baseline_p_home": row.get("hybrid_p_home"),
             "hybrid_route": p.get("hybrid_route","unknown"),
+            "legacy_integrated_diagnostic_p_home": final if approved else None,
             "final_p_home": home,
-            "final_p_away": round(1-final, 6) if approved else None,
-            "final_status": "validated_integrated_candidate" if approved else "pending_verified_evidence_or_validation",
+            "final_p_away": None,
+            "final_status": "PASS_pending_postmortem_validation",
+            "recommendation": "PASS",
+            "eligible_for_bet": False,
+            "home_reach_plus20": None, "away_reach_plus20": None,
+            "postmortem_gate_reasons": gate_reasons,
+            "postmortem_research": gate,
             "starting_fives_confirmed": status.get("lineups_confirmed") is True,
             "official_injuries_resolved": status.get("official_player_team_status_confirmed") is True,
             "missing_evidence": [k for k, v in row.get("evidence_checks", {}).items() if v is not True],
@@ -68,10 +91,12 @@ def main():
     parser.add_argument("--snapshot", required=True)
     parser.add_argument("--integrated", required=True)
     parser.add_argument("--injury-lineups")
+    parser.add_argument("--postmortem")
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     load = lambda p: json.loads(Path(p).read_text()) if p else {}
-    result = assemble(load(args.snapshot), load(args.integrated), load(args.injury_lineups))
+    result = assemble(load(args.snapshot), load(args.integrated), load(args.injury_lineups),
+                      load(args.postmortem) if args.postmortem else None)
     target = Path(args.output)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(result, indent=2))

@@ -39,13 +39,15 @@ class TestNbaHoy(unittest.TestCase):
         with self.assertRaises(ValueError):
             assemble(self.snapshot, self.integrated)
 
-    def test_validated_candidate_has_complementary_probability(self):
+    def test_legacy_validation_cannot_bypass_replacement_and_path_gate(self):
         x = self.integrated["predictions"][0]
         x.update(integrated_p_home=0.62, all_sporting_steps_verified=True,
                  impact_model_independently_validated=True, status="integrated_candidate")
         result = assemble(self.snapshot, self.integrated)
-        self.assertEqual(result["games"][0]["final_p_home"], 0.62)
-        self.assertEqual(result["games"][0]["final_p_away"], 0.38)
+        self.assertIsNone(result["games"][0]["final_p_home"])
+        self.assertIsNone(result["games"][0]["final_p_away"])
+        self.assertEqual(result["games"][0]["recommendation"], "PASS")
+        self.assertTrue(result["games"][0]["postmortem_gate_reasons"])
         self.assertIsNone(result["games"][1]["final_p_home"])
 
 

@@ -57,5 +57,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nba-pregame-${{ github.run_id }}
-          path: results/nba/prospective/three_model_snapshot.json
+          path: results/nba/prospective/*.json
           retention-days: 90

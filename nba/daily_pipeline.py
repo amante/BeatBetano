@@ -30,6 +30,8 @@ def main():
     p.add_argument("--date",required=True,help="NBA scoreboard date YYYY-MM-DD")
     p.add_argument("--output",required=True,help="Create-only immutable JSON snapshot")
     p.add_argument('--allow-empty',action='store_true',help='Record zero eligible games without error')
+    p.add_argument('--postmortem-evidence',help='Verified two-sided player/possession features JSON')
+    p.add_argument('--postmortem-boxscores',help='Paired historical boxscore archive JSON')
     x=p.parse_args()
     now=datetime.now(timezone.utc).isoformat()
     scoreboard=fetch_day(x.date,now)
@@ -48,6 +50,13 @@ def main():
     snapshot=run(history,scoreboard,now)
     target=Path(x.output);target.parent.mkdir(parents=True,exist_ok=True)
     with target.open("x") as f:json.dump(snapshot,f,indent=2)
+    from postmortem_engine import build, save_new
+    # Preserve the baseline bytes and seal a separate complete sporting snapshot.
+    evidence = (json.loads(Path(x.postmortem_evidence).read_text()) if x.postmortem_evidence else
+                {"snapshot_sha256":snapshot["content_sha256"],"games":{}})
+    boxscores = json.loads(Path(x.postmortem_boxscores).read_text()) if x.postmortem_boxscores else {"games":[]}
+    sporting = build(snapshot,evidence,boxscores)
+    save_new(target.with_name(target.stem+".postmortem.json"),sporting)
     print(json.dumps({"date":x.date,"games":len(snapshot["predictions"]),
         "created_at_utc":snapshot["created_at_utc"],
         "status":"snapshot_created; candidate predictions not calibrated",
