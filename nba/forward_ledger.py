@@ -131,7 +131,7 @@ def reconstruct(observations,protocol,as_of):
                              'result_observed_at_utc':final['observed_at_utc']}
                     status='settled_paired_game'
         output.append({'game_id':gid,'home_team':latest['home_team'],'away_team':latest['away_team'],
-                       'tipoff_utc':latest['tipoff_utc'],'source_state':latest['source_state'],
+                       'tipoff_utc':latest['tipoff_utc'],'source_observed_at_utc':latest['observed_at_utc'],'source_state':latest['source_state'],
                        'source_status':latest['source_status'],'status':status,
                        'first_prediction':first[0] if first else None,
                        'prediction_observation_sha256':first[1] if first else None,

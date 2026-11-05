@@ -13,7 +13,7 @@ on:
   schedule:
     - cron: '20 * * * *'
   workflow_run:
-    workflows: ['PULSO NHL — prospective pregame source capture', 'NHL — daily postmortem and learning log', 'NBA automatic verified-history pregame']
+    workflows: ['PULSO NHL — prospective pregame source capture', 'NHL — daily postmortem and learning log', 'NBA automatic verified-history pregame', 'NBA frozen forward cohort ledger']
     types: [completed]
   pull_request:
     paths:
@@ -48,6 +48,7 @@ jobs:
           node --check frontend/portal.js
           node --check frontend/daily.js
           node --check frontend/nba-predictions.js
+          node --test frontend/tests/nba-forward.test.cjs
           node --check frontend/nhl-layout.js
           node --check frontend/nhl-postmortem.js
           node --check frontend/nhl-match-context.js

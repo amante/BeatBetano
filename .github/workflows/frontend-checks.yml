@@ -25,6 +25,7 @@ jobs:
           node --check frontend/portal.js
           node --check frontend/daily.js
           node --check frontend/nba-predictions.js
+          node --test frontend/tests/nba-forward.test.cjs
           node --check frontend/nhl-layout.js
           node --check frontend/nhl-postmortem.js
           node --check frontend/nhl-match-context.js

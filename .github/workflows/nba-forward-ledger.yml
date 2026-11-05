@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m pip install requests
+      - run: python -m pip install requests pypdf beautifulsoup4
       - run: python -m unittest discover -s nba/tests -v
   capture:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -39,17 +39,27 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m pip install requests
+      - run: python -m pip install requests pypdf beautifulsoup4
       - name: Preserve new source observations and first paired forecasts
         env:
           CAPTURE_RUN: ${{ github.run_id }}-${{ github.run_attempt }}
         run: python nba/forward_capture.py --run-id "$CAPTURE_RUN"
+      - name: Archive pregame sporting context and completed player-minute targets
+        if: always()
+        env:
+          SPORTING_RUN: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: python nba/sporting_cycle.py --run-id "$SPORTING_RUN"
+      - name: Publish accumulated NBA cohort and attributed sporting coverage
+        if: always()
+        run: python nba/forward_publication.py
       - name: Persist append-only cohort observations, including source failures
         if: always()
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -f -- reports/nba-forward
+          if [ -d reports/nba-sporting ]; then git add -f -- reports/nba-sporting; fi
+          if [ -f frontend/data/nba-forward-latest.json ]; then git add -f -- frontend/data/nba-forward-latest.json; fi
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'data(nba): immutable forward cohort observation'
           for attempt in 1 2 3; do
@@ -62,5 +72,8 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: nba-forward-ledger-${{ github.run_id }}-${{ github.run_attempt }}
-          path: reports/nba-forward
-          retention-days: 120
+          path: |
+            reports/nba-forward
+            reports/nba-sporting
+            frontend/data/nba-forward-latest.json
+          retention-days: 90
