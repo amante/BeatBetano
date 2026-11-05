@@ -33,9 +33,13 @@ def stat_rows(resource, season, cutoff, sort="playerId:ASC"):
     # valid dimension here. Keep the fixture cutoff by the source timestamp
     # gate in build(): every included game's start must be after every query.
     date.fromisoformat(cutoff)
+    sort_field, separator, direction=sort.rpartition(":")
+    if not separator or not sort_field.replace("_","").isalnum() or direction not in ("ASC","DESC"):
+        raise ValueError("Invalid NHL Stats sort specification")
+    sort_value=json.dumps([{"property":sort_field,"direction":direction}],separators=(",",":"))
     rows=[];start=0;total=None; sources=[]
     while total is None or start < total:
-        q=urlencode({"isAggregate":"false","isGame":"false","start":start,"limit":100,"sort":sort,"cayenneExp":f'seasonId={season} and gameTypeId=2'})
+        q=urlencode({"isAggregate":"false","isGame":"false","start":start,"limit":100,"sort":sort_value,"cayenneExp":f'seasonId={season} and gameTypeId=2'})
         url=f"{API}/{resource}?{q}"; payload,meta=get_json(url); data=payload.get("data")
         if not isinstance(data,list) or type(payload.get("total")) is not int: raise ValueError("Invalid NHL Stats response: "+resource)
         if total is None: total=payload["total"]
