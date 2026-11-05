@@ -1,0 +1,430 @@
+{
+  "review_base_commit": "decff7873efc1a572946c2921afc80ebc9b011b1",
+  "python_version": "3.9.6",
+  "tests": {
+    "command": "python -m unittest discover -s nba/tests -v",
+    "count": 313,
+    "failures": 0,
+    "errors": 0,
+    "status": "OK",
+    "log_sha256": "7c68e4250044617716ff9fef4978977a4602d5ac5a9cacf796c8fbe347e72007"
+  },
+  "tested_source_sha256": {
+    "nba/postmortem_engine.py": "be0e02a294b46c3961606c0db8c3d1828de8e79c5a62e9d04ace4661de4ccc24",
+    "nba/postmortem_backtest.py": "1c986db8d5762c02a7b8bdcf16ac3287223142a19c08954f271408ca6f0c92e6",
+    "nba/score_path.py": "14b5b08c4b673771a630b63ad72a74044ec737b98510822509b3a40ad5557f80",
+    "nba/possession_path_features.py": "9c1e797918f51b852b32f94872cb528e87777a9d54e91dab35a695080421f381",
+    "nba/daily_pipeline.py": "bff2b28559c0a1c0e324e6da717b46da035bbcf0fe3847db1376d35f01e7e6c0",
+    "nba/nba_hoy.py": "63df3757723bfae05d6549b82e63d7579dfc406d631d4dfce760df7a62d9906e",
+    "nba/tests/test_postmortem_engine.py": "b7d612cfec4eeab27042fe03cd03e7170b852de9239865f36a8665a50f363cfa",
+    "nba/tests/test_nba_hoy.py": "63db13b8287f3648b3be447925de12337e112de5644994a3229250a344f1454c"
+  },
+  "november_4_archive_replay": {
+    "created_at_utc": "2026-11-05T15:21:26.778371+00:00",
+    "prediction_as_of_utc": "2026-11-04T21:16:17.075599+00:00",
+    "emission_kind": "retrospective_replay",
+    "baseline_snapshot_sha256": "880c1ddd2e671293655f7e1d54c64c1e5e0a0de434b6e3109c7748ac1e3e20f8",
+    "replay_snapshot_sha256": "ac4094d85abeac1c52ea28332f99ee888da4a9ca9672e66d7fa897fca32378fb",
+    "fixtures": 13,
+    "pass": 13,
+    "new_numeric_forecasts": 0,
+    "prior_paired_boxscores": 107,
+    "source_file_sha256": {
+      "reports/nba-2026-11-04/snapshot.json": "bd5a1be57d85127e5a29cb57de34e08b0fc041a9267457fa45951c6c4454680d",
+      "reports/nba-2026-11-04/boxscores.json": "e11efb2b6ac9ccd7cdf1220ffa84d310d67de01713b0d65b477a477641081427",
+      "reports/nba-2026-11-04/source_failures.json": "06c5113e1efa51ac2a90026928081fa18cbca7008e2e5b99b88dab88f581726e"
+    },
+    "games": [
+      {
+        "game_id": "401909922",
+        "home_team": "DET",
+        "away_team": "PHI",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.7057547896893029,
+            "away_ml": 0.29424521031069706,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.7329567007161106,
+            "away_ml": 0.26704329928388937,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.7329567007161106,
+            "away_ml": 0.26704329928388937,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "DET: Missing verified roster, injuries, lineups, player effects and score-path evidence; PHI: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909923",
+        "home_team": "WSH",
+        "away_team": "ATL",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.3209508271972365,
+            "away_ml": 0.6790491728027634,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.33681266543967087,
+            "away_ml": 0.6631873345603292,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.33681266543967087,
+            "away_ml": 0.6631873345603292,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "WSH: Missing verified roster, injuries, lineups, player effects and score-path evidence; ATL: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909924",
+        "home_team": "BOS",
+        "away_team": "MIL",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.8573120233863041,
+            "away_ml": 0.14268797661369592,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.8902347967308364,
+            "away_ml": 0.10976520326916361,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.8573120233863041,
+            "away_ml": 0.14268797661369592,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "BOS: Missing verified roster, injuries, lineups, player effects and score-path evidence; MIL: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909925",
+        "home_team": "BKN",
+        "away_team": "CHA",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.33139279780746045,
+            "away_ml": 0.6686072021925396,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.3323827002529221,
+            "away_ml": 0.667617299747078,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.3323827002529221,
+            "away_ml": 0.667617299747078,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "BKN: Missing verified roster, injuries, lineups, player effects and score-path evidence; CHA: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909927",
+        "home_team": "MEM",
+        "away_team": "IND",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.6829835360013942,
+            "away_ml": 0.31701646399860584,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.7441244396322261,
+            "away_ml": 0.2558755603677739,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.7441244396322261,
+            "away_ml": 0.2558755603677739,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "MEM: Missing verified roster, injuries, lineups, player effects and score-path evidence; IND: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909928",
+        "home_team": "NO",
+        "away_team": "UTAH",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.718558704009201,
+            "away_ml": 0.28144129599079903,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.7750977905885923,
+            "away_ml": 0.2249022094114077,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.7750977905885923,
+            "away_ml": 0.2249022094114077,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "NO: Missing verified roster, injuries, lineups, player effects and score-path evidence; UTAH: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909929",
+        "home_team": "OKC",
+        "away_team": "CLE",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.7209505222320237,
+            "away_ml": 0.2790494777679763,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.7041291080654561,
+            "away_ml": 0.29587089193454386,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.7041291080654561,
+            "away_ml": 0.29587089193454386,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "OKC: Missing verified roster, injuries, lineups, player effects and score-path evidence; CLE: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909930",
+        "home_team": "HOU",
+        "away_team": "MIN",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.6677743655439636,
+            "away_ml": 0.33222563445603637,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.67467051575048,
+            "away_ml": 0.32532948424952,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.67467051575048,
+            "away_ml": 0.32532948424952,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "HOU: Missing verified roster, injuries, lineups, player effects and score-path evidence; MIN: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909931",
+        "home_team": "DEN",
+        "away_team": "TOR",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.6877016339618748,
+            "away_ml": 0.3122983660381252,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.6421330222775681,
+            "away_ml": 0.3578669777224319,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.6421330222775681,
+            "away_ml": 0.3578669777224319,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "DEN: Missing verified roster, injuries, lineups, player effects and score-path evidence; TOR: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909932",
+        "home_team": "PHX",
+        "away_team": "POR",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.5059510298417671,
+            "away_ml": 0.4940489701582329,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.4313869280211042,
+            "away_ml": 0.5686130719788958,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.4313869280211042,
+            "away_ml": 0.5686130719788958,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "PHX: Missing verified roster, injuries, lineups, player effects and score-path evidence; POR: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909933",
+        "home_team": "SA",
+        "away_team": "DAL",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.8378771007298037,
+            "away_ml": 0.1621228992701963,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.8669965124248031,
+            "away_ml": 0.13300348757519687,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.8378771007298037,
+            "away_ml": 0.1621228992701963,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "SA: Missing verified roster, injuries, lineups, player effects and score-path evidence; DAL: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909934",
+        "home_team": "SAC",
+        "away_team": "LAL",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.26989557791974483,
+            "away_ml": 0.7301044220802552,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.2149819850898929,
+            "away_ml": 0.7850180149101071,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.2149819850898929,
+            "away_ml": 0.7850180149101071,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "SAC: Missing verified roster, injuries, lineups, player effects and score-path evidence; LAL: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      },
+      {
+        "game_id": "401909935",
+        "home_team": "LAC",
+        "away_team": "MIA",
+        "recommendation": "PASS",
+        "baseline": {
+          "elo": {
+            "home_ml": 0.609880754869146,
+            "away_ml": 0.39011924513085405,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "challenger": {
+            "home_ml": 0.600494341831516,
+            "away_ml": 0.39950565816848405,
+            "home_plus20": null,
+            "away_plus20": null
+          },
+          "hybrid": {
+            "home_ml": 0.600494341831516,
+            "away_ml": 0.39950565816848405,
+            "home_plus20": null,
+            "away_plus20": null
+          }
+        },
+        "missing": [
+          "LAC: Missing verified roster, injuries, lineups, player effects and score-path evidence; MIA: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+        ]
+      }
+    ]
+  },
+  "new_model_real_game_backtest": {
+    "eligible_verified_player_path_games": 0,
+    "brier": null,
+    "log_loss": null,
+    "independent_holdout_validation_passed": false
+  },
+  "limits": [
+    "Synthetic tests verify arithmetic and semantics, not real-game calibration.",
+    "The original November 4 archive lacks complete verified player-impact and normalized possession-path data.",
+    "Archived official injury source failed with HTTP 403.",
+    "Retrospective replay timestamps are not pregame emissions.",
+    "No coefficients are promoted, no real-game superiority is claimed, and all recommendations remain PASS."
+  ]
+}

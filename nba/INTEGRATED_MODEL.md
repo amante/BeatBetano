@@ -11,3 +11,9 @@ Every evidence field must have `verified: true`, a nonempty `source` and `observ
 The GitHub workflow now creates `integrated_model.json` alongside the baseline and coverage status. **This is not yet a data-complete end-to-end forecast**: official injury feeds, full starting fives, minutes, matchups, and a validated impact model have not been connected. Until those are present, the final integrated probability remains null and betting eligibility false. No bookmaker odds enter the model. Do not imply the final model is calibrated merely because Python ran successfully.
 
 For full daily slates, evaluate all games at the same depth. NFL untouched.
+
+The November 4 post-mortem adds a mandatory two-sided replacement and score-path
+publication gate in `nba_hoy.py`. Legacy integration validation flags cannot
+authorize final ML/+20 probabilities. `postmortem_engine.py` computes the new
+research candidate and sealed sporting companion; recommendations remain PASS
+until independent validation exists. See [the contract and hypotheses](POSTMORTEM_2026_27_1.md).
