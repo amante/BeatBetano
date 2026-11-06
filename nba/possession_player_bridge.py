@@ -15,7 +15,7 @@ from postmortem_engine import build, no_market_fields, provenance, save_new, val
 from prospective import utc
 from reproducible_slate import digest
 
-PATH_FIELDS=('path_sample_possessions','pace_regulation','turnover_rate',
+PATH_FIELDS=('turnover_adjustment_method','path_sample_possessions','pace_regulation','turnover_rate',
              'forced_turnover_rate','transition_bonus','non_turnover_blocks')
 EFFECT_FIELDS=('effect_kind','offense_effect_per_100','defense_effect_per_100','effect_sample_possessions')
 

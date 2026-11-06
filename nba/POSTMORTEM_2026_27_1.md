@@ -210,3 +210,64 @@ Synthetic tests exercise full calculations and path semantics. Actual multi-seas
 player/path backtesting, calibration, coefficient fitting, external holdout audit
 and model promotion remain unavailable until the required authorized data exists.
 No superiority, profitability or calibrated real-game +20 probability is claimed.
+
+## November 5 follow-up — research V2
+
+The existing engine, extractor, simulator, archive and evaluator are extended in
+place. Official 2026-27 remains the existing Elo benchmark; Challenger 2026-27.1
+is the uncalibrated V2 research candidate. Baseline +20 stays NULL when unavailable.
+No production coefficients or baseline probabilities are silently replaced.
+
+`postmortem_validation/nov5_observed_evidence.json` records the user-supplied
+November 5 evidence: Orlando 104–117 Phoenix, PHX maximum +30 despite final +13;
+Miami 100–120 Golden State, GSW +20. It includes Orlando's Banchero/Suggs/Isaac
+absences, PHX 17/34 triples, Orlando's 25 turnovers and PHX's 36 points after
+turnovers; GSW's Butler/Porzingis/Moody/Santos absences, Giannis available for
+Miami, Miami back-to-back following overtime, and GSW two days' rest.
+These statements have not been independently reconciled with a licensed raw
+export in this change. They are separate observed evidence, never player features
+or fabricated prospective snapshots. Both models' four pregame probabilities,
+hits, DUAL, Brier and log loss remain NULL. Unknown opposing maximum leads remain
+NULL too. Regression witness paths test the reported boundaries; their possession
+order is synthetic, not historical play-by-play.
+
+### Added input requirements and explicit hypotheses
+
+Both rosters now require player `forced_turnover_on_off` (forced rate delta,
+[-.2,.2]) and `turnover_on_off` (committed turnover rate delta,
+[-.2,.2], with the same adjusted reference rotation and shrinkage as efficiency)
+and `minutes_last_48h` ([0,106], reliably observed minutes). Reference-minute
+changes propagate turnover effects; usage overload adds `.02 * overload` to the
+committed rate. Insufficient or unknown replacement data still means PASS.
+
+Both teams require `schedule_evidence` with the same timestamp/source contract,
+`target_tipoff_utc` equal to the fixture, and `schedule` containing
+`previous_tipoff_utc`, `previous_completed_at_utc`, `previous_overtime_periods`.
+Previous completion must precede the source publication. Back-to-back is an
+explicit <=30 hour tipoff gap, avoiding UTC calendar-day assumptions. Schedule
+pressure = `max(0,(48-hours_since_completion)/24) + .25*prior_OT` (OT term only
+on back-to-back). Rotation load = sum of projected-minute shares times
+`max(0,minutes_last_48h/48-.5)`, divided by five. Their sum is fatigue index F.
+Offense shifts by -F/100 PPP, allowed defense by +.5F per 100 and committed
+turnover rate by +.005F. Actual minute caps remain source supplied; the model
+does not invent medical restrictions. Deep rested replacements reduce projected
+load through the existing allocation, usage, on/off and rebounding role system.
+These constants are declared sensitivity hypotheses, not fitted findings.
+
+`possession_path_features.extract` now centers committed rates on opponents'
+forced rates, and forced rates on opponents' committed rates, using historical
+possession exposure and the archive league mean. Transition bonus similarly
+subtracts exposed opponents' allowed-context bonus and adds the league context
+bonus. Raw rates and expected opponent rates remain visible. The engine requires
+`turnover_adjustment_method: opponent_residual_v1`; missing inputs or adjusted
+rates outside supported bounds cause PASS, without clipping. This descriptive
+one-step adjustment is not a causal or fitted schedule-strength estimate; sparse,
+unbalanced and disconnected samples need further validation.
+
+The existing frozen-snapshot evaluator supplies chronological walk-forward scoring,
+paired baseline comparisons and reliability bins; it does not train a calibrator.
+No recovered prospective forecasts or verified player/path dataset for these two
+games exists here, so empirical performance and fitted calibration remain
+unavailable. No November 5 result is used to tune constants. V2 snapshots have a
+new version and parameter hash; older V1 snapshots remain immutable and must be
+evaluated using their corresponding evaluator version. All recommendations PASS.

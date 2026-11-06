@@ -22,6 +22,9 @@ def extract(archive, created_at, target_tipoff):
                                 'forced_turnovers':0,'minutes':0,'game_ids':[],
                                 'non_turnover_blocks':[],'after_turnover':[],'other':[],
                                 'max_leads':[]})
+    opponents = defaultdict(lambda:defaultdict(int))
+    defensive_opponents = defaultdict(lambda:defaultdict(int))
+    allowed = defaultdict(lambda:{'after':[], 'other':[]})
     seen = set()
     for game in sorted(archive['games'],key=lambda g:(utc(g['tipoff_utc']),str(g['game_id']))):
         gid = str(game['game_id'])
@@ -62,6 +65,8 @@ def extract(archive, created_at, target_tipoff):
                 raise ValueError('Turnover possession scored points')
             points[t] += scored
             leads[t] = max(leads[t],points[t]-points[opponent])
+            opponents[t][opponent] += 1
+            defensive_opponents[opponent][t] += 1
             teams[t]['possessions'] += 1
             teams[t]['turnovers'] += int(turnover)
             teams[opponent]['opponent_possessions'] += 1
@@ -69,6 +74,7 @@ def extract(archive, created_at, target_tipoff):
             if not turnover:
                 after = previous is not None and previous['team'] == opponent and previous['turnover']
                 teams[t]['after_turnover' if after else 'other'].append(scored)
+                allowed[opponent]['after' if after else 'other'].append(scored)
                 buffers[t].append(scored)
                 if len(buffers[t]) == 4:
                     teams[t]['non_turnover_blocks'].append(buffers[t])
@@ -81,20 +87,48 @@ def extract(archive, created_at, target_tipoff):
             teams[t]['game_ids'].append(gid)
             teams[t]['max_leads'].append(leads[t])
     output = {}
+    total = sum(v['possessions'] for v in teams.values())
+    if not total:
+        raise ValueError('Empty possession archive')
+    league_to = sum(v['turnovers'] for v in teams.values())/total
+    def context_bonus(v):
+        return sum(v['after'])/len(v['after'])-sum(v['other'])/len(v['other'])
+    context_ok = all(sum(len(v[k]) for v in allowed.values()) > 0 for k in ('after','other'))
+    league_bonus = (sum(sum(v['after']) for v in allowed.values())/sum(len(v['after']) for v in allowed.values())
+                    - sum(sum(v['other']) for v in allowed.values())/sum(len(v['other']) for v in allowed.values())) if context_ok else None
     for t, values in teams.items():
         after,other = values['after_turnover'],values['other']
         blocks = values['non_turnover_blocks']
         if min(len(after),len(other)) < 10 or len(blocks) < 3 or len(values['game_ids']) < 3:
             output[t] = {'status':'PASS_insufficient_path_sample','game_ids':values['game_ids']}
             continue
-        bonus = max(0,sum(after)/len(after)-sum(other)/len(other))
+        if not context_ok or any(min(len(allowed[o]['after']),len(allowed[o]['other'])) < 10 for o in opponents[t]):
+            output[t] = {'status':'PASS_opponent_context_missing','game_ids':values['game_ids']}
+            continue
+        exposure = opponents[t]
+        n = sum(exposure.values())
+        expected_forced = sum(count*teams[o]['forced_turnovers']/teams[o]['opponent_possessions'] for o,count in exposure.items())/n
+        defensive_exposure = defensive_opponents[t]
+        expected_committed = sum(count*teams[o]['turnovers']/teams[o]['possessions'] for o,count in defensive_exposure.items())/sum(defensive_exposure.values())
+        expected_bonus = sum(count*context_bonus(allowed[o]) for o,count in exposure.items())/n
+        committed = league_to + values['turnovers']/values['possessions'] - expected_forced
+        forced = league_to + values['forced_turnovers']/values['opponent_possessions'] - expected_committed
+        bonus = max(0,league_bonus + sum(after)/len(after)-sum(other)/len(other) - expected_bonus)
+        if not .01 <= committed <= .4 or not .01 <= forced <= .4:
+            output[t] = {'status':'PASS_adjusted_turnover_outside_support','game_ids':values['game_ids']}
+            continue
         if bonus > 1:
             output[t] = {'status':'PASS_transition_bonus_outside_supported_range','game_ids':values['game_ids']}
             continue
         output[t] = {'status':'research_features_only','path_sample_possessions':values['possessions'],
                      'pace_regulation':48*values['possessions']/values['minutes'],
-                     'turnover_rate':values['turnovers']/values['possessions'],
-                     'forced_turnover_rate':values['forced_turnovers']/values['opponent_possessions'],
+                     'turnover_adjustment_method':'opponent_residual_v1',
+                     'raw_turnover_rate':values['turnovers']/values['possessions'],
+                     'raw_forced_turnover_rate':values['forced_turnovers']/values['opponent_possessions'],
+                     'opponent_expected_forced_rate':expected_forced,
+                     'opponent_expected_committed_rate':expected_committed,
+                     'turnover_rate':committed,
+                     'forced_turnover_rate':forced,
                      'transition_bonus':bonus,'non_turnover_blocks':blocks,
                      'offensive_explosiveness':{'blocks':len(blocks),
                                                'eight_plus_points_in_four_non_turnover_possessions':sum(sum(b)>=8 for b in blocks)/len(blocks)},
@@ -103,7 +137,8 @@ def extract(archive, created_at, target_tipoff):
             'input_sha256':digest(archive),'calibrated':False,
             'limitations':['Blocks preserve four consecutive non-turnover scoring opportunities; turnovers are modeled separately.',
                            'Four-point maximum excludes unusual technical/free-throw possessions; reconcile upstream or PASS.',
-                           'Transition bonus is descriptive, not a causal fast-break estimate.']}
+                           'Opponent residuals use possession-weighted historical opponent rates; small and disconnected schedules remain confounded.',
+                           'Transition bonus is opponent-centered and descriptive, not a causal fast-break estimate.']}
 
 
 def main():

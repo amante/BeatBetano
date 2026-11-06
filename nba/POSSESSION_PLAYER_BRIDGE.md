@@ -109,3 +109,20 @@ Definitions: [NBA statistical glossary](https://www.nba.com/stats/help/glossary)
 Methodological background: [Sill, regularized adjusted plus-minus](https://www.sloansportsconference.com/research-papers/improved-nba-adjusted-using-regularization-and-out-of-sample-testing).
 This implementation is our experimental possession-level model, not a reproduction
 of Sill's fitted model or an assertion of its published performance.
+
+## Compatibility with the V2 engine
+
+The bridge carries `turnover_adjustment_method` from the shared path extractor
+alongside the opponent-adjusted turnover/transition features. It never borrows a
+method marker from supplied context for rates derived elsewhere. The player-effect
+adapter retains both regularized coefficients and legacy adjusted-on/off support;
+V2 fatigue, committed/forced turnover and replacement inputs remain mandatory.
+Context must therefore include verified schedule evidence, the target tipoff,
+previous-game schedule and individual 48-hour minute load, plus committed/forced
+turnover on/off estimates. The bridge does not infer those inputs from scoring
+coefficients. Missing inputs leave that team disconnected and the fixture PASS.
+
+Sporting snapshots retain the Official/Challenger track labels and hash the full
+V2 engine parameters together with the player-effect fitting policy. Regression
+checks exercise a connected export without a context method marker, preservation
+of fatigue/turnover inputs, and rejection of missing schedule/load evidence.

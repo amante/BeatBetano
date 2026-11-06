@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-05",
+  "evidence_origin": "User-provided post-mortem and referenced ChatGPT conversation 68fbef34-797c-8329-9d7e-d1753a87cce4",
+  "independently_verified_source_export": false,
+  "use": "Observed scenario regression only; excluded from coefficient fitting and prospective performance claims",
+  "games": [
+    {
+      "home_team": "PHX", "away_team": "ORL",
+      "home_points": 117, "away_points": 104,
+      "home_max_lead_reported": 30, "away_max_lead_reported": null,
+      "home_plus20_observed": true,
+      "official_pregame": {"home_ml": null, "away_ml": null, "home_plus20": null, "away_plus20": null},
+      "challenger_pregame": {"home_ml": null, "away_ml": null, "home_plus20": null, "away_plus20": null},
+      "reported_context": {"ORL_absent": ["Paolo Banchero", "Jalen Suggs", "Jonathan Isaac"], "PHX_three_pointers": {"made": 17, "attempted": 34}, "ORL_turnovers": 25, "PHX_points_after_turnovers": 36}
+    },
+    {
+      "home_team": "GSW", "away_team": "MIA",
+      "home_points": 120, "away_points": 100,
+      "home_max_lead_reported": 20, "away_max_lead_reported": null,
+      "home_plus20_observed": true,
+      "official_pregame": {"home_ml": null, "away_ml": null, "home_plus20": null, "away_plus20": null},
+      "challenger_pregame": {"home_ml": null, "away_ml": null, "home_plus20": null, "away_plus20": null},
+      "reported_context": {"GSW_absent": ["Jimmy Butler", "Kristaps Porzingis", "Moses Moody", "Gui Santos"], "MIA_Giannis_available": true, "MIA_back_to_back": true, "MIA_previous_game_overtime": true, "GSW_rest_days": 2}
+    }
+  ],
+  "model_hits": null, "dual": null,
+  "calibration": {"eligible_predictions": 0, "brier": null, "log_loss": null},
+  "limitations": ["No prospective ML or +20 probabilities recovered for either model.", "No complete raw score paths supplied; unreported opposing maximum leads remain unknown.", "Reported injuries and availability are observations, not timestamped pregame inputs."]
+}

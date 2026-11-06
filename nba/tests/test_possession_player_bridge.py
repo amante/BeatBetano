@@ -101,6 +101,38 @@ class BridgeTests(unittest.TestCase):
         self.assertEqual(report['games'][0]['recommendation'],'PASS')
         self.assertFalse(report['production_approved'])
 
+    def test_bridge_supplies_v2_path_method_and_preserves_fatigue_inputs(self):
+        snapshot,context,boxes=inputs()
+        for team in context['games']['future']['teams'].values():
+            team.pop('turnover_adjustment_method')
+        evidence,audit=connect(snapshot,archive(),context)
+        self.assertEqual(audit['connected_games'],1)
+        for name,team in evidence['games']['future']['teams'].items():
+            self.assertEqual(team['turnover_adjustment_method'],'opponent_residual_v1')
+            self.assertEqual(team['schedule'],context['games']['future']['teams'][name]['schedule'])
+            self.assertIn('turnover_on_off',team['players'][0])
+            self.assertIn('forced_turnover_on_off',team['players'][0])
+            self.assertIn('minutes_last_48h',team['players'][0])
+        report=build(snapshot,evidence,boxes,simulations=100,emitted_at=CREATED)
+        self.assertIsNotNone(report['games'][0]['challenger'])
+        self.assertIn('model_tracks',report)
+        self.assertIn('fatigue_turnover_rate',report['parameters'])
+        self.assertIn('player_effect_fit',report['parameters'])
+        verify_seal(report)
+
+    def test_bridge_cannot_fill_missing_v2_load_or_schedule(self):
+        for field in ('schedule_evidence','schedule'):
+            snapshot,context,_=inputs()
+            del context['games']['future']['teams']['H'][field]
+            evidence,audit=connect(snapshot,archive(),context)
+            self.assertEqual(audit['connected_games'],0)
+            self.assertNotIn('H',evidence['games']['future']['teams'])
+        snapshot,context,_=inputs()
+        del context['games']['future']['teams']['A']['players'][0]['minutes_last_48h']
+        evidence,audit=connect(snapshot,archive(),context)
+        self.assertEqual(audit['connected_games'],0)
+        self.assertNotIn('A',evidence['games']['future']['teams'])
+
     def test_fit_policy_is_hashed_and_mixed_policies_rejected(self):
         snapshot,context,boxes=inputs()
         with patch('requests.sessions.Session.request',side_effect=AssertionError('No history download')):
