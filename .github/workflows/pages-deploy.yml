@@ -13,7 +13,7 @@ on:
   schedule:
     - cron: '20 * * * *'
   workflow_run:
-    workflows: ['PULSO NHL — prospective pregame source capture', 'NHL — daily postmortem and learning log', 'NBA automatic verified-history pregame', 'NBA frozen forward cohort ledger']
+    workflows: ['PULSO NHL — prospective pregame source capture', 'NHL — daily postmortem and learning log', 'NBA automatic verified-history pregame', 'NBA frozen forward cohort ledger', 'Five-sport daily fixtures and results', 'NBA verified pregame three-model run', 'NFL hoy — odds-free prospective slate', 'NHL hoy — preliminary pregame slate']
     types: [completed]
   pull_request:
     paths:
@@ -46,6 +46,8 @@ jobs:
         run: |
           node --check frontend/app.js
           node --check frontend/portal.js
+          node --check frontend/progressive-forecasts.js
+          node --test frontend/tests/progressive-forecasts.test.cjs
           node --check frontend/daily.js
           node --check frontend/nba-predictions.js
           node --test frontend/tests/nba-forward.test.cjs
@@ -122,6 +124,8 @@ jobs:
           python-version: '3.11'
       - name: Refresh official NHL match context
         run: python -m nhl.match_context
+      - name: Build public progressive forecast history
+        run: python frontend/build_forecast_index.py
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload frontend (only public, static files)

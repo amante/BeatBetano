@@ -109,3 +109,44 @@ nombres, porcentajes o bloqueo específico. No se muestra solo el candidato que 
 proveedor prefiera; no se calcula una media suponiendo probabilidades de titularidad.
 La matriz debe ser el producto completo de sus IDs únicos. Los nombres pendientes
 de identidad se conservan como advertencias, sin inventar un jugador o una proyección.
+
+## Predicciones iniciales y actualizaciones
+
+El dashboard comparte un panel de pronósticos para los cinco deportes, filtrado
+por deporte y fecha de Chile. Presenta primera probabilidad, última, cambio en
+puntos porcentuales, horas reales de emisión y todas las corridas disponibles.
+Los supuestos, pendientes y versión del modelo se pueden desplegar. El selector
+superior de pronósticos se sincroniza con la fecha de la agenda. Los datos de
+fútbol conservan local/empate/visitante; no se fabrica un empate desde ML.
+
+`build_forecast_index.py` deriva `frontend/data/forecast-index.json` del archivo
+sellado `frontend/data/forecast_archive`. Verifica digests, cadenas por evento,
+identidad, orden de cortes y emisiones pregame reales antes de publicar los campos
+permitidos. No publica outputs crudos, no recalcula probabilidades y no promueve
+selecciones. Una cadena inválida se excluye y se cuenta como incidencia; jamás se
+rescata una versión antigua para presentarla como la última válida.
+
+El despliegue Pages genera el índice desde main. También escucha la finalización
+de los flujos diarios nuevos, porque los commits del bot no disparan por sí solos
+un nuevo workflow de push. Conserva las condiciones que impiden desplegar PRs o
+corridas externas. Los paneles históricos y de mercados especializados existentes
+permanecen separados; las nuevas cifras son el historial del baseline disponible,
+no una certificación del modelo completo ni nuevos cálculos +20/3GLP.
+
+Sin archivo/datos para una fecha se informa ausencia de pronósticos archivados,
+no ausencia de partidos. Si el índice no puede cargarse o no valida, se muestra un
+error sin porcentajes. Se marca como historial cuando el partido ya comenzó y se
+avisa si un partido futuro lleva más de ocho horas sin nueva emisión.
+
+```sh
+python frontend/build_forecast_index.py --archive /path/to/forecast_archive \
+  --output /path/to/preview/data/forecast-index.json
+node --test frontend/tests/progressive-forecasts.test.cjs
+python -m unittest discover -s frontend/tests -v
+```
+
+La revisión visual local utilizó las dos corridas reales del piloto 6/11:
+12 eventos indexados, 7 NBA para el día chileno 6/11, 2 NBA para 7/11 y 3 NHL
+para 6/11. Estos datos de prueba no se copian automáticamente al archivo de
+producción ni se presentan como recién recalculados. Hace falta el historial
+real publicado por los flujos diarios (y la corrección de persistencia de #346).
