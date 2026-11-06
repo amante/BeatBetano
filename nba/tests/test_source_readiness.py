@@ -108,5 +108,36 @@ class CaptureTests(unittest.TestCase):
         with self.assertRaises(ValueError):score_path({'plays':plays},g)
 
 
+class IdentityResolutionTests(unittest.TestCase):
+    def test_punctuation_only_matching_preserves_suffixes_and_ambiguity(self):
+        from verifiable_capture import resolve_official
+        fixture = {'game_id':'1','home_team':'BOS','away_team':'CLE','tipoff_utc':'2026-11-07T00:00:00Z'}
+        players = [{'player_id':'1','player':'Ernest Udeh Jr.'},
+                   {'player_id':'2','player':'Terrence Shannon Jr.'}]
+        roster = {'games':{'1':{'teams':{'CLE':{'players':players}}}}}
+        def claim(name):
+            return {'team':'CLE','game_date':'11/06/2026','player':name,'status':'Out','page':1,'line':1}
+        def resolve(rows):
+            return resolve_official(rows,roster,[fixture],'2026-11-06T12:00:00Z','2026-11-06T13:00:00Z')
+        report=resolve([claim('Ernest Udeh, Jr.'),claim('Terrence Shannon Jr')])
+        self.assertEqual(len(report['teams'][1]['official_claims']),2)
+        self.assertFalse(report['unmatched_claims'])
+        self.assertEqual(len(resolve([claim('Ernest Udeh Sr.')])['unmatched_claims']),1)
+        players.append({'player_id':'3','player':'Ernest Udeh, Jr'})
+        self.assertEqual(len(resolve([claim('Ernest Udeh Jr.')])['unmatched_claims']),1)
+        self.assertFalse(report['teams'][1]['complete_active_roster_verified'])
+
+    def test_total_turnovers_include_team_turnovers_in_possession_estimate(self):
+        from possession_intelligence import extract as extract_stats
+        fixture={'game_id':'1','home_team':'H','away_team':'A'}
+        stats=[{'name':k,'displayValue':v} for k,v in
+               [('fieldGoalsAttempted','80'),('freeThrowsAttempted','20'),
+                ('offensiveRebounds','10'),('turnovers','12'),('totalTurnovers','15'),('points','100')]]
+        payload={'header':{'competitions':[{'id':'1','status':{'type':{'completed':True}}}]},
+                 'boxscore':{'teams':[{'team':{'abbreviation':t},'statistics':stats} for t in ('H','A')]}}
+        result=extract_stats(payload,fixture)
+        self.assertAlmostEqual(result['H']['possessions_estimated'],93.8)
+
+
 if __name__ == '__main__':
     unittest.main()
