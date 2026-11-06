@@ -5,7 +5,7 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from multisport.daily_forecasts import publish,latest,_directory
-from multisport.daily_pipeline import run, soccer_source
+from multisport.daily_pipeline import run, soccer_source, coverage_bindings
 from multisport.tests.test_forecast_revisions import source
 
 
@@ -102,3 +102,19 @@ class SoccerDailyTests(unittest.TestCase):
             # An unchanged source/model policy reuses its fitted model.
             with patch('soccer.poisson.fit',side_effect=AssertionError('Do not refit unchanged model')):
                 self.assertEqual(result,soccer_source(games,'2026-11-06T10:00:00Z',d))
+
+
+class ProviderBindingTests(unittest.TestCase):
+    def test_nhl_provider_ids_need_unique_teams_and_exact_start(self):
+        games=[{'id':'espn-1','home':'Buffalo Sabres','away':'Columbus Blue Jackets','start_utc':'2026-11-07T00:00:00Z'}]
+        row={'event_id':'nhl-1','home_team':'BUF','away_team':'CBJ','start_utc':'2026-11-07T00:00:00+00:00'}
+        sources=[{'events':[row]}]
+        publications=[{'events':[{'event_id':'nhl-1','status':'reused'}]}]
+        bindings,missing=coverage_bindings('nhl',games,sources,publications)
+        self.assertEqual(missing,[])
+        self.assertEqual(bindings[0]['forecast_event_id'],'nhl-1')
+        for field,value in [('home_team','CBJ'),('start_utc','2026-11-07T00:01:00Z')]:
+            changed=copy.deepcopy(sources);changed[0]['events'][0][field]=value
+            self.assertEqual(coverage_bindings('nhl',games,changed,publications)[1],['espn-1'])
+        sources[0]['events'].append(dict(row,event_id='nhl-duplicate'))
+        self.assertEqual(coverage_bindings('nhl',games,sources,publications)[1],['espn-1'])

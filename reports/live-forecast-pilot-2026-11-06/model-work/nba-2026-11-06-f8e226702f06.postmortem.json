@@ -1,0 +1,477 @@
+{
+  "schema_version": 1,
+  "model_version": "NBA_CHALLENGER_2026_27_1_POSTMORTEM_V2",
+  "created_at_utc": "2026-11-06T14:57:03.699799+00:00",
+  "prediction_as_of_utc": "2026-11-06T14:57:02.588697+00:00",
+  "emission_kind": "pregame",
+  "baseline_snapshot_sha256": "eee8cee08681937c735dfc7ff032f227269050b391dfb7efabc252ca32be036d",
+  "model_tracks": {
+    "official": "NBA Oficial 2026-27 (existing Elo benchmark)",
+    "challenger": "NBA Challenger 2026-27.1 (research V2)"
+  },
+  "parameters": {
+    "minutes_response": 0.8,
+    "usage_response": 1.2,
+    "usage_overload_per_100": 8.0,
+    "joint_role_loss_per_100": 3.0,
+    "on_off_prior_possessions": 1000.0,
+    "fatigue_offense_per_100": 1.0,
+    "fatigue_defense_per_100": 0.5,
+    "fatigue_turnover_rate": 0.005,
+    "usage_turnover_response": 0.02,
+    "maximum_questionable": 3
+  },
+  "parameters_sha256": "609e292e05007641e9b71aac8c52547690e41c5ed6a54c1c39f1b53a347fc59c",
+  "simulation_settings": {
+    "simulations": 4000,
+    "seed": 2026271
+  },
+  "inputs": {
+    "baseline": {
+      "schema_version": 1,
+      "created_at_utc": "2026-11-06T14:57:02.588697+00:00",
+      "predictions": [
+        {
+          "game_id": "401909287",
+          "tipoff_utc": "2026-11-07T00:00:00Z",
+          "home_team": "ATL",
+          "away_team": "WSH",
+          "elo_p_home": 0.8280183361353589,
+          "challenger_p_home": 0.8315979275984994,
+          "hybrid_p_home": 0.8280183361353589,
+          "hybrid_route": "strong_favorite",
+          "dual_challenger": false,
+          "eligible_for_bet": false,
+          "status": "unvalidated_candidate"
+        },
+        {
+          "game_id": "401909288",
+          "tipoff_utc": "2026-11-07T00:00:00Z",
+          "home_team": "CHA",
+          "away_team": "BOS",
+          "elo_p_home": 0.39313573776514676,
+          "challenger_p_home": 0.3242846551724897,
+          "hybrid_p_home": 0.3242846551724897,
+          "hybrid_route": "challenger",
+          "dual_challenger": false,
+          "eligible_for_bet": false,
+          "status": "unvalidated_candidate"
+        },
+        {
+          "game_id": "401909289",
+          "tipoff_utc": "2026-11-07T00:30:00Z",
+          "home_team": "CLE",
+          "away_team": "PHI",
+          "elo_p_home": 0.5888077507567926,
+          "challenger_p_home": 0.5665329408765656,
+          "hybrid_p_home": 0.5665329408765656,
+          "hybrid_route": "challenger",
+          "dual_challenger": false,
+          "eligible_for_bet": false,
+          "status": "unvalidated_candidate"
+        },
+        {
+          "game_id": "401909290",
+          "tipoff_utc": "2026-11-07T01:00:00Z",
+          "home_team": "DAL",
+          "away_team": "UTAH",
+          "elo_p_home": 0.7374440678048371,
+          "challenger_p_home": 0.7876555426453815,
+          "hybrid_p_home": 0.7876555426453815,
+          "hybrid_route": "challenger",
+          "dual_challenger": false,
+          "eligible_for_bet": false,
+          "status": "unvalidated_candidate"
+        },
+        {
+          "game_id": "401909291",
+          "tipoff_utc": "2026-11-07T01:00:00Z",
+          "home_team": "MEM",
+          "away_team": "OKC",
+          "elo_p_home": 0.2164908591572276,
+          "challenger_p_home": 0.25886820432065216,
+          "hybrid_p_home": 0.25886820432065216,
+          "hybrid_route": "challenger",
+          "dual_challenger": false,
+          "eligible_for_bet": false,
+          "status": "unvalidated_candidate"
+        },
+        {
+          "game_id": "401909292",
+          "tipoff_utc": "2026-11-07T01:00:00Z",
+          "home_team": "MIL",
+          "away_team": "TOR",
+          "elo_p_home": 0.4099515261794557,
+          "challenger_p_home": 0.33980445117983843,
+          "hybrid_p_home": 0.33980445117983843,
+          "hybrid_route": "challenger",
+          "dual_challenger": false,
+          "eligible_for_bet": false,
+          "status": "unvalidated_candidate"
+        },
+        {
+          "game_id": "401909293",
+          "tipoff_utc": "2026-11-07T01:00:00Z",
+          "home_team": "NO",
+          "away_team": "MIN",
+          "elo_p_home": 0.37049848806587704,
+          "challenger_p_home": 0.32054693560034125,
+          "hybrid_p_home": 0.32054693560034125,
+          "hybrid_route": "challenger",
+          "dual_challenger": false,
+          "eligible_for_bet": false,
+          "status": "unvalidated_candidate"
+        },
+        {
+          "game_id": "401909294",
+          "tipoff_utc": "2026-11-07T03:00:00Z",
+          "home_team": "LAL",
+          "away_team": "POR",
+          "elo_p_home": 0.6538425794891141,
+          "challenger_p_home": 0.6442616588047844,
+          "hybrid_p_home": 0.6442616588047844,
+          "hybrid_route": "challenger",
+          "dual_challenger": false,
+          "eligible_for_bet": false,
+          "status": "unvalidated_candidate"
+        },
+        {
+          "game_id": "401909295",
+          "tipoff_utc": "2026-11-07T03:00:00Z",
+          "home_team": "SAC",
+          "away_team": "SA",
+          "elo_p_home": 0.2119333383701551,
+          "challenger_p_home": 0.16612944613076988,
+          "hybrid_p_home": 0.16612944613076988,
+          "hybrid_route": "challenger",
+          "dual_challenger": false,
+          "eligible_for_bet": false,
+          "status": "unvalidated_candidate"
+        }
+      ],
+      "source": "user_supplied_verified_inputs",
+      "point_in_time_lineups_verified": false,
+      "calibrated": false,
+      "content_sha256": "eee8cee08681937c735dfc7ff032f227269050b391dfb7efabc252ca32be036d"
+    },
+    "evidence": {
+      "snapshot_sha256": "eee8cee08681937c735dfc7ff032f227269050b391dfb7efabc252ca32be036d",
+      "games": {}
+    },
+    "boxscores": {
+      "games": []
+    }
+  },
+  "games": [
+    {
+      "game_id": "401909287",
+      "home_team": "ATL",
+      "away_team": "WSH",
+      "tipoff_utc": "2026-11-07T00:00:00Z",
+      "baseline": {
+        "elo": {
+          "home_ml": 0.8280183361353589,
+          "away_ml": 0.1719816638646411,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "challenger": {
+          "home_ml": 0.8315979275984994,
+          "away_ml": 0.16840207240150062,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "hybrid": {
+          "home_ml": 0.8280183361353589,
+          "away_ml": 0.1719816638646411,
+          "home_plus20": null,
+          "away_plus20": null
+        }
+      },
+      "challenger": null,
+      "on_off_scenarios": [],
+      "recommendation": "PASS",
+      "eligible_for_bet": false,
+      "final_probabilities": null,
+      "missing": [
+        "ATL: Missing verified roster, injuries, lineups, player effects and score-path evidence; WSH: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+      ]
+    },
+    {
+      "game_id": "401909288",
+      "home_team": "CHA",
+      "away_team": "BOS",
+      "tipoff_utc": "2026-11-07T00:00:00Z",
+      "baseline": {
+        "elo": {
+          "home_ml": 0.39313573776514676,
+          "away_ml": 0.6068642622348532,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "challenger": {
+          "home_ml": 0.3242846551724897,
+          "away_ml": 0.6757153448275103,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "hybrid": {
+          "home_ml": 0.3242846551724897,
+          "away_ml": 0.6757153448275103,
+          "home_plus20": null,
+          "away_plus20": null
+        }
+      },
+      "challenger": null,
+      "on_off_scenarios": [],
+      "recommendation": "PASS",
+      "eligible_for_bet": false,
+      "final_probabilities": null,
+      "missing": [
+        "CHA: Missing verified roster, injuries, lineups, player effects and score-path evidence; BOS: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+      ]
+    },
+    {
+      "game_id": "401909289",
+      "home_team": "CLE",
+      "away_team": "PHI",
+      "tipoff_utc": "2026-11-07T00:30:00Z",
+      "baseline": {
+        "elo": {
+          "home_ml": 0.5888077507567926,
+          "away_ml": 0.4111922492432074,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "challenger": {
+          "home_ml": 0.5665329408765656,
+          "away_ml": 0.4334670591234344,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "hybrid": {
+          "home_ml": 0.5665329408765656,
+          "away_ml": 0.4334670591234344,
+          "home_plus20": null,
+          "away_plus20": null
+        }
+      },
+      "challenger": null,
+      "on_off_scenarios": [],
+      "recommendation": "PASS",
+      "eligible_for_bet": false,
+      "final_probabilities": null,
+      "missing": [
+        "CLE: Missing verified roster, injuries, lineups, player effects and score-path evidence; PHI: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+      ]
+    },
+    {
+      "game_id": "401909290",
+      "home_team": "DAL",
+      "away_team": "UTAH",
+      "tipoff_utc": "2026-11-07T01:00:00Z",
+      "baseline": {
+        "elo": {
+          "home_ml": 0.7374440678048371,
+          "away_ml": 0.26255593219516293,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "challenger": {
+          "home_ml": 0.7876555426453815,
+          "away_ml": 0.2123444573546185,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "hybrid": {
+          "home_ml": 0.7876555426453815,
+          "away_ml": 0.2123444573546185,
+          "home_plus20": null,
+          "away_plus20": null
+        }
+      },
+      "challenger": null,
+      "on_off_scenarios": [],
+      "recommendation": "PASS",
+      "eligible_for_bet": false,
+      "final_probabilities": null,
+      "missing": [
+        "DAL: Missing verified roster, injuries, lineups, player effects and score-path evidence; UTAH: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+      ]
+    },
+    {
+      "game_id": "401909291",
+      "home_team": "MEM",
+      "away_team": "OKC",
+      "tipoff_utc": "2026-11-07T01:00:00Z",
+      "baseline": {
+        "elo": {
+          "home_ml": 0.2164908591572276,
+          "away_ml": 0.7835091408427723,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "challenger": {
+          "home_ml": 0.25886820432065216,
+          "away_ml": 0.7411317956793478,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "hybrid": {
+          "home_ml": 0.25886820432065216,
+          "away_ml": 0.7411317956793478,
+          "home_plus20": null,
+          "away_plus20": null
+        }
+      },
+      "challenger": null,
+      "on_off_scenarios": [],
+      "recommendation": "PASS",
+      "eligible_for_bet": false,
+      "final_probabilities": null,
+      "missing": [
+        "MEM: Missing verified roster, injuries, lineups, player effects and score-path evidence; OKC: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+      ]
+    },
+    {
+      "game_id": "401909292",
+      "home_team": "MIL",
+      "away_team": "TOR",
+      "tipoff_utc": "2026-11-07T01:00:00Z",
+      "baseline": {
+        "elo": {
+          "home_ml": 0.4099515261794557,
+          "away_ml": 0.5900484738205443,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "challenger": {
+          "home_ml": 0.33980445117983843,
+          "away_ml": 0.6601955488201616,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "hybrid": {
+          "home_ml": 0.33980445117983843,
+          "away_ml": 0.6601955488201616,
+          "home_plus20": null,
+          "away_plus20": null
+        }
+      },
+      "challenger": null,
+      "on_off_scenarios": [],
+      "recommendation": "PASS",
+      "eligible_for_bet": false,
+      "final_probabilities": null,
+      "missing": [
+        "MIL: Missing verified roster, injuries, lineups, player effects and score-path evidence; TOR: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+      ]
+    },
+    {
+      "game_id": "401909293",
+      "home_team": "NO",
+      "away_team": "MIN",
+      "tipoff_utc": "2026-11-07T01:00:00Z",
+      "baseline": {
+        "elo": {
+          "home_ml": 0.37049848806587704,
+          "away_ml": 0.629501511934123,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "challenger": {
+          "home_ml": 0.32054693560034125,
+          "away_ml": 0.6794530643996588,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "hybrid": {
+          "home_ml": 0.32054693560034125,
+          "away_ml": 0.6794530643996588,
+          "home_plus20": null,
+          "away_plus20": null
+        }
+      },
+      "challenger": null,
+      "on_off_scenarios": [],
+      "recommendation": "PASS",
+      "eligible_for_bet": false,
+      "final_probabilities": null,
+      "missing": [
+        "NO: Missing verified roster, injuries, lineups, player effects and score-path evidence; MIN: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+      ]
+    },
+    {
+      "game_id": "401909294",
+      "home_team": "LAL",
+      "away_team": "POR",
+      "tipoff_utc": "2026-11-07T03:00:00Z",
+      "baseline": {
+        "elo": {
+          "home_ml": 0.6538425794891141,
+          "away_ml": 0.34615742051088594,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "challenger": {
+          "home_ml": 0.6442616588047844,
+          "away_ml": 0.35573834119521563,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "hybrid": {
+          "home_ml": 0.6442616588047844,
+          "away_ml": 0.35573834119521563,
+          "home_plus20": null,
+          "away_plus20": null
+        }
+      },
+      "challenger": null,
+      "on_off_scenarios": [],
+      "recommendation": "PASS",
+      "eligible_for_bet": false,
+      "final_probabilities": null,
+      "missing": [
+        "LAL: Missing verified roster, injuries, lineups, player effects and score-path evidence; POR: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+      ]
+    },
+    {
+      "game_id": "401909295",
+      "home_team": "SAC",
+      "away_team": "SA",
+      "tipoff_utc": "2026-11-07T03:00:00Z",
+      "baseline": {
+        "elo": {
+          "home_ml": 0.2119333383701551,
+          "away_ml": 0.7880666616298448,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "challenger": {
+          "home_ml": 0.16612944613076988,
+          "away_ml": 0.8338705538692301,
+          "home_plus20": null,
+          "away_plus20": null
+        },
+        "hybrid": {
+          "home_ml": 0.16612944613076988,
+          "away_ml": 0.8338705538692301,
+          "home_plus20": null,
+          "away_plus20": null
+        }
+      },
+      "challenger": null,
+      "on_off_scenarios": [],
+      "recommendation": "PASS",
+      "eligible_for_bet": false,
+      "final_probabilities": null,
+      "missing": [
+        "SAC: Missing verified roster, injuries, lineups, player effects and score-path evidence; SA: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+      ]
+    }
+  ],
+  "calibrated": false,
+  "production_approved": false,
+  "no_bookmaker_odds_as_input": true,
+  "content_sha256": "03498ed25060f0708366bb516925442a255745fc2f1fb9ee4ac74aa6a3377e20"
+}
