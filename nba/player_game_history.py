@@ -62,7 +62,7 @@ def parse_boxscore(payload,game,observed_at):
     if len(ids)!=len(set(ids)):raise ValueError("Duplicate player/team")
     return rows
 
-def collect(games,session=None):
+def collect(games,session=None,cache_dir=None):
     if not isinstance(games,list) or not games:raise ValueError("Historical games required")
     client=session or requests.Session()
     out=[];errors=[]
@@ -70,11 +70,19 @@ def collect(games,session=None):
         if not {"game_id","home_team","away_team","tipoff_utc"}<=game.keys():
             raise ValueError("Incomplete historical fixture")
         eid=str(game["game_id"])
+        if cache_dir is not None:
+            from observation_cache import read, save
+            cached=read(cache_dir,game)
+            if cached is not None:
+                out.extend(cached)
+                continue
         now=datetime.now(timezone.utc).isoformat()
         try:
             resp=client.get(SUMMARY,params={"event":eid},timeout=30)
             resp.raise_for_status()
-            out.extend(parse_boxscore(resp.json(),game,now))
+            players=parse_boxscore(resp.json(),game,now)
+            if cache_dir is not None:save(cache_dir,game,players)
+            out.extend(players)
         except (requests.RequestException,ValueError,KeyError,TypeError) as exc:
             errors.append({"game_id":eid,"error_type":type(exc).__name__})
     return {"schema_version":1,"source":SUMMARY,"games_requested":len(games),
@@ -88,10 +96,11 @@ def main():
     p.add_argument("--history",required=True)
     p.add_argument("--output",required=True)
     p.add_argument("--limit",type=int,default=50)
+    p.add_argument("--cache-dir")
     args=p.parse_args()
     games=json.loads(Path(args.history).read_text())
     if not 1<=args.limit<=250:raise ValueError("Limit must be 1..250")
-    result=collect(games[-args.limit:])
+    result=collect(games[-args.limit:],cache_dir=args.cache_dir)
     dest=Path(args.output);dest.parent.mkdir(parents=True,exist_ok=True)
     dest.write_text(json.dumps(result,indent=2))
     print(json.dumps({"requested":result["games_requested"],

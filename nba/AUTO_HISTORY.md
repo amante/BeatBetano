@@ -1,9 +1,39 @@
 # PR #37 — NBA verified automatic history
 
-This action reconstructs three completed regular seasons from ESPN, cleans known cup final and exhibition contamination, and checks 1230 standard regular-season games in each. It additionally ingests 2026–27 completed regular-season games **only through the preceding UTC calendar day**, using the earlier of the prediction day and the present day's cutoff. This is conservative: excludes valid same-day finished games rather than risking result leakage. ESPN classifications and source reliability still require operational monitoring.
+The preparation workflow loads three completed regular seasons from the verified
+repository archive and updates the current season only through the preceding UTC
+day. The prediction workflow consumes that prepared evidence rather than rebuilding
+history. Same-day finished games remain excluded to avoid result leakage.
 
-GitHub Actions > **NBA automatic verified-history pregame** > Run workflow > input US NBA game date. That run automatically rebuilds the history, fetches future fixtures using the pregame pipeline and records Elo, Challenger and hybrid candidate probabilities in a unique run artifact.
+Run **NBA prepare historical evidence** for the target US scoreboard date, then
+provide its run ID to **NBA automatic verified-history pregame**. These workflows
+are manually triggered; this change does not add scheduling or automatic settlement.
+Predictions remain research candidates. ESPN classifications and coverage still
+require monitoring. Use sources in accordance with their terms.
 
-**Not yet unattended:** A manual action trigger is required. There is no daily cron, permanent database, automated settlement or email notification; artifacts expire after 90 days. A successful PR check runs unit tests, not the dispatch-only 3-year network ingestion. Only claim data is current after the real dispatch succeeds. Predictions remain uncalibrated candidates without lineup/injury adjustments.
+## Incremental history (PR #341)
 
-The historical source is ESPN scoreboard and must be used in accordance with source terms. Game day is ESPN/US scoreboard date, not Santiago calendar date.
+Completed seasons now load from the manifest-verified repository archive:
+3,690 games, zero source requests. The three-season PR backtest uses that same
+frozen ledger, so routine evaluations no longer redownload entire seasons.
+A full historical source refresh is an explicit maintenance operation using
+`espn_games.py`, never an automatic fallback when a stored digest fails.
+
+Current-season preparation stores each queried ESPN scoreboard date under
+`--workdir/2027/daily`. Repeated runs reuse verified days, including empty days;
+only missing dates are requested. With a current store, tomorrow's preparation
+requests only the previous day's delta. After missed runs, it fills the missing
+interval. An unfinished scoreboard is not frozen; source failures and integrity
+mismatches stop processing. Existing records are not silently replaced.
+
+Player and team boxscore collection now accepts `--cache-dir` and reuses
+per-game observations with fixture identity and digest checks. Original player
+observation times are preserved. Only missing game IDs in the selected historical
+window require requests; failed collections remain retryable.
+
+The preparation workflow restores and saves `results/nba/raw` using Actions cache
+and includes the store in its 90-day artifact. A cold or evicted cache requires
+bootstrapping the current season and selected boxscore windows once; it still
+never redownloads the three completed seasons. For longer retention, preserve
+the raw store outside expiring Actions storage. Concurrent runs use distinct
+cache keys; every restored date and observation is independently verified.

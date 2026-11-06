@@ -6,13 +6,9 @@ UTC days are included, so results later on prediction day cannot leak.
 import argparse,json
 from datetime import date,datetime,timedelta,timezone
 from pathlib import Path
-from espn_games import ingest
-from clean_regular import clean
+from history_store import frozen_history, daily_delta
 from prepared_history_gate import prior_utc_history
 
-COMPLETE_SEASONS=[(2024,"2023-10-24","2024-04-14"),
-                  (2025,"2024-10-22","2025-04-13"),
-                  (2026,"2025-10-21","2026-04-12")]
 CURRENT_START=date(2026,10,20)
 
 def build(output,game_date,as_of,root):
@@ -23,18 +19,11 @@ def build(output,game_date,as_of,root):
     # Do not fetch outcomes on or after the prediction day, or beyond now.
     current_end=min(day-timedelta(days=1),observed.date()-timedelta(days=1))
     base=Path(root);base.mkdir(parents=True,exist_ok=True)
-    group=[]
-    for season,start,end in COMPLETE_SEASONS:
-        rows=ingest(base/str(season)/"raw.json",start,end)
-        if any(int(g["season"])!=season for g in rows):
-            raise ValueError(f"Unexpected historical season labels: {season}")
-        group+=rows
-    clean_history,audit=clean(group)
-    if not audit["coverage_verified"] or len(clean_history)!=3690:
-        raise ValueError("Historical training coverage not verified")
+    clean_history,audit=frozen_history()
     current=[]
+    delta_audit={"requested_dates":[],"reused_dates":[],"network_requests":0}
     if current_end>=CURRENT_START:
-        current=ingest(base/"2027"/"prior_completed.json",
+        current,delta_audit=daily_delta(base/"2027"/"daily",
                        CURRENT_START.isoformat(),current_end.isoformat())
         if any(int(g["season"])!=2027 for g in current):
             raise ValueError("Current-season source classification wrong")
@@ -50,7 +39,7 @@ def build(output,game_date,as_of,root):
     target.write_text(json.dumps(all_rows,indent=2))
     metadata={"created_at_utc":observed.isoformat(),"target_date":game_date,
        "clean_historical_games":len(clean_history),"current_prior_games":len(current),
-       "source_count":len(all_rows),"excluded_target_utc_game_ids":excluded_utc_ids,"cleaning":audit,
+       "source_count":len(all_rows),"delta":delta_audit,"excluded_target_utc_game_ids":excluded_utc_ids,"cleaning":audit,
        "restriction":"No games on or after target UTC date"}
     (target.parent/"history_audit.json").write_text(json.dumps(metadata,indent=2))
     return metadata
