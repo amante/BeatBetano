@@ -36,14 +36,20 @@ def source():
 
 def team(prefix='p'):
     return {'roster_complete':True, 'confirmed_starters':[prefix+str(i) for i in range(5)],
-            **{k:source() for k in ('roster_evidence','injury_evidence','lineup_evidence','metrics_evidence')},
+            **{k:source() for k in ('roster_evidence','injury_evidence','lineup_evidence','metrics_evidence','schedule_evidence')},
             'metrics_through_utc':'2026-11-04T12:00:00Z',
+            'target_tipoff_utc':TIP,
+            'schedule':{'previous_tipoff_utc':'2026-11-03T00:00:00Z',
+                        'previous_completed_at_utc':'2026-11-03T03:00:00Z',
+                        'previous_overtime_periods':0},
             'players':[{'player_id':prefix+str(i),'status':'available','baseline_minutes':24,
                         'max_minutes':40,'baseline_usage':.2,'max_usage':.4,
                         'offense_on_off':8-i,'defense_on_off':i-8,'on_off_possessions':2000,
-                        'replacement_quality':1.5-i/10,
+                        'replacement_quality':1.5-i/10,'turnover_on_off':.002*i,'forced_turnover_on_off':.002*i,
+                        'minutes_last_48h':0,
                         'roles':{'creation':.5,'spacing':.5,'rim':.5,'rebounding':.5}}
                        for i in range(10)],
+            'turnover_adjustment_method':'opponent_residual_v1',
             'pace_regulation':100,'turnover_rate':.14,'forced_turnover_rate':.14,
             'transition_bonus':.15,'path_sample_possessions':400,
             'non_turnover_blocks':[[0,0,0,0],[0,2,0,2],[2,3,2,3],[3,3,3,3]]}
@@ -309,6 +315,11 @@ class PossessionExtractionTests(unittest.TestCase):
             self.assertEqual(report['teams'][t]['pace_regulation'],100)
             self.assertEqual(report['teams'][t]['path_sample_possessions'],300)
             self.assertGreater(report['teams'][t]['turnover_rate'],0)
+            feature = report['teams'][t]
+            self.assertEqual(feature['turnover_adjustment_method'],'opponent_residual_v1')
+            archive = self.archive()
+            league = sum(e['turnover'] for g in archive['games'] for e in g['possessions'])/sum(len(g['possessions']) for g in archive['games'])
+            self.assertAlmostEqual(feature['turnover_rate'],league+feature['raw_turnover_rate']-feature['opponent_expected_forced_rate'])
 
     def test_partial_future_duplicate_and_score_mismatch_rejected(self):
         for field,value in [('complete',False),('home_points',999),('completed_at_utc',TIP)]:
