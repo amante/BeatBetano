@@ -102,6 +102,44 @@ def generate_source(sport,games,as_of,workdir,archive):
     return outputs
 
 
+def coverage_bindings(sport, games, sources, publications):
+    """Bind provider-specific event IDs by audited teams and exact start time."""
+    available={e['event_id'] for p in publications for e in p['events']
+               if e['status'] in ('published','reused')}
+    bindings=[]
+    if sport=='nhl':
+        from nhl.pulso_goalie_multisource_257 import TEAM_NAMES
+        import unicodedata
+        def normalized(value):
+            text=unicodedata.normalize('NFKD',value).casefold().replace('.','')
+            return " ".join(''.join(c for c in text if not unicodedata.combining(c)).split())
+        names={normalized(name):code for code,name in TEAM_NAMES.items()}
+        def team_code(value):return names.get(normalized(value))
+        identities={}
+        for source in sources:
+            for row in source.get('events',source.get('games',[])):
+                sid=str(row.get('event_id') or row.get('game_id'))
+                identity=(row.get('home_team') or row.get('home'),row.get('away_team') or row.get('away'),
+                          utc(row['start_utc']))
+                identities.setdefault(sid,set()).add(identity)
+        for game in games:
+            requested=(team_code(game['home']),team_code(game['away']),utc(game['start_utc']))
+            matches=[sid for sid,values in identities.items()
+                     if requested[0] and requested[1] and values=={requested}]
+            if len(matches)==1:
+                bindings.append({'fixture_id':str(game['id']),'forecast_event_id':matches[0],
+                                 'method':'explicit_team_name_crosswalk_and_exact_start',
+                                 'forecast_available':matches[0] in available})
+    else:
+        # These adapters use the same ESPN/provider fixture IDs as the collector.
+        for game in games:
+            gid=str(game['id'])
+            bindings.append({'fixture_id':gid,'forecast_event_id':gid,
+                             'method':'same_provider_event_id','forecast_available':gid in available})
+    matched={b['fixture_id'] for b in bindings if b['forecast_available']}
+    return bindings,sorted({str(g['id']) for g in games}-matched)
+
+
 def run(feed,archive,workdir,provider=generate_source):
     Path(archive).mkdir(parents=True,exist_ok=True)
     now=datetime.now(timezone.utc).isoformat()
@@ -118,13 +156,10 @@ def run(feed,archive,workdir,provider=generate_source):
             sources=provider(sport,games,sport_now,workdir,archive)
             if isinstance(sources,dict):sources=[sources]
             publications=[publish(sport,s,archive,revision='daily-'+sport,live_only=True) for s in sources]
-            events=[e for p in publications for e in p['events']]
-            available={e['event_id'] for e in events if e['status'] in ('published','reused')}
-            requested={str(g['id']) for g in games}
-            missing=sorted(requested-available)
+            bindings,missing=coverage_bindings(sport,games,sources,publications)
             report['sports'][sport]={'status':'processed' if not missing else 'partial_forecast_coverage',
                                     'publications':publications,'fixtures_requested':len(games),
-                                    'fixtures_with_forecast':len(requested&available),
+                                    'fixtures_with_forecast':len(games)-len(missing),'fixture_bindings':bindings,
                                     'missing_baseline_fixture_ids':missing}
         except Exception as exc:
             # A failed sport must not suppress another sport's baseline or erase its archive.
