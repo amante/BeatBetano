@@ -25,7 +25,7 @@ def source_probabilities(sport, event):
             return dict(zip(('home','draw','away'),values)),'probabilities'
         if isinstance(values,dict):return values,'probabilities'
         return None,None
-    for key in ('elo_p_home','statistical_p_home','p_home','p_home_elo','baseline_p_home','p_challenger'):
+    for key in ('elo_p_home','historical_elo_candidate','statistical_p_home','p_home','p_home_elo','baseline_p_home','p_challenger'):
         if event.get(key) is not None:
             p=event[key]
             if type(p) not in (int,float):raise ValueError('Invalid source forecast probability')
@@ -45,7 +45,7 @@ def adapt(sport,source,revision="unrecorded",stage="initial"):
     stamp=source.get("as_of_utc") or source.get("created_at_utc")
     if not stamp:raise ValueError("Missing evidence timestamp")
     stamp=utc(stamp)
-    games=source.get("predictions") if sport=="nba" else source.get("games") if sport=="nhl" else source.get("events")
+    games=source.get("predictions") if sport=="nba" else source.get("games",source.get("events")) if sport=="nhl" else source.get("events")
     if not isinstance(games,list):raise ValueError("Missing source event list")
     events=[]
     for x in games:

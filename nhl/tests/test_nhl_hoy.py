@@ -18,6 +18,10 @@ class Tests(unittest.TestCase):
  def test_started_filtered(self):
   t={"games":[dict(S["games"][0],gameState="LIVE")]}
   self.assertEqual(slate(t,R,"2026-10-26T12:00:00Z","2026-10-26")["events"],[])
+ def test_previous_league_date_still_allows_future_utc_fixture(self):
+  score={"games":[dict(S["games"][0],startTimeUTC="2026-10-27T03:00:00Z")]}
+  result=slate(score,R,"2026-10-27T02:00:00Z","2026-10-26")
+  self.assertEqual(len(result['events']),1)
  def test_past_not_retrospective(self):
   with self.assertRaises(ValueError):slate(S,R,"2026-10-26T12:00:00Z","2026-10-24")
 if __name__=="__main__":unittest.main()

@@ -7,7 +7,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: daily-five-sport-feed
+  group: daily-forecast-publication
   cancel-in-progress: false
 jobs:
   refresh:
@@ -20,8 +20,32 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
+      - run: python -m pip install requests
+      - name: Restore incremental model data (never forecast history)
+        uses: actions/cache@v4
+        with:
+          path: results/daily-models/cache
+          key: daily-model-data-${{ github.run_id }}
+          restore-keys: daily-model-data-
       - name: Retrieve today's and yesterday's verified fixtures
         run: python frontend/collect_daily.py --out frontend/data/daily.json
+      - name: Generate initial or updated forecasts independently for every sport
+        run: |
+          python -m multisport.daily_pipeline \
+            --fixtures frontend/data/daily.json \
+            --archive frontend/data/forecast_archive \
+            --workdir results/daily-models \
+            --summary frontend/data/forecast_status.json
+      - name: Archive model outputs and source-failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-model-outputs-${{ github.run_id }}
+          path: |
+            results/daily-models/*.json
+            frontend/data/forecast_status.json
+            frontend/data/forecast_archive
+          retention-days: 90
       - name: Maintain chronological outcomes archive
         run: python frontend/merge_daily_history.py --daily frontend/data/daily.json --history frontend/data/history.json
       - name: Validate JSON output
@@ -32,7 +56,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add frontend/data/daily.json frontend/data/history.json
+          git add frontend/data/daily.json frontend/data/history.json frontend/data/forecast_status.json frontend/data/forecast_archive
           if ! git diff --cached --quiet; then
             git commit -m "data: refresh five-sport fixtures and settled results"
             git push origin HEAD:main

@@ -3,9 +3,12 @@
 Fetches live fixtures and generates an immutable three-model snapshot. Historical
 game data must be supplied and inspected separately; never fabricate team ratings.
 """
+import sys
 import argparse,json
 from datetime import datetime,timezone
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from multisport.daily_forecasts import publish
 from current_feed import fetch_day
 from prospective import generate
 
@@ -32,6 +35,7 @@ def main():
     p.add_argument('--allow-empty',action='store_true',help='Record zero eligible games without error')
     p.add_argument('--postmortem-evidence',help='Verified two-sided player/possession features JSON')
     p.add_argument('--postmortem-boxscores',help='Paired historical boxscore archive JSON')
+    p.add_argument('--forecast-archive',help='Persistent per-event forecast revision directory')
     x=p.parse_args()
     now=datetime.now(timezone.utc).isoformat()
     scoreboard=fetch_day(x.date,now)
@@ -50,6 +54,8 @@ def main():
     snapshot=run(history,scoreboard,now)
     target=Path(x.output);target.parent.mkdir(parents=True,exist_ok=True)
     with target.open("x") as f:json.dump(snapshot,f,indent=2)
+    publication=publish('nba',snapshot,x.forecast_archive or target.parent/'forecast_archive',revision='nba-existing-baselines',live_only=True)
+    target.with_name(target.stem+'.forecasts.json').write_text(json.dumps(publication,indent=2))
     from postmortem_engine import build, save_new
     # Preserve the baseline bytes and seal a separate complete sporting snapshot.
     evidence = (json.loads(Path(x.postmortem_evidence).read_text()) if x.postmortem_evidence else

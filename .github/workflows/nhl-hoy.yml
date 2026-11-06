@@ -8,6 +8,7 @@ on:
         type: string
   pull_request:
     paths:
+      - 'multisport/**'
       - 'nhl/**'
       - '.github/workflows/nhl-hoy.yml'
 permissions:
@@ -26,12 +27,19 @@ jobs:
       - run: python -m unittest discover -s webresults/tests -v
       - run: python -m unittest discover -s multisport/tests -v
   generate:
-    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+    concurrency:
+      group: daily-forecast-publication
+      cancel-in-progress: false
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     needs: tests
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: main
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
@@ -39,7 +47,17 @@ jobs:
       - name: Run all future NHL matchups with yesterday's standings
         env:
           GAME_DATE: ${{ inputs.game_date }}
-        run: python nhl/nhl_hoy.py --date "$GAME_DATE" --output results/nhl/nhl_hoy.json
+        run: python nhl/nhl_hoy.py --date "$GAME_DATE" --output results/nhl/nhl_hoy.json --forecast-archive frontend/data/forecast_archive
+      - name: Preserve NHL initial and updated predictions
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          mkdir -p frontend/data/forecast_archive
+          git add frontend/data/forecast_archive
+          if ! git diff --cached --quiet; then
+            git commit -m "data: preserve NHL pregame forecast revisions"
+            git push origin HEAD:main
+          fi
       - name: Restore existing current-season NHL snapshot
         id: snapshot
         uses: actions/cache/restore@v4
@@ -85,6 +103,8 @@ jobs:
           name: nhl-hoy-${{ github.run_id }}
           path: |
             results/nhl/nhl_hoy.json
+            results/nhl/nhl_hoy.forecasts.json
+            frontend/data/forecast_archive
             results/nhl/pregame_snapshot.json
             results/nhl/pregame_snapshot.md
             results/nhl/goalie_candidates.json

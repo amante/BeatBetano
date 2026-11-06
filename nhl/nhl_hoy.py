@@ -3,9 +3,12 @@
 Not a calibrated CRS/goalie/3GLP model. Never use same-day standings which can
 contain results unavailable at freeze time. Missing data produces no probabilities.
 """
+import sys
 import argparse,json,math
 from datetime import date,datetime,timedelta,timezone
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from multisport.daily_forecasts import publish
 import requests
 from team_units import game_units
 from official_team_stats import collect
@@ -22,7 +25,7 @@ def slate(score,standings,as_of,game_date,unit_evidence=None,goalie_evidence=Non
     if not isinstance(score.get("games"),list) or not isinstance(standings.get("standings"),list):
         raise ValueError("Official NHL score/standings required")
     day=date.fromisoformat(game_date)
-    if day>now.date()+timedelta(days=2) or day<now.date():
+    if day>now.date()+timedelta(days=2) or day<now.date()-timedelta(days=1):
         raise ValueError("Use current or near-future NHL slate only; prior-day snapshot cannot backtest retrospectively")
     base={}
     for r in standings["standings"]:
@@ -84,6 +87,7 @@ def main():
     p.add_argument("--date",required=True);p.add_argument("--output",required=True)
     p.add_argument("--units",help="Optional verified, time-stamped team unit evidence JSON")
     p.add_argument("--goalies",help="Optional timestamped, independently sourced goalie evidence JSON")
+    p.add_argument('--forecast-archive',help='Persistent per-event forecast revision directory')
     a=p.parse_args();day=date.fromisoformat(a.date)
     as_of=datetime.now(timezone.utc).isoformat()
     result=[]
@@ -95,5 +99,7 @@ def main():
     report=slate(result[0],result[1],as_of,a.date,unit_data,goalie_data)
     dest=Path(a.output);dest.parent.mkdir(parents=True,exist_ok=True)
     dest.write_text(json.dumps(report,indent=2))
+    publication=publish('nhl',report,a.forecast_archive or dest.parent/'forecast_archive',revision='nhl-prior-day-standings',live_only=True)
+    dest.with_name(dest.stem+'.forecasts.json').write_text(json.dumps(publication,indent=2))
     print(json.dumps({"pregame":len(report["events"]),"estimates":sum(g["statistical_p_home"] is not None for g in report["events"])}))
 if __name__=="__main__":main()

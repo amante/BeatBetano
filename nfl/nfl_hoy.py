@@ -3,9 +3,12 @@
 Source: ESPN public scoreboard + completed nflverse games ledger.
 No roster, injury, weather or prop probabilities are invented.
 """
+import sys
 import argparse,json,math
 from datetime import datetime,timezone
 from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from multisport.daily_forecasts import publish
 import requests
 
 URL="https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard"
@@ -89,6 +92,7 @@ def main():
     p.add_argument("--history",required=True)
     p.add_argument("--date",required=True,help="ESPN US league calendar YYYY-MM-DD")
     p.add_argument("--output",required=True)
+    p.add_argument('--forecast-archive',help='Persistent per-event forecast revision directory')
     x=p.parse_args()
     now=datetime.now(timezone.utc).isoformat()
     day=datetime.fromisoformat(x.date).strftime("%Y%m%d")
@@ -99,6 +103,8 @@ def main():
     data=report(response.json(),ledger,now)
     output=Path(x.output);output.parent.mkdir(parents=True,exist_ok=True)
     output.write_text(json.dumps(data,indent=2))
+    publication=publish('nfl',data,x.forecast_archive or output.parent/'forecast_archive',revision='nfl-historical-elo',live_only=True)
+    output.with_name(output.stem+'.forecasts.json').write_text(json.dumps(publication,indent=2))
     print(json.dumps({"pregame":len(data["events"]),"statuses":data["event_status_counts"],
                       "historical_games_used":data["historical_games_used"]}))
 if __name__=="__main__":main()
