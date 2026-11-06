@@ -60,11 +60,27 @@ def provenance(entry, created, tip, label):
     return captured
 
 
+def player_effect_values(player):
+    kind = player.get('effect_kind', 'adjusted_on_off')
+    if kind == 'adjusted_on_off':
+        fields = ('offense_on_off','defense_on_off','on_off_possessions')
+    elif kind == 'regularized_possession_effect_v1':
+        fields = ('offense_effect_per_100','defense_effect_per_100','effect_sample_possessions')
+    else:
+        raise ValueError('Unknown player effect definition')
+    return tuple(number(player[field],low,high,field)
+                 for field,low,high in zip(fields,(-30,-30,1),(30,30,1000000)))
+
+
 def validate_team(team, created, tip):
     for label in ('roster_evidence', 'injury_evidence', 'lineup_evidence', 'metrics_evidence', 'schedule_evidence'):
         captured = provenance(team[label], created, tip, label)
         if label != 'metrics_evidence' and (created-captured).total_seconds() > 21600:
             raise ValueError('Stale current evidence: ' + label)
+    if any(p.get('effect_kind') == 'regularized_possession_effect_v1' for p in team.get('players',[])):
+        derivation = team.get('feature_derivation',{})
+        if derivation.get('effect_method') != 'regularized_possession_effect_v1' or not isinstance(derivation.get('fit_parameters'),dict):
+            raise ValueError('Missing adjusted-effect fit lineage')
     if team.get('roster_complete') is not True:
         raise ValueError('Incomplete roster')
     if utc(team['metrics_through_utc']) >= created:
@@ -84,10 +100,11 @@ def validate_team(team, created, tip):
             raise ValueError('Absent player in confirmed starting five')
         for field, low, high in (('baseline_minutes',0,48), ('max_minutes',0,48),
                                   ('baseline_usage',.01,.6), ('max_usage',.01,.8),
-                                  ('offense_on_off',-30,30), ('defense_on_off',-30,30),
-                                  ('on_off_possessions',1,1000000), ('replacement_quality',.05,3),
-                                  ('turnover_on_off',-.2,.2), ('forced_turnover_on_off',-.2,.2), ('minutes_last_48h',0,106)):
+                                  ('replacement_quality',.05,3),
+                                  ('turnover_on_off',-.2,.2), ('forced_turnover_on_off',-.2,.2),
+                                  ('minutes_last_48h',0,106)):
             number(p[field], low, high, field)
+        player_effect_values(p)
         if p['max_usage'] < p['baseline_usage']:
             raise ValueError('Usage capacity below baseline')
         for role in ROLES:
@@ -181,19 +198,22 @@ def team_projection(team, assumptions):
         pid = p['player_id']
         fraction = minutes[pid]/48
         u = shares[pid]/fraction if fraction else 0.
-        shrink = p['on_off_possessions']/(p['on_off_possessions']+PARAMETERS['on_off_prior_possessions'])
+        offense_effect, defense_effect, sample = player_effect_values(p)
+        shrink = sample/(sample+PARAMETERS['on_off_prior_possessions'])
         shift = (minutes[pid]-p['baseline_minutes'])/48
-        offense += shift*p['offense_on_off']*shrink
+        offense += shift*offense_effect*shrink
         turnover_shift += shift*p['turnover_on_off']*shrink
         forced_shift += shift*p['forced_turnover_on_off']*shrink
         fatigue_load += fraction*max(0., p['minutes_last_48h']/48-0.5)
         # Defensive on/off is allowed-points delta: negative is better.
-        defense += shift*p['defense_on_off']*shrink
+        defense += shift*defense_effect*shrink
         overload += fraction*max(0,u-p['baseline_usage'])**2
         rows.append({'player_id':pid,'status':assumptions.get(pid,p['status']),
                      'minutes':minutes[pid],'usage':u,'team_possession_share':shares[pid],
                      'minute_delta':minutes[pid]-p['baseline_minutes'],
-                     'replacement_quality':p['replacement_quality'],'on_off_reliability':shrink})
+                     'replacement_quality':p['replacement_quality'],
+                     'effect_kind':p.get('effect_kind','adjusted_on_off'),'effect_reliability':shrink,
+                     'on_off_reliability':shrink if p.get('effect_kind','adjusted_on_off') == 'adjusted_on_off' else None})
     # Only residual uncovered roles are penalized, quadratically and jointly.
     residual = {r:max(0,lost[r]-sum(max(0,minutes[p['player_id']]-p['baseline_minutes'])/48*p['roles'][r]
                                      for p in players)) for r in ROLES}
@@ -350,6 +370,18 @@ def build(snapshot, evidence, boxscores, simulations=4000, seed=2026271, emitted
         except (KeyError,TypeError,ValueError) as exc:
             row['missing'].append(str(exc))
         output.append(row)
+    parameters = copy.deepcopy(PARAMETERS)
+    policies = {}
+    for game in evidence.get('games',{}).values():
+        for team in game.get('teams',{}).values():
+            if any(p.get('effect_kind') == 'regularized_possession_effect_v1' for p in team.get('players',[])):
+                derivation = team.get('feature_derivation',{})
+                policy = {'method':derivation.get('effect_method'), 'fit_parameters':derivation.get('fit_parameters')}
+                policies[digest(policy)] = policy
+    if policies:
+        if len(policies) != 1:
+            raise ValueError('Mixed player-effect fit policies in one slate')
+        parameters['player_effect_fit'] = next(iter(policies.values()))
     # Deep freeze by serialization: later caller mutations cannot rewrite evidence.
     report = {'schema_version':1,'model_version':VERSION,'created_at_utc':emitted.isoformat(),
               'prediction_as_of_utc':snapshot['created_at_utc'],
@@ -357,7 +389,7 @@ def build(snapshot, evidence, boxscores, simulations=4000, seed=2026271, emitted
               'baseline_snapshot_sha256':snapshot['content_sha256'],
               'model_tracks':{'official':'NBA Oficial 2026-27 (existing Elo benchmark)',
                               'challenger':'NBA Challenger 2026-27.1 (research V2)'},
-              'parameters':copy.deepcopy(PARAMETERS),'parameters_sha256':digest(PARAMETERS),
+              'parameters':parameters,'parameters_sha256':digest(parameters),
               'simulation_settings':{'simulations':simulations,'seed':seed},
               'inputs':{'baseline':snapshot,'evidence':evidence,'boxscores':boxscores},
               'games':output,'calibrated':False,'production_approved':False,
