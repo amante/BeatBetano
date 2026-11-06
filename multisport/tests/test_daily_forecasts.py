@@ -51,6 +51,12 @@ class DailyTests(unittest.TestCase):
         def provider(sport,games,asof,*args):
             if sport=='nhl':raise ValueError('standings unavailable')
             s=source(sport,stamp=asof)
+            if sport=='nba':
+                s['content_sha256']='current-baseline'
+                Path(args[0]).joinpath('nba-current.integration.json').write_text(json.dumps(
+                    {'baseline_snapshot_sha256':'current-baseline','integrated_research_games':0}))
+                Path(args[0]).joinpath('nba-stale.integration.json').write_text(json.dumps(
+                    {'baseline_snapshot_sha256':'old-baseline','integrated_research_games':99}))
             key='predictions' if sport=='nba' else 'games' if sport=='nhl' else 'events'
             e=s[key][0];e.update(start_utc=start,event_id=sport,game_id=sport)
             if sport=='tennis':e.pop('forecast_probabilities')
@@ -58,6 +64,7 @@ class DailyTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             result=run(feed,d,d,provider)
             self.assertEqual(result['sports']['nba']['fixtures_with_forecast'],1)
+            self.assertEqual([r['integrated_research_games'] for r in result['sports']['nba']['sporting_integration']],[0])
             self.assertEqual(result['sports']['nhl']['status'],'source_error')
             self.assertEqual(result['sports']['tennis']['missing_baseline_fixture_ids'],['tennis'])
             self.assertEqual(result['status'],'partial_source_failure')

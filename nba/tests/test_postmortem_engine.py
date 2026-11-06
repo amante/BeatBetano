@@ -81,6 +81,40 @@ def outcome():
 
 
 class PostmortemTests(unittest.TestCase):
+    def test_projected_and_unknown_lineups_generate_two_sided_research(self):
+        from nba.daily_pipeline import sporting_report
+        s,e,b = inputs()
+        home = e['games']['future']['teams']['H']
+        home['projected_starters'] = home.pop('confirmed_starters')
+        away = e['games']['future']['teams']['A']
+        away.pop('confirmed_starters')
+        away.pop('lineup_evidence')
+        r, summary = sporting_report(s,e,b,simulations=100,emitted_at=CREATED)
+        game = r['games'][0]
+        self.assertIsNotNone(game['challenger'])
+        self.assertEqual(game['lineup_context']['H']['status'],'projected')
+        self.assertEqual(game['lineup_context']['A']['status'],'unknown')
+        self.assertEqual(summary['integrated_research_games'],1)
+        self.assertTrue({'home_ml','away_ml','home_plus20','away_plus20'} <=
+                        set(game['challenger']['path']['probabilities']))
+        self.assertFalse(summary['production_approved'])
+
+    def test_projected_absent_starter_and_future_source_rejected(self):
+        for failure in ('out','future'):
+            s,e,b = inputs()
+            home = e['games']['future']['teams']['H']
+            home['projected_starters'] = home.pop('confirmed_starters')
+            if failure == 'out':home['players'][0]['status']='out'
+            else:home['lineup_evidence']['observed_at_utc']=TIP
+            self.assertIsNone(build(s,e,b,simulations=50)['games'][0]['challenger'])
+
+    def test_daily_summary_discloses_empty_integration(self):
+        from nba.daily_pipeline import sporting_report
+        s,e,b = inputs()
+        r, summary = sporting_report(s,simulations=50,emitted_at=CREATED)
+        self.assertEqual(summary['integrated_research_games'],0)
+        self.assertIn('Missing verified roster',summary['game_diagnostics'][0]['missing'][0])
+
     def test_full_game_two_sided_and_sealed(self):
         args = inputs()
         report = build(*args,simulations=100)

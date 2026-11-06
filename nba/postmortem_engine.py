@@ -73,7 +73,7 @@ def player_effect_values(player):
 
 
 def validate_team(team, created, tip):
-    for label in ('roster_evidence', 'injury_evidence', 'lineup_evidence', 'metrics_evidence', 'schedule_evidence'):
+    for label in ('roster_evidence', 'injury_evidence', 'metrics_evidence', 'schedule_evidence'):
         captured = provenance(team[label], created, tip, label)
         if label != 'metrics_evidence' and (created-captured).total_seconds() > 21600:
             raise ValueError('Stale current evidence: ' + label)
@@ -90,9 +90,7 @@ def validate_team(team, created, tip):
     ids = [p['player_id'] for p in players]
     if not ids or any(not isinstance(p, str) or not p for p in ids) or len(ids) != len(set(ids)):
         raise ValueError('Duplicate or missing player IDs')
-    starters = team['confirmed_starters']
-    if len(starters) != 5 or len(set(starters)) != 5 or not set(starters) <= set(ids):
-        raise ValueError('Unconfirmed starting five')
+    starters, _ = lineup_context(team, created, tip)
     for p in players:
         if p['status'] not in ('available', 'out', 'questionable'):
             raise ValueError('Unknown player availability')
@@ -119,6 +117,30 @@ def validate_team(team, created, tip):
     if team.get('turnover_adjustment_method') != 'opponent_residual_v1':
         raise ValueError('Missing opponent-adjusted turnover/transition features')
     number(team['path_sample_possessions'],100,1000000,'path sample')
+
+
+
+def lineup_context(team, created, tip):
+    """A sourced projection is enough for research; never label it confirmed."""
+    confirmed = team.get('confirmed_starters')
+    projected = team.get('projected_starters')
+    if confirmed is not None and projected is not None:
+        raise ValueError('Ambiguous confirmed and projected lineups')
+    starters = confirmed if confirmed is not None else projected
+    if starters is None:
+        # The minute/usage model uses the entire sourced rotation, not a starting five.
+        return [], {'status':'unknown', 'assumption':'Starting lineup unknown; sourced rotation used'}
+    captured = provenance(team['lineup_evidence'], created, tip, 'lineup_evidence')
+    if (created-captured).total_seconds() > 21600:
+        raise ValueError('Stale current evidence: lineup_evidence')
+    ids = {p['player_id'] for p in team['players']}
+    if not isinstance(starters,list) or len(starters) != 5 or len(set(starters)) != 5 or not set(starters) <= ids:
+        raise ValueError('Invalid starting five')
+    if any(p['status']=='out' and p['player_id'] in starters for p in team['players']):
+        raise ValueError('Absent player in starting five')
+    return starters, {'status':'confirmed' if confirmed is not None else 'projected',
+                      'players':list(starters),
+                      'assumption':None if confirmed is not None else 'Projected starters; subject to revision'}
 
 
 def fatigue_context(team, tip):
@@ -310,7 +332,7 @@ def build(snapshot, evidence, boxscores, simulations=4000, seed=2026271, emitted
         row = {'game_id':gid,'home_team':g['home_team'],'away_team':g['away_team'],
                'tipoff_utc':g['tipoff_utc'],'baseline':baseline,'challenger':None,
                'on_off_scenarios':[], 'recommendation':'PASS', 'eligible_for_bet':False,
-               'final_probabilities':None,'missing':[]}
+               'final_probabilities':None,'missing':[], 'lineup_context':{}}
         teams = evidence.get('games',{}).get(gid,{}).get('teams',{})
         try:
             if set(teams)-{g['home_team'],g['away_team']}:
@@ -321,6 +343,7 @@ def build(snapshot, evidence, boxscores, simulations=4000, seed=2026271, emitted
                     if t not in teams:
                         raise ValueError('Missing verified roster, injuries, lineups, player effects and score-path evidence')
                     validate_team(teams[t],created,tip)
+                    row['lineup_context'][t] = lineup_context(teams[t],created,tip)[1]
                     if utc(teams[t]['target_tipoff_utc']) != tip:
                         raise ValueError('Rotation schedule target mismatch')
                     for key in ('opponent_adjusted_ortg','opponent_adjusted_drtg'):

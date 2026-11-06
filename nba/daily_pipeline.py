@@ -27,6 +27,19 @@ def run(history,scoreboard,created_at):
     # Preserve the signed-by-digest snapshot body unchanged.
     return generate(history,fixtures,created_at)
 
+def sporting_report(snapshot, evidence=None, boxscores=None, **kwargs):
+    """Run the existing two-sided engine and expose its exact integration gaps."""
+    from postmortem_engine import build
+    evidence = evidence if evidence is not None else {"snapshot_sha256":snapshot["content_sha256"],"games":{}}
+    report = build(snapshot, evidence, boxscores if boxscores is not None else {"games":[]}, **kwargs)
+    report_summary = {"baseline_snapshot_sha256":snapshot["content_sha256"], "games":len(report['games']),
+        "integrated_research_games":sum(g['challenger'] is not None for g in report['games']),
+        "game_diagnostics":[{"game_id":g['game_id'], "missing":g['missing'],
+                             "lineup_context":g.get('lineup_context',{})} for g in report['games']],
+        "calibrated":report['calibrated'], "production_approved":report['production_approved']}
+    return report, report_summary
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--history",required=True,help="Validated completed-game ledger JSON")
@@ -56,15 +69,17 @@ def main():
     with target.open("x") as f:json.dump(snapshot,f,indent=2)
     publication=publish('nba',snapshot,x.forecast_archive or target.parent/'forecast_archive',revision='nba-existing-baselines',live_only=True)
     target.with_name(target.stem+'.forecasts.json').write_text(json.dumps(publication,indent=2))
-    from postmortem_engine import build, save_new
+    from postmortem_engine import save_new
     # Preserve the baseline bytes and seal a separate complete sporting snapshot.
     evidence = (json.loads(Path(x.postmortem_evidence).read_text()) if x.postmortem_evidence else
                 {"snapshot_sha256":snapshot["content_sha256"],"games":{}})
     boxscores = json.loads(Path(x.postmortem_boxscores).read_text()) if x.postmortem_boxscores else {"games":[]}
-    sporting = build(snapshot,evidence,boxscores)
+    sporting, integration = sporting_report(snapshot,evidence,boxscores)
     save_new(target.with_name(target.stem+".postmortem.json"),sporting)
+    with target.with_name(target.stem+".integration.json").open("x") as f:
+        json.dump(integration,f,indent=2)
     print(json.dumps({"date":x.date,"games":len(snapshot["predictions"]),
         "created_at_utc":snapshot["created_at_utc"],
         "status":"snapshot_created; candidate predictions not calibrated",
-        "output":str(target)},indent=2))
+        "output":str(target), "sporting_integration":integration},indent=2))
 if __name__=="__main__":main()

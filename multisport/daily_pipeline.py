@@ -156,11 +156,19 @@ def run(feed,archive,workdir,provider=generate_source):
             sources=provider(sport,games,sport_now,workdir,archive)
             if isinstance(sources,dict):sources=[sources]
             publications=[publish(sport,s,archive,revision='daily-'+sport,live_only=True) for s in sources]
+            integration = []
+            if sport == 'nba':
+                seals = {s.get('content_sha256') for s in sources if s.get('content_sha256')}
+                for path in Path(workdir).glob('nba-*.integration.json'):
+                    diagnostic = json.loads(path.read_text())
+                    if diagnostic.get('baseline_snapshot_sha256') in seals:
+                        integration.append(diagnostic)
             bindings,missing=coverage_bindings(sport,games,sources,publications)
             report['sports'][sport]={'status':'processed' if not missing else 'partial_forecast_coverage',
                                     'publications':publications,'fixtures_requested':len(games),
                                     'fixtures_with_forecast':len(games)-len(missing),'fixture_bindings':bindings,
                                     'missing_baseline_fixture_ids':missing}
+            if sport == 'nba':report['sports'][sport]['sporting_integration']=integration
         except Exception as exc:
             # A failed sport must not suppress another sport's baseline or erase its archive.
             error={'sport':sport,'type':type(exc).__name__,'detail':str(exc)[:1200]}
