@@ -1,7 +1,7 @@
 import copy
 import tempfile
 import unittest
-from multisport.walk_forward import walk_forward, snapshot, evaluate
+from multisport.walk_forward import walk_forward, snapshot, evaluate, elo_factory
 
 
 def event(i, sport='nfl'):
@@ -44,7 +44,7 @@ class WalkForwardTests(unittest.TestCase):
                 snapshot(record, directory)
 
     def test_gate_and_metrics(self):
-        rows = [dict(season=s, outcome=y, probabilities={'baseline': .5, 'challenger': .8 if y else .2, 'ablation': .6 if y else .4}) for s in ('2024', '2025') for y in (0, 1)]
+        rows = [dict(event_id=s+str(y), season=s, outcome=y, probabilities={'baseline': .5, 'challenger': .8 if y else .2, 'ablation': .6 if y else .4}) for s in ('2024', '2025') for y in (0, 1)]
         report = evaluate(rows, ['2024', '2025'], 2, ['ablation'])
         self.assertTrue(report['screening_passed'])
         self.assertFalse(report['automatic_promotion_allowed'])
@@ -53,3 +53,15 @@ class WalkForwardTests(unittest.TestCase):
         self.assertFalse(evaluate(rows, ['2025'], 2)['screening_passed'])
         rows[-1]['probabilities']['challenger'] = .01
         self.assertFalse(evaluate(rows, ['2024', '2025'], 2, ['ablation'])['screening_passed'])
+
+    def test_elo_baseline_learns_from_sports_results(self):
+        history = [dict(features={'home_id': 'A', 'away_id': 'B'}, outcome=1)]
+        predict = elo_factory(history, ['home_id', 'away_id'])
+        self.assertGreater(predict({'home_id': 'A', 'away_id': 'B'}), .5)
+        self.assertEqual(elo_factory([], ['home_id', 'away_id'])({'home_id': 'A', 'away_id': 'B'}), .5)
+
+    def test_invalid_evaluation_cannot_pass_gate(self):
+        row = dict(event_id='x', season='2025', outcome=1, probabilities={'baseline': .5, 'challenger': float('nan')})
+        with self.assertRaises(ValueError): evaluate([row], ['2025'], 1)
+        row['probabilities']['challenger'] = .9
+        with self.assertRaises(ValueError): evaluate([row, row], ['2025'], 1)

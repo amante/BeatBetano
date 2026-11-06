@@ -4,6 +4,7 @@ The predictor factory receives only settled history and an explicit feature allo
 Snapshots use first-write-only files: an existing event/version cannot be overwritten.
 """
 import json
+from copy import deepcopy
 import math
 from pathlib import Path
 from multisport.data_lineage import utc, verify_manifest, digest
@@ -75,8 +76,8 @@ def walk_forward(events, factory, feature_names, ablations=None):
         for name, features in variants.items():
             history = [dict(features={k: e['features'][k] for k in features}, outcome=e['outcome'],
                             season=e['season'], event_id=e['event_id']) for e in past]
-            predictor = factory(history, features)
-            probability = predictor({k: event['features'][k] for k in features})
+            predictor = factory(deepcopy(history), features)
+            probability = predictor(deepcopy({k: event['features'][k] for k in features}))
             if type(probability) not in (int, float) or not math.isfinite(probability) or not 0 <= probability <= 1:
                 raise ValueError('Invalid predictor probability')
             predictions[name] = probability
@@ -96,7 +97,20 @@ def evaluate(rows, holdout_seasons, min_games=100, required_ablations=()):
     seasons = list(holdout_seasons)
     if min_games < 1 or len(set(seasons)) != len(seasons) or not seasons:
         raise ValueError('Invalid holdout protocol')
+    if len(set(required_ablations)) != len(required_ablations) or set(required_ablations) & {'baseline', 'challenger'}:
+        raise ValueError('Distinct ablation names required')
     variants = {'baseline', 'challenger', *required_ablations}
+    identities = set()
+    for row in rows:
+        identity = row['event_id']
+        if identity in identities:
+            raise ValueError('Duplicate evaluation event')
+        identities.add(identity)
+        if type(row['outcome']) is not int or row['outcome'] not in (0, 1):
+            raise ValueError('Invalid evaluation outcome')
+        for p in row['probabilities'].values():
+            if type(p) not in (int, float) or not math.isfinite(p) or not 0 <= p <= 1:
+                raise ValueError('Invalid evaluation probability')
     metrics, reasons = {}, []
     if len(seasons) < 2:
         reasons.append('two_independent_seasons_required')
