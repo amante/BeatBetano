@@ -35,6 +35,9 @@ def validate_report(report):
         sides=game.get("participants")
         if not isinstance(sides,list) or len(sides)!=2 or not all(isinstance(x,str) and x.strip() for x in sides) or sides[0]==sides[1]:
             raise ValueError("Exactly two different participants required")
+        if game.get("forecast") is not None:
+            from multisport.forecast_revisions import validate_forecast
+            validate_forecast(game['forecast'],sport)
         base=game.get("official_baseline")
         challenger=game.get("challenger")
         for candidate in (base,challenger):
@@ -64,6 +67,7 @@ def validate_report(report):
             if not probability(away) or abs(outcome+away-1)>1e-6:
                 raise ValueError("Two-way probabilities must sum to one")
     return {"sport":sport,"events_verified_for_structure":len(games),
+            "published_forecasts":sum(g.get("forecast") is not None for g in games),
             "verified_probabilities":sum(g.get("final_probability") is not None for g in games),
             "complete_vs_input":True,"complete_vs_league":False,
             "note":"Structural checks only; schedule coverage and statistical validation remain separate."}
