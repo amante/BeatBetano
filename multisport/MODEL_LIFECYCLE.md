@@ -76,3 +76,59 @@ feature engines and their data requirements remain responsible for computing
 updates; their missing enhanced estimates cannot suppress an available baseline
 in this publication layer. Existing daily workflows must explicitly call this
 adapter to emit the new staged artifacts; they are not silently rewritten here.
+
+## Daily execution integration
+
+The five-sport fixtures workflow now calls `multisport.daily_pipeline` on each
+scheduled/manual run. It generates the existing NBA Elo/margin/rest baseline,
+NFL historical Elo and NHL prior-day standings baseline through their actual
+sport-specific daily commands. It also runs the existing soccer Poisson model
+with the previously selected historical penalty, only for Premier League fixtures
+whose team names map uniquely to its training identities. Its cache is keyed by
+historical source hashes, penalty and model code. Other soccer leagues and tennis
+report missing baselines explicitly; no new model is invented for them.
+
+NBA extends the digest-verified historical ledger with cached prior-day scoreboard
+deltas. NFL refreshes its nflverse ledger at most once per UTC day in the scheduled
+runner. NHL uses the game's US league date, including a still-future UTC fixture
+on the preceding league calendar date. Historical and confirmed-result controls
+remain in their source models. Sources are acquired independently: a failure in
+one sport is recorded without blocking another sport's initial forecast.
+
+The NBA, NFL and NHL daily entrypoints publish their base immediately, before
+optional enhanced evidence calculations. Their manual workflows use the same
+archive as the scheduled five-sport workflow. Generation/persistence jobs share a
+publication concurrency group and run only from main; tests are outside that
+publication group. Archives are committed to `frontend/data/forecast_archive`
+and also uploaded with source outputs. Forecast history is not an evictable cache.
+`frontend/data/forecast_status.json` records requested coverage, source errors and
+fixture IDs without a usable baseline; it does not label partial coverage complete.
+
+`daily_forecasts` records one sealed chain per sport/provider event ID (safe hashed
+folder). This allows started fixtures to leave the slate and new fixtures to join
+without breaking other chains. It retains each model's original cutoff, model
+output and output digest. Re-running identical source bytes/cutoff is idempotent;
+changed outputs with the same cutoff are rejected. Each new cutoff appends a new
+revision. An absent probability keeps previous files and reports the missing new
+forecast; it never silently republishes the old number as newly calculated.
+
+Stages are initial, update and final_pregame. The default final window is 30 minutes
+before source-reported start and can be configured at publication. A final stage
+is still provisional with unresolved inputs; it never approves a selection.
+The existing twice-daily schedule remains in place; workflow_dispatch can refresh
+between scheduled runs. This is not an automatic listener for every news update.
+The dashboard rendering itself is not changed by this integration: staged outputs
+and status are data artifacts, not certified final predictions.
+
+```sh
+python -m multisport.daily_pipeline --fixtures frontend/data/daily.json \
+  --archive /path/to/persistent/forecast_archive --workdir /path/to/model-workdir \
+  --summary /path/to/forecast_status.json
+python nba/daily_pipeline.py --history history.json --date YYYY-MM-DD \
+  --output new-baseline.json --forecast-archive /path/to/persistent/forecast_archive
+```
+
+NFL and NHL commands accept the same `--forecast-archive` option. Reuse the archive
+on reruns and keep raw NBA baseline filenames new, because its existing raw-source
+snapshots remain create-only. No market odds, validation certifications or sporting
+selection gates are changed by running these publication commands.

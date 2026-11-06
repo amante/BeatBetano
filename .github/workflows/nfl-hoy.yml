@@ -8,6 +8,7 @@ on:
         type: string
   pull_request:
     paths:
+      - 'multisport/**'
       - 'nfl/**'
       - '.github/workflows/nfl-hoy.yml'
 permissions:
@@ -24,12 +25,19 @@ jobs:
       - run: python -m pip install requests
       - run: python -m unittest discover -s nfl/tests -v
   generate:
-    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+    concurrency:
+      group: daily-forecast-publication
+      cancel-in-progress: false
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     needs: tests
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: main
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
@@ -39,7 +47,17 @@ jobs:
       - name: Produce all eligible NFL pregame matchups
         env:
           GAME_DATE: ${{ inputs.game_date }}
-        run: python nfl/nfl_hoy.py --date "$GAME_DATE" --history data/nfl_games.csv --output results/nfl/nfl_hoy.json
+        run: python nfl/nfl_hoy.py --date "$GAME_DATE" --history data/nfl_games.csv --output results/nfl/nfl_hoy.json --forecast-archive frontend/data/forecast_archive
+      - name: Preserve NFL initial and updated predictions
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          mkdir -p frontend/data/forecast_archive
+          git add frontend/data/forecast_archive
+          if ! git diff --cached --quiet; then
+            git commit -m "data: preserve NFL pregame forecast revisions"
+            git push origin HEAD:main
+          fi
       - name: Collect timestamped NFL injury/matchup observations
         run: python nfl/pregame_evidence.py --slate results/nfl/nfl_hoy.json --output results/nfl/pregame_evidence.json
       - name: Reconcile verified NFL availability, secondary and weather inputs
@@ -50,6 +68,8 @@ jobs:
           name: nfl-hoy-${{ github.run_id }}
           path: |
             results/nfl/nfl_hoy.json
+            results/nfl/nfl_hoy.forecasts.json
+            frontend/data/forecast_archive
             results/nfl/pregame_evidence.json
             results/nfl/matchup_verified.json
           retention-days: 30
