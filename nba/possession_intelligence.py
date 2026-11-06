@@ -53,18 +53,27 @@ def extract(payload,fixture):
  if set(result)!={fixture["home_team"],fixture["away_team"]}:raise ValueError("Incomplete team stats")
  return result
 
-def capture(history,limit=80,session=None):
+def capture(history,limit=80,session=None,cache_dir=None):
  request=session or requests.Session()
  rows=[];errors=[]
  for game in history[-limit:]:
+  if cache_dir is not None:
+   from observation_cache import read, save
+   cached=read(cache_dir,game)
+   if cached is not None:
+    rows.extend(cached)
+    continue
   try:
    resp=request.get(URL,params={"event":str(game["game_id"])},timeout=20)
    resp.raise_for_status()
    stats=extract(resp.json(),game)
+   game_rows=[]
    for team,values in stats.items():
     opponent=game["away_team"] if team==game["home_team"] else game["home_team"]
-    rows.append({"game_id":str(game["game_id"]),"tipoff_utc":game["tipoff_utc"],"team":team,
+    game_rows.append({"game_id":str(game["game_id"]),"tipoff_utc":game["tipoff_utc"],"team":team,
      "opponent":opponent,**values})
+   if cache_dir is not None:save(cache_dir,game,game_rows)
+   rows.extend(game_rows)
   except (requests.RequestException,ValueError,TypeError,KeyError) as exc:
    errors.append({"game_id":str(game["game_id"]),"error":type(exc).__name__,"detail":str(exc)[:500]})
  return {"games":rows,"source":URL,"errors":errors,"postgame_history_only":True}
