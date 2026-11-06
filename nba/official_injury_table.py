@@ -21,11 +21,16 @@ TEAM_RE=re.compile("|".join(re.escape(t) for t in sorted(TEAMS,key=len,reverse=T
 PLAYER_RE=re.compile(r"(?P<last>[A-Za-z][A-Za-z'. -]*(?:, Jr\.|, III|, II|, IV)?)\s*,\s*(?P<first>[A-Za-z][A-Za-z'. -]*?)\s+(?P<status>Questionable|Doubtful|Probable|Available|Out)\b")
 MATCHUP_RE=re.compile(r"\b[A-Z]{2,3}@[A-Z]{2,3}\b")
 DATE_RE=re.compile(r"\b\d{1,2}/\d{1,2}/20\d{2}\b")
-def extract(pages):
+def extract(pages, continuous_table=False):
  if not isinstance(pages,list):raise ValueError("Expected pages")
+ if continuous_table:
+  headers=[next((line.strip() for line in page.splitlines() if line.startswith('Injury Report:')),None) for page in pages]
+  if not headers or not headers[0] or len(set(headers))!=1 or 'Game Date' not in pages[0] or 'Player Name' not in pages[0]:
+   raise ValueError('Continuous table requires identical report headers and an initial table heading')
  rows=[]
+ team=None;matchup=None;game_date=None
  for page_no,page in enumerate(pages,1):
-  team=None;matchup=None;game_date=None
+  if not continuous_table:team=None;matchup=None;game_date=None
   for line_no,line in enumerate(page.splitlines(),1):
    if "Game Date" in line and "Player Name" in line:continue
    if "Injury Report:" in line or "Page " in line and " of " in line:continue
@@ -48,6 +53,6 @@ def extract(pages):
    if not first or len(last)<2:continue
    rows.append({"team":team,"player":first+" "+last,"status":hit.group("status").title(),
     "game_date":game_date,"matchup":matchup,"page":page_no,"line":line_no,
-    "raw":line.strip(),"mapping":"explicit_team_cell_or_same_page_continuation",
+    "raw":line.strip(),"mapping":"verified_document_table_continuation" if continuous_table else "explicit_team_cell_or_same_page_continuation",
     "independently_identity_verified":False})
  return rows

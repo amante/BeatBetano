@@ -1,0 +1,33 @@
+{
+  "base_commit": "1a4cf6b",
+  "test_command": "python -m unittest discover -s nba/tests -v",
+  "python": "3.9.13",
+  "tests": 320,
+  "failures": 0,
+  "errors": 0,
+  "captured_games": 9,
+  "roster_members": 313,
+  "official_rows_reparsed": 89,
+  "official_claims_matched": 84,
+  "unknown_status_players": 229,
+  "unmatched_official_claims": 5,
+  "reconciled_historical_score_paths": 2,
+  "model_ready_games": 0,
+  "production_approved": false,
+  "source_sha256": {
+    "nba/official_injury_table.py": "90033989a9ac64c055332a98ca3482ce918a47bb4fed88c2dfa2ad3b8ac8661e",
+    "nba/source_readiness.py": "a7b600c9a6cea57044eb2224ffa4081406f3fd21900878a5bc3eb13603bfb6c3",
+    "nba/verifiable_capture.py": "df9cf4d237a7b9d24fe338e57921c832a1fe0bab0686ff17cfbbb41dc4e286bf",
+    "nba/tests/test_source_readiness.py": "08b0538d2c072d4e470bac10e7fc65743b0d565d5640855b2c675b44269f2b64"
+  },
+  "artifact_sha256": {
+    "readiness.json": "935bb07bed746c72fd00dd2db5dbbecbaf0827f260c3ae5814a611123a98659c",
+    "tests.log": "3f966016a47e03ccd19e9c5d8ccb178faa06453ed4aa5d58da3f95e15564535c"
+  },
+  "limitations": [
+    "No normalized possession endings",
+    "No dated adjusted player on/off or replacement quality",
+    "Projected lineups are not confirmed",
+    "No independent new-model holdout validation"
+  ]
+}
