@@ -79,6 +79,8 @@ class RevisionTests(unittest.TestCase):
         with self.assertRaises(ValueError):adapt('nba',source('nba',stamp='2026-11-08T00:00:00Z'))
         s=source('nba');s['predictions'][0]['observed_at_utc']='2026-11-06T12:00:00Z'
         with self.assertRaisesRegex(ValueError,'cutoff'):adapt('nba',s)
+        s=source('nba');s['predictions'][0]['observed_at_utc']='2026-11-06T10:00:00.001Z'
+        with self.assertRaisesRegex(ValueError,'cutoff'):adapt('nba',s)
 
     def test_soccer_vector_not_replaced_with_binary_complement(self):
         s=source('soccer');s['events'][0]['forecast_probabilities']['away']=.3

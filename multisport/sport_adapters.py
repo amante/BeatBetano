@@ -55,7 +55,7 @@ def adapt(sport,source,revision="unrecorded",stage="initial"):
         away=x.get("away_team") or x.get("away")
         if not (gid and start and home and away):raise ValueError("Incomplete match identity and start")
         for key in ('observed_at_utc','feature_as_of_utc','prediction_as_of_utc'):
-            if x.get(key) is not None and utc(x[key])>stamp:
+            if x.get(key) is not None and datetime.fromisoformat(utc(x[key]).replace('Z','+00:00'))>datetime.fromisoformat(stamp.replace('Z','+00:00')):
                 raise ValueError('Source observation follows forecast cutoff')
         values,source_key=source_probabilities(sport,x)
         forecast=None
