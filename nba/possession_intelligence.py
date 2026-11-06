@@ -40,7 +40,7 @@ def extract(payload,fixture):
   fta=num("freeThrowsAttempted","fta")
   if fta is None:fta=attempts("freeThrowsMade-freeThrowsAttempted","freeThrows","freeThrowsMadeAttempted")
   orb=num("offensiveRebounds","offRebounds","offensiveReboundsTotal")
-  turnovers=num("turnovers","totalTurnovers","to")
+  turnovers=num("totalTurnovers","turnovers","to")
   pts=num("points","PTS")
   if pts is None:
    match=next((x for x in comps[0].get("competitors",[]) if x.get("team",{}).get("abbreviation")==team),None)

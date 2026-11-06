@@ -154,6 +154,11 @@ def score_path(payload, game):
             'note':'Scoring-path targets only; shot/free-throw/rebound actions are not possessions.'}
 
 
+def roster_name_key(value):
+    """Only presentation punctuation varies; preserve all name/suffix tokens."""
+    return " ".join(re.sub(r'[,.]', '', normalize(value)).split())
+
+
 def resolve_official(rows, roster, fixtures, published, observed):
     output = []
     unmatched = []
@@ -162,7 +167,7 @@ def resolve_official(rows, roster, fixtures, published, observed):
             members = roster.get('games',{}).get(str(g['game_id']),{}).get('teams',{}).get(team,{}).get('players',[])
             lookup = {}
             for p in members:
-                lookup.setdefault(normalize(p['player']),[]).append(p['player_id'])
+                lookup.setdefault(roster_name_key(p['player']),[]).append(p['player_id'])
             mapped = {}
             for row in rows:
                 if canonical(row['team']) != canonical(team):
@@ -174,7 +179,7 @@ def resolve_official(rows, roster, fixtures, published, observed):
                     continue
                 if not utc(published) <= utc(observed) < utc(g['tipoff_utc']):
                     continue
-                ids = lookup.get(normalize(row['player']),[])
+                ids = lookup.get(roster_name_key(row['player']),[])
                 if len(ids) != 1:
                     unmatched.append({'game_id':g['game_id'],'team':team,'player':row['player'],'reason':'not_unique_exact_normalized_roster_match'})
                     continue
@@ -183,7 +188,7 @@ def resolve_official(rows, roster, fixtures, published, observed):
                     raise ValueError('Conflicting official statuses')
                 mapped[pid] = {'player_id':pid,'player':row['player'],'official_status':row['status'],
                                'published_at_utc':published,'observed_at_utc':observed,
-                               'page':row['page'],'line':row['line'],'identity_match':'unique_team_and_normalized_name'}
+                               'page':row['page'],'line':row['line'],'identity_match':'unique_team_and_punctuation_normalized_name'}
             output.append({'game_id':str(g['game_id']),'team':team,'roster_members':len(members),
                            'official_claims':list(mapped.values()),
                            'unlisted_player_ids':[p['player_id'] for p in members if p['player_id'] not in mapped],

@@ -1,0 +1,107 @@
+{
+  "model_version": "NBA_CHALLENGER_2026_27_1_POSTMORTEM_V2",
+  "frozen_snapshots_supplied": 0,
+  "historical_outcome_games": 2460,
+  "historical_games_with_candidate_emission": 0,
+  "historical_games_without_candidate_emission": 2460,
+  "observed_path_targets": 2,
+  "evaluation": {
+    "model_version": "NBA_CHALLENGER_2026_27_1_POSTMORTEM_V2",
+    "fixtures_expected": 0,
+    "scored_ml_games": 0,
+    "unmatched_outcome_ids": [
+      "401909936",
+      "401909937"
+    ],
+    "excluded": [],
+    "metrics": {
+      "home_ml": {
+        "challenger": {
+          "n": 0,
+          "brier": null,
+          "log_loss": null,
+          "calibration": []
+        },
+        "elo_baseline": {
+          "n": 0,
+          "brier": null,
+          "log_loss": null,
+          "calibration": []
+        },
+        "challenger_baseline": {
+          "n": 0,
+          "brier": null,
+          "log_loss": null,
+          "calibration": []
+        },
+        "hybrid_baseline": {
+          "n": 0,
+          "brier": null,
+          "log_loss": null,
+          "calibration": []
+        }
+      },
+      "home_plus20": {
+        "challenger": {
+          "n": 0,
+          "brier": null,
+          "log_loss": null,
+          "calibration": []
+        },
+        "baseline": null,
+        "baseline_missing_reason": "No frozen baseline path probabilities"
+      },
+      "away_ml": {
+        "challenger": {
+          "n": 0,
+          "brier": null,
+          "log_loss": null,
+          "calibration": []
+        },
+        "elo_baseline": {
+          "n": 0,
+          "brier": null,
+          "log_loss": null,
+          "calibration": []
+        },
+        "challenger_baseline": {
+          "n": 0,
+          "brier": null,
+          "log_loss": null,
+          "calibration": []
+        },
+        "hybrid_baseline": {
+          "n": 0,
+          "brier": null,
+          "log_loss": null,
+          "calibration": []
+        }
+      },
+      "away_plus20": {
+        "challenger": {
+          "n": 0,
+          "brier": null,
+          "log_loss": null,
+          "calibration": []
+        },
+        "baseline": null,
+        "baseline_missing_reason": "No frozen baseline path probabilities"
+      }
+    },
+    "chronological_games": [],
+    "independent_holdout_validation_passed": false,
+    "production_approved": false,
+    "limitations": [
+      "Frozen snapshot scoring does not establish independent calibration.",
+      "No retrospective reconstruction of missing pregame availability.",
+      "No model fitting or coefficient selection occurs during scoring.",
+      "Timestamp and digest checks require external pretip publication provenance."
+    ]
+  },
+  "status": "no_eligible_candidate_predictions",
+  "calibration_fit_performed": false,
+  "independent_validation_passed": false,
+  "model_hits": null,
+  "dual": null,
+  "note": "Baseline ML evaluation below is a different model. Missing candidate forecasts are not losses, successes or 50/50 probabilities."
+}

@@ -1,0 +1,86 @@
+{
+  "created_at_utc": "2026-11-06T13:49:57.324542+00:00",
+  "documentation_url": "https://api.pbpstats.com/docs",
+  "sources": [
+    {
+      "team": "PHX",
+      "source_url": "https://api.pbpstats.com/get-possessions/nba",
+      "parameters": {
+        "Season": "2026-27",
+        "SeasonType": "Regular Season",
+        "TeamId": "1610612756",
+        "FromDate": "2026-11-05",
+        "ToDate": "2026-11-05",
+        "OffDef": "Offense"
+      },
+      "requested_at_utc": "2026-11-06T13:49:24.655236+00:00",
+      "status": "unavailable",
+      "normalized_model_contract_ready": false,
+      "http_status": 500,
+      "error_type": "HTTPError",
+      "detail": "500 Server Error: Internal Server Error for url: https://api.pbpstats.com/get-possessions/nba?Season=2026-27&SeasonType=Regular+Season&TeamId=1610612756&FromDate=2026-11-05&ToDate=2026-11-05&OffDef=Offense",
+      "observed_at_utc": "2026-11-06T13:49:40.764475+00:00"
+    },
+    {
+      "team": "ORL",
+      "source_url": "https://api.pbpstats.com/get-possessions/nba",
+      "parameters": {
+        "Season": "2026-27",
+        "SeasonType": "Regular Season",
+        "TeamId": "1610612753",
+        "FromDate": "2026-11-05",
+        "ToDate": "2026-11-05",
+        "OffDef": "Offense"
+      },
+      "requested_at_utc": "2026-11-06T13:49:24.657009+00:00",
+      "status": "unavailable",
+      "normalized_model_contract_ready": false,
+      "error_type": "ReadTimeout",
+      "detail": "HTTPSConnectionPool(host='api.pbpstats.com', port=443): Read timed out. (read timeout=18)",
+      "observed_at_utc": "2026-11-06T13:49:43.037535+00:00"
+    },
+    {
+      "team": "GSW",
+      "source_url": "https://api.pbpstats.com/get-possessions/nba",
+      "parameters": {
+        "Season": "2026-27",
+        "SeasonType": "Regular Season",
+        "TeamId": "1610612744",
+        "FromDate": "2026-11-05",
+        "ToDate": "2026-11-05",
+        "OffDef": "Offense"
+      },
+      "requested_at_utc": "2026-11-06T13:49:40.764608+00:00",
+      "status": "unavailable",
+      "normalized_model_contract_ready": false,
+      "http_status": 500,
+      "error_type": "HTTPError",
+      "detail": "500 Server Error: Internal Server Error for url: https://api.pbpstats.com/get-possessions/nba?Season=2026-27&SeasonType=Regular+Season&TeamId=1610612744&FromDate=2026-11-05&ToDate=2026-11-05&OffDef=Offense",
+      "observed_at_utc": "2026-11-06T13:49:54.750110+00:00"
+    },
+    {
+      "team": "MIA",
+      "source_url": "https://api.pbpstats.com/get-possessions/nba",
+      "parameters": {
+        "Season": "2026-27",
+        "SeasonType": "Regular Season",
+        "TeamId": "1610612748",
+        "FromDate": "2026-11-05",
+        "ToDate": "2026-11-05",
+        "OffDef": "Offense"
+      },
+      "requested_at_utc": "2026-11-06T13:49:43.037700+00:00",
+      "status": "unavailable",
+      "normalized_model_contract_ready": false,
+      "http_status": 500,
+      "error_type": "HTTPError",
+      "detail": "500 Server Error: Internal Server Error for url: https://api.pbpstats.com/get-possessions/nba?Season=2026-27&SeasonType=Regular+Season&TeamId=1610612748&FromDate=2026-11-05&ToDate=2026-11-05&OffDef=Offense",
+      "observed_at_utc": "2026-11-06T13:49:57.324231+00:00"
+    }
+  ],
+  "no_odds_input": true,
+  "limitations": [
+    "Source rows do not yet reconcile full scoring including technical/free throws or verified lineup stints. They are not accepted engine possession inputs.",
+    "No source query uses leverage or market/probability filters. No automatic model promotion."
+  ]
+}

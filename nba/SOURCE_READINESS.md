@@ -66,3 +66,28 @@ feature contract. This raw capture is intentionally not labelled model-ready:
 connecting it directly would silently invent critical inputs. Next ingestion
 work requires a verified possession export and dated adjusted player effects,
 followed by chronological prospective evaluation.
+
+## V2 data and validation assessment (November 6, PR #342)
+
+`data_validation_run.py` composes the existing frozen-history, capture-readiness,
+calibration and candidate evaluators; it introduces no new probability model.
+It writes a create-only assessment, game-level **retrospective** baseline rows,
+separate candidate metrics, reconciled postgame targets, code/source hashes and
+an artifact manifest. Use `--capture`, `--archive`, `--output`; optional
+`--candidate-snapshots` accepts only sealed V2 reports. Missing forecasts stay
+unscored, not imputed. Wrong versions, changed digests and backdated replay
+emissions are rejected by the existing contracts.
+
+Readiness schema 2 enumerates player committed/forced turnover effects, 48-hour
+load and complete previous-game schedule in addition to prior requirements. It
+re-derives team possession estimates from raw sporting payloads, giving total
+team turnovers priority over individual turnovers. Captured bytes never change.
+Name reconciliation ignores comma/period presentation only, retains suffixes and
+requires a unique team-bound result; ambiguous or absent names remain unmatched.
+
+The audit covers this raw capture format, not arbitrary external feature bundles:
+missing adjusted effects/projections are explicit zero coverage, not values to
+insert into the predictor. A successful retrieval or baseline backtest does not
+make the V2 contract ready. Full results, provider attempts, exact remaining
+requirements and the next data acceptance criteria are in
+`reports/nba-data-validation-2026-11-06/FUENTES_Y_SIGUIENTE_ENTREGA.md`.

@@ -17,10 +17,12 @@ from rotation_allocation_adapter import project_nba_minutes, allocate
 from score_path import number, simulate
 
 
-VERSION = 'NBA_CHALLENGER_2026_27_1_POSTMORTEM_V1'
+VERSION = 'NBA_CHALLENGER_2026_27_1_POSTMORTEM_V2'
 PARAMETERS = {'minutes_response':.8, 'usage_response':1.2,
               'usage_overload_per_100':8., 'joint_role_loss_per_100':3.,
-              'on_off_prior_possessions':1000., 'maximum_questionable':3}
+              'on_off_prior_possessions':1000.,
+              'fatigue_offense_per_100':1., 'fatigue_defense_per_100':.5,
+              'fatigue_turnover_rate':.005, 'usage_turnover_response':.02, 'maximum_questionable':3}
 ROLES = ('creation', 'spacing', 'rim', 'rebounding')
 
 
@@ -59,7 +61,7 @@ def provenance(entry, created, tip, label):
 
 
 def validate_team(team, created, tip):
-    for label in ('roster_evidence', 'injury_evidence', 'lineup_evidence', 'metrics_evidence'):
+    for label in ('roster_evidence', 'injury_evidence', 'lineup_evidence', 'metrics_evidence', 'schedule_evidence'):
         captured = provenance(team[label], created, tip, label)
         if label != 'metrics_evidence' and (created-captured).total_seconds() > 21600:
             raise ValueError('Stale current evidence: ' + label)
@@ -67,6 +69,7 @@ def validate_team(team, created, tip):
         raise ValueError('Incomplete roster')
     if utc(team['metrics_through_utc']) >= created:
         raise ValueError('Metrics window reaches snapshot')
+    fatigue_context(team, tip)
     players = team['players']
     ids = [p['player_id'] for p in players]
     if not ids or any(not isinstance(p, str) or not p for p in ids) or len(ids) != len(set(ids)):
@@ -82,7 +85,8 @@ def validate_team(team, created, tip):
         for field, low, high in (('baseline_minutes',0,48), ('max_minutes',0,48),
                                   ('baseline_usage',.01,.6), ('max_usage',.01,.8),
                                   ('offense_on_off',-30,30), ('defense_on_off',-30,30),
-                                  ('on_off_possessions',1,1000000), ('replacement_quality',.05,3)):
+                                  ('on_off_possessions',1,1000000), ('replacement_quality',.05,3),
+                                  ('turnover_on_off',-.2,.2), ('forced_turnover_on_off',-.2,.2), ('minutes_last_48h',0,106)):
             number(p[field], low, high, field)
         if p['max_usage'] < p['baseline_usage']:
             raise ValueError('Usage capacity below baseline')
@@ -95,7 +99,31 @@ def validate_team(team, created, tip):
     for field, low, high in (('pace_regulation',60,140), ('turnover_rate',.01,.4),
                               ('forced_turnover_rate',.01,.4), ('transition_bonus',0,1)):
         number(team[field],low,high,field)
+    if team.get('turnover_adjustment_method') != 'opponent_residual_v1':
+        raise ValueError('Missing opponent-adjusted turnover/transition features')
     number(team['path_sample_possessions'],100,1000000,'path sample')
+
+
+def fatigue_context(team, tip):
+    """Use verified schedule times, never calendar-day differences in UTC."""
+    schedule = team['schedule']
+    previous_tip = utc(schedule['previous_tipoff_utc'])
+    previous_end = utc(schedule['previous_completed_at_utc'])
+    if not previous_tip < previous_end < tip:
+        raise ValueError('Invalid previous game schedule')
+    overtime = schedule['previous_overtime_periods']
+    if type(overtime) is not int or not 0 <= overtime <= 6:
+        raise ValueError('Invalid prior overtime count')
+    if previous_end > utc(team['schedule_evidence']['available_at_utc']):
+        raise ValueError('Schedule source predates previous completion')
+    gap = (tip-previous_tip).total_seconds()/3600
+    rest = (tip-previous_end).total_seconds()/3600
+    b2b = gap <= 30
+    # Predeclared sensitivity hypotheses, not fitted to the November 5 outcomes.
+    pressure = max(0., (48-rest)/24) + (overtime*.25 if b2b else 0.)
+    return {'hours_between_tipoffs':gap, 'hours_since_completion':rest,
+            'back_to_back':b2b, 'previous_overtime_periods':overtime,
+            'schedule_pressure':pressure}
 
 
 def rotation_stints(minutes):
@@ -146,7 +174,8 @@ def team_projection(team, assumptions):
     shares = allocate('nba','targets',usage,total=1).get('allocations')
     if shares is None:
         raise ValueError('Insufficient creation/usage capacity')
-    offense = defense = overload = 0.
+    offense = defense = overload = turnover_shift = forced_shift = fatigue_load = 0.
+    fatigue = fatigue_context(team, utc(team["target_tipoff_utc"]))
     rows = []
     for p in players:
         pid = p['player_id']
@@ -155,6 +184,9 @@ def team_projection(team, assumptions):
         shrink = p['on_off_possessions']/(p['on_off_possessions']+PARAMETERS['on_off_prior_possessions'])
         shift = (minutes[pid]-p['baseline_minutes'])/48
         offense += shift*p['offense_on_off']*shrink
+        turnover_shift += shift*p['turnover_on_off']*shrink
+        forced_shift += shift*p['forced_turnover_on_off']*shrink
+        fatigue_load += fraction*max(0., p['minutes_last_48h']/48-0.5)
         # Defensive on/off is allowed-points delta: negative is better.
         defense += shift*p['defense_on_off']*shrink
         overload += fraction*max(0,u-p['baseline_usage'])**2
@@ -168,6 +200,11 @@ def team_projection(team, assumptions):
     joint = PARAMETERS['joint_role_loss_per_100']*sum(v*v for v in residual.values())
     offense -= PARAMETERS['usage_overload_per_100']*overload + joint
     defense += joint/2
+    fatigue_index = fatigue['schedule_pressure'] + fatigue_load/5
+    offense -= PARAMETERS['fatigue_offense_per_100']*fatigue_index
+    defense += PARAMETERS['fatigue_defense_per_100']*fatigue_index
+    turnover_shift += PARAMETERS['usage_turnover_response']*overload
+    turnover_shift += PARAMETERS['fatigue_turnover_rate']*fatigue_index
     stints = rotation_stints(minutes)
     by_id = {p['player_id']:p for p in players}
     if any(sum(by_id[p]['roles']['creation'] for p in s['players']) < .5 or
@@ -176,6 +213,8 @@ def team_projection(team, assumptions):
     return {'players':rows,'rotation_stints':stints,'lost_roles':lost,'uncovered_roles':residual,
             'offense_delta_per_100':offense,'defense_delta_per_100':defense,
             'nonlinear_joint_penalty_per_100':joint,'usage_overload':overload,
+            'turnover_rate_delta':turnover_shift, 'forced_turnover_rate_delta':forced_shift,
+            'fatigue':{**fatigue,'rotation_load':fatigue_load/5,'index':fatigue_index},
             'assumptions':assumptions}
 
 
@@ -183,6 +222,10 @@ def matchup(game, teams, ratings, assumptions, simulations, seed):
     names = (game['home_team'],game['away_team'])
     rotations = {t:team_projection(teams[t],assumptions.get(t,{})) for t in names}
     projections = {}
+    committed = {t:number(teams[t]['turnover_rate']+rotations[t]['turnover_rate_delta'],
+                         .01,.4,'availability/fatigue turnover rate') for t in names}
+    pressure = {t:number(teams[t]['forced_turnover_rate']+rotations[t]['forced_turnover_rate_delta'],
+                        .01,.4,'availability forced turnover rate') for t in names}
     pace = sum(teams[t]['pace_regulation'] for t in names)/2
     for i, t in enumerate(names):
         opp = names[1-i]
@@ -192,8 +235,8 @@ def matchup(game, teams, ratings, assumptions, simulations, seed):
         rival_d = ratings[opp]['opponent_adjusted_drtg'] + rotations[opp]['defense_delta_per_100']
         # Ratings already contain historical turnovers. Add only matchup deltas.
         baseline_ppp = (ortg+rival_d-own['league_rating'])/100
-        q = (teams[t]['turnover_rate']+teams[opp]['forced_turnover_rate'])/2
-        forced = (teams[opp]['turnover_rate']+teams[t]['forced_turnover_rate'])/2
+        q = (committed[t]+pressure[opp])/2
+        forced = (committed[opp]+pressure[t])/2
         non_to_ppp = baseline_ppp/(1-teams[t]['turnover_rate'])
         delta = -(q-teams[t]['turnover_rate'])*non_to_ppp
         delta += (forced-teams[t]['forced_turnover_rate'])*(1-q)*teams[t]['transition_bonus']
@@ -258,6 +301,8 @@ def build(snapshot, evidence, boxscores, simulations=4000, seed=2026271, emitted
                     if t not in teams:
                         raise ValueError('Missing verified roster, injuries, lineups, player effects and score-path evidence')
                     validate_team(teams[t],created,tip)
+                    if utc(teams[t]['target_tipoff_utc']) != tip:
+                        raise ValueError('Rotation schedule target mismatch')
                     for key in ('opponent_adjusted_ortg','opponent_adjusted_drtg'):
                         number(ratings[t][key],60,180,key)
                 except (KeyError, TypeError, ValueError) as exc:
@@ -310,6 +355,8 @@ def build(snapshot, evidence, boxscores, simulations=4000, seed=2026271, emitted
               'prediction_as_of_utc':snapshot['created_at_utc'],
               'emission_kind':'pregame' if all(emitted < utc(g['tipoff_utc']) for g in fixtures) else 'retrospective_replay',
               'baseline_snapshot_sha256':snapshot['content_sha256'],
+              'model_tracks':{'official':'NBA Oficial 2026-27 (existing Elo benchmark)',
+                              'challenger':'NBA Challenger 2026-27.1 (research V2)'},
               'parameters':copy.deepcopy(PARAMETERS),'parameters_sha256':digest(PARAMETERS),
               'simulation_settings':{'simulations':simulations,'seed':seed},
               'inputs':{'baseline':snapshot,'evidence':evidence,'boxscores':boxscores},

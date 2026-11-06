@@ -8,7 +8,7 @@ from pathlib import Path
 
 from prospective import utc
 from postmortem_engine import verify_seal
-from verifiable_capture import score_path, resolve_official, save_new, pdf_table_pages
+from verifiable_capture import score_path, resolve_official, save_new, pdf_table_pages, team_boxscore
 from official_injury_table import extract
 
 
@@ -55,13 +55,16 @@ def audit(source):
     history_ids = [str(r['game']['game_id']) for r in history]
     if len(set(history_ids)) != len(history_ids):
         raise ValueError('Duplicate historical fixtures')
-    paths, gaps = [], []
+    paths, gaps, rederived = [], [], []
     for row in history:
         gid = str(row['game']['game_id'])
         name = 'sports_summaries/'+gid+'.json'
         payload = load(name)
         if files[name] != row['sports_payload_sha256']:
             raise ValueError('Historical payload binding mismatch')
+        rederived.append({'game_id':gid,'team_statistics':team_boxscore(payload,row['game']),
+                          'method':'FGA+.44*FTA-ORB+total_team_turnovers',
+                          'normalized_possessions_available':False})
         try:
             paths.append({'game_id':gid, **score_path(payload, row['game'])})
         except (ValueError, KeyError, TypeError) as exc:
@@ -79,6 +82,10 @@ def audit(source):
             lineup = lineups.get('games', {}).get(gid, {}).get('teams', {}).get(team, {})
             matched = claims.get((gid, team), {}).get('official_claims', [])
             known = {p['player_id'] for p in matched}
+            unresolved = [p for p in matched if p['official_status'].lower() in
+                          ('questionable','doubtful','probable')]
+            unmatched = [p for p in resolution['unmatched_claims']
+                         if p['game_id'] == gid and p['team'] == team]
             prior = [r for r in history if utc(r['game']['tipoff_utc']) < tip
                      and utc(r['observed_at_utc']) < tip]
             minute_ids = {p['player_id'] for r in prior for p in r['players']
@@ -88,25 +95,50 @@ def audit(source):
             lineup_pregame = bool(lineup.get('observed_at_utc')) and utc(lineup['observed_at_utc']) < tip
             blockers = ['complete_active_status', 'adjusted_player_on_off',
                         'replacement_roles_and_quality', 'projected_minutes_and_usage',
-                        'normalized_possessions', 'independent_holdout_validation']
+                        'normalized_possessions', 'independent_holdout_validation',
+                        'player_committed_and_forced_turnover_on_off',
+                        'verified_last_48h_load', 'complete_previous_game_schedule']
             if not players or roster.get('roster_complete') is not True or not roster_pregame:
                 blockers.append('complete_pregame_roster')
             # A provider confirmation is still not a verified ID-bound starting five.
             blockers.append('verified_starting_five_ids')
+            if unmatched:
+                blockers.append('official_claim_missing_from_roster')
             teams.append({'game_id':gid, 'team':team, 'tipoff_utc':g['tipoff_utc'],
                           'roster_members':len(players), 'roster_observed_pregame':roster_pregame,
                           'official_status_claims':len(known),
                           'unknown_status_players':len(set(player_ids)-known),
+                          'unresolved_official_status_claims':len(unresolved),
+                          'unmatched_official_claims':unmatched,
+                          'verified_projected_minutes_players':0,
+                          'verified_adjusted_player_effects_players':0,
+                          'verified_replacement_quality_players':0,
+                          'verified_turnover_on_off_players':0,
+                          'verified_last_48h_load_players':0,
+                          'complete_previous_game_schedule':False,
                           'players_with_observed_minutes':len(set(player_ids)&minute_ids),
                           'lineup_status':lineup.get('lineup_status', 'missing'),
                           'lineup_observed_pregame':lineup_pregame,
                           'blocking_requirements':blockers, 'recommendation':'PASS'})
-    return {'schema_version':1, 'created_at_utc':datetime.now(timezone.utc).isoformat(),
+    return {'schema_version':2, 'created_at_utc':datetime.now(timezone.utc).isoformat(),
             'source_manifest_sha256':hashlib.sha256((source/'manifest.json').read_bytes()).hexdigest(),
             'fixture_cohort_sha256':cohort['content_sha256'],
             'games':len(fixtures), 'teams':teams,
+            'engine_contract_version':'NBA_CHALLENGER_2026_27_1_POSTMORTEM_V2',
+            'blocking_requirement_counts':dict(Counter(b for t in teams for b in t['blocking_requirements'])),
+            'coverage_totals':{
+                'roster_members':sum(t['roster_members'] for t in teams),
+                'official_status_claims':sum(t['official_status_claims'] for t in teams),
+                'unknown_status_players':sum(t['unknown_status_players'] for t in teams),
+                'unresolved_official_status_claims':sum(t['unresolved_official_status_claims'] for t in teams),
+                'observed_minutes_players':sum(t['players_with_observed_minutes'] for t in teams),
+                'confirmed_starting_fives_with_verified_ids':0,
+                'normalized_possessions':0,
+                'adjusted_player_effects':0,
+                'verified_load_and_schedule_teams':0},
             'historical_games':len(history), 'reconciled_score_paths':paths,
             'score_path_gaps':gaps,
+            'rederived_historical_team_statistics':rederived,
             'gap_counts':dict(Counter(g['reason'] for g in gaps)),
             'unmatched_official_claims':resolution['unmatched_claims'],
             'official_rows_reparsed':len(parsed_rows) if official else 0,
