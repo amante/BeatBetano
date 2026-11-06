@@ -1,0 +1,62 @@
+{
+  "sport": "nba",
+  "as_of_utc": "2026-11-06T16:44:40.837181Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401909288",
+      "start_utc": "2026-11-07T00:00:00Z",
+      "participants": [
+        "CHA",
+        "BOS"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.39313573776514676,
+          "away": 0.6068642622348532
+        },
+        "model_version": "nba-existing-baselines",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "elo_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nba-existing-baselines",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": false,
+  "automatic_promotion": false,
+  "source_output_sha256": "5e55c3a8957732d952d6dc478ef4826860dd012550c56272bc43641273525e99",
+  "source_model_output": {
+    "game_id": "401909288",
+    "tipoff_utc": "2026-11-07T00:00:00Z",
+    "home_team": "CHA",
+    "away_team": "BOS",
+    "elo_p_home": 0.39313573776514676,
+    "challenger_p_home": 0.3242846551724897,
+    "hybrid_p_home": 0.3242846551724897,
+    "hybrid_route": "challenger",
+    "dual_challenger": false,
+    "eligible_for_bet": false,
+    "status": "unvalidated_candidate"
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-06T16:44:41.314582+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "c66a624eb434c6dbb698c5c8355acb24a6affac8f248452a4dd860bf67d96c70"
+}
