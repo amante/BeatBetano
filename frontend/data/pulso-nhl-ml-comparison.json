@@ -1,18 +1,10 @@
 {
   "status": "prospective_paired_ml_evaluation",
-  "paired_completed": 36,
+  "paired_completed": 44,
   "paired_awaiting_official_final": [
-    "2026020251",
-    "2026020252",
-    "2026020253",
-    "2026020254",
-    "2026020255",
-    "2026020256",
-    "2026020257",
-    "2026020258",
-    "2026020259",
-    "2026020260",
-    "2026020261"
+    "2026020214",
+    "2026020215",
+    "2026020216"
   ],
   "unpaired_baseline_only": [
     "2026020207",
@@ -24,80 +16,24 @@
     "2026020213",
     "2026020227"
   ],
-  "unpaired_challenger_only": [],
+  "unpaired_challenger_only": [
+    "2026020262",
+    "2026020263",
+    "2026020264"
+  ],
   "metrics": {
     "brier": {
-      "baseline": 0.2368231,
-      "challenger": 0.2496531,
-      "delta_challenger_minus_baseline": 0.01283
+      "baseline": 0.2406606,
+      "challenger": 0.2469727,
+      "delta_challenger_minus_baseline": 0.0063121
     },
     "log_loss": {
-      "baseline": 0.6664702,
-      "challenger": 0.6922508,
-      "delta_challenger_minus_baseline": 0.0257806
+      "baseline": 0.6742077,
+      "challenger": 0.6869194,
+      "delta_challenger_minus_baseline": 0.0127117
     }
   },
   "games": [
-    {
-      "game_id": "2026020214",
-      "home": "VGK",
-      "away": "NJD",
-      "y_home_win": 0,
-      "baseline_probability": 0.5425004949219939,
-      "challenger_probability": 0.59942804,
-      "baseline": {
-        "brier": 0.29430678699060836,
-        "log_loss": 0.7819794760638542
-      },
-      "challenger": {
-        "brier": 0.35931397513824165,
-        "log_loss": 0.9148618532076729
-      },
-      "baseline_model": "outcome-only-206-frozen-params",
-      "challenger_model": "team-ml-challenger-v0-run-41073894805",
-      "baseline_frozen_at": "2026-10-30T01:23:06.096719+00:00",
-      "challenger_frozen_at": "2026-10-30T15:12:23.169765+00:00"
-    },
-    {
-      "game_id": "2026020215",
-      "home": "FLA",
-      "away": "WPG",
-      "y_home_win": 1,
-      "baseline_probability": 0.5487806183853794,
-      "challenger_probability": 0.54971611,
-      "baseline": {
-        "brier": 0.20359893034468063,
-        "log_loss": 0.6000565195472704
-      },
-      "challenger": {
-        "brier": 0.20275558159353213,
-        "log_loss": 0.5983532976502912
-      },
-      "baseline_model": "outcome-only-206-frozen-params",
-      "challenger_model": "team-ml-challenger-v0-run-41073894805",
-      "baseline_frozen_at": "2026-10-30T01:23:06.096719+00:00",
-      "challenger_frozen_at": "2026-10-30T15:12:23.169765+00:00"
-    },
-    {
-      "game_id": "2026020216",
-      "home": "CGY",
-      "away": "SEA",
-      "y_home_win": 1,
-      "baseline_probability": 0.5627075896566449,
-      "challenger_probability": 0.51111508,
-      "baseline": {
-        "brier": 0.19122465214390125,
-        "log_loss": 0.5749951647066482
-      },
-      "challenger": {
-        "brier": 0.23900846500340633,
-        "log_loss": 0.6711605086539278
-      },
-      "baseline_model": "outcome-only-206-frozen-params",
-      "challenger_model": "team-ml-challenger-v0-run-41073894805",
-      "baseline_frozen_at": "2026-10-30T01:23:06.096719+00:00",
-      "challenger_frozen_at": "2026-10-30T15:12:23.169765+00:00"
-    },
     {
       "game_id": "2026020217",
       "home": "BOS",
@@ -757,6 +693,226 @@
       "challenger_model": "team-ml-challenger-v0-run-41073894805",
       "baseline_frozen_at": "2026-11-04T00:34:54.865465+00:00",
       "challenger_frozen_at": "2026-11-04T00:51:36.341770+00:00"
+    },
+    {
+      "game_id": "2026020251",
+      "home": "MTL",
+      "away": "UTA",
+      "y_home_win": 1,
+      "baseline_probability": 0.5376711136615607,
+      "challenger_probability": 0.55108288,
+      "baseline": {
+        "brier": 0.21374799914294149,
+        "log_loss": 0.6205082186449936
+      },
+      "challenger": {
+        "brier": 0.20152658062909434,
+        "log_loss": 0.5958700637179212
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
+    },
+    {
+      "game_id": "2026020252",
+      "home": "DET",
+      "away": "VGK",
+      "y_home_win": 0,
+      "baseline_probability": 0.5287690365102254,
+      "challenger_probability": 0.49747521,
+      "baseline": {
+        "brier": 0.27959669397195214,
+        "log_loss": 0.7524069368135147
+      },
+      "challenger": {
+        "brier": 0.2474815845645441,
+        "log_loss": 0.6881103069324217
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
+    },
+    {
+      "game_id": "2026020253",
+      "home": "TBL",
+      "away": "CHI",
+      "y_home_win": 1,
+      "baseline_probability": 0.6252107066184563,
+      "challenger_probability": 0.64252795,
+      "baseline": {
+        "brier": 0.1404670144334368,
+        "log_loss": 0.4696665554719534
+      },
+      "challenger": {
+        "brier": 0.12778626653120254,
+        "log_loss": 0.44234496121341915
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
+    },
+    {
+      "game_id": "2026020254",
+      "home": "NJD",
+      "away": "STL",
+      "y_home_win": 1,
+      "baseline_probability": 0.5390389506033905,
+      "challenger_probability": 0.53952451,
+      "baseline": {
+        "brier": 0.2124850890608235,
+        "log_loss": 0.6179674461138005
+      },
+      "challenger": {
+        "brier": 0.2120376768907401,
+        "log_loss": 0.6170670643613146
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
+    },
+    {
+      "game_id": "2026020255",
+      "home": "NYI",
+      "away": "CAR",
+      "y_home_win": 0,
+      "baseline_probability": 0.5197497501591326,
+      "challenger_probability": 0.46287323,
+      "baseline": {
+        "brier": 0.2701398027904808,
+        "log_loss": 0.7334479571027528
+      },
+      "challenger": {
+        "brier": 0.21425162705063291,
+        "log_loss": 0.6215211415700895
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
+    },
+    {
+      "game_id": "2026020256",
+      "home": "NYR",
+      "away": "PHI",
+      "y_home_win": 1,
+      "baseline_probability": 0.5258016774597803,
+      "challenger_probability": 0.56218792,
+      "baseline": {
+        "brier": 0.2248640490999582,
+        "log_loss": 0.6428311763913684
+      },
+      "challenger": {
+        "brier": 0.19167941739392644,
+        "log_loss": 0.5759191077558519
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
+    },
+    {
+      "game_id": "2026020257",
+      "home": "PIT",
+      "away": "BOS",
+      "y_home_win": 0,
+      "baseline_probability": 0.5587915382207342,
+      "challenger_probability": 0.57255714,
+      "baseline": {
+        "brier": 0.3122479831870943,
+        "log_loss": 0.8182378127765827
+      },
+      "challenger": {
+        "brier": 0.3278216785649796,
+        "log_loss": 0.8499346603574389
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
+    },
+    {
+      "game_id": "2026020258",
+      "home": "CBJ",
+      "away": "DAL",
+      "y_home_win": 1,
+      "baseline_probability": 0.5214141824522202,
+      "challenger_probability": 0.5263494,
+      "baseline": {
+        "brier": 0.2290443847578768,
+        "log_loss": 0.6512105771387824
+      },
+      "challenger": {
+        "brier": 0.22434489088036003,
+        "log_loss": 0.6417900282113579
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
+    },
+    {
+      "game_id": "2026020259",
+      "home": "WPG",
+      "away": "VAN",
+      "y_home_win": 1,
+      "baseline_probability": 0.5614099860651216,
+      "challenger_probability": 0.57483906,
+      "baseline": {
+        "brier": 0.19236120032339682,
+        "log_loss": 0.5773038274228842
+      },
+      "challenger": {
+        "brier": 0.18076182490168363,
+        "log_loss": 0.5536651730150594
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
+    },
+    {
+      "game_id": "2026020260",
+      "home": "EDM",
+      "away": "ANA",
+      "y_home_win": 0,
+      "baseline_probability": 0.5597490097749881,
+      "challenger_probability": 0.59878583,
+      "baseline": {
+        "brier": 0.3133189539440797,
+        "log_loss": 0.8204102823749339
+      },
+      "challenger": {
+        "brier": 0.3585444702087889,
+        "log_loss": 0.9132599044751878
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
+    },
+    {
+      "game_id": "2026020261",
+      "home": "COL",
+      "away": "NSH",
+      "y_home_win": 0,
+      "baseline_probability": 0.6035676576237193,
+      "challenger_probability": 0.62779762,
+      "baseline": {
+        "brier": 0.36429391732938327,
+        "log_loss": 0.9252498896016293
+      },
+      "challenger": {
+        "brier": 0.39412985167766434,
+        "log_loss": 0.988317540382824
+      },
+      "baseline_model": "outcome-only-206-frozen-params",
+      "challenger_model": "team-ml-challenger-v0-run-41073894805",
+      "baseline_frozen_at": "2026-11-05T00:52:37.258303+00:00",
+      "challenger_frozen_at": "2026-11-05T01:02:27.479824+00:00"
     }
   ],
   "source": "NHL official score API; final only",
