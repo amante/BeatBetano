@@ -110,13 +110,14 @@ def run(feed,archive,workdir,provider=generate_source):
             and g.get('status') in ('STATUS_SCHEDULED','scheduled')]
     report={'as_of_utc':now,'sports':{},'errors':[],'selection_approval_changed':False}
     for sport in SPORTS:
-        games=[g for g in active if g['sport']==sport]
+        sport_now=datetime.now(timezone.utc).isoformat()
+        games=[g for g in active if g['sport']==sport and utc(g['start_utc'])>utc(sport_now)]
         if not games:
             report['sports'][sport]={'status':'no_pending_fixtures','events':[]};continue
         try:
-            sources=provider(sport,games,now,workdir,archive)
+            sources=provider(sport,games,sport_now,workdir,archive)
             if isinstance(sources,dict):sources=[sources]
-            publications=[publish(sport,s,archive,revision='daily-'+sport) for s in sources]
+            publications=[publish(sport,s,archive,revision='daily-'+sport,live_only=True) for s in sources]
             events=[e for p in publications for e in p['events']]
             available={e['event_id'] for e in events if e['status'] in ('published','reused')}
             requested={str(g['id']) for g in games}

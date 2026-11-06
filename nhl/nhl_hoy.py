@@ -99,7 +99,7 @@ def main():
     report=slate(result[0],result[1],as_of,a.date,unit_data,goalie_data)
     dest=Path(a.output);dest.parent.mkdir(parents=True,exist_ok=True)
     dest.write_text(json.dumps(report,indent=2))
-    publication=publish('nhl',report,a.forecast_archive or dest.parent/'forecast_archive',revision='nhl-prior-day-standings')
+    publication=publish('nhl',report,a.forecast_archive or dest.parent/'forecast_archive',revision='nhl-prior-day-standings',live_only=True)
     dest.with_name(dest.stem+'.forecasts.json').write_text(json.dumps(publication,indent=2))
     print(json.dumps({"pregame":len(report["events"]),"estimates":sum(g["statistical_p_home"] is not None for g in report["events"])}))
 if __name__=="__main__":main()

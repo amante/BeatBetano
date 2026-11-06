@@ -103,7 +103,7 @@ def main():
     data=report(response.json(),ledger,now)
     output=Path(x.output);output.parent.mkdir(parents=True,exist_ok=True)
     output.write_text(json.dumps(data,indent=2))
-    publication=publish('nfl',data,x.forecast_archive or output.parent/'forecast_archive',revision='nfl-historical-elo')
+    publication=publish('nfl',data,x.forecast_archive or output.parent/'forecast_archive',revision='nfl-historical-elo',live_only=True)
     output.with_name(output.stem+'.forecasts.json').write_text(json.dumps(publication,indent=2))
     print(json.dumps({"pregame":len(data["events"]),"statuses":data["event_status_counts"],
                       "historical_games_used":data["historical_games_used"]}))

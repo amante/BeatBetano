@@ -54,7 +54,7 @@ def main():
     snapshot=run(history,scoreboard,now)
     target=Path(x.output);target.parent.mkdir(parents=True,exist_ok=True)
     with target.open("x") as f:json.dump(snapshot,f,indent=2)
-    publication=publish('nba',snapshot,x.forecast_archive or target.parent/'forecast_archive',revision='nba-existing-baselines')
+    publication=publish('nba',snapshot,x.forecast_archive or target.parent/'forecast_archive',revision='nba-existing-baselines',live_only=True)
     target.with_name(target.stem+'.forecasts.json').write_text(json.dumps(publication,indent=2))
     from postmortem_engine import build, save_new
     # Preserve the baseline bytes and seal a separate complete sporting snapshot.

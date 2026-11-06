@@ -70,6 +70,13 @@ class DailyTests(unittest.TestCase):
             self.assertTrue(all(s['status']=='no_pending_fixtures' for s in result['sports'].values()))
             self.assertEqual(result['status'],'completed')
 
+    def test_live_publication_never_archives_a_post_start_replay(self):
+        with tempfile.TemporaryDirectory() as d:
+            s=source('nba');s['predictions'][0]['start_utc']='2026-11-06T10:30:00Z'
+            result=publish('nba',s,d,live_only=True)
+            self.assertEqual(result['events'][0]['status'],'event_started')
+            self.assertIsNone(latest(_directory(d,'nba','1')))
+
     def test_conflicting_same_cutoff_and_broken_chain_rejected(self):
         with tempfile.TemporaryDirectory() as d:
             s=source('nba');publish('nba',s,d)

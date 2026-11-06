@@ -6,6 +6,7 @@ Only sport-model outputs are consumed; no probabilities or injury effects are fi
 import argparse
 import copy
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from multisport.contract import utc
 from multisport.data_lineage import digest
@@ -29,13 +30,16 @@ def latest(directory):
     return previous
 
 
-def publish(sport,source,archive,revision='unrecorded',final_window_minutes=30):
+def publish(sport,source,archive,revision='unrecorded',final_window_minutes=30,live_only=False):
     if type(final_window_minutes) is not int or not 0<=final_window_minutes<=180:
         raise ValueError('Invalid final pregame window')
     Path(archive).mkdir(parents=True,exist_ok=True)
     report=adapt(sport,source,revision)
     outputs=[]
     for event in report['events']:
+        if live_only and datetime.now(timezone.utc)>=utc(event['start_utc']):
+            outputs.append({'event_id':event['event_id'],'status':'event_started'})
+            continue
         folder=_directory(archive,sport,event['event_id'])
         prior=latest(folder)
         # An absent source forecast never destroys a previously recorded forecast.
@@ -58,6 +62,9 @@ def publish(sport,source,archive,revision='unrecorded',final_window_minutes=30):
                             'snapshot_sha256':prior['content_sha256'],'stage':prior['events'][0]['forecast']['stage']})
             continue
         frozen=snapshot(single,prior)
+        if live_only and frozen['emission_kind']!='pregame':
+            outputs.append({'event_id':event['event_id'],'status':'event_started'})
+            continue
         path=folder/(str(frozen['revision']).zfill(6)+'.json')
         save_snapshot(path,frozen)
         outputs.append({'event_id':event['event_id'],'status':'published','stage':stage,
@@ -81,7 +88,7 @@ def main():
     p.add_argument('--final-window-minutes',type=int,default=30)
     p.add_argument('--summary',required=True)
     a=p.parse_args()
-    result=publish(a.sport,json.loads(Path(a.input).read_text()),a.archive,a.revision,a.final_window_minutes)
+    result=publish(a.sport,json.loads(Path(a.input).read_text()),a.archive,a.revision,a.final_window_minutes,live_only=True)
     path=Path(a.summary);path.parent.mkdir(parents=True,exist_ok=True)
     path.write_text(json.dumps(result,indent=2))
     print(json.dumps({'sport':a.sport,'events':len(result['events'])}))
