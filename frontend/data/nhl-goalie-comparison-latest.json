@@ -1,15 +1,72 @@
 {
   "kind": "nhl_goalie_ml_comparison_v1",
-  "run_id": "42303303297",
-  "date": "2026-11-06",
-  "as_of_utc": "2026-11-06T22:16:13.040362+00:00",
+  "run_id": "42426010348",
+  "date": "2026-11-07",
+  "as_of_utc": "2026-11-07T23:37:13.986538+00:00",
   "games": [
     {
-      "game_id": "2026020262",
-      "home": "BUF",
-      "away": "CBJ",
-      "start_utc": "2026-11-07T00:00:00Z",
-      "baseline_p_home": 0.569864955734777,
+      "game_id": "2026020265",
+      "home": "WSH",
+      "away": "FLA",
+      "start_utc": "2026-11-07T17:30:00Z",
+      "baseline_p_home": null,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_verified_same_run_inputs",
+        "fixture_already_started"
+      ],
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00"
+    },
+    {
+      "game_id": "2026020266",
+      "home": "NSH",
+      "away": "STL",
+      "start_utc": "2026-11-07T18:00:00Z",
+      "baseline_p_home": null,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_verified_same_run_inputs",
+        "fixture_already_started"
+      ],
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00"
+    },
+    {
+      "game_id": "2026020267",
+      "home": "SEA",
+      "away": "NYR",
+      "start_utc": "2026-11-07T22:00:00Z",
+      "baseline_p_home": null,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_verified_same_run_inputs",
+        "fixture_already_started"
+      ],
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00"
+    },
+    {
+      "game_id": "2026020268",
+      "home": "TOR",
+      "away": "MTL",
+      "start_utc": "2026-11-08T00:00:00Z",
+      "baseline_p_home": 0.5317363955606705,
       "candidate_p_home": null,
       "candidate_p_away": null,
       "recalibration_p_home": null,
@@ -19,80 +76,34 @@
       "reasons": [
         "model_failed_incremental_evaluation"
       ],
-      "computed_at_utc": "2026-11-06T22:16:13.040362+00:00",
-      "feature_as_of_utc": "2026-11-06T22:16:12.331576+00:00",
-      "baseline_as_of_utc": "2026-11-06T22:16:12.691170+00:00",
-      "evidence_sha256": "78c169943aec40a6149a72be3781e12f6fbf0fa0946f9a4beed2d523fe1e931e",
-      "baseline_forecast_sha256": "65c14f76d38880ba4d8d13b1398e926f216f241c598723468a227378fe54f8ef",
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00",
+      "feature_as_of_utc": "2026-11-07T23:37:13.395864+00:00",
+      "baseline_as_of_utc": "2026-11-07T23:37:13.697813+00:00",
+      "evidence_sha256": "bb2c4d65dfced0d239e98c079ba6036cd6038fff087a684efca53996963036af",
+      "baseline_forecast_sha256": "55cc1929186cf019e68d606d2cee29f34dfb4e85bae2d62f83819ac40810cd58",
       "goalies": {
         "home": {
-          "player_id": 8480045,
-          "save_pct": 0.873563,
-          "shots": 261
+          "player_id": 8475683,
+          "save_pct": 0.888889,
+          "shots": 324
         },
         "away": {
-          "player_id": 8482982,
-          "save_pct": 0.883333,
-          "shots": 180
+          "player_id": 8484170,
+          "save_pct": 0.925094,
+          "shots": 267
         }
       },
       "pairings": [
         {
           "home_goalie": {
-            "player_id": 8480045,
-            "name": "Ukko-Pekka Luukkonen",
+            "player_id": 8475683,
+            "name": "Sergei Bobrovsky",
             "source": "ESPN/NHL roster",
             "status": "confirmed"
           },
           "away_goalie": {
-            "player_id": 8482982,
-            "name": "Jet Greaves",
-            "source": "ESPN/NHL roster",
-            "status": "confirmed"
-          },
-          "candidate_p_home": null,
-          "candidate_p_away": null,
-          "recalibration_p_home": null,
-          "delta_vs_baseline_pp": null,
-          "delta_vs_recalibration_pp": null,
-          "status": "goalie_model_not_executed",
-          "reasons": [
-            "model_failed_incremental_evaluation"
-          ]
-        },
-        {
-          "home_goalie": {
-            "player_id": 8480045,
-            "name": "Ukko-Pekka Luukkonen",
-            "source": "ESPN/NHL roster",
-            "status": "confirmed"
-          },
-          "away_goalie": {
-            "player_id": 8475660,
-            "name": "Cam Talbot",
-            "source": "NHL.com projected lineup/NHL roster",
-            "status": "projected"
-          },
-          "candidate_p_home": null,
-          "candidate_p_away": null,
-          "recalibration_p_home": null,
-          "delta_vs_baseline_pp": null,
-          "delta_vs_recalibration_pp": null,
-          "status": "goalie_model_not_executed",
-          "reasons": [
-            "model_failed_incremental_evaluation"
-          ]
-        },
-        {
-          "home_goalie": {
-            "player_id": 8481551,
-            "name": "Colten Ellis",
-            "source": "NHL.com projected lineup/NHL roster",
-            "status": "projected"
-          },
-          "away_goalie": {
-            "player_id": 8482982,
-            "name": "Jet Greaves",
+            "player_id": 8484170,
+            "name": "Jacob Fowler",
             "source": "ESPN/NHL roster",
             "status": "confirmed"
           },
@@ -108,14 +119,14 @@
         },
         {
           "home_goalie": {
-            "player_id": 8481551,
-            "name": "Colten Ellis",
-            "source": "NHL.com projected lineup/NHL roster",
-            "status": "projected"
+            "player_id": 8475683,
+            "name": "Sergei Bobrovsky",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
           },
           "away_goalie": {
-            "player_id": 8475660,
-            "name": "Cam Talbot",
+            "player_id": 8482487,
+            "name": "Jakub Dobes",
             "source": "NHL.com projected lineup/NHL roster",
             "status": "projected"
           },
@@ -127,159 +138,72 @@
           "status": "goalie_model_not_executed",
           "reasons": [
             "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8482515,
+            "name": "Artur Akhtyamov",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8484170,
+            "name": "Jacob Fowler",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation",
+            "missing_prior_goalie_history"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8482515,
+            "name": "Artur Akhtyamov",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8482487,
+            "name": "Jakub Dobes",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation",
+            "missing_prior_goalie_history"
           ]
         }
       ],
       "scenario_count": 4,
       "unresolved_editorial_candidates": {
-        "BUF": [],
-        "CBJ": []
+        "TOR": [],
+        "MTL": []
       },
-      "scenario_history_sha256": "4c936e7a05745d4e1227f33933353dab9e74717e391d54125b29e21b351bbfad",
-      "scenario_inputs_sha256": "e2b496aa76fe9d4a73307beeb3c82105e94f765d8c58a0bcea0441c29177f655",
+      "scenario_history_sha256": "916bd84516f3e53a058a193c2e57659a07069d57aaa0f628638e51316dc2017f",
+      "scenario_inputs_sha256": "498d8706fbbf9016d69bb887bf9922d7aba692074701cf0a9a34016c08d1e474",
       "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
     },
     {
-      "game_id": "2026020263",
-      "home": "MIN",
-      "away": "SJS",
-      "start_utc": "2026-11-07T01:00:00Z",
-      "baseline_p_home": 0.5839141824522202,
-      "candidate_p_home": null,
-      "candidate_p_away": null,
-      "recalibration_p_home": null,
-      "delta_vs_baseline_pp": null,
-      "delta_vs_recalibration_pp": null,
-      "status": "goalie_model_not_executed",
-      "reasons": [
-        "model_failed_incremental_evaluation"
-      ],
-      "computed_at_utc": "2026-11-06T22:16:13.040362+00:00",
-      "feature_as_of_utc": "2026-11-06T22:16:12.331576+00:00",
-      "baseline_as_of_utc": "2026-11-06T22:16:12.691170+00:00",
-      "evidence_sha256": "78c169943aec40a6149a72be3781e12f6fbf0fa0946f9a4beed2d523fe1e931e",
-      "baseline_forecast_sha256": "ba13a9880ad0df135c0eb7d0c7c7c1dfb37042ab04d3d4f4f112ccb1f11fcbdf",
-      "goalies": {
-        "home": {
-          "player_id": 8482661,
-          "save_pct": 0.919897,
-          "shots": 387
-        },
-        "away": {
-          "player_id": 8482137,
-          "save_pct": 0.887147,
-          "shots": 319
-        }
-      },
-      "pairings": [
-        {
-          "home_goalie": {
-            "player_id": 8482661,
-            "name": "Jesper Wallstedt",
-            "source": "ESPN/NHL roster",
-            "status": "confirmed"
-          },
-          "away_goalie": {
-            "player_id": 8482137,
-            "name": "Yaroslav Askarov",
-            "source": "ESPN/NHL roster",
-            "status": "confirmed"
-          },
-          "candidate_p_home": null,
-          "candidate_p_away": null,
-          "recalibration_p_home": null,
-          "delta_vs_baseline_pp": null,
-          "delta_vs_recalibration_pp": null,
-          "status": "goalie_model_not_executed",
-          "reasons": [
-            "model_failed_incremental_evaluation"
-          ]
-        },
-        {
-          "home_goalie": {
-            "player_id": 8482661,
-            "name": "Jesper Wallstedt",
-            "source": "ESPN/NHL roster",
-            "status": "confirmed"
-          },
-          "away_goalie": {
-            "player_id": 8477968,
-            "name": "Alex Nedeljkovic",
-            "source": "NHL.com projected lineup/NHL roster",
-            "status": "projected"
-          },
-          "candidate_p_home": null,
-          "candidate_p_away": null,
-          "recalibration_p_home": null,
-          "delta_vs_baseline_pp": null,
-          "delta_vs_recalibration_pp": null,
-          "status": "goalie_model_not_executed",
-          "reasons": [
-            "model_failed_incremental_evaluation"
-          ]
-        },
-        {
-          "home_goalie": {
-            "player_id": 8475717,
-            "name": "Calvin Pickard",
-            "source": "NHL.com projected lineup/NHL roster",
-            "status": "projected"
-          },
-          "away_goalie": {
-            "player_id": 8482137,
-            "name": "Yaroslav Askarov",
-            "source": "ESPN/NHL roster",
-            "status": "confirmed"
-          },
-          "candidate_p_home": null,
-          "candidate_p_away": null,
-          "recalibration_p_home": null,
-          "delta_vs_baseline_pp": null,
-          "delta_vs_recalibration_pp": null,
-          "status": "goalie_model_not_executed",
-          "reasons": [
-            "model_failed_incremental_evaluation"
-          ]
-        },
-        {
-          "home_goalie": {
-            "player_id": 8475717,
-            "name": "Calvin Pickard",
-            "source": "NHL.com projected lineup/NHL roster",
-            "status": "projected"
-          },
-          "away_goalie": {
-            "player_id": 8477968,
-            "name": "Alex Nedeljkovic",
-            "source": "NHL.com projected lineup/NHL roster",
-            "status": "projected"
-          },
-          "candidate_p_home": null,
-          "candidate_p_away": null,
-          "recalibration_p_home": null,
-          "delta_vs_baseline_pp": null,
-          "delta_vs_recalibration_pp": null,
-          "status": "goalie_model_not_executed",
-          "reasons": [
-            "model_failed_incremental_evaluation"
-          ]
-        }
-      ],
-      "scenario_count": 4,
-      "unresolved_editorial_candidates": {
-        "MIN": [],
-        "SJS": []
-      },
-      "scenario_history_sha256": "4c936e7a05745d4e1227f33933353dab9e74717e391d54125b29e21b351bbfad",
-      "scenario_inputs_sha256": "e2b496aa76fe9d4a73307beeb3c82105e94f765d8c58a0bcea0441c29177f655",
-      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
-    },
-    {
-      "game_id": "2026020264",
-      "home": "CGY",
-      "away": "ANA",
-      "start_utc": "2026-11-07T01:00:00Z",
-      "baseline_p_home": 0.5597490097749881,
+      "game_id": "2026020269",
+      "home": "OTT",
+      "away": "UTA",
+      "start_utc": "2026-11-08T00:00:00Z",
+      "baseline_p_home": 0.5508732701300176,
       "candidate_p_home": null,
       "candidate_p_away": null,
       "recalibration_p_home": null,
@@ -290,18 +214,18 @@
         "model_failed_incremental_evaluation",
         "missing_provider_confirmed_goalie_identity"
       ],
-      "computed_at_utc": "2026-11-06T22:16:13.040362+00:00",
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00",
       "pairings": [
         {
           "home_goalie": {
-            "player_id": 8481692,
-            "name": "Dustin Wolf",
+            "player_id": 8481035,
+            "name": "Samuel Ersson",
             "source": "ESPN/NHL roster",
             "status": "confirmed"
           },
           "away_goalie": {
-            "player_id": 8480843,
-            "name": "Lukas Dostal",
+            "player_id": 8478872,
+            "name": "Karel Vejmelka",
             "source": "ESPN/NHL roster",
             "status": "unconfirmed"
           },
@@ -317,14 +241,14 @@
         },
         {
           "home_goalie": {
-            "player_id": 8481692,
-            "name": "Dustin Wolf",
+            "player_id": 8481035,
+            "name": "Samuel Ersson",
             "source": "ESPN/NHL roster",
             "status": "confirmed"
           },
           "away_goalie": {
-            "player_id": 8476316,
-            "name": "Laurent Brossoit",
+            "player_id": 8482657,
+            "name": "Sebastian Cossa",
             "source": "NHL.com projected lineup/NHL roster",
             "status": "projected"
           },
@@ -340,14 +264,14 @@
         },
         {
           "home_goalie": {
-            "player_id": 8482445,
-            "name": "Devin Cooley",
+            "player_id": 8477992,
+            "name": "Jonas Johansson",
             "source": "NHL.com projected lineup/NHL roster",
             "status": "projected"
           },
           "away_goalie": {
-            "player_id": 8480843,
-            "name": "Lukas Dostal",
+            "player_id": 8478872,
+            "name": "Karel Vejmelka",
             "source": "ESPN/NHL roster",
             "status": "unconfirmed"
           },
@@ -363,14 +287,14 @@
         },
         {
           "home_goalie": {
-            "player_id": 8482445,
-            "name": "Devin Cooley",
+            "player_id": 8477992,
+            "name": "Jonas Johansson",
             "source": "NHL.com projected lineup/NHL roster",
             "status": "projected"
           },
           "away_goalie": {
-            "player_id": 8476316,
-            "name": "Laurent Brossoit",
+            "player_id": 8482657,
+            "name": "Sebastian Cossa",
             "source": "NHL.com projected lineup/NHL roster",
             "status": "projected"
           },
@@ -387,13 +311,748 @@
       ],
       "scenario_count": 4,
       "unresolved_editorial_candidates": {
-        "CGY": [],
-        "ANA": []
+        "OTT": [],
+        "UTA": []
       },
-      "scenario_history_sha256": "4c936e7a05745d4e1227f33933353dab9e74717e391d54125b29e21b351bbfad",
-      "scenario_inputs_sha256": "e2b496aa76fe9d4a73307beeb3c82105e94f765d8c58a0bcea0441c29177f655",
-      "baseline_forecast_sha256": "0b7e57bc7aa754f1ce87594a7f808482f13a95ac27f20594ad25adf8ed65bba2",
-      "baseline_as_of_utc": "2026-11-06T22:16:12.691170+00:00",
+      "scenario_history_sha256": "916bd84516f3e53a058a193c2e57659a07069d57aaa0f628638e51316dc2017f",
+      "scenario_inputs_sha256": "498d8706fbbf9016d69bb887bf9922d7aba692074701cf0a9a34016c08d1e474",
+      "baseline_forecast_sha256": "a0324d4b14421ae0d4f7cce1d4d9e6f09acbf2c681d27fde08fb1511a429c5c1",
+      "baseline_as_of_utc": "2026-11-07T23:37:13.697813+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020270",
+      "home": "NYI",
+      "away": "NJD",
+      "start_utc": "2026-11-08T00:00:00Z",
+      "baseline_p_home": 0.5171025985103482,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation"
+      ],
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00",
+      "feature_as_of_utc": "2026-11-07T23:37:13.395864+00:00",
+      "baseline_as_of_utc": "2026-11-07T23:37:13.697813+00:00",
+      "evidence_sha256": "bb2c4d65dfced0d239e98c079ba6036cd6038fff087a684efca53996963036af",
+      "baseline_forecast_sha256": "87abdc07363dc6955367e978e4564816c9d4ec63c21026b15ada3275a0375589",
+      "goalies": {
+        "home": {
+          "player_id": 8478009,
+          "save_pct": 0.911439,
+          "shots": 271
+        },
+        "away": {
+          "player_id": 8474596,
+          "save_pct": 0.886878,
+          "shots": 221
+        }
+      },
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8478009,
+            "name": "Ilya Sorokin",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8474596,
+            "name": "Jake Allen",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8478009,
+            "name": "Ilya Sorokin",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8476945,
+            "name": "Connor Hellebuyck",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8473575,
+            "name": "Semyon Varlamov",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8474596,
+            "name": "Jake Allen",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8473575,
+            "name": "Semyon Varlamov",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8476945,
+            "name": "Connor Hellebuyck",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 4,
+      "unresolved_editorial_candidates": {
+        "NYI": [],
+        "NJD": []
+      },
+      "scenario_history_sha256": "916bd84516f3e53a058a193c2e57659a07069d57aaa0f628638e51316dc2017f",
+      "scenario_inputs_sha256": "498d8706fbbf9016d69bb887bf9922d7aba692074701cf0a9a34016c08d1e474",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020271",
+      "home": "CAR",
+      "away": "CHI",
+      "start_utc": "2026-11-08T01:00:00Z",
+      "baseline_p_home": 0.6331179677829698,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_provider_confirmed_goalie_identity"
+      ],
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8481611,
+            "name": "Pyotr Kochetkov",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
+          },
+          "away_goalie": {
+            "player_id": 8481519,
+            "name": "Spencer Knight",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 1,
+      "unresolved_editorial_candidates": {
+        "CAR": [],
+        "CHI": []
+      },
+      "scenario_history_sha256": "916bd84516f3e53a058a193c2e57659a07069d57aaa0f628638e51316dc2017f",
+      "scenario_inputs_sha256": "498d8706fbbf9016d69bb887bf9922d7aba692074701cf0a9a34016c08d1e474",
+      "baseline_forecast_sha256": "d90e1ab3f2529e127493ea0fb444c4abac4faff22a07d33214da917cd2961bac",
+      "baseline_as_of_utc": "2026-11-07T23:37:13.697813+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020272",
+      "home": "DAL",
+      "away": "SJS",
+      "start_utc": "2026-11-08T01:00:00Z",
+      "baseline_p_home": 0.607086287881497,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation"
+      ],
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00",
+      "feature_as_of_utc": "2026-11-07T23:37:13.395864+00:00",
+      "baseline_as_of_utc": "2026-11-07T23:37:13.697813+00:00",
+      "evidence_sha256": "bb2c4d65dfced0d239e98c079ba6036cd6038fff087a684efca53996963036af",
+      "baseline_forecast_sha256": "0a33bba2f9c44e2689f24760747123d77aa5191bc8741034c947ff4807226e28",
+      "goalies": {
+        "home": {
+          "player_id": 8479979,
+          "save_pct": 0.909449,
+          "shots": 254
+        },
+        "away": {
+          "player_id": 8477968,
+          "save_pct": 0.899471,
+          "shots": 189
+        }
+      },
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8479979,
+            "name": "Jake Oettinger",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8477968,
+            "name": "Alex Nedeljkovic",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8479979,
+            "name": "Jake Oettinger",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8482137,
+            "name": "Yaroslav Askarov",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8479193,
+            "name": "Casey DeSmith",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8477968,
+            "name": "Alex Nedeljkovic",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8479193,
+            "name": "Casey DeSmith",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8482137,
+            "name": "Yaroslav Askarov",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 4,
+      "unresolved_editorial_candidates": {
+        "DAL": [],
+        "SJS": []
+      },
+      "scenario_history_sha256": "916bd84516f3e53a058a193c2e57659a07069d57aaa0f628638e51316dc2017f",
+      "scenario_inputs_sha256": "498d8706fbbf9016d69bb887bf9922d7aba692074701cf0a9a34016c08d1e474",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020273",
+      "home": "MIN",
+      "away": "TBL",
+      "start_utc": "2026-11-08T01:00:00Z",
+      "baseline_p_home": 0.539506482945946,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation"
+      ],
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00",
+      "feature_as_of_utc": "2026-11-07T23:37:13.395864+00:00",
+      "baseline_as_of_utc": "2026-11-07T23:37:13.697813+00:00",
+      "evidence_sha256": "bb2c4d65dfced0d239e98c079ba6036cd6038fff087a684efca53996963036af",
+      "baseline_forecast_sha256": "653be9b1e3c9b22c52b6e87dd90d747a337b97c7dd093e976482348b2da1e001",
+      "goalies": {
+        "home": {
+          "player_id": 8475717,
+          "save_pct": 0.833333,
+          "shots": 42
+        },
+        "away": {
+          "player_id": 8483710,
+          "save_pct": 0.884615,
+          "shots": 78
+        }
+      },
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8475717,
+            "name": "Calvin Pickard",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8483710,
+            "name": "Dennis Hildeby",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8482661,
+            "name": "Jesper Wallstedt",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8483710,
+            "name": "Dennis Hildeby",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 2,
+      "unresolved_editorial_candidates": {
+        "MIN": [],
+        "TBL": []
+      },
+      "scenario_history_sha256": "916bd84516f3e53a058a193c2e57659a07069d57aaa0f628638e51316dc2017f",
+      "scenario_inputs_sha256": "498d8706fbbf9016d69bb887bf9922d7aba692074701cf0a9a34016c08d1e474",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020274",
+      "home": "COL",
+      "away": "DET",
+      "start_utc": "2026-11-08T02:00:00Z",
+      "baseline_p_home": 0.5707318367281969,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_provider_confirmed_goalie_identity"
+      ],
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8478406,
+            "name": "Mackenzie Blackwood",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8480193,
+            "name": "Daniil Tarasov",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8478406,
+            "name": "Mackenzie Blackwood",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8485545,
+            "name": "Michal Postava",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8475809,
+            "name": "Scott Wedgewood",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8480193,
+            "name": "Daniil Tarasov",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8475809,
+            "name": "Scott Wedgewood",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8485545,
+            "name": "Michal Postava",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 4,
+      "unresolved_editorial_candidates": {
+        "COL": [],
+        "DET": []
+      },
+      "scenario_history_sha256": "916bd84516f3e53a058a193c2e57659a07069d57aaa0f628638e51316dc2017f",
+      "scenario_inputs_sha256": "498d8706fbbf9016d69bb887bf9922d7aba692074701cf0a9a34016c08d1e474",
+      "baseline_forecast_sha256": "1ea8cff702446683a39c506c68157351fe6c9c3e91ff329a022d5d3dcba942ee",
+      "baseline_as_of_utc": "2026-11-07T23:37:13.697813+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020275",
+      "home": "LAK",
+      "away": "PIT",
+      "start_utc": "2026-11-08T02:00:00Z",
+      "baseline_p_home": 0.5604645667782814,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation"
+      ],
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00",
+      "feature_as_of_utc": "2026-11-07T23:37:13.395864+00:00",
+      "baseline_as_of_utc": "2026-11-07T23:37:13.697813+00:00",
+      "evidence_sha256": "bb2c4d65dfced0d239e98c079ba6036cd6038fff087a684efca53996963036af",
+      "baseline_forecast_sha256": "11fc60086f9db2f443b986e6fe21827283847caeb734c60a5a5f548ff65d2288",
+      "goalies": {
+        "home": {
+          "player_id": 8475311,
+          "save_pct": 0.885375,
+          "shots": 253
+        },
+        "away": {
+          "player_id": 8483703,
+          "save_pct": 0.870748,
+          "shots": 147
+        }
+      },
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8475311,
+            "name": "Darcy Kuemper",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
+          },
+          "away_goalie": {
+            "player_id": 8483703,
+            "name": "Sergei Murashov",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8475311,
+            "name": "Darcy Kuemper",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
+          },
+          "away_goalie": {
+            "player_id": 8481668,
+            "name": "Arturs Silovs",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8476341,
+            "name": "Anton Forsberg",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8483703,
+            "name": "Sergei Murashov",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8476341,
+            "name": "Anton Forsberg",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8481668,
+            "name": "Arturs Silovs",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 4,
+      "unresolved_editorial_candidates": {
+        "LAK": [],
+        "PIT": []
+      },
+      "scenario_history_sha256": "916bd84516f3e53a058a193c2e57659a07069d57aaa0f628638e51316dc2017f",
+      "scenario_inputs_sha256": "498d8706fbbf9016d69bb887bf9922d7aba692074701cf0a9a34016c08d1e474",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020276",
+      "home": "EDM",
+      "away": "VAN",
+      "start_utc": "2026-11-08T03:00:00Z",
+      "baseline_p_home": 0.5567904298933313,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation"
+      ],
+      "computed_at_utc": "2026-11-07T23:37:13.986538+00:00",
+      "feature_as_of_utc": "2026-11-07T23:37:13.395864+00:00",
+      "baseline_as_of_utc": "2026-11-07T23:37:13.697813+00:00",
+      "evidence_sha256": "bb2c4d65dfced0d239e98c079ba6036cd6038fff087a684efca53996963036af",
+      "baseline_forecast_sha256": "c7d8f59cf09db4e1d4a6ea2993d522bd1f5df6591b0724458e48ec1c30ffecf3",
+      "goalies": {
+        "home": {
+          "player_id": 8482221,
+          "save_pct": 0.886598,
+          "shots": 194
+        },
+        "away": {
+          "player_id": 8482447,
+          "save_pct": 0.888563,
+          "shots": 341
+        }
+      },
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8482221,
+            "name": "Devon Levi",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8482447,
+            "name": "Leevi Meril\u00e4inen",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 1,
+      "unresolved_editorial_candidates": {
+        "EDM": [],
+        "VAN": []
+      },
+      "scenario_history_sha256": "916bd84516f3e53a058a193c2e57659a07069d57aaa0f628638e51316dc2017f",
+      "scenario_inputs_sha256": "498d8706fbbf9016d69bb887bf9922d7aba692074701cf0a9a34016c08d1e474",
       "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
     }
   ],
@@ -436,8 +1095,18 @@
   ],
   "input_exclusions": [
     {
-      "run_id": "42303303297",
-      "game_id": "2026020264",
+      "run_id": "42426010348",
+      "game_id": "2026020269",
+      "reason": "missing_provider_confirmed_goalie_identity"
+    },
+    {
+      "run_id": "42426010348",
+      "game_id": "2026020271",
+      "reason": "missing_provider_confirmed_goalie_identity"
+    },
+    {
+      "run_id": "42426010348",
+      "game_id": "2026020274",
       "reason": "missing_provider_confirmed_goalie_identity"
     }
   ]
