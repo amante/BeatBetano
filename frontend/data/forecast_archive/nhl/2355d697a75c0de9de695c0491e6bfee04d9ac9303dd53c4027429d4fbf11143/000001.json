@@ -1,0 +1,126 @@
+{
+  "sport": "nhl",
+  "as_of_utc": "2026-11-07T15:39:31.849590Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "2026020267",
+      "start_utc": "2026-11-07T22:00:00Z",
+      "participants": [
+        "SEA",
+        "NYR"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.536951,
+          "away": 0.46304900000000004
+        },
+        "model_version": "nhl-prior-day-standings",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "statistical_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nhl-prior-day-standings",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_output_sha256": "726d4c4610ce351081d1f0515c1e2f8b4394bf215e5975638522c81334a89db9",
+  "source_model_output": {
+    "event_id": "2026020267",
+    "home_team": "SEA",
+    "away_team": "NYR",
+    "goalie_daily_evidence": {
+      "home": {
+        "status": "missing_or_wrong_team",
+        "confirmed": false,
+        "rating": null
+      },
+      "away": {
+        "status": "missing_or_wrong_team",
+        "confirmed": false,
+        "rating": null
+      },
+      "both_starters_confirmed": false,
+      "calibrated_goalie_impact": null
+    },
+    "unit_strength_evidence": null,
+    "official_team_stats": {
+      "home": {
+        "gamesPlayed": 15,
+        "goalFor": 54,
+        "goalAgainst": 53,
+        "goalDifferential": 1,
+        "powerPlayPct": null,
+        "penaltyKillPct": null,
+        "goal_diff_per_game_shrunk": 0.04,
+        "goals_for_per_game": 3.6,
+        "goals_against_per_game": 3.533333333333333,
+        "power_play_pct_observed": null,
+        "penalty_kill_pct_observed": null,
+        "sustainable_special_teams_strength": null,
+        "crs": null,
+        "goalie_rating": null,
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-06",
+        "observed_at_utc": "2026-11-07T15:39:31.849590+00:00"
+      },
+      "away": {
+        "gamesPlayed": 17,
+        "goalFor": 51,
+        "goalAgainst": 49,
+        "goalDifferential": 2,
+        "powerPlayPct": null,
+        "penaltyKillPct": null,
+        "goal_diff_per_game_shrunk": 0.07407407407407407,
+        "goals_for_per_game": 3.0,
+        "goals_against_per_game": 2.8823529411764706,
+        "power_play_pct_observed": null,
+        "penalty_kill_pct_observed": null,
+        "sustainable_special_teams_strength": null,
+        "crs": null,
+        "goalie_rating": null,
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-06",
+        "observed_at_utc": "2026-11-07T15:39:31.849590+00:00"
+      }
+    },
+    "start_utc": "2026-11-07T22:00:00+00:00",
+    "statistical_p_home": 0.536951,
+    "statistical_p_away": 0.463049,
+    "official_baseline": null,
+    "challenger": null,
+    "final_probability": null,
+    "regulation_win_home": null,
+    "regulation_draw": null,
+    "regulation_win_away": null,
+    "three_goal_lead_home": null,
+    "three_goal_lead_away": null,
+    "first_to_plus_three_home": null,
+    "first_to_plus_three_away": null,
+    "goalie_confirmed": false,
+    "special_teams_verified": false,
+    "roster_verified": false,
+    "rivalry_verified": false,
+    "eligible_for_bet": false,
+    "status": "exploratory_statistical_only"
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-07T15:39:32.076560+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "cef6e2808df1d01d416ad84e6da7c9c6961beba78669d6435c83c065b7d092fa"
+}

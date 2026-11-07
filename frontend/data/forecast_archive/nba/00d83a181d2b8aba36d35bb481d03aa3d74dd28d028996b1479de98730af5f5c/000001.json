@@ -1,0 +1,62 @@
+{
+  "sport": "nba",
+  "as_of_utc": "2026-11-07T15:39:31.338379Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401909942",
+      "start_utc": "2026-11-08T01:30:00Z",
+      "participants": [
+        "GS",
+        "ORL"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.5959349228947022,
+          "away": 0.4040650771052978
+        },
+        "model_version": "nba-existing-baselines",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "elo_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nba-existing-baselines",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": false,
+  "automatic_promotion": false,
+  "source_output_sha256": "aaedc6bed96bee7ac478ac85f2364b45140f8d71e920882f509fc2597eba6862",
+  "source_model_output": {
+    "game_id": "401909942",
+    "tipoff_utc": "2026-11-08T01:30:00Z",
+    "home_team": "GS",
+    "away_team": "ORL",
+    "elo_p_home": 0.5959349228947022,
+    "challenger_p_home": 0.6656455189647125,
+    "hybrid_p_home": 0.6656455189647125,
+    "hybrid_route": "challenger",
+    "dual_challenger": false,
+    "eligible_for_bet": false,
+    "status": "unvalidated_candidate"
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-07T15:39:31.734458+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "4a6e94a0f349f12c4f138934f7faf97c8c9663333f151c7e1391bda8efbce170"
+}
