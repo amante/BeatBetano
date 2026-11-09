@@ -17,6 +17,7 @@
     missing_path_features: "Sin datos de trayectorias",
     missing_minute_allocation: "Rotación sin minutos estimados",
     already_started: "Partido ya iniciado al momento de la corrida",
+    rotation_inputs_unavailable: "Faltan fuentes para el escenario de rotación",
     missing_rotation_scenario: "Escenario de rotación ausente"
   };
   const el = (tag, value, className) => {
@@ -36,7 +37,8 @@
   status.setAttribute("role", "status");
   root.append(status);
   try {
-    const response = await fetch("./data/nba-rotation-pilot.json", { cache: "no-store" });
+    let response = await fetch("./data/nba-rotation-latest.json", { cache: "no-store" });
+    if (response.status === 404) response = await fetch("./data/nba-rotation-pilot.json", { cache: "no-store" });
     if (!response.ok) throw new Error("Missing pilot");
     const report = await response.json();
     if (report.model_version !== "NBA_CONDITIONAL_ROTATION_PATH_V1" ||
