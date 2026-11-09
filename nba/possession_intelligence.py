@@ -12,6 +12,9 @@ METRICS={"fieldGoalsAttempted":("fieldGoalsAttempted","fga"),
  "freeThrowsAttempted":("freeThrowsAttempted","fta"),
  "offensiveRebounds":("offensiveRebounds","orb"),
  "turnovers":("turnovers","to")}
+def estimate_possessions(fga, fta, offensive_rebounds, turnovers):
+ return fga+0.44*fta-offensive_rebounds+turnovers
+
 def extract(payload,fixture):
  comps=payload.get("header",{}).get("competitions",[])
  if not comps or str(comps[0].get("id"))!=str(fixture["game_id"]):raise ValueError("Game mismatch")
@@ -47,7 +50,7 @@ def extract(payload,fixture):
    if match:pts=float(match["score"])
   missing=[key for key,val in (("FGA",fga),("FTA",fta),("ORB",orb),("TOV",turnovers),("PTS",pts)) if val is None]
   if missing:raise ValueError("Missing boxscore fields "+team+": "+",".join(missing)+"; available="+",".join(sorted(stats)))
-  poss=fga+0.44*fta-orb+turnovers
+  poss=estimate_possessions(fga,fta,orb,turnovers)
   if not 50<=poss<=160 or not 0<=pts<=250:continue
   result[team]={"possessions_estimated":poss,"points":pts}
  if set(result)!={fixture["home_team"],fixture["away_team"]}:raise ValueError("Incomplete team stats")
