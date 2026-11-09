@@ -43,3 +43,29 @@ class LiveDataTests(unittest.TestCase):
         schedule['leagueSchedule']['gameDates'][0]['games'].append(duplicate)
         self.assertEqual(bind_history(schedule, [espn], *args),
                          ({}, {'espn-1': 'ambiguous_or_repeated'}))
+
+    def test_team_ml_requires_pregame_observations_and_supported_ratings(self):
+        from livedata_team_metrics import research_projection
+        from reproducible_slate import digest
+
+        snapshot = {'created_at_utc': '2026-11-09T10:00:00Z', 'predictions': [
+            {'game_id': 'future', 'tipoff_utc': '2026-11-09T20:00:00Z',
+             'home_team': 'GS', 'away_team': 'WSH', 'hybrid_p_home': .55}]}
+        snapshot['content_sha256'] = digest(snapshot)
+        games = [
+            {'game_id': str(day), 'tipoff_utc': f'2026-11-0{day}T01:00:00Z',
+             'observed_at_utc': '2026-11-09T11:00:00Z',
+             'regulation_and_overtime_minutes': 48,
+             'teams': [{'team': 'GSW', 'points': 112, 'possessions_estimated': 100},
+                       {'team': 'WAS', 'points': 107, 'possessions_estimated': 100}]}
+            for day in (1, 2, 3)]
+        source = {'fallback': {'games': games}}
+        result = research_projection(snapshot, source, '2026-11-09T12:00:00Z')['games'][0]
+        self.assertEqual(result['status'], 'research_team_ml')
+        self.assertAlmostEqual(result['home_ml'] + result['away_ml'], 1.0)
+        self.assertIsNone(result['home_plus20'])
+        games[2]['observed_at_utc'] = '2026-11-09T12:30:00Z'
+        result = research_projection(snapshot, source, '2026-11-09T12:00:00Z')['games'][0]
+        self.assertEqual(result['status'], 'PASS_insufficient_opponent_sample')
+        result = research_projection(snapshot, source, '2026-11-09T20:00:00Z')['games'][0]
+        self.assertEqual(result['status'], 'PASS_already_started')
