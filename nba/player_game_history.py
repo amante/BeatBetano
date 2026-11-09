@@ -76,11 +76,10 @@ def collect(games,session=None,cache_dir=None):
             if cached is not None:
                 out.extend(cached)
                 continue
-        now=datetime.now(timezone.utc).isoformat()
         try:
             resp=client.get(SUMMARY,params={"event":eid},timeout=30)
             resp.raise_for_status()
-            players=parse_boxscore(resp.json(),game,now)
+            players=parse_boxscore(resp.json(),game,datetime.now(timezone.utc).isoformat())
             if cache_dir is not None:save(cache_dir,game,players)
             out.extend(players)
         except (requests.RequestException,ValueError,KeyError,TypeError) as exc:

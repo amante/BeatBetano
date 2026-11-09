@@ -4,6 +4,7 @@ Collection is a new observation, never a rewrite of a frozen statistical
 snapshot. Unknown/uncertain states block a complete active roster.
 """
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 from datetime import datetime,timezone
@@ -17,7 +18,39 @@ from joint_minutes_report import stamp
 from reproducible_slate import digest
 
 
-def capture(snapshot,output):
+def observe_rotation(snapshot, history, availability):
+    from player_game_history import collect
+    from rotation_efficiency_report import build
+
+    teams = {g[side] for g in snapshot['predictions'] for side in ('home_team','away_team')}
+    historical = sorted((g for g in history if stamp(g['tipoff_utc']) < stamp(snapshot['created_at_utc'])),
+                        key=lambda g: stamp(g['tipoff_utc']), reverse=True)
+    selected = {}
+    for team in sorted(teams):
+        recent = [g for g in historical if team in (g['home_team'],g['away_team'])][:5]
+        selected.update((str(g['game_id']),g) for g in recent)
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        samples = list(pool.map(lambda game: collect([game]), selected.values()))
+    observed = datetime.now(timezone.utc).isoformat()
+    sample = {'players':[p for s in samples for p in s['players']],
+              'unavailable_games':[e for s in samples for e in s['unavailable_games']],
+              'games_requested':len(selected),
+              'source':samples[0]['source'] if samples else None}
+    eligible = [g for g in snapshot['predictions'] if stamp(g['tipoff_utc']) > stamp(observed)]
+    rotation = build({**snapshot,'predictions':eligible,'created_at_utc':observed},
+                     list(selected.values()),sample)
+    rotation['observed_at_utc'] = observed
+    for gid,game in rotation['games'].items():
+        for team,row in game['teams'].items():
+            current = availability['games'].get(gid,{}).get('teams',{}).get(team,{})
+            ids = {p['player_id'] for p in current.get('players',[])}
+            row['current_roster_minutes_coverage'] = sum(
+                p['player_id'] in ids and p['minutes_projection'] is not None
+                for p in row['provisional_rotation'])
+    return rotation,sample
+
+
+def capture(snapshot,output,history=None):
     if digest({k:v for k,v in snapshot.items() if k!="content_sha256"})!=snapshot.get("content_sha256"):
         raise ValueError("Statistical snapshot hash mismatch")
     now=datetime.now(timezone.utc)
@@ -66,6 +99,20 @@ def capture(snapshot,output):
         'teams_with_provider_lineups':sum(bool(t.get('starters')) for g in lineups['games'].values() for t in g['teams'].values()),
         'no_odds_input':True,'official_injury_status_verified':False,
         'probability_adjustment_authorized':False,'errors':errors}
+    if history is not None:
+        rotation_result = attempt('rotation',lambda _: observe_rotation(snapshot,history,availability),None)
+        if rotation_result is not None:
+            rotation, sample = rotation_result
+            save('rotation.json',rotation)
+            save('player_history.json',sample)
+            summary['historical_rotation'] = {
+                'observed_at_utc':rotation['observed_at_utc'],
+                'games_requested':sample['games_requested'],
+                'games_unavailable':len(sample['unavailable_games']),
+                'fixtures_covered':len(rotation['games']),
+                'roster_player_fixture_estimates':sum(
+                    t['current_roster_minutes_coverage'] for g in rotation['games'].values()
+                    for t in g['teams'].values())}
     save('summary.json',summary)
     save('manifest.json',{'files':dict(files),'created_at_utc':summary['captured_at_utc']})
     return summary
@@ -75,7 +122,9 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--snapshot',required=True)
     parser.add_argument('--output-dir',required=True)
+    parser.add_argument('--history')
     args=parser.parse_args()
-    print(json.dumps(capture(json.loads(Path(args.snapshot).read_text()),args.output_dir),indent=2))
+    print(json.dumps(capture(json.loads(Path(args.snapshot).read_text()),args.output_dir,
+                     json.loads(Path(args.history).read_text()) if args.history else None),indent=2))
 
 if __name__=='__main__':main()
