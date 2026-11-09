@@ -19,6 +19,8 @@ def historical_usage(archive, directories, cutoff, teams):
     seen = set()
     for game in archive['games']:
         gid = game['game_id']
+        if not re.fullmatch(r'002[0-9]{7}', gid):
+            raise ValueError('Invalid NBA game ID')
         if gid in seen:
             raise ValueError('Duplicate historical game')
         seen.add(gid)
@@ -55,10 +57,20 @@ def historical_usage(archive, directories, cutoff, teams):
     return totals
 
 
-def apply_usage(report, archive, directories):
+def apply_usage(report, archive, directories, extra_games=()):
     if not directories:
         raise ValueError('At least one boxscore directory is required')
-    totals = historical_usage(archive, directories, report['emitted_at_utc'], report['teams'])
+    games = {game['game_id']: game for game in archive['games']}
+    if len(games) != len(archive['games']):
+        raise ValueError('Duplicate historical game')
+    for game in extra_games:
+        gid = game['game_id']
+        observed = game['observed_at_utc']
+        games.setdefault(gid, {'game_id': gid, 'completed_at_utc': observed,
+                              'evidence': {'observed_at_utc': observed},
+                              'boxscore_source': {'sha256': game['source_sha256']}})
+    totals = historical_usage({'games': games.values()}, directories,
+                              report['emitted_at_utc'], report['teams'])
     for team, scenario in report['teams'].items():
         missing = []
         changes = scenario['minute_changes']
@@ -84,6 +96,7 @@ def apply_usage(report, archive, directories):
                 for row in supported:
                     row[field + '_opportunity_share'] = row[field + '_opportunities'] / total
     report['usage_archive_sha256'] = digest(archive)
+    report['usage_extra_boxscores_sha256'] = digest(list(extra_games))
     report['status'] = 'research_minutes_and_historical_usage'
     report['content_sha256'] = digest({k:v for k,v in report.items() if k != 'content_sha256'})
 
@@ -146,7 +159,10 @@ def main():
         parser.add_argument('--' + arg, type=Path, required=True)
     parser.add_argument('--possessions', type=Path)
     parser.add_argument('--boxscore-dir', type=Path, action='append', default=[])
+    parser.add_argument('--usage-boxscores', type=Path, help='Additional final LiveData boxscore manifest')
     args = parser.parse_args()
+    if args.usage_boxscores and not args.possessions:
+        parser.error('--usage-boxscores requires --possessions and --boxscore-dir')
     if bool(args.possessions) != bool(args.boxscore_dir):
         parser.error('Supply --possessions and at least one --boxscore-dir together')
     coverage = json.loads(args.coverage.read_text())
@@ -156,7 +172,8 @@ def main():
         archive = json.loads(args.possessions.read_text())
         if digest(archive) != coverage['effects']['input_sha256']:
             raise ValueError('Usage archive differs from the player effect sample')
-        apply_usage(report, archive, args.boxscore_dir)
+        extras = json.loads(args.usage_boxscores.read_text())['games'] if args.usage_boxscores else []
+        apply_usage(report, archive, args.boxscore_dir, extras)
     save_new(args.output, report)
     print(json.dumps({t: {'reported_out': len(r['reported_out_ids']),
                          'redistributed_minutes': round(sum(max(0, p['minute_delta'])
