@@ -70,7 +70,7 @@ def process(path, archive_override=None):
             if not ids:
                 raise ValueError('No historical NBA IDs available')
             command = [sys.executable, str(Path(__file__).with_name('capture_possessions.py')),
-                       '--output-dir', str(target)]
+                       '--output-dir', str(target), '--budget-seconds', '65']
             for gid in ids:
                 command.extend(['--game-id', gid])
             subprocess.run(command, check=True, timeout=105)
