@@ -49,7 +49,7 @@ def summarize_game(payload, game_id, cutoff):
             'regulation_and_overtime_minutes': 48 + 5 * (period - 4), 'teams': rows}
 
 
-def bind_history(schedule, history, cutoff, teams, prefix, games_per_team=2):
+def bind_history(schedule, history, cutoff, teams, prefix, games_per_team=4):
     def key(home, away, tip, home_points, away_points):
         return canonical(home), canonical(away), utc(tip), int(home_points), int(away_points)
 
@@ -100,7 +100,7 @@ def capture_fallback(game_ids, cutoff, directory, session=None):
         except (requests.RequestException, ValueError, TypeError, KeyError) as exc:
             return None, {'game_id': game_id, 'error': type(exc).__name__, 'detail': str(exc)}
 
-    with ThreadPoolExecutor(max_workers=16 if session is None else 1) as pool:
+    with ThreadPoolExecutor(max_workers=24 if session is None else 1) as pool:
         observations = list(pool.map(fetch, game_ids))
     games = [game for game, _ in observations if game is not None]
     errors = [error for _, error in observations if error is not None]
@@ -125,6 +125,66 @@ def capture_fallback(game_ids, cutoff, directory, session=None):
                       'def_rating_estimated': 100 * total['allowed'] / possessions})
     return {'method': 'paired_average_fga_plus_044_fta_minus_oreb_plus_total_turnovers',
             'games': games, 'teams': teams, 'errors': errors}
+
+
+def research_projection(snapshot, source, emitted_at):
+    """Use the existing opponent adjustment and ML experiment at the later cutoff."""
+    from possession_challenger import candidate
+    from postmortem_engine import verify_seal
+    from reproducible_slate import adjusted_ratings, digest
+
+    verify_seal(snapshot)
+    cutoff = utc(emitted_at)
+    if utc(snapshot['created_at_utc']) > cutoff:
+        raise ValueError('Research emission predates baseline')
+    fallback = source['fallback']
+    boxscores = {'games': []}
+    pace = defaultdict(lambda: [0.0, 0])
+    for observation in fallback['games']:
+        observed = utc(observation['observed_at_utc'])
+        if not utc(observation['tipoff_utc']) < observed <= cutoff:
+            continue
+        home, away = observation['teams']
+        names = [canonical(team['team']) for team in (home, away)]
+        stats = {name: {key: team[key] for key in ('points', 'possessions_estimated')}
+                 for name, team in zip(names, (home, away))}
+        game = {key: observation[key] for key in ('game_id', 'tipoff_utc')}
+        game.update(home_team=names[0], away_team=names[1],
+                    home_points=home['points'], away_points=away['points'])
+        boxscores['games'].append({'game': game, 'observed_at_utc': observed.isoformat(),
+                                  'team_statistics': stats})
+        paired = (home['possessions_estimated'] + away['possessions_estimated']) / 2
+        for name in names:
+            pace[name][0] += paired
+            pace[name][1] += observation['regulation_and_overtime_minutes']
+    ratings = adjusted_ratings(boxscores, emitted_at)
+    games = []
+    for fixture in snapshot['predictions']:
+        home, away = (canonical(fixture[side]) for side in ('home_team', 'away_team'))
+        row = {'game_id': fixture['game_id'], 'home_team': home, 'away_team': away,
+               'tipoff_utc': fixture['tipoff_utc'], 'base_home_ml': fixture['hybrid_p_home'],
+               'candidate': None, 'home_plus20': None, 'away_plus20': None,
+               'status': 'PASS_insufficient_opponent_sample'}
+        if cutoff >= utc(fixture['tipoff_utc']):
+            row['status'] = 'PASS_already_started'
+        elif all(ratings.get(t, {}).get('status') == 'descriptive_schedule_adjusted' for t in (home, away)):
+            possessions = sum(48 * pace[t][0] / pace[t][1] for t in (home, away)) / 2
+            points = {t: possessions * (ratings[t]['opponent_adjusted_ortg'] +
+                                        ratings[o]['opponent_adjusted_drtg']) / 200
+                      for t, o in ((home, away), (away, home))}
+            experiment = candidate(fixture['hybrid_p_home'], points[home], points[away])
+            probability = experiment['experimental_p_home']
+            row.update(status='research_team_ml', candidate=experiment,
+                       projected_points=points, estimated_possessions=possessions,
+                       home_ml=probability, away_ml=1-probability,
+                       home_ml_delta_vs_hybrid=probability-fixture['hybrid_p_home'])
+        games.append(row)
+    report = {'baseline_snapshot_sha256': snapshot['content_sha256'],
+              'team_metrics_sha256': digest(source), 'emitted_at_utc': emitted_at,
+              'model_version': 'NBA_LIVEDATA_TEAM_ML_RESEARCH_V1', 'games': games,
+              'ratings': ratings, 'production_approved': False, 'calibrated': False,
+              'no_odds_input': True}
+    return {**report, 'content_sha256': digest(report)}
 
 
 def main():

@@ -73,11 +73,20 @@ def observe_team_metrics(snapshot_path, history_path, day):
         if not path.exists():
             return {'status': 'source_error', 'detail': completed.stderr[-600:]}
         report = json.loads(path.read_text())
-        return {'status': report['selected_source'], 'cutoff_date': report['cutoff_date'],
+        diagnostic = {'status': report['selected_source'], 'cutoff_date': report['cutoff_date'],
                 'official_teams': len(report['official']['teams']),
                 'fallback_games': len(report.get('fallback', {}).get('games', [])),
                 'fallback_errors': len(report.get('fallback', {}).get('errors', [])),
                 'crosswalk': report.get('crosswalk')}
+        if report['selected_source'] == 'nba_livedata_estimated':
+            from livedata_team_metrics import research_projection
+            from postmortem_engine import save_new
+            snapshot = json.loads(snapshot_path.read_text())
+            research = research_projection(snapshot, report, datetime.now(timezone.utc).isoformat())
+            save_new(folder / 'team_ml_research.json', research)
+            diagnostic['research_ml_games'] = sum(g['candidate'] is not None for g in research['games'])
+            diagnostic['research_sha256'] = research['content_sha256']
+        return diagnostic
     except subprocess.TimeoutExpired:
         return {'status': 'source_timeout'}
     except (OSError, ValueError, KeyError) as exc:
