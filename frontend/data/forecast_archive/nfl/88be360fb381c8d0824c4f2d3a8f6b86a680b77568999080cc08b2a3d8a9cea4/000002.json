@@ -1,0 +1,119 @@
+{
+  "sport": "nfl",
+  "as_of_utc": "2026-11-09T00:52:14.841246Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401873050",
+      "start_utc": "2026-11-09T01:20:00Z",
+      "participants": [
+        "CHI",
+        "TB"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "final_pregame",
+        "probabilities": {
+          "home": 0.67169,
+          "away": 0.32831
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nfl-historical-elo",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_output_sha256": "255f2724ccf4a991e6b86de98684d7a02fee45649ebe10939eb6b38e24eae860",
+  "source_model_output": {
+    "event_id": "401873050",
+    "start_utc": "2026-11-09T01:20:00+00:00",
+    "participants": [
+      "CHI",
+      "TB"
+    ],
+    "home_team": "CHI",
+    "away_team": "TB",
+    "official_baseline": null,
+    "historical_elo_candidate": 0.67169,
+    "challenger": null,
+    "final_probability": null,
+    "away_probability": null,
+    "all_inputs_verified": false,
+    "independent_validation_passed": false,
+    "starting_lineups_verified": false,
+    "injury_report_verified": false,
+    "weather_verified": false,
+    "props": null,
+    "missing_evidence": [
+      "confirmed_inactives",
+      "starters",
+      "weather",
+      "matchups",
+      "independent_calibration"
+    ]
+  },
+  "revision": 2,
+  "parent_snapshot_sha256": "a5ee6a841d31f424372538e3d3c1d7ed3d10c5442080e63996eeeb78cda9e2d0",
+  "changes": [
+    {
+      "event_id": "401873050",
+      "before": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.67169,
+          "away": 0.32831
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "after": {
+        "stage": "final_pregame",
+        "probabilities": {
+          "home": 0.67169,
+          "away": 0.32831
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "previous_start_utc": "2026-11-09T01:20:00Z",
+      "start_utc": "2026-11-09T01:20:00Z"
+    }
+  ],
+  "emitted_at_utc": "2026-11-09T00:52:15.038567+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "ca63910d774e4767035cf5d96bad784b2528c8ad516ad2072db83ac3c7494bf3"
+}
