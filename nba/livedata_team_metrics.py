@@ -3,7 +3,8 @@ import argparse
 import hashlib
 import json
 import re
-from collections import defaultdict
+from collections import Counter, defaultdict
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -13,8 +14,10 @@ import requests
 from nba_official_pace_capture import collect
 from possession_intelligence import estimate_possessions
 from prospective import utc
+from team_identity import canonical
 
 BASE = 'https://nba-prod-us-east-1-mediaops-stats.s3.amazonaws.com/NBA/liveData/boxscore'
+SCHEDULE = BASE.split('/liveData/')[0] + '/staticData/scheduleLeagueV2_2.json'
 LEAGUE_TIME = ZoneInfo('America/New_York')
 
 
@@ -46,24 +49,64 @@ def summarize_game(payload, game_id, cutoff):
             'regulation_and_overtime_minutes': 48 + 5 * (period - 4), 'teams': rows}
 
 
-def capture_fallback(game_ids, cutoff, directory, session):
-    games, errors = [], []
-    totals = defaultdict(lambda: {'games': 0, 'points': 0, 'allowed': 0, 'minutes': 0,
-                                  'possessions_estimated': 0.0})
-    for game_id in game_ids:
+def bind_history(schedule, history, cutoff, teams, prefix, games_per_team=2):
+    def key(home, away, tip, home_points, away_points):
+        return canonical(home), canonical(away), utc(tip), int(home_points), int(away_points)
+
+    index = defaultdict(list)
+    for day in schedule['leagueSchedule']['gameDates']:
+        for game in day['games']:
+            if game['gameStatus'] != 3 or not re.fullmatch(prefix + r'[0-9]{5}', game['gameId']):
+                continue
+            home, away = game['homeTeam'], game['awayTeam']
+            identity = key(home['teamTricode'], away['teamTricode'], game['gameDateTimeUTC'],
+                           home['score'], away['score'])
+            index[identity].append(game['gameId'])
+    counts = Counter()
+    bindings, unresolved = {}, {}
+    used = set()
+    for game in sorted(history, key=lambda g: utc(g['tipoff_utc']), reverse=True):
+        if utc(game['tipoff_utc']).astimezone(LEAGUE_TIME).date() > cutoff:
+            continue
+        sides = {canonical(game['home_team']), canonical(game['away_team'])}
+        needed = {team for team in sides & teams if counts[team] < games_per_team}
+        if not needed:
+            continue
+        gid = str(game['game_id'])
+        identity = key(game['home_team'], game['away_team'], game['tipoff_utc'],
+                       game['home_points'], game['away_points'])
+        matches = index.get(identity, [])
+        if len(matches) != 1 or matches[0] in used:
+            unresolved[gid] = 'ambiguous_or_repeated' if matches else 'no_exact_match'
+            continue
+        bindings[gid] = matches[0]
+        used.add(matches[0])
+        counts.update(needed)
+    return bindings, unresolved
+
+
+def capture_fallback(game_ids, cutoff, directory, session=None):
+    def fetch(game_id):
         url = f'{BASE}/boxscore_{game_id}.json'
         try:
-            response = session.get(url, timeout=12)
+            response = (session or requests).get(url, timeout=12)
             response.raise_for_status()
             game = summarize_game(response.json(), game_id, cutoff)
             raw = response.content
             (directory / f'boxscore_{game_id}.json').write_bytes(raw)
             game.update(source_url=url, source_sha256=hashlib.sha256(raw).hexdigest(),
                         observed_at_utc=datetime.now(timezone.utc).isoformat())
-            games.append(game)
+            return game, None
         except (requests.RequestException, ValueError, TypeError, KeyError) as exc:
-            errors.append({'game_id': game_id, 'error': type(exc).__name__, 'detail': str(exc)})
-            continue
+            return None, {'game_id': game_id, 'error': type(exc).__name__, 'detail': str(exc)}
+
+    with ThreadPoolExecutor(max_workers=16 if session is None else 1) as pool:
+        observations = list(pool.map(fetch, game_ids))
+    games = [game for game, _ in observations if game is not None]
+    errors = [error for _, error in observations if error is not None]
+    totals = defaultdict(lambda: {'games': 0, 'points': 0, 'allowed': 0, 'minutes': 0,
+                                  'possessions_estimated': 0.0})
+    for game in games:
         home, away = game['teams']
         paired = (home['possessions_estimated'] + away['possessions_estimated']) / 2
         for team, opponent in ((home, away), (away, home)):
@@ -87,9 +130,14 @@ def capture_fallback(game_ids, cutoff, directory, session):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--date', type=date.fromisoformat, required=True)
-    parser.add_argument('--game-id', action='append', required=True)
+    parser.add_argument('--game-id', action='append', default=[])
+    parser.add_argument('--history', type=Path)
+    parser.add_argument('--snapshot', type=Path)
     parser.add_argument('--output-dir', type=Path, required=True)
     args = parser.parse_args()
+    automatic = args.history is not None and args.snapshot is not None
+    if (args.history is None) != (args.snapshot is None) or automatic == bool(args.game_id):
+        parser.error('Provide game IDs or both --history and --snapshot')
     season_start = args.date.year if args.date.month >= 10 else args.date.year - 1
     prefix = f'002{season_start % 100:02d}'
     if len(args.game_id) != len(set(args.game_id)) or any(
@@ -105,7 +153,32 @@ def main():
                   'selected_source': 'nba_stats' if complete else 'nba_livedata_estimated',
                   'forecast_adjustment_applied': False}
         if not complete:
-            result['fallback'] = capture_fallback(args.game_id, cutoff, args.output_dir, session)
+            game_ids = args.game_id
+            if automatic:
+                try:
+                    response = session.get(SCHEDULE, timeout=12)
+                    response.raise_for_status()
+                    schedule = response.json()
+                    if schedule['leagueSchedule']['seasonYear'] != official['season']:
+                        raise ValueError('Unexpected NBA schedule season')
+                    snapshot = json.loads(args.snapshot.read_text())
+                    teams = {canonical(g[side]) for g in snapshot['predictions']
+                             for side in ('home_team', 'away_team')}
+                    bindings, unresolved = bind_history(schedule, json.loads(args.history.read_text()),
+                                                         cutoff, teams, prefix)
+                    game_ids = list(bindings.values())
+                    (args.output_dir / 'schedule.json').write_bytes(response.content)
+                    result['crosswalk'] = {'bindings': bindings, 'unresolved': unresolved,
+                                           'source_url': SCHEDULE,
+                                           'source_sha256': hashlib.sha256(response.content).hexdigest(),
+                                           'target_teams': sorted(teams)}
+                except (requests.RequestException, KeyError, TypeError, ValueError) as exc:
+                    result['crosswalk'] = {'error': type(exc).__name__, 'detail': str(exc)}
+            result['fallback'] = capture_fallback(game_ids, cutoff, args.output_dir)
+            if automatic and 'target_teams' in result['crosswalk']:
+                covered = {canonical(team['team']) for team in result['fallback']['teams']}
+                result['crosswalk']['covered_teams'] = sorted(covered & teams)
+                result['crosswalk']['missing_teams'] = sorted(teams - covered)
             if not result['fallback']['teams']:
                 result['selected_source'] = 'unavailable'
     with (args.output_dir / 'team_metrics.json').open('x') as output:
