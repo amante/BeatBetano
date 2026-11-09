@@ -1,27 +1,334 @@
 {
-  "as_of_utc": "2026-11-09T00:52:14.330904+00:00",
+  "as_of_utc": "2026-11-09T19:47:26.455089+00:00",
   "sports": {
     "nba": {
-      "status": "source_error",
-      "fixtures_requested": 3,
-      "error": {
-        "sport": "nba",
-        "type": "ValueError",
-        "detail": "Incomplete daily scoreboard; retry later"
-      }
+      "status": "processed",
+      "publications": [
+        {
+          "sport": "nba",
+          "as_of_utc": "2026-11-09T19:47:26.785263Z",
+          "events": [
+            {
+              "event_id": "401909952",
+              "status": "reused",
+              "snapshot_sha256": "baf69864e813130a17c969f24aa31ca992a95b843742e79778168a04798bde78",
+              "stage": "initial"
+            },
+            {
+              "event_id": "401909953",
+              "status": "reused",
+              "snapshot_sha256": "8ad5a2fd6c08fa6830a81118acd6f816e8e13da2ec9952a6da9131655d7fc89e",
+              "stage": "initial"
+            },
+            {
+              "event_id": "401909954",
+              "status": "reused",
+              "snapshot_sha256": "484383d9ec611226165b46f1285d0b54040ffe8dbffb00b5382155d67531dda7",
+              "stage": "initial"
+            },
+            {
+              "event_id": "401909955",
+              "status": "reused",
+              "snapshot_sha256": "8cb7c5ab443d2e4c949939c7063fe8b797aa8174bf9f220f293f36eceef2d029",
+              "stage": "initial"
+            },
+            {
+              "event_id": "401909956",
+              "status": "reused",
+              "snapshot_sha256": "013d339d9f3a1d7c181c16e9dd9226dbad5cfb2ac64199712a63270aeea75dfa",
+              "stage": "initial"
+            },
+            {
+              "event_id": "401909957",
+              "status": "reused",
+              "snapshot_sha256": "9272ad1034c6f21c754b67d64208d480568e0326815dd4e78f67aecc0f937cf0",
+              "stage": "initial"
+            },
+            {
+              "event_id": "401909958",
+              "status": "reused",
+              "snapshot_sha256": "ba7249891f7e81209cc80c0a3aa1cfd77f877319f2c4b0791504b1e9fb8fcac1",
+              "stage": "initial"
+            },
+            {
+              "event_id": "401909959",
+              "status": "reused",
+              "snapshot_sha256": "32af9d8c5cc8d03681ce541c7d1d436094a26862be1b122f0cf0d39aa8063650",
+              "stage": "initial"
+            }
+          ],
+          "forecast_publication_only": true,
+          "selection_approval_changed": false
+        }
+      ],
+      "fixtures_requested": 7,
+      "fixtures_with_forecast": 7,
+      "fixture_bindings": [
+        {
+          "fixture_id": "401909952",
+          "forecast_event_id": "401909952",
+          "method": "same_provider_event_id",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401909953",
+          "forecast_event_id": "401909953",
+          "method": "same_provider_event_id",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401909954",
+          "forecast_event_id": "401909954",
+          "method": "same_provider_event_id",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401909955",
+          "forecast_event_id": "401909955",
+          "method": "same_provider_event_id",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401909956",
+          "forecast_event_id": "401909956",
+          "method": "same_provider_event_id",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401909957",
+          "forecast_event_id": "401909957",
+          "method": "same_provider_event_id",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401909958",
+          "forecast_event_id": "401909958",
+          "method": "same_provider_event_id",
+          "forecast_available": true
+        }
+      ],
+      "missing_baseline_fixture_ids": [],
+      "sporting_integration": [
+        {
+          "baseline_snapshot_sha256": "686f79e5eca4d1f11f565c54d3be348feb287b1dd7019bcfd4d6e0463d485545",
+          "games": 8,
+          "integrated_research_games": 0,
+          "game_diagnostics": [
+            {
+              "game_id": "401909952",
+              "missing": [
+                "ATL: Missing verified roster, injuries, lineups, player effects and score-path evidence; LAL: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+              ],
+              "lineup_context": {}
+            },
+            {
+              "game_id": "401909953",
+              "missing": [
+                "CHA: Missing verified roster, injuries, lineups, player effects and score-path evidence; CLE: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+              ],
+              "lineup_context": {}
+            },
+            {
+              "game_id": "401909954",
+              "missing": [
+                "DET: Missing verified roster, injuries, lineups, player effects and score-path evidence; WSH: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+              ],
+              "lineup_context": {}
+            },
+            {
+              "game_id": "401909955",
+              "missing": [
+                "TOR: Missing verified roster, injuries, lineups, player effects and score-path evidence; MEM: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+              ],
+              "lineup_context": {}
+            },
+            {
+              "game_id": "401909956",
+              "missing": [
+                "DAL: Missing verified roster, injuries, lineups, player effects and score-path evidence; IND: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+              ],
+              "lineup_context": {}
+            },
+            {
+              "game_id": "401909957",
+              "missing": [
+                "HOU: Missing verified roster, injuries, lineups, player effects and score-path evidence; DEN: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+              ],
+              "lineup_context": {}
+            },
+            {
+              "game_id": "401909958",
+              "missing": [
+                "PHX: Missing verified roster, injuries, lineups, player effects and score-path evidence; SA: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+              ],
+              "lineup_context": {}
+            },
+            {
+              "game_id": "401909959",
+              "missing": [
+                "GS: Missing verified roster, injuries, lineups, player effects and score-path evidence; NO: Missing verified roster, injuries, lineups, player effects and score-path evidence"
+              ],
+              "lineup_context": {}
+            }
+          ],
+          "calibrated": false,
+          "production_approved": false,
+          "availability_observation": {
+            "status": "captured",
+            "captured_at_utc": "2026-11-09T19:47:28.474834+00:00",
+            "statistical_snapshot_sha256": "686f79e5eca4d1f11f565c54d3be348feb287b1dd7019bcfd4d6e0463d485545",
+            "statistical_snapshot_created_at_utc": "2026-11-09T19:47:26.785263+00:00",
+            "later_sidecar_not_retroactive_snapshot_update": true,
+            "games": 8,
+            "teams": 16,
+            "roster_members": 281,
+            "matched_injury_claims": 61,
+            "unmatched_claims": [],
+            "conflicts": [],
+            "known_out": 43,
+            "uncertain": 18,
+            "unknown": 220,
+            "teams_allocation_ready": 0,
+            "teams_with_provider_lineups": 0,
+            "no_odds_input": true,
+            "official_injury_status_verified": false,
+            "probability_adjustment_authorized": false,
+            "errors": {},
+            "historical_rotation": {
+              "observed_at_utc": "2026-11-09T19:47:29.983665+00:00",
+              "games_requested": 63,
+              "games_unavailable": 0,
+              "fixtures_covered": 8,
+              "roster_player_fixture_estimates": 187
+            }
+          },
+          "team_metrics_observation": {
+            "status": "nba_livedata_estimated",
+            "cutoff_date": "2026-11-08",
+            "official_teams": 0,
+            "fallback_games": 52,
+            "fallback_errors": 0,
+            "crosswalk": {
+              "bindings": {
+                "401909950": "0022600201",
+                "401909948": "0022600199",
+                "401909946": "0022600197",
+                "401909944": "0022600195",
+                "401909943": "0022600194",
+                "401909942": "0022600193",
+                "401909940": "0022600191",
+                "401909941": "0022600192",
+                "401909939": "0022600190",
+                "401909938": "0022600189",
+                "401909294": "0022600032",
+                "401909295": "0022600033",
+                "401909290": "0022600028",
+                "401909291": "0022600029",
+                "401909292": "0022600030",
+                "401909293": "0022600031",
+                "401909289": "0022600027",
+                "401909287": "0022600025",
+                "401909288": "0022600026",
+                "401909937": "0022600188",
+                "401909936": "0022600187",
+                "401909934": "0022600185",
+                "401909933": "0022600184",
+                "401909931": "0022600182",
+                "401909932": "0022600183",
+                "401909930": "0022600181",
+                "401909927": "0022600178",
+                "401909928": "0022600179",
+                "401909929": "0022600180",
+                "401909925": "0022600176",
+                "401909922": "0022600173",
+                "401909923": "0022600174",
+                "401909919": "0022600170",
+                "401909920": "0022600171",
+                "401909921": "0022600172",
+                "401909918": "0022600169",
+                "401909916": "0022600167",
+                "401909917": "0022600168",
+                "401909913": "0022600164",
+                "401909914": "0022600165",
+                "401909908": "0022600159",
+                "401909909": "0022600160",
+                "401909911": "0022600162",
+                "401909907": "0022600158",
+                "401909906": "0022600157",
+                "401909905": "0022600156",
+                "401909904": "0022600155",
+                "401909902": "0022600153",
+                "401909899": "0022600150",
+                "401909897": "0022600148",
+                "401909286": "0022600024",
+                "401909279": "0022600017"
+              },
+              "unresolved": {},
+              "source_url": "https://nba-prod-us-east-1-mediaops-stats.s3.amazonaws.com/NBA/staticData/scheduleLeagueV2_2.json",
+              "source_sha256": "ef2abea0f917b6ac240b20f5a810d328468541743277f8887a398eddd3d17c7b",
+              "target_teams": [
+                "ATL",
+                "CHA",
+                "CLE",
+                "DAL",
+                "DEN",
+                "DET",
+                "GS",
+                "HOU",
+                "IND",
+                "LAL",
+                "MEM",
+                "NO",
+                "PHX",
+                "SA",
+                "TOR",
+                "WSH"
+              ],
+              "covered_teams": [
+                "ATL",
+                "CHA",
+                "CLE",
+                "DAL",
+                "DEN",
+                "DET",
+                "GS",
+                "HOU",
+                "IND",
+                "LAL",
+                "MEM",
+                "NO",
+                "PHX",
+                "SA",
+                "TOR",
+                "WSH"
+              ],
+              "missing_teams": []
+            },
+            "research_ml_games": 7,
+            "research_sha256": "32efae07e969410074829368dc10f1f38a544a9cdf2624b574130b8512b4c18d",
+            "player_crosswalk": {
+              "links": 416,
+              "ambiguous": 0,
+              "mapped_roster_entries": 237,
+              "unresolved_roster_entries": 44,
+              "content_sha256": "7cd150a1a8928b947c06a7ef6e2197e79b4745ec3925cc3643585fecd5b736c4"
+            }
+          }
+        }
+      ]
     },
     "nfl": {
       "status": "processed",
       "publications": [
         {
           "sport": "nfl",
-          "as_of_utc": "2026-11-09T00:52:14.841246Z",
+          "as_of_utc": "2026-11-09T19:47:50.371495Z",
           "events": [
             {
-              "event_id": "401873050",
+              "event_id": "401873051",
               "status": "reused",
-              "snapshot_sha256": "ca63910d774e4767035cf5d96bad784b2528c8ad516ad2072db83ac3c7494bf3",
-              "stage": "final_pregame"
+              "snapshot_sha256": "df90ae7993b398f6065d14380c28d92c4fed80fc695a6fbec4d078f302af15b1",
+              "stage": "initial"
             }
           ],
           "forecast_publication_only": true,
@@ -32,8 +339,8 @@
       "fixtures_with_forecast": 1,
       "fixture_bindings": [
         {
-          "fixture_id": "401873050",
-          "forecast_event_id": "401873050",
+          "fixture_id": "401873051",
+          "forecast_event_id": "401873051",
           "method": "same_provider_event_id",
           "forecast_available": true
         }
@@ -45,25 +352,43 @@
       "publications": [
         {
           "sport": "nhl",
-          "as_of_utc": "2026-11-09T00:52:15.147599Z",
+          "as_of_utc": "2026-11-09T19:47:50.784760Z",
           "events": [
             {
-              "event_id": "2026020282",
+              "event_id": "2026020283",
               "status": "reused",
-              "snapshot_sha256": "28ba88e8d09b31c0b25a0fee2a57303374fbae6da0c4883a74c1e56e64dc6edd",
-              "stage": "final_pregame"
+              "snapshot_sha256": "da2670471e926646a3d3553119d3254bcf375fe4506dde116def0f0468d2e2ea",
+              "stage": "initial"
+            },
+            {
+              "event_id": "2026020284",
+              "status": "reused",
+              "snapshot_sha256": "5d19e468afe33a171ae6c5d5964e70248fb8fd3aa3eaf391347082b682c9caa5",
+              "stage": "initial"
+            },
+            {
+              "event_id": "2026020285",
+              "status": "reused",
+              "snapshot_sha256": "1868b80b33abaaa5b7ae75064a058ec802022f01df613e390497001442ee6c58",
+              "stage": "initial"
             }
           ],
           "forecast_publication_only": true,
           "selection_approval_changed": false
         }
       ],
-      "fixtures_requested": 1,
-      "fixtures_with_forecast": 1,
+      "fixtures_requested": 2,
+      "fixtures_with_forecast": 2,
       "fixture_bindings": [
         {
-          "fixture_id": "401892679",
-          "forecast_event_id": "2026020282",
+          "fixture_id": "401892680",
+          "forecast_event_id": "2026020283",
+          "method": "explicit_team_name_crosswalk_and_exact_start",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401892681",
+          "forecast_event_id": "2026020284",
           "method": "explicit_team_name_crosswalk_and_exact_start",
           "forecast_available": true
         }
@@ -79,13 +404,7 @@
       "events": []
     }
   },
-  "errors": [
-    {
-      "sport": "nba",
-      "type": "ValueError",
-      "detail": "Incomplete daily scoreboard; retry later"
-    }
-  ],
+  "errors": [],
   "selection_approval_changed": false,
-  "status": "partial_source_failure"
+  "status": "completed"
 }
