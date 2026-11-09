@@ -7,6 +7,7 @@ import re
 from datetime import datetime, timezone
 from importlib.metadata import version
 from pathlib import Path
+from time import monotonic
 
 import requests
 
@@ -126,7 +127,7 @@ def normalize(game_id, directory, play_bytes, box_bytes, observed_at):
                                 'sha256': hashlib.sha256(box_bytes).hexdigest()}}
 
 
-def capture(game_ids, directory):
+def capture(game_ids, directory, budget_seconds=None):
     from pbpstats.resources.enhanced_pbp.rebound import EventOrderError
     from pbpstats.resources.enhanced_pbp.start_of_period import InvalidNumberOfStartersException
 
@@ -136,7 +137,11 @@ def capture(game_ids, directory):
         raise ValueError('Supply distinct NBA regular-season game IDs')
     directory.mkdir(parents=True, exist_ok=False)
     (directory / 'pbp').mkdir()
+    deadline = None if budget_seconds is None else monotonic() + budget_seconds
+
     def fetch(gid):
+        if deadline is not None and monotonic() >= deadline:
+            return None, {'game_id': gid, 'reason': 'capture_budget_exhausted'}
         try:
             play = requests.get(f'{BASE}/playbyplay/playbyplay_{gid}.json', timeout=15)
             play.raise_for_status()
@@ -168,8 +173,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--game-id', action='append', required=True)
     parser.add_argument('--output-dir', required=True)
+    parser.add_argument('--budget-seconds', type=int)
     args = parser.parse_args()
-    report = capture(args.game_id, args.output_dir)
+    report = capture(args.game_id, args.output_dir, args.budget_seconds)
     print(json.dumps({'games': len(report['games']), 'rejected': report['rejected']}))
     if not report['games']:
         raise SystemExit(1)

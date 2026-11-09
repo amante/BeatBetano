@@ -45,6 +45,15 @@ jobs:
             --archive frontend/data/nba-livedata-forward \
             --outcomes frontend/data/history.json \
             --summary frontend/data/nba-livedata-evaluation.json
+      - name: Publish NBA rotation research when pregame inputs are available
+        continue-on-error: true
+        timeout-minutes: 6
+        run: |
+          python -m pip install pbpstats==1.3.11
+          python nba/daily_rotation_path.py \
+            --workdir results/daily-models \
+            --archive frontend/data/nba-rotation-archive \
+            --latest frontend/data/nba-rotation-latest.json
       - name: Archive model outputs and source-failure evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -54,6 +63,9 @@ jobs:
             results/daily-models/*.json
             results/daily-models/nba-*.availability/*.json
             results/daily-models/nba-*.team-metrics/*.json
+            results/daily-models/nba-*.possessions/*.json
+            results/daily-models/nba-*.possessions/pbp/*.json
+            frontend/data/nba-rotation-latest.json
             frontend/data/forecast_status.json
             frontend/data/nba-livedata-evaluation.json
             frontend/data/forecast_archive
@@ -70,6 +82,9 @@ jobs:
           git add frontend/data/nba-livedata-evaluation.json
           if compgen -G 'frontend/data/nba-livedata-forward/*.json' > /dev/null; then
             git add frontend/data/nba-livedata-forward
+          fi
+          if test -f frontend/data/nba-rotation-latest.json; then
+            git add frontend/data/nba-rotation-latest.json frontend/data/nba-rotation-archive
           fi
           if ! git diff --cached --quiet; then
             git commit -m "data: refresh five-sport fixtures and settled results"
