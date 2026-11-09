@@ -1,5 +1,8 @@
 """Compare explicit rotation scenarios using the shared NBA minute allocator."""
 import argparse
+import hashlib
+import re
+from collections import defaultdict
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -8,6 +11,81 @@ from postmortem_engine import save_new, verify_seal
 from prospective import utc
 from reproducible_slate import digest
 from rotation_allocation_adapter import allocate
+from team_identity import canonical
+
+
+def historical_usage(archive, directories, cutoff, teams):
+    totals = defaultdict(lambda: [0.0, 0.0, 0])
+    seen = set()
+    for game in archive['games']:
+        gid = game['game_id']
+        if gid in seen:
+            raise ValueError('Duplicate historical game')
+        seen.add(gid)
+        if not utc(game['completed_at_utc']) < utc(cutoff) or utc(game['evidence']['observed_at_utc']) > utc(cutoff):
+            continue
+        name = f'boxscore_{gid}.json'
+        path = next((d / name for d in directories if (d / name).is_file()), None)
+        if path is None:
+            continue
+        raw = path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != game['boxscore_source']['sha256']:
+            raise ValueError('Boxscore digest mismatch: ' + gid)
+        box = json.loads(raw)['game']
+        if box['gameId'] != gid or box['gameStatus'] != 3:
+            raise ValueError('Expected matching final boxscore')
+        for side in ('homeTeam', 'awayTeam'):
+            team = box[side]
+            code = canonical(team['teamTricode'])
+            if code not in teams:
+                continue
+            for player in team['players']:
+                stats = player.get('statistics', {})
+                match = re.fullmatch(r'PT(?:(\d+)M)?(\d+(?:\.\d+)?)S', stats.get('minutes', ''))
+                counts = [stats.get(key) for key in ('fieldGoalsAttempted', 'freeThrowsAttempted', 'turnovers')]
+                if not match or any(type(n) is not int or n < 0 for n in counts):
+                    continue
+                minutes = int(match[1] or 0) + float(match[2]) / 60
+                if minutes <= 0:
+                    continue
+                total = totals[code, str(player['personId'])]
+                total[0] += counts[0] + .44 * counts[1] + counts[2]
+                total[1] += minutes
+                total[2] += 1
+    return totals
+
+
+def apply_usage(report, archive, directories):
+    if not directories:
+        raise ValueError('At least one boxscore directory is required')
+    totals = historical_usage(archive, directories, report['emitted_at_utc'], report['teams'])
+    for team, scenario in report['teams'].items():
+        missing = []
+        changes = scenario['minute_changes']
+        for row in changes:
+            total, minutes, games = totals.get((team, row['nba_player_id']), (0, 0, 0))
+            row['usage_sample_games'] = games
+            if games < 3 or not minutes:
+                if row['reference_minutes'] or row['scenario_minutes']:
+                    missing.append(row['espn_player_id'])
+                continue
+            rate = total / minutes
+            row['historical_opportunities_per_minute'] = rate
+            row['reference_opportunities'] = rate * row['reference_minutes']
+            row['scenario_opportunities'] = rate * row['scenario_minutes']
+            row['opportunity_delta'] = row['scenario_opportunities'] - row['reference_opportunities']
+        scenario['usage'] = {'method': 'historical_fga_plus_044_fta_plus_tov_per_minute',
+                             'minimum_games': 3, 'missing_player_ids': missing,
+                             'status': 'partial_sample' if missing else 'complete_sample' if changes else 'no_allocation'}
+        supported = [row for row in changes if 'reference_opportunities' in row]
+        for field in ('reference', 'scenario'):
+            total = sum(row[field + '_opportunities'] for row in supported)
+            if total > 0 and not missing:
+                for row in supported:
+                    row[field + '_opportunity_share'] = row[field + '_opportunities'] / total
+    report['usage_archive_sha256'] = digest(archive)
+    report['status'] = 'research_minutes_and_historical_usage'
+    report['content_sha256'] = digest({k:v for k,v in report.items() if k != 'content_sha256'})
 
 
 def build(coverage, snapshot, game_id, emitted_at):
@@ -66,9 +144,19 @@ def main():
     parser.add_argument('--game-id', required=True)
     for arg in ('coverage', 'snapshot', 'output'):
         parser.add_argument('--' + arg, type=Path, required=True)
+    parser.add_argument('--possessions', type=Path)
+    parser.add_argument('--boxscore-dir', type=Path, action='append', default=[])
     args = parser.parse_args()
-    report = build(json.loads(args.coverage.read_text()), json.loads(args.snapshot.read_text()),
+    if bool(args.possessions) != bool(args.boxscore_dir):
+        parser.error('Supply --possessions and at least one --boxscore-dir together')
+    coverage = json.loads(args.coverage.read_text())
+    report = build(coverage, json.loads(args.snapshot.read_text()),
                    args.game_id, datetime.now(timezone.utc).isoformat())
+    if args.possessions:
+        archive = json.loads(args.possessions.read_text())
+        if digest(archive) != coverage['effects']['input_sha256']:
+            raise ValueError('Usage archive differs from the player effect sample')
+        apply_usage(report, archive, args.boxscore_dir)
     save_new(args.output, report)
     print(json.dumps({t: {'reported_out': len(r['reported_out_ids']),
                          'redistributed_minutes': round(sum(max(0, p['minute_delta'])
