@@ -16,6 +16,30 @@ from reproducible_slate import digest
 BASE = 'https://nba-prod-us-east-1-mediaops-stats.s3.amazonaws.com/NBA/liveData'
 
 
+def order_referenced_misses(actions):
+    """Move an explicitly referenced miss before its same-clock rebound."""
+    positions = {action['actionNumber']: i for i, action in enumerate(actions)}
+    if len(positions) != len(actions):
+        raise ValueError('Duplicate play-by-play action ID')
+    for i in range(len(actions)):
+        rebound = actions[i]
+        if rebound['actionType'] != 'rebound':
+            continue
+        j = positions.get(rebound.get('shotActionNumber'))
+        if j is None or j <= i:
+            continue
+        shot = actions[j]
+        identity = ('period', 'clock', 'scoreHome', 'scoreAway')
+        if (shot['actionType'] not in {'2pt', '3pt', 'freethrow'}
+                or shot.get('shotResult') != 'Missed'
+                or any(event['actionType'] != 'block' for event in actions[i+1:j])
+                or any(event.get(key) != rebound.get(key)
+                       for event in actions[i+1:j+1] for key in identity)):
+            continue
+        actions.insert(i, actions.pop(j))
+        positions.update((actions[k]['actionNumber'], k) for k in range(i, j+1))
+
+
 def normalize(game_id, directory, play_bytes, box_bytes, observed_at):
     from pbpstats.data_loader import LivePossessionFileLoader, LivePossessionLoader
     from pbpstats.resources.enhanced_pbp.turnover import Turnover
@@ -56,6 +80,7 @@ def normalize(game_id, directory, play_bytes, box_bytes, observed_at):
                         kind in {'period', 'game', 'timeout', 'rebound', 'violation', 'turnover'}
                         or team_event):
                     action['personId'] = 0
+            order_referenced_misses(play['actions'])
             return {'game': play}
 
     source = LivePossessionFileLoader(str(directory))
