@@ -147,3 +147,30 @@ final score match and five roster members on each side at the first live action
 of each possession. It rejects score changes the engine cannot represent, such
 as points by the defense or points on a turnover possession. Parser failures
 are excluded and can affect the composition of any research sample.
+
+## Audit current-roster coverage
+
+Use the saved baseline, player crosswalk and availability artifacts from the
+same daily run. Capture historical NBA IDs from that run's team-metrics
+bindings, then run:
+
+```sh
+python nba/player_possession_coverage.py \
+  --snapshot /path/to/forecast.json \
+  --crosswalk /path/to/forecast.team-metrics/player_crosswalk.json \
+  --availability-dir /path/to/forecast.availability \
+  --possessions /path/to/capture/possessions.json \
+  --output /path/to/new-player-coverage.json
+```
+
+Run before tipoff. The audit uses the existing sample thresholds and checks
+that the fitted player appeared for the relevant team. The provider starter
+flag may represent a projection. A historical rotation entry has a minutes
+estimate and does not identify a specific injury replacement.
+
+November 9 pilot: 16 of 50 requested games normalized, yielding 3,249
+possessions across 224 players. Among 281 current roster entries for eight
+fixtures, 235 had linked IDs and seven supported research effects. Coverage was
+2 of 39 provider starter entries and 5 of 151 historical rotation entries.
+The pilot did not establish a full two-sided rotation adjustment or emit
+an updated ML/+20 probability.
