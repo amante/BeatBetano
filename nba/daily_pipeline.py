@@ -86,6 +86,21 @@ def observe_team_metrics(snapshot_path, history_path, day):
             save_new(folder / 'team_ml_research.json', research)
             diagnostic['research_ml_games'] = sum(g['candidate'] is not None for g in research['games'])
             diagnostic['research_sha256'] = research['content_sha256']
+            availability = snapshot_path.with_suffix('.availability')
+            if (availability / 'player_history.json').exists() and (availability / 'manifest.json').exists():
+                from player_identity_crosswalk import build
+                try:
+                    crosswalk = build(snapshot, report, folder, availability)
+                    save_new(folder / 'player_crosswalk.json', crosswalk)
+                    diagnostic['player_crosswalk'] = {
+                        'links': len(crosswalk['links']),
+                        'ambiguous': len(crosswalk['ambiguous_espn_ids']),
+                        'mapped_roster_entries': sum(len(g['player_ids']) for g in crosswalk['fixtures']),
+                        'unresolved_roster_entries': sum(len(g['unresolved_espn_ids']) for g in crosswalk['fixtures']),
+                        'content_sha256': crosswalk['content_sha256']}
+                except (OSError, KeyError, ValueError, TypeError) as exc:
+                    diagnostic['player_crosswalk'] = {'status': 'source_error', 'detail': str(exc)[:600]}
+
         return diagnostic
     except subprocess.TimeoutExpired:
         return {'status': 'source_timeout'}

@@ -222,6 +222,7 @@ def main():
                     if schedule['leagueSchedule']['seasonYear'] != official['season']:
                         raise ValueError('Unexpected NBA schedule season')
                     snapshot = json.loads(args.snapshot.read_text())
+                    result['baseline_snapshot_sha256'] = snapshot['content_sha256']
                     teams = {canonical(g[side]) for g in snapshot['predictions']
                              for side in ('home_team', 'away_team')}
                     bindings, unresolved = bind_history(schedule, json.loads(args.history.read_text()),
