@@ -48,7 +48,13 @@ def normalize(game_id, directory, play_bytes, box_bytes, observed_at):
             # The 2026-27 feed omits personId on team and administrative events.
             # pbpstats expects 0 for an event with no player attribution.
             for action in play['actions']:
-                if action['actionType'] in {'period', 'game', 'timeout', 'rebound', 'violation', 'turnover'} and action.get('personId') is None:
+                kind = action['actionType']
+                description = action.get('description', '').casefold()
+                team_event = (kind == 'jumpball' and 'tip to team (' in description
+                              or kind == 'foul' and description.startswith('team foul '))
+                if action.get('personId') is None and (
+                        kind in {'period', 'game', 'timeout', 'rebound', 'violation', 'turnover'}
+                        or team_event):
                     action['personId'] = 0
             return {'game': play}
 

@@ -174,3 +174,13 @@ fixtures, 235 had linked IDs and seven supported research effects. Coverage was
 2 of 39 provider starter entries and 5 of 151 historical rotation entries.
 The pilot did not establish a full two-sided rotation adjustment or emit
 an updated ML/+20 probability.
+
+The expanded November 9 pilot requested 68 additional completed games
+involving at least one of the 16 target teams, using the same official
+schedule and league-date cutoff. Across both batches, 44 of 118 games
+normalized and yielded 8,869 possessions. Recognizing explicit team fouls
+and jump balls tipped to a team recovered five previously rejected games.
+The fit covered 24 of 39 provider starter entries and 80 of 151 historical
+rotation entries. Four of eight fixtures had supported effects on both
+sides. That coverage does not establish replacement roles or minutes/usage
+redistribution, which remain required for a full adjustment.
