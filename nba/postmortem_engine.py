@@ -263,6 +263,11 @@ def team_projection(team, assumptions):
 def matchup(game, teams, ratings, assumptions, simulations, seed):
     names = (game['home_team'],game['away_team'])
     rotations = {t:team_projection(teams[t],assumptions.get(t,{})) for t in names}
+    return matchup_path(game, teams, ratings, rotations, simulations, seed)
+
+
+def matchup_path(game, teams, ratings, rotations, simulations, seed):
+    names = (game['home_team'], game['away_team'])
     projections = {}
     committed = {t:number(teams[t]['turnover_rate']+rotations[t]['turnover_rate_delta'],
                          .01,.4,'availability/fatigue turnover rate') for t in names}
