@@ -85,16 +85,62 @@ def build(snapshot, scenario, coverage, team_ml, archive, emitted_at, simulation
     return {**report, 'content_sha256': digest(report)}
 
 
+def build_slate(snapshot, slate, coverage, team_ml, archive, emitted_at, simulations=4000):
+    for report in (snapshot, slate, coverage, team_ml):
+        verify_seal(report)
+    baseline = snapshot['content_sha256']
+    if any(r['baseline_snapshot_sha256'] != baseline for r in (slate, coverage, team_ml)):
+        raise ValueError('Slate inputs belong to different baselines')
+    if slate['coverage_sha256'] != coverage['content_sha256']:
+        raise ValueError('Slate coverage digest mismatch')
+    if utc(slate['emitted_at_utc']) > utc(emitted_at):
+        raise ValueError('Slate audit follows this emission')
+    rows = {str(row['game_id']): row for row in slate['games']}
+    fixtures = {str(g['game_id']): g for g in snapshot['predictions']}
+    if len(rows) != len(slate['games']) or set(rows) != set(fixtures):
+        raise ValueError('Slate fixture set mismatch')
+    results = []
+    for gid, fixture in fixtures.items():
+        scenario = rows[gid]['rotation_scenario']
+        if utc(emitted_at) >= utc(fixture['tipoff_utc']):
+            status = 'already_started'
+        elif scenario is None:
+            status = 'missing_rotation_scenario'
+        else:
+            if scenario['game_id'] != gid:
+                raise ValueError('Rotation scenario fixture mismatch')
+            results.append(build(snapshot, scenario, coverage, team_ml, archive, emitted_at, simulations))
+            continue
+        results.append({'game_id': gid, 'home_team': fixture['home_team'],
+                        'away_team': fixture['away_team'], 'tipoff_utc': fixture['tipoff_utc'],
+                        'status': 'PASS', 'blocked': {'fixture': [status]}, 'comparison': None})
+    report = {'model_version': 'NBA_CONDITIONAL_ROTATION_PATH_V1',
+              'baseline_snapshot_sha256': baseline, 'slate_sha256': slate['content_sha256'],
+              'emitted_at_utc': emitted_at, 'fixtures': len(results),
+              'research_scenarios': sum(r['comparison'] is not None for r in results),
+              'games': results, 'calibrated': False, 'production_approved': False}
+    return {**report, 'content_sha256': digest(report)}
+
+
 def main():
     parser = argparse.ArgumentParser()
-    for name in ('snapshot', 'scenario', 'coverage', 'team-ml', 'possessions', 'output'):
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--scenario', type=Path)
+    mode.add_argument('--slate', type=Path)
+    for name in ('snapshot', 'coverage', 'team-ml', 'possessions', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
     args = parser.parse_args()
-    report = build(*(json.loads(path.read_text()) for path in
-                     (args.snapshot, args.scenario, args.coverage, args.team_ml, args.possessions)),
-                   datetime.now(timezone.utc).isoformat())
+    emitted_at = datetime.now(timezone.utc).isoformat()
+    documents = [json.loads(path.read_text()) for path in
+                 (args.snapshot, args.scenario or args.slate, args.coverage, args.team_ml, args.possessions)]
+    if args.slate:
+        report = build_slate(*documents, emitted_at)
+        summary = {key: report[key] for key in ('fixtures', 'research_scenarios')}
+    else:
+        report = build(*documents, emitted_at)
+        summary = {key: report[key] for key in ('status', 'blocked', 'rotation_rating_deltas')}
     save_new(args.output, report)
-    print(json.dumps({key: report[key] for key in ('status', 'blocked', 'rotation_rating_deltas')}))
+    print(json.dumps(summary))
 
 
 if __name__ == '__main__':
