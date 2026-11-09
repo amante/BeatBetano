@@ -1,5 +1,6 @@
 """Capture completed NBA LiveData and normalize it for the possession bridge."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import re
@@ -104,20 +105,24 @@ def capture(game_ids, directory):
         raise ValueError('Supply distinct NBA regular-season game IDs')
     directory.mkdir(parents=True, exist_ok=False)
     (directory / 'pbp').mkdir()
-    games, rejected = [], []
-    with requests.Session() as session:
-        for gid in game_ids:
-            try:
-                play = session.get(f'{BASE}/playbyplay/playbyplay_{gid}.json', timeout=15)
-                play.raise_for_status()
-                box = session.get(f'{BASE}/boxscore/boxscore_{gid}.json', timeout=15)
-                box.raise_for_status()
-                observed = datetime.now(timezone.utc).isoformat()
-                (directory / 'pbp' / f'live_{gid}.json').write_bytes(play.content)
-                (directory / f'boxscore_{gid}.json').write_bytes(box.content)
-                games.append(normalize(gid, directory, play.content, box.content, observed))
-            except (requests.RequestException, ValueError, KeyError, TypeError, AttributeError, IndexError, EventOrderError, InvalidNumberOfStartersException) as exc:
-                rejected.append({'game_id': gid, 'reason': f'{type(exc).__name__}: {exc}'})
+    def fetch(gid):
+        try:
+            play = requests.get(f'{BASE}/playbyplay/playbyplay_{gid}.json', timeout=15)
+            play.raise_for_status()
+            box = requests.get(f'{BASE}/boxscore/boxscore_{gid}.json', timeout=15)
+            box.raise_for_status()
+            observed = datetime.now(timezone.utc).isoformat()
+            (directory / 'pbp' / f'live_{gid}.json').write_bytes(play.content)
+            (directory / f'boxscore_{gid}.json').write_bytes(box.content)
+            return normalize(gid, directory, play.content, box.content, observed), None
+        except (requests.RequestException, ValueError, KeyError, TypeError,
+                AttributeError, IndexError, EventOrderError, InvalidNumberOfStartersException) as exc:
+            return None, {'game_id': gid, 'reason': f'{type(exc).__name__}: {exc}'}
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        outcomes = list(pool.map(fetch, game_ids))
+    games = [game for game, _ in outcomes if game is not None]
+    rejected = [error for _, error in outcomes if error is not None]
     report = {'games': games, 'rejected': rejected, 'parser_version': version('pbpstats')}
     if games:
         latest = max(games, key=lambda g: utc(g['evidence']['observed_at_utc']))
