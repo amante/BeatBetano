@@ -1,0 +1,68 @@
+{
+  "sport": "soccer",
+  "as_of_utc": "2026-11-08T15:57:30.185591Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401879240",
+      "start_utc": "2026-11-08T16:30:00Z",
+      "participants": [
+        "Manchester United",
+        "Aston Villa"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.425153085747173,
+          "draw": 0.2481321258392175,
+          "away": 0.32671478841360946
+        },
+        "model_version": "soccer-existing-poisson-1bd135e4c153",
+        "assumptions": [
+          "Existing Premier League season-frozen Poisson model; no current lineup adjustment."
+        ],
+        "unresolved_inputs": [
+          "Confirmed lineup and current availability"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "probabilities",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "daily-soccer",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_output_sha256": "e10578752154abb56e3884b53640831623a843e952d5152333367e452be04f91",
+  "source_model_output": {
+    "event_id": "401879240",
+    "home": "Manchester United",
+    "away": "Aston Villa",
+    "start_utc": "2026-11-08T16:30Z",
+    "model_version": "soccer-existing-poisson-1bd135e4c153",
+    "assumptions": [
+      "Existing Premier League season-frozen Poisson model; no current lineup adjustment."
+    ],
+    "unresolved_inputs": [
+      "Confirmed lineup and current availability"
+    ],
+    "probabilities": [
+      0.425153085747173,
+      0.2481321258392175,
+      0.32671478841360946
+    ]
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-08T15:57:30.196982+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "bfa109ac2e60a2d361c011be718abd2581a34af4969247932c32e723b8807b35"
+}

@@ -1,0 +1,77 @@
+{
+  "sport": "nfl",
+  "as_of_utc": "2026-11-08T15:57:29.708278Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401873048",
+      "start_utc": "2026-11-08T21:25:00Z",
+      "participants": [
+        "SEA",
+        "ARI"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.775048,
+          "away": 0.22495200000000004
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nfl-historical-elo",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_output_sha256": "72fdb391fc5c8ad2bc6b0703688b2abbf21f212b138b96c4a29883e4b9c45e03",
+  "source_model_output": {
+    "event_id": "401873048",
+    "start_utc": "2026-11-08T21:25:00+00:00",
+    "participants": [
+      "SEA",
+      "ARI"
+    ],
+    "home_team": "SEA",
+    "away_team": "ARI",
+    "official_baseline": null,
+    "historical_elo_candidate": 0.775048,
+    "challenger": null,
+    "final_probability": null,
+    "away_probability": null,
+    "all_inputs_verified": false,
+    "independent_validation_passed": false,
+    "starting_lineups_verified": false,
+    "injury_report_verified": false,
+    "weather_verified": false,
+    "props": null,
+    "missing_evidence": [
+      "confirmed_inactives",
+      "starters",
+      "weather",
+      "matchups",
+      "independent_calibration"
+    ]
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-08T15:57:29.867962+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "5671dd7aebbf66c435b95f2b31ebab7b350c7339fd1fd9ff71b16c14163fcc13"
+}

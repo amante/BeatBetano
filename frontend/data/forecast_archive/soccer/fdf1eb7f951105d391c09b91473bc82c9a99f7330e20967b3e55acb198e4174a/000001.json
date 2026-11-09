@@ -1,0 +1,68 @@
+{
+  "sport": "soccer",
+  "as_of_utc": "2026-11-07T15:39:32.116027Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401878757",
+      "start_utc": "2026-11-07T17:30:00Z",
+      "participants": [
+        "Nottingham Forest",
+        "Manchester City"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.15013412095710543,
+          "draw": 0.19812824201046764,
+          "away": 0.6517376370324269
+        },
+        "model_version": "soccer-existing-poisson-1bd135e4c153",
+        "assumptions": [
+          "Existing Premier League season-frozen Poisson model; no current lineup adjustment."
+        ],
+        "unresolved_inputs": [
+          "Confirmed lineup and current availability"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "probabilities",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "daily-soccer",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_output_sha256": "47b50a2fb063017d4a8b2b74da47baeb6c112589fbf3e3764b9583490b2ab4ce",
+  "source_model_output": {
+    "event_id": "401878757",
+    "home": "Nottingham Forest",
+    "away": "Manchester City",
+    "start_utc": "2026-11-07T17:30Z",
+    "model_version": "soccer-existing-poisson-1bd135e4c153",
+    "assumptions": [
+      "Existing Premier League season-frozen Poisson model; no current lineup adjustment."
+    ],
+    "unresolved_inputs": [
+      "Confirmed lineup and current availability"
+    ],
+    "probabilities": [
+      0.15013412095710543,
+      0.19812824201046764,
+      0.6517376370324269
+    ]
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-07T15:39:32.127940+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "504a8cb1d8088b62e54612374f5ecc28638b58ca4c69b1f840c016209afea87f"
+}
