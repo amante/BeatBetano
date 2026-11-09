@@ -1,0 +1,204 @@
+{
+  "game_id": "401909953",
+  "emitted_at_utc": "2026-11-09T23:34:29.984465+00:00",
+  "tipoff_utc": "2026-11-10T00:00:00Z",
+  "home_team": "CHA",
+  "away_team": "CLE",
+  "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+  "baseline_snapshot_sha256": "63c7e74e06c32726d5ac9ae7e338b4e4fef130be162eb9c2520a017acb2b68a6",
+  "scenario_sha256": "32650b08e53bf92cc24709bb0a315e0f0cb8c1c4c4550755de035c42387272a1",
+  "coverage_sha256": "10954c2508378a44860533f0b764abe999df81995b0b2cb12f763fb346f90ce4",
+  "team_ml_sha256": "d161376860baed1b6f3f2adb4f0a147fc7bfb89972021cb4ead2f8c76e679f34",
+  "possession_sha256": "40ed163e35414cb97fb395648d997b9c2197787b658d531fc27724b1af18c9fb",
+  "status": "research_scenario",
+  "rotation_rating_deltas": {
+    "CHA": {
+      "offense_delta_per_100": -0.0430005470465414,
+      "defense_delta_per_100": 0.3637706406050943,
+      "turnover_rate_delta": 0.0,
+      "forced_turnover_rate_delta": 0.0
+    },
+    "CLE": {
+      "offense_delta_per_100": -0.006159535086738482,
+      "defense_delta_per_100": 0.1909240727854962,
+      "turnover_rate_delta": 0.0,
+      "forced_turnover_rate_delta": 0.0
+    }
+  },
+  "blocked": {},
+  "comparison": {
+    "reference": {
+      "teams": {
+        "CHA": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "CLE": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "projections": {
+        "CHA": {
+          "availability_adjusted_ortg": 103.44945484970451,
+          "availability_adjusted_drtg": 112.11940041718412,
+          "possessions": 98.25,
+          "ppp": 1.1788088422992338,
+          "regulation_points": 115.81796875589971,
+          "turnover_rate": 0.14921313160903987,
+          "expected_turnovers": 14.660190180588167,
+          "turnover_pressure_delta_ppp": 0.03085014951710343,
+          "points_after_opponent_turnovers": 17.00810768326373,
+          "transition_bonus": 0.12576118137292208,
+          "offensive_explosiveness": {
+            "observed_blocks": 116,
+            "eight_plus_points_in_four_non_turnover_possessions": 0.14655172413793102
+          }
+        },
+        "CLE": {
+          "availability_adjusted_ortg": 118.20564383522353,
+          "availability_adjusted_drtg": 122.452266713337,
+          "possessions": 98.25,
+          "ppp": 1.1809195193583588,
+          "regulation_points": 116.02534277695875,
+          "turnover_rate": 0.13617510757265944,
+          "expected_turnovers": 13.37920431901379,
+          "turnover_pressure_delta_ppp": -0.011272400317432898,
+          "points_after_opponent_turnovers": 17.463088472263234,
+          "transition_bonus": 0.013976291655430961,
+          "offensive_explosiveness": {
+            "observed_blocks": 126,
+            "eight_plus_points_in_four_non_turnover_possessions": 0.1984126984126984
+          }
+        }
+      },
+      "path": {
+        "probabilities": {
+          "home_ml": 0.497,
+          "away_ml": 0.503,
+          "home_plus20": 0.24525,
+          "away_plus20": 0.2475,
+          "either_plus20": 0.492,
+          "both_plus20": 0.00075
+        },
+        "monte_carlo_se": {
+          "home_ml": 0.007905551846645495,
+          "away_ml": 0.007905551846645495,
+          "home_plus20": 0.006802617832496545,
+          "away_plus20": 0.006823557539876101,
+          "either_plus20": 0.007904682156797956,
+          "both_plus20": 0.00043285029167138147
+        },
+        "mean_points_including_overtime": {
+          "home": 116.354,
+          "away": 116.2565
+        },
+        "simulations": 4000,
+        "seed": 2026271,
+        "includes_overtime": true,
+        "overtime_games": 111,
+        "method": "empirical_four_possession_block_tilt_v1",
+        "calibrated": false
+      }
+    },
+    "conditional": {
+      "teams": {
+        "CHA": {
+          "offense_delta_per_100": -0.0430005470465414,
+          "defense_delta_per_100": 0.3637706406050943,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "CLE": {
+          "offense_delta_per_100": -0.006159535086738482,
+          "defense_delta_per_100": 0.1909240727854962,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "projections": {
+        "CHA": {
+          "availability_adjusted_ortg": 103.40645430265796,
+          "availability_adjusted_drtg": 112.48317105778922,
+          "possessions": 98.25,
+          "ppp": 1.1803289954043683,
+          "regulation_points": 115.96732379847919,
+          "turnover_rate": 0.14921313160903987,
+          "expected_turnovers": 14.660190180588167,
+          "turnover_pressure_delta_ppp": 0.030891067364848847,
+          "points_after_opponent_turnovers": 17.02844612225351,
+          "transition_bonus": 0.12576118137292208,
+          "offensive_explosiveness": {
+            "observed_blocks": 116,
+            "eight_plus_points_in_four_non_turnover_possessions": 0.14655172413793102
+          }
+        },
+        "CLE": {
+          "availability_adjusted_ortg": 118.19948430013679,
+          "availability_adjusted_drtg": 122.64319078612249,
+          "possessions": 98.25,
+          "ppp": 1.1844609882738821,
+          "regulation_points": 116.37329209790892,
+          "turnover_rate": 0.13617510757265944,
+          "expected_turnovers": 13.37920431901379,
+          "turnover_pressure_delta_ppp": -0.011307042457093235,
+          "points_after_opponent_turnovers": 17.51500708008345,
+          "transition_bonus": 0.013976291655430961,
+          "offensive_explosiveness": {
+            "observed_blocks": 126,
+            "eight_plus_points_in_four_non_turnover_possessions": 0.1984126984126984
+          }
+        }
+      },
+      "path": {
+        "probabilities": {
+          "home_ml": 0.4775,
+          "away_ml": 0.5225,
+          "home_plus20": 0.23125,
+          "away_plus20": 0.255,
+          "either_plus20": 0.485,
+          "both_plus20": 0.00125
+        },
+        "monte_carlo_se": {
+          "home_ml": 0.007897685578699623,
+          "away_ml": 0.007897685578699623,
+          "home_plus20": 0.006666585285961622,
+          "away_plus20": 0.006891570938472592,
+          "either_plus20": 0.00790213578724132,
+          "both_plus20": 0.0005586674995021637
+        },
+        "mean_points_including_overtime": {
+          "home": 115.8765,
+          "away": 116.58825
+        },
+        "simulations": 4000,
+        "seed": 2026271,
+        "includes_overtime": true,
+        "overtime_games": 100,
+        "method": "empirical_four_possession_block_tilt_v1",
+        "calibrated": false
+      }
+    },
+    "delta": {
+      "home_ml": -0.019500000000000017,
+      "away_ml": 0.019499999999999962,
+      "home_plus20": -0.013999999999999985,
+      "away_plus20": 0.007500000000000007,
+      "either_plus20": -0.007000000000000006,
+      "both_plus20": 0.0005
+    }
+  },
+  "assumptions": [
+    "Conditional minutes and availability from the scenario.",
+    "Turnover pressure and fatigue held fixed across both branches.",
+    "Historical usage is a coverage check and does not alter the rating deltas."
+  ],
+  "calibrated": false,
+  "production_approved": false,
+  "no_odds_input": true,
+  "content_sha256": "f8d646cf6178b11d431e19bee318ebeb4af3410dd9e60c9ea28ab89c773168c0"
+}
