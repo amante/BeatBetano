@@ -4,6 +4,7 @@ Historical completed-game minutes are a provisional role estimate, NOT confirmed
 pregame starters. A missing possession or scoring input remains null.
 """
 import argparse,json,statistics
+from prospective import utc
 from pathlib import Path
 
 def build(snapshot,history,player_sample):
@@ -13,14 +14,17 @@ def build(snapshot,history,player_sample):
  if not isinstance(players,list):raise ValueError("Invalid player sample")
  result={}
  for g in snapshot["predictions"]:
-  tip=g["tipoff_utc"]
+  tip=utc(g["tipoff_utc"])
+  cutoff=utc(snapshot.get("created_at_utc",g["tipoff_utc"]))
   teams={}
   for team in (g["home_team"],g["away_team"]):
    by_player={}
    for p in players:
     if p.get("team")!=team:continue
     event=games_by_id.get(str(p.get("game_id")))
-    if not event or event["tipoff_utc"]>=tip:continue
+    if not event or utc(event["tipoff_utc"])>=min(cutoff,tip):continue
+    observed=p.get("observed_at_utc")
+    if observed and not (utc(observed)<=cutoff and utc(observed)<tip):continue
     minute=p.get("minutes_played")
     if p.get("did_not_play") or type(minute) not in (int,float) or not 0<=minute<=65:continue
     pid=str(p.get("player_id") or "")
@@ -47,7 +51,7 @@ def build(snapshot,history,player_sample):
     "efficiency_status":"unavailable_requires_verified_FGA_FTA_ORB_TOV_points_or_possession_feed",
     "minutes_status":"historical_estimate_not_availability_adjusted"}
   result[str(g["game_id"])]={"away_team":g["away_team"],"home_team":g["home_team"],
-   "tipoff_utc":tip,"teams":teams,"current_starters_confirmed":False,
+   "tipoff_utc":g["tipoff_utc"],"teams":teams,"current_starters_confirmed":False,
    "sporting_probabilities_adjusted":False}
  return {"snapshot_sha256":snapshot["content_sha256"],"games":result,
   "source":"historical ESPN completed-game minutes (sample), not lineup confirmation",

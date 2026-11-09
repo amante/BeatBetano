@@ -1,4 +1,4 @@
-import sys,unittest
+import json,sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from rotation_efficiency_report import build
@@ -17,6 +17,13 @@ class Tests(unittest.TestCase):
   a,b,c=data();b[2]["tipoff_utc"]="2026-11-03T01:00:00Z"
   t=build(a,b,c)["games"]["future"]["teams"]["BOS"]["provisional_rotation"][0]
   self.assertIsNone(t["minutes_projection"])
+ def test_observation_after_forecast_cutoff_is_excluded(self):
+  snapshot,history,players=data()
+  snapshot['created_at_utc']='2026-10-31T22:00:00Z'
+  players['players'][2]['observed_at_utc']='2026-10-31T23:00:00Z'
+  report=build(snapshot,history,players)
+  self.assertIsNone(report['games']['future']['teams']['BOS']['provisional_rotation'][0]['minutes_projection'])
+  json.dumps(report)
  def test_tiny_sample_not_projection(self):
   a,b,c=data();c["players"]=c["players"][:1]
   self.assertIsNone(build(a,b,c)["games"]["future"]["teams"]["BOS"]["provisional_rotation"][0]["minutes_projection"])

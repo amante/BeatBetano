@@ -41,11 +41,13 @@ def sporting_report(snapshot, evidence=None, boxscores=None, **kwargs):
     return report, report_summary
 
 
-def observe_availability(snapshot_path, snapshot):
+def observe_availability(snapshot_path, snapshot, history_path=None):
     """Collect a later observation with a time budget independent of the baseline."""
     folder = snapshot_path.with_suffix('.availability')
     command = [sys.executable, str(Path(__file__).with_name('capture_availability.py').resolve()),
                '--snapshot', str(snapshot_path), '--output-dir', str(folder)]
+    if history_path is not None:
+        command += ['--history', str(history_path)]
     try:
         completed = subprocess.run(command, capture_output=True, text=True, timeout=75)
         if completed.returncode:
@@ -98,7 +100,7 @@ def main():
     sporting, integration = sporting_report(snapshot,evidence,boxscores)
     save_new(target.with_name(target.stem+".postmortem.json"),sporting)
     if x.capture_availability:
-        integration['availability_observation'] = observe_availability(target, snapshot)
+        integration['availability_observation'] = observe_availability(target, snapshot, x.history)
     with target.with_name(target.stem+".integration.json").open("x") as f:
         json.dump(integration,f,indent=2)
     print(json.dumps({"date":x.date,"games":len(snapshot["predictions"]),
