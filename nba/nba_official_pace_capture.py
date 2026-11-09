@@ -3,7 +3,7 @@
 Research-only capture; no fallback to fabricated values or forecast override.
 NBA Stats may throttle/block Actions traffic: surface failure as unavailable.
 """
-import argparse,json
+import argparse,hashlib,json
 from datetime import date,datetime,timedelta,timezone
 from pathlib import Path
 import requests
@@ -27,7 +27,7 @@ def parse(payload):
  if not rows:raise ValueError("No compatible NBA advanced rows")
  return rows
 
-def collect(game_date,session=None,observed_at=None):
+def collect(game_date,session=None,observed_at=None,raw_output=None):
  day=date.fromisoformat(game_date)
  observed=observed_at or datetime.now(timezone.utc).isoformat()
  now=datetime.fromisoformat(observed.replace("Z","+00:00"))
@@ -42,21 +42,29 @@ def collect(game_date,session=None,observed_at=None):
  "PlusMinus":"N","PaceAdjust":"N","Rank":"N"}
  result={"target_date":game_date,"cutoff_date":cutoff.isoformat(),
   "captured_at_utc":observed,"season":season,"source_url":URL,
-  "status":"unavailable","teams":[],"no_odds_input":True,
+  "status":"unavailable","teams":[],"no_odds_input":True,"query":params,
   "production_probability_adjustment_authorized":False}
  try:
   response=(session or requests.Session()).get(URL,params=params,headers=HEADERS,timeout=18)
   response.raise_for_status()
+  if raw_output is not None:
+   raw = response.content
+   with Path(raw_output).open("xb") as output:
+    output.write(raw)
+   result["response_sha256"] = hashlib.sha256(raw).hexdigest()
   result["teams"]=parse(response.json())
   result["status"]="observed_unvalidated"
  except (requests.RequestException,ValueError,KeyError,TypeError) as exc:
   result["error_type"]=type(exc).__name__
+ if observed_at is None:
+  result["captured_at_utc"]=datetime.now(timezone.utc).isoformat()
  return result
 
 def main():
  p=argparse.ArgumentParser()
  p.add_argument("--date",required=True);p.add_argument("--output",required=True)
- args=p.parse_args();out=collect(args.date)
+ p.add_argument("--raw-output",type=Path)
+ args=p.parse_args();out=collect(args.date,raw_output=args.raw_output)
  f=Path(args.output);f.parent.mkdir(parents=True,exist_ok=True);f.write_text(json.dumps(out,indent=2))
  print(json.dumps({"status":out["status"],"teams":len(out["teams"]),"cutoff":out["cutoff_date"]}))
 if __name__=="__main__":main()

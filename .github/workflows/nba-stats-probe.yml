@@ -1,0 +1,35 @@
+name: NBA Stats coverage probe
+on:
+  push:
+    branches: [codex/nba-stats-probe]
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m pip install requests
+      - name: Fetch and report NBA Stats team coverage
+        run: |
+          mkdir -p nba-stats-probe
+          game_date=$(TZ=America/Santiago date +%F)
+          python nba/nba_official_pace_capture.py --date "$game_date" --output nba-stats-probe/teams.json --raw-output nba-stats-probe/response.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path('nba-stats-probe/teams.json').read_text())
+          teams = {row['TEAM_ID'] for row in result['teams']}
+          print(f"NBA_STATS_PROBE season={result['season']} cutoff={result['cutoff_date']} "
+                f"teams={len(teams)} rows={len(result['teams'])} "
+                f"error={result.get('error_type')} status={result['status']}")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nba-stats-team-coverage
+          path: nba-stats-probe/
