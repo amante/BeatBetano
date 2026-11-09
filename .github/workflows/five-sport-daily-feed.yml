@@ -43,6 +43,7 @@ jobs:
           name: daily-model-outputs-${{ github.run_id }}
           path: |
             results/daily-models/*.json
+            results/daily-models/nba-*.availability/*.json
             frontend/data/forecast_status.json
             frontend/data/forecast_archive
           retention-days: 90
