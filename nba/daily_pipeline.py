@@ -62,6 +62,28 @@ def observe_availability(snapshot_path, snapshot, history_path=None):
         return {'status':'source_error', 'detail':str(exc)[:600]}
 
 
+def observe_team_metrics(snapshot_path, history_path, day):
+    folder = snapshot_path.with_suffix('.team-metrics')
+    script = Path(__file__).with_name('livedata_team_metrics.py').resolve()
+    command = [sys.executable, str(script), '--date', day, '--snapshot', str(snapshot_path),
+               '--history', str(history_path), '--output-dir', str(folder)]
+    try:
+        completed = subprocess.run(command, capture_output=True, text=True, timeout=90)
+        path = folder / 'team_metrics.json'
+        if not path.exists():
+            return {'status': 'source_error', 'detail': completed.stderr[-600:]}
+        report = json.loads(path.read_text())
+        return {'status': report['selected_source'], 'cutoff_date': report['cutoff_date'],
+                'official_teams': len(report['official']['teams']),
+                'fallback_games': len(report.get('fallback', {}).get('games', [])),
+                'fallback_errors': len(report.get('fallback', {}).get('errors', [])),
+                'crosswalk': report.get('crosswalk')}
+    except subprocess.TimeoutExpired:
+        return {'status': 'source_timeout'}
+    except (OSError, ValueError, KeyError) as exc:
+        return {'status': 'source_error', 'detail': str(exc)[:600]}
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--history",required=True,help="Validated completed-game ledger JSON")
@@ -72,6 +94,7 @@ def main():
     p.add_argument('--postmortem-boxscores',help='Paired historical boxscore archive JSON')
     p.add_argument('--forecast-archive',help='Persistent per-event forecast revision directory')
     p.add_argument('--capture-availability',action='store_true',help='Collect a separate pregame roster and injury observation')
+    p.add_argument('--capture-team-metrics',action='store_true')
     x=p.parse_args()
     now=datetime.now(timezone.utc).isoformat()
     scoreboard=fetch_day(x.date,now)
@@ -101,6 +124,8 @@ def main():
     save_new(target.with_name(target.stem+".postmortem.json"),sporting)
     if x.capture_availability:
         integration['availability_observation'] = observe_availability(target, snapshot, x.history)
+    if x.capture_team_metrics:
+        integration["team_metrics_observation"] = observe_team_metrics(target, x.history, x.date)
     with target.with_name(target.stem+".integration.json").open("x") as f:
         json.dump(integration,f,indent=2)
     print(json.dumps({"date":x.date,"games":len(snapshot["predictions"]),
