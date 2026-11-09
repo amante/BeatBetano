@@ -3,6 +3,7 @@
 Fetches live fixtures and generates an immutable three-model snapshot. Historical
 game data must be supplied and inspected separately; never fabricate team ratings.
 """
+import subprocess
 import sys
 import argparse,json
 from datetime import datetime,timezone
@@ -40,6 +41,25 @@ def sporting_report(snapshot, evidence=None, boxscores=None, **kwargs):
     return report, report_summary
 
 
+def observe_availability(snapshot_path, snapshot):
+    """Collect a later observation with a time budget independent of the baseline."""
+    folder = snapshot_path.with_suffix('.availability')
+    command = [sys.executable, str(Path(__file__).with_name('capture_availability.py').resolve()),
+               '--snapshot', str(snapshot_path), '--output-dir', str(folder)]
+    try:
+        completed = subprocess.run(command, capture_output=True, text=True, timeout=75)
+        if completed.returncode:
+            return {'status':'source_error', 'detail':completed.stderr[-600:]}
+        summary = json.loads((folder/'summary.json').read_text())
+        if summary['statistical_snapshot_sha256'] != snapshot['content_sha256']:
+            raise ValueError('Availability observation belongs to another snapshot')
+        return {'status':'captured', **summary}
+    except subprocess.TimeoutExpired:
+        return {'status':'source_timeout'}
+    except (OSError, ValueError, KeyError) as exc:
+        return {'status':'source_error', 'detail':str(exc)[:600]}
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--history",required=True,help="Validated completed-game ledger JSON")
@@ -49,6 +69,7 @@ def main():
     p.add_argument('--postmortem-evidence',help='Verified two-sided player/possession features JSON')
     p.add_argument('--postmortem-boxscores',help='Paired historical boxscore archive JSON')
     p.add_argument('--forecast-archive',help='Persistent per-event forecast revision directory')
+    p.add_argument('--capture-availability',action='store_true',help='Collect a separate pregame roster and injury observation')
     x=p.parse_args()
     now=datetime.now(timezone.utc).isoformat()
     scoreboard=fetch_day(x.date,now)
@@ -76,6 +97,8 @@ def main():
     boxscores = json.loads(Path(x.postmortem_boxscores).read_text()) if x.postmortem_boxscores else {"games":[]}
     sporting, integration = sporting_report(snapshot,evidence,boxscores)
     save_new(target.with_name(target.stem+".postmortem.json"),sporting)
+    if x.capture_availability:
+        integration['availability_observation'] = observe_availability(target, snapshot)
     with target.with_name(target.stem+".integration.json").open("x") as f:
         json.dump(integration,f,indent=2)
     print(json.dumps({"date":x.date,"games":len(snapshot["predictions"]),

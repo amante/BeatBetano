@@ -1,4 +1,4 @@
-import unittest,sys,json,tempfile
+import unittest,sys,json,tempfile,subprocess
 from unittest.mock import patch
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
@@ -40,6 +40,34 @@ class Tests(unittest.TestCase):
             self.assertFalse(target.exists())
             status=json.loads((root/"pregame_status.json").read_text())
             self.assertEqual(status["status"],"no_eligible_pregame_games")
+
+    def test_sidecar_timeout_preserves_archived_baseline(self):
+        from nba.daily_pipeline import observe_availability
+        h,f=self.setup()
+        snapshot=run(h,f,"2026-10-23T22:02:00Z")
+        with tempfile.TemporaryDirectory() as d:
+            target=Path(d)/"snapshot.json"
+            target.write_text(json.dumps(snapshot))
+            before=target.read_bytes()
+            with patch("nba.daily_pipeline.subprocess.run",
+                       side_effect=subprocess.TimeoutExpired("capture",75)):
+                result=observe_availability(target,snapshot)
+            self.assertEqual(result,{"status":"source_timeout"})
+            self.assertEqual(target.read_bytes(),before)
+
+    def test_sidecar_summary_must_match_baseline(self):
+        from nba.daily_pipeline import observe_availability
+        h,f=self.setup()
+        snapshot=run(h,f,"2026-10-23T22:02:00Z")
+        with tempfile.TemporaryDirectory() as d:
+            target=Path(d)/"snapshot.json"
+            folder=target.with_suffix(".availability")
+            folder.mkdir()
+            (folder/"summary.json").write_text(json.dumps({"statistical_snapshot_sha256":"wrong"}))
+            with patch("nba.daily_pipeline.subprocess.run",return_value=subprocess.CompletedProcess([],0)):
+                result=observe_availability(target,snapshot)
+            self.assertEqual(result["status"],"source_error")
+            self.assertIn("another snapshot",result["detail"])
 
     def test_no_future_fixtures(self):
         h,f=self.setup();f["future_fixtures"]=[]

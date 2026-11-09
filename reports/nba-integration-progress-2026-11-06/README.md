@@ -44,3 +44,22 @@ and unknown starters, two-sided ML/+20 outputs, invalid/future lineup rejection,
 and explicit zero integrated output when data are absent. These tests verify
 behavior, not predictive accuracy or real-data availability. No live integrated
 forecast has been generated or claimed by this change. No odds inputs added.
+
+## November 9 live capture
+
+The daily NBA path now publishes its baseline before running the existing
+availability collector. The collector is bounded to 75 seconds; timeouts and
+failures are recorded without withdrawing the baseline. Its later observation
+is stored separately with hashes and included in the workflow artifacts; a
+compact summary is included in the daily status. Its observations are not
+retroactively attached to the earlier forecast cutoff.
+
+A local live smoke test at 08:49 Chile time used the verified November 4
+historical ledger (no attempt to publish or claim a current production run).
+It emitted 8 baseline forecasts and captured rosters for 16 teams: 281 roster
+entries, 56 matched provider injury claims (41 out, 15 uncertain), and provider
+lineups for 16 teams. The remaining 225 statuses were unknown; zero teams had
+verified full availability and zero games had integrated probabilities.
+These injury claims are supplementary and not an official NBA injury report.
+The next data connection is verified historical player minutes/possessions and
+replacement quality, plus a forecast update with its own later cutoff.

@@ -93,7 +93,7 @@ def generate_source(sport,games,as_of,workdir,archive):
         script={'nba':'nba/daily_pipeline.py','nfl':'nfl/nfl_hoy.py','nhl':'nhl/nhl_hoy.py'}[sport]
         command=[sys.executable,str(ROOT/script),'--date',day,'--output',str(output),'--forecast-archive',str(archive)]
         if history is not None:command+=['--history',str(history)]
-        if sport=='nba':command+=['--allow-empty']
+        if sport=='nba':command+=['--allow-empty','--capture-availability']
         done=subprocess.run(command,cwd=ROOT,capture_output=True,text=True,timeout=180)
         if done.returncode:raise ValueError(sport+' source generation failed: '+done.stderr[-800:])
         if output.exists():outputs.append(json.loads(output.read_text()))
