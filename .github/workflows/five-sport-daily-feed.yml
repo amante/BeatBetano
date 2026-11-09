@@ -36,6 +36,15 @@ jobs:
             --archive frontend/data/forecast_archive \
             --workdir results/daily-models \
             --summary frontend/data/forecast_status.json
+      - name: Maintain chronological outcomes archive
+        run: python frontend/merge_daily_history.py --daily frontend/data/daily.json --history frontend/data/history.json
+      - name: Archive and evaluate paired NBA research forecasts
+        run: |
+          python nba/livedata_forward_evaluation.py \
+            --workdir results/daily-models \
+            --archive frontend/data/nba-livedata-forward \
+            --outcomes frontend/data/history.json \
+            --summary frontend/data/nba-livedata-evaluation.json
       - name: Archive model outputs and source-failure evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -46,10 +55,9 @@ jobs:
             results/daily-models/nba-*.availability/*.json
             results/daily-models/nba-*.team-metrics/*.json
             frontend/data/forecast_status.json
+            frontend/data/nba-livedata-evaluation.json
             frontend/data/forecast_archive
           retention-days: 90
-      - name: Maintain chronological outcomes archive
-        run: python frontend/merge_daily_history.py --daily frontend/data/daily.json --history frontend/data/history.json
       - name: Validate JSON output
         run: |
           python -m json.tool frontend/data/daily.json > /dev/null
@@ -59,6 +67,10 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add frontend/data/daily.json frontend/data/history.json frontend/data/forecast_status.json frontend/data/forecast_archive
+          git add frontend/data/nba-livedata-evaluation.json
+          if compgen -G 'frontend/data/nba-livedata-forward/*.json' > /dev/null; then
+            git add frontend/data/nba-livedata-forward
+          fi
           if ! git diff --cached --quiet; then
             git commit -m "data: refresh five-sport fixtures and settled results"
             git push origin HEAD:main
