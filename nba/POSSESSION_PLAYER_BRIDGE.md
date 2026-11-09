@@ -126,3 +126,24 @@ Sporting snapshots retain the Official/Challenger track labels and hash the full
 V2 engine parameters together with the player-effect fitting policy. Regression
 checks exercise a connected export without a context method marker, preservation
 of fatigue/turnover inputs, and rejection of missing schedule/load evidence.
+
+## Capture NBA LiveData possessions
+
+The optional importer uses the NBA LiveData play-by-play and final boxscore and
+the upstream pbpstats parser. It retains the source JSON files and their
+digests in the capture. The observation time is the actual fetch time. Use a
+forecast cutoff after the capture and before the target tipoff.
+
+```sh
+python -m pip install pbpstats==1.3.11
+python nba/capture_possessions.py --game-id 0022600002 --output-dir /path/to/new-capture
+```
+
+Pass the resulting `possessions.json` to the bridge. The importer preserves NBA
+player IDs. The daily availability capture uses ESPN IDs, so joining them
+requires a separately verified crosswalk. Capture one or more distinct NBA
+regular-season IDs. The report lists rejected games individually. It requires a
+final score match and five roster members on each side at the first live action
+of each possession. It rejects score changes the engine cannot represent, such
+as points by the defense or points on a turnover possession. Parser failures
+are excluded and can affect the composition of any research sample.
