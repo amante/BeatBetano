@@ -152,9 +152,59 @@ def build(coverage, snapshot, game_id, emitted_at):
     return {**report, 'content_sha256': digest(report)}
 
 
+def build_slate(coverage, snapshot, emitted_at, archive=None, directories=(),
+                extras=(), team_ml=None):
+    verify_seal(snapshot)
+    verify_seal(coverage)
+    if coverage['baseline_snapshot_sha256'] != snapshot['content_sha256']:
+        raise ValueError('Coverage belongs to another baseline')
+    ml_ids = set()
+    if team_ml is not None:
+        verify_seal(team_ml)
+        if team_ml['baseline_snapshot_sha256'] != snapshot['content_sha256']:
+            raise ValueError('Team ML belongs to another baseline')
+        if utc(team_ml['emitted_at_utc']) > utc(emitted_at):
+            raise ValueError('Team ML emission follows the slate audit')
+        ml_ids = {str(row['game_id']) for row in team_ml['games']
+                  if row['status'] == 'research_team_ml'
+                  and utc(team_ml['emitted_at_utc']) < utc(row['tipoff_utc'])}
+    games = []
+    for fixture in snapshot['predictions']:
+        gid = str(fixture['game_id'])
+        row = {'game_id': gid, 'home_team': fixture['home_team'],
+               'away_team': fixture['away_team'], 'base_home_ml': fixture['hybrid_p_home'],
+               'team_ml_available': gid in ml_ids, 'rotation_scenario': None,
+               'status': 'PASS_already_started'}
+        if utc(emitted_at) < utc(fixture['tipoff_utc']):
+            scenario = build(coverage, snapshot, gid, emitted_at)
+            if archive is not None:
+                apply_usage(scenario, archive, directories, extras)
+            row['rotation_scenario'] = scenario
+            row['status'] = 'research_only'
+        games.append(row)
+    scenarios = [row['rotation_scenario'] for row in games if row['rotation_scenario']]
+    summary = {'base_games': len(games), 'team_ml_games': sum(r['team_ml_available'] for r in games),
+               'two_sided_minutes_scenarios': sum(all(t['minute_changes'] for t in s['teams'].values())
+                                                  for s in scenarios),
+               'two_sided_usage_samples': sum(all(t.get('usage', {}).get('status') == 'complete_sample'
+                                                  for t in s['teams'].values()) for s in scenarios),
+               'player_adjusted_ml_games': sum(s['home_ml'] is not None and s['away_ml'] is not None
+                                               for s in scenarios),
+               'two_sided_plus20_games': sum(s['home_plus20'] is not None and s['away_plus20'] is not None
+                                             for s in scenarios)}
+    report = {'baseline_snapshot_sha256': snapshot['content_sha256'],
+              'coverage_sha256': coverage['content_sha256'],
+              'team_ml_sha256': team_ml['content_sha256'] if team_ml else None,
+              'emitted_at_utc': emitted_at, 'summary': summary, 'games': games}
+    return {**report, 'content_sha256': digest(report)}
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--game-id', required=True)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--game-id')
+    mode.add_argument('--all-games', action='store_true')
+    parser.add_argument('--team-ml', type=Path, help='Sealed team ML report for the same baseline')
     for arg in ('coverage', 'snapshot', 'output'):
         parser.add_argument('--' + arg, type=Path, required=True)
     parser.add_argument('--possessions', type=Path)
@@ -165,14 +215,25 @@ def main():
         parser.error('--usage-boxscores requires --possessions and --boxscore-dir')
     if bool(args.possessions) != bool(args.boxscore_dir):
         parser.error('Supply --possessions and at least one --boxscore-dir together')
+    if args.team_ml and not args.all_games:
+        parser.error('--team-ml requires --all-games')
     coverage = json.loads(args.coverage.read_text())
-    report = build(coverage, json.loads(args.snapshot.read_text()),
-                   args.game_id, datetime.now(timezone.utc).isoformat())
+    snapshot = json.loads(args.snapshot.read_text())
+    emitted_at = datetime.now(timezone.utc).isoformat()
+    archive, extras = None, []
     if args.possessions:
         archive = json.loads(args.possessions.read_text())
         if digest(archive) != coverage['effects']['input_sha256']:
             raise ValueError('Usage archive differs from the player effect sample')
         extras = json.loads(args.usage_boxscores.read_text())['games'] if args.usage_boxscores else []
+    if args.all_games:
+        team_ml = json.loads(args.team_ml.read_text()) if args.team_ml else None
+        report = build_slate(coverage, snapshot, emitted_at, archive, args.boxscore_dir, extras, team_ml)
+        save_new(args.output, report)
+        print(json.dumps(report['summary']))
+        return
+    report = build(coverage, snapshot, args.game_id, emitted_at)
+    if archive is not None:
         apply_usage(report, archive, args.boxscore_dir, extras)
     save_new(args.output, report)
     print(json.dumps({t: {'reported_out': len(r['reported_out_ids']),
