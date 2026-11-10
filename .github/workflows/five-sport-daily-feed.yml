@@ -53,7 +53,9 @@ jobs:
           python nba/daily_rotation_path.py \
             --workdir results/daily-models \
             --archive frontend/data/nba-rotation-archive \
-            --latest frontend/data/nba-rotation-latest.json
+            --latest frontend/data/nba-rotation-latest.json \
+            --daily-feed frontend/data/daily.json \
+            --source-status frontend/data/forecast_status.json
       - name: Archive model outputs and source-failure evidence
         if: always()
         uses: actions/upload-artifact@v4
