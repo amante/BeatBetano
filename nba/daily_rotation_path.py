@@ -92,10 +92,47 @@ def process(path, archive_override=None):
                  'blocked': {'source': ['rotation_inputs_unavailable']}} for g in requested]
 
 
+def missing_schedule_games(daily_path, status_path, existing, as_of):
+    """Keep every upcoming ESPN fixture visible when a baseline capture failed."""
+    if not daily_path or not daily_path.exists():
+        return [], {"status": "schedule_unavailable", "error": "daily_fixture_feed_missing"}
+    feed = read(daily_path)
+    source_report = read(status_path) if status_path and status_path.exists() else {}
+    nba_status = source_report.get("sports", {}).get("nba", {})
+    source_error = nba_status.get("error") or {}
+    source_state = nba_status.get("status", "baseline_snapshot_missing")
+    detail = source_error.get("detail") or source_state
+    failure = {"status": source_state, "type": source_error.get("type"), "detail": str(detail)[:240]}
+    rows = []
+    known = set(existing)
+    for game in feed.get("games", []):
+        if game.get("sport") != "nba" or game.get("completed") is True:
+            continue
+        gid = str(game.get("id") or "")
+        start = game.get("start_utc")
+        if not gid or not start or utc(start) <= utc(as_of) or gid in known:
+            continue
+        rows.append({
+            "game_id": gid,
+            "home_team": game.get("home") or "Local sin resolver",
+            "away_team": game.get("away") or "Visitante sin resolver",
+            "tipoff_utc": start,
+            "status": "PASS",
+            "comparison": None,
+            "blocked": {"source": ["baseline_input_unavailable"]},
+        })
+        known.add(gid)
+    return rows, failure
+
+
 def main():
     parser = argparse.ArgumentParser()
     for name in ('workdir', 'archive', 'latest'):
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--daily-feed', type=Path,
+                        help='ESPN fixture-only feed used to retain a full-slate PASS report')
+    parser.add_argument('--source-status', type=Path,
+                        help='Daily source status used to identify missing baseline capture')
     parser.add_argument('--possession-archive', type=Path)
     parser.add_argument('--boxscore-dir', type=Path, action='append', default=[])
     args = parser.parse_args()
@@ -110,10 +147,15 @@ def main():
             continue
         for row in process(path, override) or []:
             games[row['game_id']] = row
+    emitted = now()
+    missing, source_failure = missing_schedule_games(
+        args.daily_feed, args.source_status, games, emitted
+    )
+    for row in missing:
+        games[row['game_id']] = row
     if not games:
         print('No pregame NBA slate available')
         return
-    emitted = now()
     for row in games.values():
         if row['comparison'] is not None and utc(emitted) >= utc(row['tipoff_utc']):
             for key in ('comparison', 'content_sha256', 'rotation_rating_deltas'):
@@ -121,6 +163,8 @@ def main():
             row.update(status='PASS', comparison=None, blocked={'fixture': ['already_started']})
     report = {'model_version': 'NBA_CONDITIONAL_ROTATION_PATH_V1', 'emitted_at_utc': emitted,
               'fixtures': len(games), 'research_scenarios': sum(g['comparison'] is not None for g in games.values()),
+              'coverage_status': 'source_gaps' if missing else 'captured',
+              'source_failure': source_failure if missing else None,
               'games': list(games.values()), 'calibrated': False, 'production_approved': False}
     report['content_sha256'] = digest(report)
     save_new(args.archive / (report['content_sha256'] + '.json'), report)

@@ -18,6 +18,7 @@
     missing_minute_allocation: "Rotación sin minutos estimados",
     already_started: "Partido ya iniciado al momento de la corrida",
     rotation_inputs_unavailable: "Faltan fuentes para el escenario de rotación",
+    baseline_input_unavailable: "No se pudo construir la emisión base para este partido",
     missing_rotation_scenario: "Escenario de rotación ausente"
   };
   const el = (tag, value, className) => {
@@ -51,9 +52,16 @@
       ["reference", "conditional"].every(branch =>
         measures.every(key => probability(game.comparison?.[branch]?.path?.probabilities?.[key])));
     const count = report.games.filter(valid).length;
+    const missingBaseline = report.games.filter(game =>
+      game.blocked?.source?.includes("baseline_input_unavailable")).length;
     status.textContent = "Emisión archivada del " + formatTime.format(time(report.emitted_at_utc)) +
-      " (Chile) · " + count + " de " + report.games.length + " partidos con simulación";
+      " (Chile) · " + count + " de " + report.games.length + " partidos con simulación" +
+      (missingBaseline ? " · " + missingBaseline + " sin captura base" : "");
     root.append(el("p", "Escenario experimental sin calibrar. La referencia usa el mismo simulador antes de redistribuir minutos. +20 significa alcanzar una ventaja de 20 puntos durante el partido.", "forecast-intro"));
+    if (report.source_failure) {
+      root.append(el("p", "Cobertura incompleta: " + (report.source_failure.detail || report.source_failure.status) +
+        ". Los partidos sin captura base se muestran como PASS; no se reutilizan porcentajes de otra emisión.", "forecast-meta"));
+    }
     const grid = el("div", undefined, "forecast-grid");
     for (const game of report.games) {
       const card = el("article", undefined, "forecast-card");
