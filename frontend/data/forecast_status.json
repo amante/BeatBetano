@@ -1,47 +1,47 @@
 {
-  "as_of_utc": "2026-11-10T23:13:03.940554+00:00",
+  "as_of_utc": "2026-11-10T23:30:52.227756+00:00",
   "sports": {
     "nba": {
       "status": "processed",
       "publications": [
         {
           "sport": "nba",
-          "as_of_utc": "2026-11-10T23:13:04.156708Z",
+          "as_of_utc": "2026-11-10T23:30:52.368013Z",
           "events": [
             {
               "event_id": "401909960",
               "status": "reused",
-              "snapshot_sha256": "7579a47d2f27d8b046afef97096cea9263a88a63db6a27d8a3f18458b35b71c4",
+              "snapshot_sha256": "09af35f7ae8a175caf3550145ee903152ea4525add9ec0f17e04ceeb4cbb63c0",
               "stage": "update"
             },
             {
               "event_id": "401909961",
               "status": "reused",
-              "snapshot_sha256": "eac3172e766e84389444da02fb3d87e73bf53ed0d89d99d296d65515900052d2",
+              "snapshot_sha256": "a7866cbd0b9fac0028e3c1b20fba25a1eb6a4088e535d089b547f2e547604387",
               "stage": "update"
             },
             {
               "event_id": "401909962",
               "status": "reused",
-              "snapshot_sha256": "3457c2d64aabe2e0faf96429aa0eda96b454c6f2a57553ebae80477b84ae6a46",
+              "snapshot_sha256": "9f81768c6152a3bacd028c2cd24b35dccd4a92a40a69a72ca97cb38343e0ee96",
               "stage": "update"
             },
             {
               "event_id": "401909963",
               "status": "reused",
-              "snapshot_sha256": "b8b7986f1386a247db72759ac5ddf2c71db51206c61e1a7636c040d66155869e",
+              "snapshot_sha256": "c859e17ebab5837ded92409ab973476051162c7598606d8e6305132c1400e154",
               "stage": "update"
             },
             {
               "event_id": "401909964",
               "status": "reused",
-              "snapshot_sha256": "7f25bcfc4efb2f331e05aacb1b1956f85b2c4338862aba5b65c2beee4301698d",
+              "snapshot_sha256": "f6f479d4a9950bdeda225b88db154d862a05ef0a6d9e1e9f79dcf39b00c43ff4",
               "stage": "update"
             },
             {
               "event_id": "401909965",
               "status": "reused",
-              "snapshot_sha256": "50fae96d560797ef0444ebda54488d664f6aba0794c993177415aca145e5336d",
+              "snapshot_sha256": "0a792358e72605ddf9cd762ceedb7342d30bad05a8f281f4ba7ba72dbc066820",
               "stage": "update"
             }
           ],
@@ -80,7 +80,7 @@
       "missing_baseline_fixture_ids": [],
       "sporting_integration": [
         {
-          "baseline_snapshot_sha256": "e5ed8891eb78780cccc6c011822f86622a6d7d7a1c69e1b4b8d7aa3f738827aa",
+          "baseline_snapshot_sha256": "be98ad44fb4842739d5957b57472a8fc2b38934d82204c8bd74ff64b38594ea6",
           "games": 6,
           "integrated_research_games": 0,
           "game_diagnostics": [
@@ -131,9 +131,9 @@
           "production_approved": false,
           "availability_observation": {
             "status": "captured",
-            "captured_at_utc": "2026-11-10T23:13:06.907547+00:00",
-            "statistical_snapshot_sha256": "e5ed8891eb78780cccc6c011822f86622a6d7d7a1c69e1b4b8d7aa3f738827aa",
-            "statistical_snapshot_created_at_utc": "2026-11-10T23:13:04.156708+00:00",
+            "captured_at_utc": "2026-11-10T23:30:54.710641+00:00",
+            "statistical_snapshot_sha256": "be98ad44fb4842739d5957b57472a8fc2b38934d82204c8bd74ff64b38594ea6",
+            "statistical_snapshot_created_at_utc": "2026-11-10T23:30:52.368013+00:00",
             "later_sidecar_not_retroactive_snapshot_update": true,
             "games": 6,
             "teams": 12,
@@ -141,9 +141,9 @@
             "matched_injury_claims": 33,
             "unmatched_claims": [],
             "conflicts": [],
-            "official_injury_report_retrieved": false,
-            "official_injury_report_url": null,
-            "official_injury_report_as_of_utc": null,
+            "official_injury_report_retrieved": true,
+            "official_injury_report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+            "official_injury_report_as_of_utc": "2026-11-10T22:45:00+00:00",
             "official_status_claims_matched": 0,
             "official_status_claims_unmatched": 0,
             "official_injury_status_verification_scope": "matched_reported_players_only; unlisted players remain unknown",
@@ -156,14 +156,9 @@
             "no_odds_input": true,
             "official_injury_status_verified": false,
             "probability_adjustment_authorized": false,
-            "errors": {
-              "official_injury_report": {
-                "error_type": "HTTPError",
-                "detail": "403 Client Error: Forbidden for url: https://official.nba.com/nba-injury-report-2026-27-season/"
-              }
-            },
+            "errors": {},
             "historical_rotation": {
-              "observed_at_utc": "2026-11-10T23:13:08.422898+00:00",
+              "observed_at_utc": "2026-11-10T23:30:55.983737+00:00",
               "games_requested": 52,
               "games_unavailable": 0,
               "fixtures_covered": 6,
@@ -223,7 +218,7 @@
               },
               "unresolved": {},
               "source_url": "https://nba-prod-us-east-1-mediaops-stats.s3.amazonaws.com/NBA/staticData/scheduleLeagueV2_2.json",
-              "source_sha256": "e20b0872b52d6837fea7ab669588dfaa0c7de2de88e00c4699f2dfed4e33a26d",
+              "source_sha256": "a19b159b8e643ddf4811c5c8396e969971aa2ed5b527de9823495dd72b288055",
               "target_teams": [
                 "BOS",
                 "LAC",
@@ -255,13 +250,13 @@
               "missing_teams": []
             },
             "research_ml_games": 2,
-            "research_sha256": "34f40b3176ea5bd76db119712981055a8a734fa3dc7ecfdd1ef3c00f782513b2",
+            "research_sha256": "aaf0bc0335a5cdcadf058eb9c109538a2e4d33d53f2d5ce3374437d7862f66e6",
             "player_crosswalk": {
               "links": 398,
               "ambiguous": 0,
               "mapped_roster_entries": 169,
               "unresolved_roster_entries": 38,
-              "content_sha256": "c23fb1b1bbea28f27bad3b08771f0dc02d96a3acb86b0b241d9cb77252fa3ff2"
+              "content_sha256": "e384854a8d7485b67c3fff1bb4a0b038dde4a124886aa0e5db6fce880a21f230"
             }
           }
         }
@@ -276,48 +271,48 @@
       "publications": [
         {
           "sport": "nhl",
-          "as_of_utc": "2026-11-10T23:13:28.307722Z",
+          "as_of_utc": "2026-11-10T23:31:15.690948Z",
           "events": [
             {
               "event_id": "2026020286",
               "status": "reused",
-              "snapshot_sha256": "938f7503b203bda5d7f421af1ec8b4b55511c1cc4f765723bcf2fe79aa23eee5",
-              "stage": "update"
+              "snapshot_sha256": "8a3ab9ebdd3b4ce38e8202973109a263e4852cc044e72dced675151e6501fb86",
+              "stage": "final_pregame"
             },
             {
               "event_id": "2026020287",
               "status": "reused",
-              "snapshot_sha256": "564f8d536420313d38293e5804043f43e55f768180a6a499c752500f389df65c",
-              "stage": "update"
+              "snapshot_sha256": "93fc23247383562af40d00a793b9867292d64558b9e09d21ead438568df5da35",
+              "stage": "final_pregame"
             },
             {
               "event_id": "2026020288",
               "status": "reused",
-              "snapshot_sha256": "737204565c8c0442ed00eb1b942f56ef6cda27fd6928c86d899ddea7ab3c467f",
-              "stage": "update"
+              "snapshot_sha256": "19942fcadd3acc320996c179d08c63de1629793bfdc84a200602d195332c7842",
+              "stage": "final_pregame"
             },
             {
               "event_id": "2026020291",
               "status": "reused",
-              "snapshot_sha256": "01409c54ad7949d4362dc8d6e288507d04a57f4792d694b1c7de54454c14befe",
-              "stage": "update"
+              "snapshot_sha256": "790fda9126814866fc25e4d162e49f11e8b0e3edfa12175a36ad0e2858f7b9be",
+              "stage": "final_pregame"
             },
             {
               "event_id": "2026020289",
               "status": "reused",
-              "snapshot_sha256": "8b3b82b0b68c6bbd36e02f8761c3b3aad0e3c7d33ef41118b88d02655676a4bb",
+              "snapshot_sha256": "58d85f2ede3a126727c532eaca52927ab1df0dbb5d2f58a58304e93df4f3b5cb",
               "stage": "update"
             },
             {
               "event_id": "2026020290",
               "status": "reused",
-              "snapshot_sha256": "0905f4695b1026a4e96030966f3851aef75709d533ec587794b0c94bda38a106",
+              "snapshot_sha256": "3c924d2eaa30fd7bdd116171c3fc2370379b7c382d44f506d38f07dd483ba7d0",
               "stage": "update"
             },
             {
               "event_id": "2026020292",
               "status": "reused",
-              "snapshot_sha256": "e5f794955e3c3cbd50a04adecdbf9a368b3af1c2095ce80916957581639f6fc9",
+              "snapshot_sha256": "f2b87cd4f69df5ccff532921d94949b3f53dc1531c60bb17f744cd34f3025c91",
               "stage": "update"
             }
           ],
