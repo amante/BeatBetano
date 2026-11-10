@@ -5,7 +5,7 @@ import io
 import json
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 from multisport.contract import SPORTS, utc
@@ -13,6 +13,14 @@ from multisport.daily_forecasts import publish
 from multisport.data_lineage import digest
 
 ROOT=Path(__file__).resolve().parents[1]
+NBA_LEAGUE_TIME=ZoneInfo('America/New_York')
+
+
+def nba_history_window(history, as_of):
+    # ESPN uses league days, which can span two UTC dates.
+    start = max(utc(g['tipoff_utc']).astimezone(NBA_LEAGUE_TIME).date() for g in history)
+    end = utc(as_of).astimezone(NBA_LEAGUE_TIME).date() - timedelta(days=1)
+    return start, end
 
 
 def soccer_source(games,as_of,cache):
@@ -57,7 +65,7 @@ def generate_source(sport,games,as_of,workdir,archive):
              'missing_baseline_reason':'No implemented tennis probability model'} for g in games]}
     # Keep legacy sport import paths isolated by invoking their real daily entrypoints.
     outputs=[]
-    days=sorted({utc(g['start_utc']).astimezone(ZoneInfo('America/New_York')).date().isoformat() for g in games})
+    days=sorted({utc(g['start_utc']).astimezone(NBA_LEAGUE_TIME).date().isoformat() for g in games})
     history=None
     if sport=='nba':
         sys.path.insert(0,str(ROOT/'nba'))
@@ -68,9 +76,7 @@ def generate_source(sport,games,as_of,workdir,archive):
         if hashlib.sha256(raw.read_bytes()).hexdigest()!=manifest['files']['history.json']:
             raise ValueError('Historical NBA ledger digest mismatch')
         history_rows=json.loads(raw.read_text())
-        from datetime import timedelta
-        start=max(utc(g['tipoff_utc']).date() for g in history_rows)
-        end=utc(as_of).date()-timedelta(days=1)
+        start,end=nba_history_window(history_rows,as_of)
         delta,_=daily_delta(workdir/'cache/nba-deltas',start.isoformat(),end.isoformat()) if start<=end else ([],{})
         merged={str(g['game_id']):g for g in history_rows}
         for g in delta:
