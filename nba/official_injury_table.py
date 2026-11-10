@@ -56,3 +56,25 @@ def extract(pages, continuous_table=False):
     "raw":line.strip(),"mapping":"verified_document_table_continuation" if continuous_table else "explicit_team_cell_or_same_page_continuation",
     "independently_identity_verified":False})
  return rows
+
+def extract_team_submissions(pages):
+ """Extract only explicit team-level NOT YET SUBMITTED markers."""
+ if not isinstance(pages,list):raise ValueError("Expected pages")
+ rows=[]
+ for page_no,page in enumerate(pages,1):
+  game_date=None;matchup=None
+  for line_no,line in enumerate(page.splitlines(),1):
+   if "Game Date" in line and "Player Name" in line:continue
+   if "Injury Report:" in line or "Page " in line and " of " in line:continue
+   dt=DATE_RE.search(line)
+   if dt:game_date=dt.group()
+   matchup_found=MATCHUP_RE.search(line)
+   if matchup_found:matchup=matchup_found.group()
+   if "NOT YET SUBMITTED" not in line:continue
+   team_match=TEAM_RE.search(line)
+   if not team_match:continue
+   rows.append({"team":TEAMS[team_match.group()],"game_date":game_date,
+    "matchup":matchup,"status":"not_yet_submitted","page":page_no,
+    "line":line_no,"raw":line.strip()})
+ unique={(r["team"],r["game_date"],r["matchup"]):r for r in rows}
+ return list(unique.values())
