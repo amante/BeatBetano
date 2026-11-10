@@ -49,7 +49,7 @@ def observe_availability(snapshot_path, snapshot, history_path=None):
     if history_path is not None:
         command += ['--history', str(history_path)]
     try:
-        completed = subprocess.run(command, capture_output=True, text=True, timeout=75)
+        completed = subprocess.run(command, capture_output=True, text=True, timeout=135)
         if completed.returncode:
             return {'status':'source_error', 'detail':completed.stderr[-600:]}
         summary = json.loads((folder/'summary.json').read_text())

@@ -10,6 +10,8 @@ from urllib.parse import urljoin,urlparse
 from pathlib import Path
 import requests
 from html.parser import HTMLParser
+from official_injury_table import extract as extract_official_rows
+from official_injury_table import extract_team_submissions
 
 INDEX="https://official.nba.com/nba-injury-report-2026-27-season/"
 
@@ -73,7 +75,7 @@ def eligible_reports(entries, cutoff):
 def retrieve(snapshot,session=None):
     s=session or requests.Session()
     now=datetime.now(timezone.utc)
-    r=s.get(INDEX,timeout=30);r.raise_for_status()
+    r=s.get(INDEX,timeout=(10,20));r.raise_for_status()
     entries=discover(r.text)
     freeze=datetime.fromisoformat(snapshot['created_at_utc'].replace('Z','+00:00'))
     if freeze.tzinfo is None:raise ValueError('UTC pregame snapshot required')
@@ -82,9 +84,9 @@ def retrieve(snapshot,session=None):
     if not choices:raise ValueError("No timestamped official report <= collection time")
     failures=[]
     chosen=None
-    for choice in choices[:8]:
+    for choice in choices[:3]:
         try:
-            pdf=s.get(choice["url"],timeout=40)
+            pdf=s.get(choice["url"],timeout=(10,20))
             pdf.raise_for_status()
             if not pdf.content.startswith(b"%PDF-"):
                 raise ValueError("Official link did not return PDF bytes")
@@ -102,6 +104,17 @@ def retrieve(snapshot,session=None):
     extracted=[p.extract_text(extraction_mode="layout") or "" for p in pages]
     if not any("Injury" in x or "INJURY" in x for x in extracted):
         raise ValueError("Official report extraction missing injury text")
+    # The filename timestamp and PDF table are preserved separately. These are
+    # source rows only until a unique team+player match resolves against ESPN.
+    try:
+        structured=extract_official_rows(extracted,continuous_table=True)
+        parse_mode="continuous_table"
+    except ValueError:
+        structured=extract_official_rows(extracted)
+        parse_mode="page_local_conservative"
+    structured=list({(row["game_date"],row["matchup"],row["team"],row["player"],row["status"]):row
+                    for row in structured}.values())
+    submissions=extract_team_submissions(extracted)
     return {"source_index":INDEX,"report_url":chosen["url"],
       "link_label":chosen["label"],"downloaded_at_utc":datetime.now(timezone.utc).isoformat(),
       "pdf_sha256":hashlib.sha256(pdf.content).hexdigest(),
@@ -109,6 +122,10 @@ def retrieve(snapshot,session=None):
       "source_report_as_of_utc":report_time.isoformat(),
       "report_datetime_filename_verified":True,
       "official_document_retrieved":True,
+      "structured_player_rows":structured,
+      "team_report_statuses":submissions,
+      "structured_parse_mode":parse_mode,
+      "structured_parse_candidate_rows":len(structured),
       "individual_player_status_verified":False,
       "note":"Separate later evidence observation: cannot retroactively change frozen predictions; only usable before each tipoff."}
 
@@ -123,6 +140,7 @@ def main():
     except (requests.RequestException, ValueError, ImportError) as exc:
         report={"source_index":INDEX,"report_url":None,"official_document_retrieved":False,
                 "individual_player_status_verified":False,"raw_page_text":[],
+                "structured_player_rows":[],"team_report_statuses":[],
                 "source_report_as_of_utc":None,
                 "retrieval_status":"unavailable",
                 "retrieval_error_type":type(exc).__name__,
@@ -133,6 +151,8 @@ def main():
     path.write_text(json.dumps(report,indent=2))
     print(json.dumps({"report_url":report["report_url"],"pages":report.get("pages",0),
       "official_source_available":report["official_document_retrieved"],
+      "structured_candidate_rows":report.get("structured_parse_candidate_rows",0),
+      "teams_not_yet_submitted":len(report.get("team_report_statuses",[])),
       "error_type":report.get("retrieval_error_type"),
       "error_detail":report.get("retrieval_error_detail"),
       "http_status":report.get("retrieval_http_status"),"player_status_verified":False},indent=2))

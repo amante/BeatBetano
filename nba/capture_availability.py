@@ -16,6 +16,7 @@ from player_status_intake import reconcile
 from active_roster_resolver import resolve
 from joint_minutes_report import stamp
 from reproducible_slate import digest
+from official_injury_pdf import retrieve as retrieve_official_injury_report
 
 
 def observe_rotation(snapshot, history, availability):
@@ -74,15 +75,19 @@ def capture(snapshot,output,history=None):
     roster=attempt('roster',collect_rosters,{'snapshot_sha256':snapshot['content_sha256'],'games':{}})
     lineups_result=attempt('lineups',collect_lineups,({'snapshot_sha256':snapshot['content_sha256'],'games':{}},{'candidates':[]}))
     lineups,candidates=lineups_result
+    official=attempt('official_injury_report',retrieve_official_injury_report,{
+        'source_index':'https://official.nba.com/nba-injury-report-2026-27-season/',
+        'official_document_retrieved':False,'individual_player_status_verified':False,
+        'structured_player_rows':[],'team_report_statuses':[],'raw_page_text':[]})
     # Membership data is stamped after the roster requests finish, rather than
     # declaring all responses observed at the beginning of a network batch.
     roster_completed=datetime.now(timezone.utc).isoformat()
     for game in roster.get('games',{}).values():
         for team in game.get('teams',{}).values():
             if team.get('observed_at_utc'):team['observed_at_utc']=roster_completed
-    status=reconcile(snapshot,roster,sporting)
+    status=reconcile(snapshot,roster,sporting,official)
     availability=resolve(snapshot,roster,status,lineups)
-    for name,obj in [('sporting',sporting),('roster',roster),('lineups',lineups),('lineup_candidates',candidates),('status',status),('availability',availability)]:save(name+'.json',obj)
+    for name,obj in [('sporting',sporting),('roster',roster),('lineups',lineups),('lineup_candidates',candidates),('official_injury_source',official),('status',status),('availability',availability)]:save(name+'.json',obj)
     teams=[t for g in availability['games'].values() for t in g['teams'].values()]
     summary={'captured_at_utc':datetime.now(timezone.utc).isoformat(),
         'statistical_snapshot_sha256':snapshot['content_sha256'],
@@ -92,12 +97,19 @@ def capture(snapshot,output,history=None):
         'roster_members':sum(len(t['players']) for t in teams),
         'matched_injury_claims':sum(len(t) for g in status['games'].values() for t in g['teams'].values()),
         'unmatched_claims':status['unmatched_claims'],'conflicts':status['conflicts'],
+        'official_injury_report_retrieved':official.get('official_document_retrieved') is True,
+        'official_injury_report_url':official.get('report_url'),
+        'official_injury_report_as_of_utc':official.get('source_report_as_of_utc'),
+        'official_status_claims_matched':status.get('official_matched_claims',0),
+        'official_status_claims_unmatched':len(status.get('official_unmatched_claims',[])),
+        'official_injury_status_verification_scope':'matched_reported_players_only; unlisted players remain unknown',
+        'official_team_reports_not_submitted':status.get('official_team_reports_not_submitted',[]),
         'known_out':sum(p['status']=='out' for t in teams for p in t['players']),
         'uncertain':sum(p['status']=='questionable' for t in teams for p in t['players']),
         'unknown':sum(p['status']=='unknown' for t in teams for p in t['players']),
         'teams_allocation_ready':sum(t['allocation_ready'] for t in teams),
         'teams_with_provider_lineups':sum(bool(t.get('starters')) for g in lineups['games'].values() for t in g['teams'].values()),
-        'no_odds_input':True,'official_injury_status_verified':False,
+        'no_odds_input':True,'official_injury_status_verified':status.get('official_matched_claims',0)>0,
         'probability_adjustment_authorized':False,'errors':errors}
     if history is not None:
         rotation_result = attempt('rotation',lambda _: observe_rotation(snapshot,history,availability),None)
