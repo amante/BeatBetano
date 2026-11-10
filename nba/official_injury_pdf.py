@@ -72,11 +72,18 @@ def eligible_reports(entries, cutoff):
         ((stamp,entry) for stamp,entry in ranked if stamp is not None and stamp<=cutoff),
         key=lambda pair:pair[0],reverse=True)]
 
-def retrieve(snapshot,session=None):
+def retrieve(snapshot,session=None,report_url=None):
     s=session or requests.Session()
     now=datetime.now(timezone.utc)
-    r=s.get(INDEX,timeout=(10,20));r.raise_for_status()
-    entries=discover(r.text)
+    if report_url:
+        parsed=urlparse(report_url)
+        if (parsed.scheme!="https" or parsed.hostname!="ak-static.cms.nba.com"
+                or not parsed.path.lower().endswith(".pdf")):
+            raise ValueError("Direct report must be an NBA-hosted HTTPS PDF")
+        entries=[{"url":report_url,"label":"NBA official PDF provided to workflow"}]
+    else:
+        r=s.get(INDEX,timeout=(10,20));r.raise_for_status()
+        entries=discover(r.text)
     freeze=datetime.fromisoformat(snapshot['created_at_utc'].replace('Z','+00:00'))
     if freeze.tzinfo is None:raise ValueError('UTC pregame snapshot required')
     # Evidence is collected after the snapshot: select what exists NOW, never backdate it.
