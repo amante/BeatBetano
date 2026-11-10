@@ -81,6 +81,11 @@ def capture(snapshot,output,history=None):
         'source_index':'https://official.nba.com/nba-injury-report-2026-27-season/',
         'official_document_retrieved':False,'individual_player_status_verified':False,
         'structured_player_rows':[],'team_report_statuses':[],'raw_page_text':[]})
+    if official.get('official_document_retrieved') is True and not official.get('structured_player_rows'):
+        errors['official_injury_report_parse']={
+            'error_type':'NoStructuredPlayerRows',
+            'detail':'The official PDF was downloaded, but the parser produced no player rows.',
+            'attempts':official.get('structured_parse_attempts',[])}
     # Membership data is stamped after the roster requests finish, rather than
     # declaring all responses observed at the beginning of a network batch.
     roster_completed=datetime.now(timezone.utc).isoformat()
@@ -102,8 +107,20 @@ def capture(snapshot,output,history=None):
         'official_injury_report_retrieved':official.get('official_document_retrieved') is True,
         'official_injury_report_url':official.get('report_url'),
         'official_injury_report_as_of_utc':official.get('source_report_as_of_utc'),
+        'official_report_parse_status':official.get('structured_parse_status','unavailable'),
+        'official_report_parse_text_mode':official.get('structured_text_mode'),
+        'official_report_parse_attempts':official.get('structured_parse_attempts',[]),
+        'official_report_candidate_rows':status.get('official_structured_candidate_rows',0),
+        'official_report_rows_for_fixtures':status.get('official_rows_for_fixtures',0),
+        'official_rows_by_fixture':status.get('official_rows_by_fixture',[]),
         'official_status_claims_matched':status.get('official_matched_claims',0),
         'official_status_claims_unmatched':len(status.get('official_unmatched_claims',[])),
+        'official_capture_state':(
+            'unavailable' if official.get('official_document_retrieved') is not True else
+            'parsed_no_rows' if not official.get('structured_player_rows') else
+            'rows_not_scoped_to_fixtures' if status.get('official_rows_for_fixtures',0)==0 else
+            'roster_crosswalk_unmatched' if status.get('official_matched_claims',0)==0 else
+            'matched'),
         'official_injury_status_verification_scope':'matched_reported_players_only; unlisted players remain unknown',
         'official_team_reports_not_submitted':status.get('official_team_reports_not_submitted',[]),
         'known_out':sum(p['status']=='out' for t in teams for p in t['players']),
