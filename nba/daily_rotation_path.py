@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from datetime import date, datetime, timezone
@@ -143,7 +144,9 @@ def main():
         override = (args.possession_archive, args.boxscore_dir)
     games = {}
     for path in sorted(args.workdir.glob('nba-*.json')):
-        if '.' in path.stem:
+        # Only daily_pipeline's sealed NBA snapshots use this filename shape.
+        # Excludes nba-history.json and unrelated JSON ledgers from the workdir.
+        if not re.fullmatch(r'nba-\d{4}-\d{2}-\d{2}-[0-9a-f]{12}', path.stem):
             continue
         for row in process(path, override) or []:
             games[row['game_id']] = row
