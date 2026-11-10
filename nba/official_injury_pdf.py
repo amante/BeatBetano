@@ -108,19 +108,33 @@ def retrieve(snapshot,session=None,report_url=None):
     from pypdf import PdfReader
     pages=PdfReader(io.BytesIO(pdf.content)).pages
     if not pages:raise ValueError("Empty official injury report")
-    extracted=[p.extract_text(extraction_mode="layout") or "" for p in pages]
-    if not any("Injury" in x or "INJURY" in x for x in extracted):
-        raise ValueError("Official report extraction missing injury text")
-    # The filename timestamp and PDF table are preserved separately. These are
-    # source rows only until a unique team+player match resolves against ESPN.
-    try:
-        structured=extract_official_rows(extracted,continuous_table=True)
-        parse_mode="continuous_table"
-    except ValueError:
-        structured=extract_official_rows(extracted)
-        parse_mode="page_local_conservative"
-    structured=list({(row["game_date"],row["matchup"],row["team"],row["player"],row["status"]):row
-                    for row in structured}.values())
+    extraction_attempts=[]
+    best=None
+    # pypdf's layout mode preserves columns for some league PDFs, while its
+    # default mode joins split table cells better in others. Try both and keep
+    # the one yielding the largest auditable set of player rows.
+    for text_mode in ("layout","plain"):
+        if text_mode=="layout":
+            page_text=[p.extract_text(extraction_mode="layout") or "" for p in pages]
+        else:
+            page_text=[p.extract_text() or "" for p in pages]
+        if not any("Injury" in x or "INJURY" in x for x in page_text):
+            extraction_attempts.append({"text_mode":text_mode,"rows":0,"error":"injury_text_missing"})
+            continue
+        try:
+            structured=extract_official_rows(page_text,continuous_table=True)
+            parse_mode="continuous_table"
+        except ValueError:
+            structured=extract_official_rows(page_text)
+            parse_mode="page_local_conservative"
+        structured=list({(row["game_date"],row["matchup"],row["team"],row["player"],row["status"]):row
+                        for row in structured}.values())
+        extraction_attempts.append({"text_mode":text_mode,"parse_mode":parse_mode,"rows":len(structured)})
+        if best is None or len(structured)>len(best[1]):
+            best=(page_text,structured,parse_mode,text_mode)
+    if best is None:
+        raise ValueError("Could not extract injury text from official PDF: "+json.dumps(extraction_attempts))
+    extracted,structured,parse_mode,text_mode=best
     submissions=extract_team_submissions(extracted)
     return {"source_index":INDEX,"report_url":chosen["url"],
       "link_label":chosen["label"],"downloaded_at_utc":datetime.now(timezone.utc).isoformat(),
@@ -132,6 +146,9 @@ def retrieve(snapshot,session=None,report_url=None):
       "structured_player_rows":structured,
       "team_report_statuses":submissions,
       "structured_parse_mode":parse_mode,
+      "structured_text_mode":text_mode,
+      "structured_parse_attempts":extraction_attempts,
+      "structured_parse_status":"complete" if structured else "no_player_rows",
       "structured_parse_candidate_rows":len(structured),
       "individual_player_status_verified":False,
       "note":"Separate later evidence observation: cannot retroactively change frozen predictions; only usable before each tipoff."}
