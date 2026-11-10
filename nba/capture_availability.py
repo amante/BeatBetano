@@ -7,6 +7,7 @@ import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
+import os
 from datetime import datetime,timezone
 from pathlib import Path
 from sporting_feed import collect as collect_sporting
@@ -75,7 +76,8 @@ def capture(snapshot,output,history=None):
     roster=attempt('roster',collect_rosters,{'snapshot_sha256':snapshot['content_sha256'],'games':{}})
     lineups_result=attempt('lineups',collect_lineups,({'snapshot_sha256':snapshot['content_sha256'],'games':{}},{'candidates':[]}))
     lineups,candidates=lineups_result
-    official=attempt('official_injury_report',retrieve_official_injury_report,{
+    official=attempt('official_injury_report',lambda snap: retrieve_official_injury_report(
+        snap, report_url=os.environ.get('NBA_OFFICIAL_INJURY_REPORT_URL') or None),{
         'source_index':'https://official.nba.com/nba-injury-report-2026-27-season/',
         'official_document_retrieved':False,'individual_player_status_verified':False,
         'structured_player_rows':[],'team_report_statuses':[],'raw_page_text':[]})
