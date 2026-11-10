@@ -4,6 +4,11 @@ on:
     - cron: '15 9 * * *'
     - cron: '15 21 * * *'
   workflow_dispatch:
+    inputs:
+      nba_injury_report_url:
+        description: 'Optional direct URL to the latest NBA-hosted injury report PDF'
+        required: false
+        type: string
 permissions:
   contents: write
 concurrency:
@@ -11,6 +16,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   refresh:
+    env:
+      NBA_OFFICIAL_INJURY_REPORT_URL: ${{ inputs.nba_injury_report_url }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
