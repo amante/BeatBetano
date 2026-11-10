@@ -1,5 +1,5 @@
 {
-  "as_of_utc": "2026-11-10T00:02:20.018917+00:00",
+  "as_of_utc": "2026-11-10T03:33:42.727148+00:00",
   "sports": {
     "nba": {
       "status": "source_error",
@@ -11,77 +11,99 @@
       }
     },
     "nfl": {
-      "status": "processed",
-      "publications": [
-        {
-          "sport": "nfl",
-          "as_of_utc": "2026-11-10T00:02:20.366615Z",
-          "events": [
-            {
-              "event_id": "401873051",
-              "status": "reused",
-              "snapshot_sha256": "922d1112adef31379b89b85fc37d9d271172a0c17c5b551e323be253b76b1400",
-              "stage": "update"
-            }
-          ],
-          "forecast_publication_only": true,
-          "selection_approval_changed": false
-        }
-      ],
-      "fixtures_requested": 1,
-      "fixtures_with_forecast": 1,
-      "fixture_bindings": [
-        {
-          "fixture_id": "401873051",
-          "forecast_event_id": "401873051",
-          "method": "same_provider_event_id",
-          "forecast_available": true
-        }
-      ],
-      "missing_baseline_fixture_ids": []
+      "status": "no_pending_fixtures",
+      "events": []
     },
     "nhl": {
       "status": "processed",
       "publications": [
         {
           "sport": "nhl",
-          "as_of_utc": "2026-11-10T00:02:20.604662Z",
+          "as_of_utc": "2026-11-10T03:33:43.201417Z",
           "events": [
             {
-              "event_id": "2026020283",
+              "event_id": "2026020286",
               "status": "reused",
-              "snapshot_sha256": "2e1a7deaeebdc09f27074b50296968fa717c45df42b7d446ab27ae7d7febe607",
-              "stage": "update"
+              "snapshot_sha256": "de7b3a3da68c5f44df42ac328ec855948d9d6ab15bb2fe845f5dc2f7310c2e8d",
+              "stage": "initial"
             },
             {
-              "event_id": "2026020284",
+              "event_id": "2026020287",
               "status": "reused",
-              "snapshot_sha256": "9ad36cbe79fcb91f672a1f3ef27f928c80a9452b592d65c90dd973b635af69c1",
-              "stage": "update"
+              "snapshot_sha256": "2304bbbf2c3690b3f770eea3592f8951e04cffc323bcf3563f60131e8599242d",
+              "stage": "initial"
             },
             {
-              "event_id": "2026020285",
+              "event_id": "2026020288",
               "status": "reused",
-              "snapshot_sha256": "b2525111fb35744915f619c546430e1c3cfb7a8b27c1cdace1f209299946f476",
-              "stage": "update"
+              "snapshot_sha256": "e54dca49ccb8871067362651616a96c4aa574561aa8e98666a941d92ea1c1418",
+              "stage": "initial"
+            },
+            {
+              "event_id": "2026020291",
+              "status": "reused",
+              "snapshot_sha256": "a00432e0210b8e1410ffe16579f9ff222c057f3da4032ba59ca9db9bb49085f2",
+              "stage": "initial"
+            },
+            {
+              "event_id": "2026020289",
+              "status": "reused",
+              "snapshot_sha256": "3dbf11003b6277c9ee991b249648762b8b4cb4a51d4643b773de28e7ccaf1933",
+              "stage": "initial"
+            },
+            {
+              "event_id": "2026020290",
+              "status": "reused",
+              "snapshot_sha256": "9611a4789c9d38c352ac7c9cdbb0498ae507d92fb59e271e0fb9417bac22960e",
+              "stage": "initial"
+            },
+            {
+              "event_id": "2026020292",
+              "status": "reused",
+              "snapshot_sha256": "0c5493f089c8d670023a8d44a02953dce52a58526ab1a0dfdf63889d8f4579f7",
+              "stage": "initial"
             }
           ],
           "forecast_publication_only": true,
           "selection_approval_changed": false
         }
       ],
-      "fixtures_requested": 2,
-      "fixtures_with_forecast": 2,
+      "fixtures_requested": 6,
+      "fixtures_with_forecast": 6,
       "fixture_bindings": [
         {
-          "fixture_id": "401892680",
-          "forecast_event_id": "2026020283",
+          "fixture_id": "401892683",
+          "forecast_event_id": "2026020286",
           "method": "explicit_team_name_crosswalk_and_exact_start",
           "forecast_available": true
         },
         {
-          "fixture_id": "401892681",
-          "forecast_event_id": "2026020284",
+          "fixture_id": "401892684",
+          "forecast_event_id": "2026020287",
+          "method": "explicit_team_name_crosswalk_and_exact_start",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401892685",
+          "forecast_event_id": "2026020288",
+          "method": "explicit_team_name_crosswalk_and_exact_start",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401892688",
+          "forecast_event_id": "2026020291",
+          "method": "explicit_team_name_crosswalk_and_exact_start",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401892686",
+          "forecast_event_id": "2026020289",
+          "method": "explicit_team_name_crosswalk_and_exact_start",
+          "forecast_available": true
+        },
+        {
+          "fixture_id": "401892687",
+          "forecast_event_id": "2026020290",
           "method": "explicit_team_name_crosswalk_and_exact_start",
           "forecast_available": true
         }
