@@ -46,34 +46,46 @@ def matchup_matches(row,game):
  expected={game["home_team"],game["away_team"]}
  return all(any(same_team(code,team) for team in expected) for code in matchup)
 def official_rows_for_game(game,official):
- """Return only rows from this fixture date and matchup, observed before tip."""
- if official.get("official_document_retrieved") is not True:return [],[]
+ """Return rows for one fixture and expose each scope-filter count."""
+ diagnostic={"game_id":str(game.get("game_id")),"status":"not_evaluated",
+  "source_rows":0,"date_rows":0,"date_and_matchup_rows":0,"fixture_team_rows":0}
+ if official.get("official_document_retrieved") is not True:
+  diagnostic["status"]="report_not_retrieved"
+  return [],[],diagnostic
  report_time=utc(official.get("source_report_as_of_utc"))
  downloaded=utc(official.get("downloaded_at_utc"))
  tip=utc(game.get("tipoff_utc"))
- if not report_time or not downloaded or not tip or not report_time<=downloaded<tip:return [],[]
+ if not report_time or not downloaded or not tip or not report_time<=downloaded<tip:
+  diagnostic["status"]="report_time_not_pregame"
+  return [],[],diagnostic
  rows=official.get("structured_player_rows")
  if not isinstance(rows,list):
   try:rows=extract_official_rows(official.get("raw_page_text",[]),continuous_table=True)
   except ValueError:rows=extract_official_rows(official.get("raw_page_text",[]))
  submissions=official.get("team_report_statuses")
  if not isinstance(submissions,list):submissions=extract_team_submissions(official.get("raw_page_text",[]))
+ diagnostic["source_rows"]=len(rows)
  expected_day=game_day(game.get("tipoff_utc"))
  teams={game["home_team"],game["away_team"]}
- relevant=[];pending=[]
- for row in rows:
-  if report_game_day(row.get("game_date"))!=expected_day or not matchup_matches(row,game):continue
-  if any(same_team(row.get("team"),team) for team in teams):relevant.append(row)
- for row in submissions:
-  if report_game_day(row.get("game_date"))!=expected_day or not matchup_matches(row,game):continue
-  if any(same_team(row.get("team"),team) for team in teams):pending.append(row)
- return relevant,pending
+ date_rows=[row for row in rows if report_game_day(row.get("game_date"))==expected_day]
+ diagnostic["date_rows"]=len(date_rows)
+ matchup_rows=[row for row in date_rows if matchup_matches(row,game)]
+ diagnostic["date_and_matchup_rows"]=len(matchup_rows)
+ relevant=[row for row in matchup_rows
+           if any(same_team(row.get("team"),team) for team in teams)]
+ diagnostic["fixture_team_rows"]=len(relevant)
+ diagnostic["status"]="rows_selected" if relevant else "no_rows_for_fixture"
+ pending=[row for row in submissions
+          if report_game_day(row.get("game_date"))==expected_day
+          and matchup_matches(row,game)
+          and any(same_team(row.get("team"),team) for team in teams)]
+ return relevant,pending,diagnostic
 def reconcile(snapshot,roster,sporting,official=None):
  official_provided=official is not None
  official=official or {}
  digest=snapshot["content_sha256"]
  if roster.get("snapshot_sha256")!=digest:raise ValueError("Roster snapshot mismatch")
- output={};unknown=[];conflicts=[];official_unmatched=[];official_matched=0;pending_teams=[]
+ output={};unknown=[];conflicts=[];official_unmatched=[];official_matched=0;pending_teams=[];official_diagnostics=[]
  for game in snapshot["predictions"]:
   gid=str(game["game_id"]);tip=utc(game["tipoff_utc"]);per_team={}
   evidence=sporting.get("games",{}).get(gid,{}).get("supplementary_injury_observations",{})
@@ -85,7 +97,10 @@ def reconcile(snapshot,roster,sporting,official=None):
   report_time=utc(official.get("source_report_as_of_utc"))
   downloaded=utc(official.get("downloaded_at_utc"))
   official_time_valid=bool(official.get("official_document_retrieved") is True and tip and report_time and downloaded and report_time<=downloaded<tip)
-  official_rows,pending=official_rows_for_game(game,official) if official_time_valid else ([],[])
+  official_rows,pending,official_diag=official_rows_for_game(game,official)
+  if not official_time_valid and official_diag["status"]=="not_evaluated":
+   official_diag["status"]="report_time_not_pregame"
+  official_diagnostics.append(official_diag)
   for row in pending:
    pending_teams.append({"game_id":gid,"team":row.get("team"),"game_date":row.get("game_date"),"matchup":row.get("matchup"),"status":"not_yet_submitted","source_url":official.get("report_url"),"observed_at_utc":official.get("downloaded_at_utc")})
   for team in (game["home_team"],game["away_team"]):
@@ -141,10 +156,13 @@ def reconcile(snapshot,roster,sporting,official=None):
  if official_provided:
   result.update({"official_unmatched_claims":official_unmatched,
    "official_matched_claims":official_matched,
+   "official_structured_candidate_rows":len(official.get("structured_player_rows",[])),
+   "official_rows_by_fixture":official_diagnostics,
+   "official_rows_for_fixtures":sum(x["fixture_team_rows"] for x in official_diagnostics),
    "official_report_retrieved":official.get("official_document_retrieved") is True,
    "official_report_as_of_utc":official.get("source_report_as_of_utc"),
    "official_team_reports_not_submitted":pending_teams,
-   "source_reliability":"official_nba_pdf_plus_supplementary_espn" if official_matched else "supplementary_not_official"})
+   "source_reliability":"official_nba_pdf_plus_supplementary_espn" if official_matched else ("official_rows_unmatched" if sum(x["fixture_team_rows"] for x in official_diagnostics) else "supplementary_not_official")})
  return result
 def main():
  p=argparse.ArgumentParser()
