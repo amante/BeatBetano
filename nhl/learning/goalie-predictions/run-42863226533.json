@@ -1,0 +1,522 @@
+{
+  "kind": "nhl_goalie_ml_comparison_v1",
+  "run_id": "42863226533",
+  "date": "2026-11-10",
+  "as_of_utc": "2026-11-10T17:17:21.067060+00:00",
+  "games": [
+    {
+      "game_id": "2026020286",
+      "home": "TOR",
+      "away": "COL",
+      "start_utc": "2026-11-11T00:00:00Z",
+      "baseline_p_home": 0.5035359920235087,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_provider_confirmed_goalie_identity"
+      ],
+      "computed_at_utc": "2026-11-10T17:17:21.067060+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8475683,
+            "name": "Sergei Bobrovsky",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8478406,
+            "name": "Mackenzie Blackwood",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 1,
+      "unresolved_editorial_candidates": {
+        "TOR": [],
+        "COL": []
+      },
+      "scenario_history_sha256": "89a872e79d1a02e10f92e473dcef08cff649fbf4271602c070db111ed03eb9ad",
+      "scenario_inputs_sha256": "37826811a4c8430b6695d689217e6d44cf52d1d7b75489eff4d0b873d14f71a0",
+      "baseline_forecast_sha256": "e9b49c59f3dae8d19bf75dc6ea4734287141d527b251ad1473ba453e8ce68d2e",
+      "baseline_as_of_utc": "2026-11-10T17:17:20.716644+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020287",
+      "home": "MTL",
+      "away": "MIN",
+      "start_utc": "2026-11-11T00:00:00Z",
+      "baseline_p_home": 0.525649455173882,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_provider_confirmed_goalie_identity"
+      ],
+      "computed_at_utc": "2026-11-10T17:17:21.067060+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8484170,
+            "name": "Jacob Fowler",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8482661,
+            "name": "Jesper Wallstedt",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8484170,
+            "name": "Jacob Fowler",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8475717,
+            "name": "Calvin Pickard",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8482487,
+            "name": "Jakub Dobes",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8482661,
+            "name": "Jesper Wallstedt",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8482487,
+            "name": "Jakub Dobes",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8475717,
+            "name": "Calvin Pickard",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 4,
+      "unresolved_editorial_candidates": {
+        "MTL": [],
+        "MIN": []
+      },
+      "scenario_history_sha256": "89a872e79d1a02e10f92e473dcef08cff649fbf4271602c070db111ed03eb9ad",
+      "scenario_inputs_sha256": "37826811a4c8430b6695d689217e6d44cf52d1d7b75489eff4d0b873d14f71a0",
+      "baseline_forecast_sha256": "15132290efa9cb21e92de2d138e91ce8d36f59985d8374966649a5eeb189c4e2",
+      "baseline_as_of_utc": "2026-11-10T17:17:20.716644+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020288",
+      "home": "OTT",
+      "away": "WSH",
+      "start_utc": "2026-11-11T00:00:00Z",
+      "baseline_p_home": 0.5484885188740898,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_provider_confirmed_goalie_identity"
+      ],
+      "computed_at_utc": "2026-11-10T17:17:21.067060+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8481035,
+            "name": "Samuel Ersson",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8480313,
+            "name": "Logan Thompson",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 1,
+      "unresolved_editorial_candidates": {
+        "OTT": [],
+        "WSH": []
+      },
+      "scenario_history_sha256": "89a872e79d1a02e10f92e473dcef08cff649fbf4271602c070db111ed03eb9ad",
+      "scenario_inputs_sha256": "37826811a4c8430b6695d689217e6d44cf52d1d7b75489eff4d0b873d14f71a0",
+      "baseline_forecast_sha256": "428545cf8a8d9583c38b39d62f7c7f0036e1456367365eb803158e6e4b4a7467",
+      "baseline_as_of_utc": "2026-11-10T17:17:20.716644+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020291",
+      "home": "WPG",
+      "away": "NJD",
+      "start_utc": "2026-11-11T00:00:00Z",
+      "baseline_p_home": 0.5351206165283663,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_provider_confirmed_goalie_identity"
+      ],
+      "computed_at_utc": "2026-11-10T17:17:21.067060+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8482076,
+            "name": "Nico Daws",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
+          },
+          "away_goalie": {
+            "player_id": 8474596,
+            "name": "Jake Allen",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 1,
+      "unresolved_editorial_candidates": {
+        "WPG": [],
+        "NJD": []
+      },
+      "scenario_history_sha256": "89a872e79d1a02e10f92e473dcef08cff649fbf4271602c070db111ed03eb9ad",
+      "scenario_inputs_sha256": "37826811a4c8430b6695d689217e6d44cf52d1d7b75489eff4d0b873d14f71a0",
+      "baseline_forecast_sha256": "4cfb054e3a8f49a968cbbb189bbafaf94c023e20dab30827d8cfd4c389a69633",
+      "baseline_as_of_utc": "2026-11-10T17:17:20.716644+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020289",
+      "home": "CBJ",
+      "away": "FLA",
+      "start_utc": "2026-11-11T00:30:00Z",
+      "baseline_p_home": 0.5505740155998411,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_provider_confirmed_goalie_identity"
+      ],
+      "computed_at_utc": "2026-11-10T17:17:21.067060+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8475660,
+            "name": "Cam Talbot",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8474593,
+            "name": "Jacob Markstrom",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 1,
+      "unresolved_editorial_candidates": {
+        "CBJ": [],
+        "FLA": []
+      },
+      "scenario_history_sha256": "89a872e79d1a02e10f92e473dcef08cff649fbf4271602c070db111ed03eb9ad",
+      "scenario_inputs_sha256": "37826811a4c8430b6695d689217e6d44cf52d1d7b75489eff4d0b873d14f71a0",
+      "baseline_forecast_sha256": "e21b554e8d4312477b6ecd403d0ae8f1de5730424dc64627b27cae07f45e4c43",
+      "baseline_as_of_utc": "2026-11-10T17:17:20.716644+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020290",
+      "home": "STL",
+      "away": "DET",
+      "start_utc": "2026-11-11T01:00:00Z",
+      "baseline_p_home": 0.5454945068980418,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_provider_confirmed_goalie_identity"
+      ],
+      "computed_at_utc": "2026-11-10T17:17:21.067060+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8480981,
+            "name": "Joel Hofer",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
+          },
+          "away_goalie": {
+            "player_id": 8476434,
+            "name": "John Gibson",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 1,
+      "unresolved_editorial_candidates": {
+        "STL": [],
+        "DET": []
+      },
+      "scenario_history_sha256": "89a872e79d1a02e10f92e473dcef08cff649fbf4271602c070db111ed03eb9ad",
+      "scenario_inputs_sha256": "37826811a4c8430b6695d689217e6d44cf52d1d7b75489eff4d0b873d14f71a0",
+      "baseline_forecast_sha256": "e0b42148b102cc8bb4e55382c53fdc2dba3bdc702c608d6d47a5fbacc9f52785",
+      "baseline_as_of_utc": "2026-11-10T17:17:20.716644+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020292",
+      "home": "LAK",
+      "away": "NSH",
+      "start_utc": "2026-11-11T03:00:00Z",
+      "baseline_p_home": 0.5789011003130903,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_provider_confirmed_goalie_identity"
+      ],
+      "computed_at_utc": "2026-11-10T17:17:21.067060+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8475311,
+            "name": "Darcy Kuemper",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "away_goalie": {
+            "player_id": 8477424,
+            "name": "Juuse Saros",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 1,
+      "unresolved_editorial_candidates": {
+        "LAK": [],
+        "NSH": []
+      },
+      "scenario_history_sha256": "89a872e79d1a02e10f92e473dcef08cff649fbf4271602c070db111ed03eb9ad",
+      "scenario_inputs_sha256": "37826811a4c8430b6695d689217e6d44cf52d1d7b75489eff4d0b873d14f71a0",
+      "baseline_forecast_sha256": "17ef8e5afe6a450c94c1826f2b051cc3cc04a6674dce2c63ca7c9f66048c7c33",
+      "baseline_as_of_utc": "2026-11-10T17:17:20.716644+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    }
+  ],
+  "candidate_assessment": {
+    "kind": "nhl_goalie_ml_assessment_v1",
+    "decision": "not_approved_no_incremental_gain",
+    "metrics": {
+      "baseline": {
+        "n": 429,
+        "brier": 0.245599,
+        "log_loss": 0.6843
+      },
+      "recalibration_only": {
+        "n": 429,
+        "brier": 0.245171,
+        "log_loss": 0.683428
+      },
+      "recalibration_plus_goalie": {
+        "n": 429,
+        "brier": 0.246198,
+        "log_loss": 0.685515
+      }
+    },
+    "fit_n": 1342,
+    "validation_n": 550,
+    "test_n": 429,
+    "report_path": "reports/nhl/goalie-candidate-2026-11-02/evaluation.json",
+    "report_sha256": "0d308c26e03f95a58783d4f34db9e20d2b82ecff0e9a91efdd5222bdba7b449f",
+    "parameters_deployed": false,
+    "reason": "Candidate failed to improve both baseline and recalibration control on the same retrospective test cohort."
+  },
+  "published_baseline_replaced": false,
+  "market": "ml",
+  "official": false,
+  "automatic_promotion": false,
+  "limitations": [
+    "ML-only candidate: RT and +3 retain their original model.",
+    "Differences between fitted models are not causal goalie effects.",
+    "Provider confirmation is not independent starter verification."
+  ],
+  "input_exclusions": [
+    {
+      "run_id": "42863226533",
+      "game_id": "2026020286",
+      "reason": "missing_provider_confirmed_goalie_identity"
+    },
+    {
+      "run_id": "42863226533",
+      "game_id": "2026020287",
+      "reason": "missing_provider_confirmed_goalie_identity"
+    },
+    {
+      "run_id": "42863226533",
+      "game_id": "2026020288",
+      "reason": "missing_provider_confirmed_goalie_identity"
+    },
+    {
+      "run_id": "42863226533",
+      "game_id": "2026020291",
+      "reason": "missing_provider_confirmed_goalie_identity"
+    },
+    {
+      "run_id": "42863226533",
+      "game_id": "2026020289",
+      "reason": "missing_provider_confirmed_goalie_identity"
+    },
+    {
+      "run_id": "42863226533",
+      "game_id": "2026020290",
+      "reason": "missing_provider_confirmed_goalie_identity"
+    },
+    {
+      "run_id": "42863226533",
+      "game_id": "2026020292",
+      "reason": "missing_provider_confirmed_goalie_identity"
+    }
+  ]
+}

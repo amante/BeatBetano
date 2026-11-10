@@ -1,0 +1,1076 @@
+{
+  "kind": "nhl_pregame_player_evidence_v1",
+  "as_of_utc": "2026-11-10T17:17:20.382209+00:00",
+  "games": [
+    {
+      "game_id": "2026020286",
+      "home": "TOR",
+      "away": "COL",
+      "start_utc": "2026-11-11T00:00:00Z",
+      "feature_as_of_utc": "2026-11-10T17:17:20.382209+00:00",
+      "editorial_source": null,
+      "teams": {
+        "TOR": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/TOR/current",
+            "source_sha256": "31ccf3d8498dcae2eb4bb32e2d6a3bad36a5e4414b37653820f5f78f10e146c6",
+            "as_of": "2026-11-10T17:17:03.588701+00:00"
+          },
+          "goalie_player_id": 8475683,
+          "goalie_provider_status": "confirmed",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 12,
+              "shots_against": 352,
+              "saves": 312,
+              "save_pct": 0.886364
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 138,
+              "saves": 119,
+              "save_pct": 0.862319
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8475683/game-log/20262027/2",
+              "sha256": "25afc35abf5d6badab3f44179ee0393306172c679b385f4d0ec54322ade00315",
+              "retrieved_at": "2026-11-10T17:17:07.374575+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        },
+        "COL": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/COL/current",
+            "source_sha256": "202addfb2bb61e21afc8bc2e03892bb1ecd730bde3c69f95a7370d5855febad9",
+            "as_of": "2026-11-10T17:17:03.304378+00:00"
+          },
+          "goalie_player_id": 8478406,
+          "goalie_provider_status": "projected",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 14,
+              "shots_against": 353,
+              "saves": 318,
+              "save_pct": 0.90085
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 117,
+              "saves": 107,
+              "save_pct": 0.91453
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8478406/game-log/20262027/2",
+              "sha256": "cfee9b8f4bffd5a47499e42ad85ea8ad402a69e55d91e31ddb5a02c527072ebc",
+              "retrieved_at": "2026-11-10T17:17:07.603982+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        }
+      },
+      "applied_probability_delta": null,
+      "training_ready": false
+    },
+    {
+      "game_id": "2026020287",
+      "home": "MTL",
+      "away": "MIN",
+      "start_utc": "2026-11-11T00:00:00Z",
+      "feature_as_of_utc": "2026-11-10T17:17:20.382209+00:00",
+      "editorial_source": {
+        "url": "https://www.nhl.com/news/nhl-lineup-projections-2026-27-season",
+        "published_at": "2026-11-10T16:58:08.670000+00:00",
+        "sha256": "f2efc236098a5dff2d023601451bbb32d9a568e912589545522327d8019c50e9"
+      },
+      "teams": {
+        "MTL": {
+          "projected": {
+            "forwards": [
+              [
+                {
+                  "name": "Cole Caufield",
+                  "player_id": 8481540,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Nick Suzuki",
+                  "player_id": 8480018,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Juraj Slafkovsky",
+                  "player_id": 8483515,
+                  "identity_resolved": true
+                }
+              ],
+              [
+                {
+                  "name": "Chris Kreider",
+                  "player_id": 8475184,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Jake Evans",
+                  "player_id": 8478133,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "John Anderson",
+                  "player_id": null,
+                  "identity_resolved": false
+                }
+              ],
+              [
+                {
+                  "name": "Zachary Bolduc",
+                  "player_id": 8482737,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Phillip Danault",
+                  "player_id": 8476479,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Alexandre Texier",
+                  "player_id": 8480074,
+                  "identity_resolved": true
+                }
+              ],
+              [
+                {
+                  "name": "Alex Newhook",
+                  "player_id": 8481618,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Oliver Kapanen",
+                  "player_id": 8482775,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Kirby Dach",
+                  "player_id": 8481523,
+                  "identity_resolved": true
+                }
+              ]
+            ],
+            "defense": [
+              [
+                {
+                  "name": "Lane Hutson",
+                  "player_id": 8483457,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Noah Dobson",
+                  "player_id": 8480865,
+                  "identity_resolved": true
+                }
+              ],
+              [
+                {
+                  "name": "Kaiden Guhle",
+                  "player_id": 8482087,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Alexandre Carrier",
+                  "player_id": 8478851,
+                  "identity_resolved": true
+                }
+              ],
+              [
+                {
+                  "name": "Arber Xhekaj",
+                  "player_id": 8482964,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Adam Engstrom",
+                  "player_id": 8483686,
+                  "identity_resolved": true
+                }
+              ]
+            ],
+            "goalies": [
+              {
+                "name": "Jacob Fowler",
+                "player_id": 8484170,
+                "identity_resolved": true
+              },
+              {
+                "name": "Jakub Dobes",
+                "player_id": 8482487,
+                "identity_resolved": true
+              }
+            ],
+            "injuries": [
+              {
+                "name": "Mike Matheson (lower body)",
+                "player_id": 8476875,
+                "identity_resolved": true
+              },
+              {
+                "name": "Ivan Demidov (lower body)",
+                "player_id": 8484984,
+                "identity_resolved": true
+              },
+              {
+                "name": "Samuel Montembeault (lower body)",
+                "player_id": 8478470,
+                "identity_resolved": true
+              }
+            ],
+            "scratches": [
+              {
+                "name": "Florian Xhekaj",
+                "player_id": 8484403,
+                "identity_resolved": true
+              },
+              {
+                "name": "Owen Beck",
+                "player_id": 8483424,
+                "identity_resolved": true
+              }
+            ]
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/MTL/current",
+            "source_sha256": "1074ea6cd8bf6162c4a161b25d5b5c14c2c312e66a3314a5ee3698adf3171672",
+            "as_of": "2026-11-10T17:17:03.513341+00:00"
+          },
+          "goalie_player_id": 8484170,
+          "goalie_provider_status": "confirmed",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 10,
+              "shots_against": 295,
+              "saves": 273,
+              "save_pct": 0.925424
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 184,
+              "saves": 172,
+              "save_pct": 0.934783
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8484170/game-log/20262027/2",
+              "sha256": "73336649f2457bffa19b281211ca31f56860114c7ba7ec8cf1a685b471e12a6f",
+              "retrieved_at": "2026-11-10T17:17:07.742247+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        },
+        "MIN": {
+          "projected": {
+            "forwards": [
+              [
+                {
+                  "name": "Kirill Kaprizov",
+                  "player_id": 8478864,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Joel Eriksson Ek",
+                  "player_id": 8478493,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Matt Boldy",
+                  "player_id": 8481557,
+                  "identity_resolved": true
+                }
+              ],
+              [
+                {
+                  "name": "Maxim Shabanov",
+                  "player_id": 8485702,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Danila Yurov",
+                  "player_id": 8483525,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Yakov Trenin",
+                  "player_id": 8478508,
+                  "identity_resolved": true
+                }
+              ],
+              [
+                {
+                  "name": "Blake Coleman",
+                  "player_id": 8476399,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Michael McCarron",
+                  "player_id": 8477446,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Bobby Brink",
+                  "player_id": 8481553,
+                  "identity_resolved": true
+                }
+              ],
+              [
+                {
+                  "name": "Marcus Foligno",
+                  "player_id": 8475220,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Ryan Hartman",
+                  "player_id": 8477451,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Nick Foligno",
+                  "player_id": 8473422,
+                  "identity_resolved": true
+                }
+              ]
+            ],
+            "defense": [
+              [
+                {
+                  "name": "Quinn Hughes",
+                  "player_id": 8480800,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Jonas Brodin",
+                  "player_id": 8476463,
+                  "identity_resolved": true
+                }
+              ],
+              [
+                {
+                  "name": "Olli Maatta",
+                  "player_id": 8476874,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Jared Spurgeon",
+                  "player_id": 8474716,
+                  "identity_resolved": true
+                }
+              ],
+              [
+                {
+                  "name": "Matt Kiersted",
+                  "player_id": 8482641,
+                  "identity_resolved": true
+                },
+                {
+                  "name": "Zach Bogosian",
+                  "player_id": 8474567,
+                  "identity_resolved": true
+                }
+              ]
+            ],
+            "goalies": [
+              {
+                "name": "Jesper Wallstedt",
+                "player_id": 8482661,
+                "identity_resolved": true
+              },
+              {
+                "name": "Calvin Pickard",
+                "player_id": 8475717,
+                "identity_resolved": true
+              }
+            ],
+            "injuries": [
+              {
+                "name": "Brock Faber (skull fracture)",
+                "player_id": 8482122,
+                "identity_resolved": true
+              },
+              {
+                "name": "Filip Gustavsson (lower body)",
+                "player_id": 8479406,
+                "identity_resolved": true
+              }
+            ],
+            "scratches": [
+              {
+                "name": "Nico Sturm",
+                "player_id": 8481477,
+                "identity_resolved": true
+              },
+              {
+                "name": "David Spacek",
+                "player_id": 8483766,
+                "identity_resolved": true
+              }
+            ]
+          },
+          "projected_skaters_identity_complete": true,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/MIN/current",
+            "source_sha256": "0c144d564217d008fcd2dc90b682ffcf46f7caee45625795c95c4e4fe893fc85",
+            "as_of": "2026-11-10T17:17:03.355312+00:00"
+          },
+          "goalie_player_id": 8482661,
+          "goalie_provider_status": "projected",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 16,
+              "shots_against": 411,
+              "saves": 379,
+              "save_pct": 0.922141
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 129,
+              "saves": 120,
+              "save_pct": 0.930233
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8482661/game-log/20262027/2",
+              "sha256": "4aed81d7d157eaa28b02ba1f5c87f96daac6f89c4760385cabd883f47d6983bb",
+              "retrieved_at": "2026-11-10T17:17:07.745432+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        }
+      },
+      "applied_probability_delta": null,
+      "training_ready": false
+    },
+    {
+      "game_id": "2026020288",
+      "home": "OTT",
+      "away": "WSH",
+      "start_utc": "2026-11-11T00:00:00Z",
+      "feature_as_of_utc": "2026-11-10T17:17:20.382209+00:00",
+      "editorial_source": null,
+      "teams": {
+        "OTT": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/OTT/current",
+            "source_sha256": "d8e19c82586445755f1abc1bbe2a5d46bea6920ed630ec6275437c238501aedd",
+            "as_of": "2026-11-10T17:17:03.537391+00:00"
+          },
+          "goalie_player_id": 8481035,
+          "goalie_provider_status": "confirmed",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 9,
+              "shots_against": 200,
+              "saves": 178,
+              "save_pct": 0.89
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 129,
+              "saves": 119,
+              "save_pct": 0.922481
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8481035/game-log/20262027/2",
+              "sha256": "9bbff66bc74b2f9aedcf48c926a242a6f01dc59cc5eeda07a3220a5f8b902466",
+              "retrieved_at": "2026-11-10T17:17:07.695621+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        },
+        "WSH": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/WSH/current",
+            "source_sha256": "1c49c6bd421cd03d5a312313536325442d450c0e4dae1517b5401f0ba461df88",
+            "as_of": "2026-11-10T17:17:03.684172+00:00"
+          },
+          "goalie_player_id": 8480313,
+          "goalie_provider_status": "projected",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 11,
+              "shots_against": 294,
+              "saves": 261,
+              "save_pct": 0.887755
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 117,
+              "saves": 100,
+              "save_pct": 0.854701
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8480313/game-log/20262027/2",
+              "sha256": "c4b474635960fb23a3d8cf272326c321ae5dfa99e6826fa09537441b63ceb723",
+              "retrieved_at": "2026-11-10T17:17:07.563374+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        }
+      },
+      "applied_probability_delta": null,
+      "training_ready": false
+    },
+    {
+      "game_id": "2026020291",
+      "home": "WPG",
+      "away": "NJD",
+      "start_utc": "2026-11-11T00:00:00Z",
+      "feature_as_of_utc": "2026-11-10T17:17:20.382209+00:00",
+      "editorial_source": null,
+      "teams": {
+        "WPG": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/WPG/current",
+            "source_sha256": "040ee1824a65a6c21139835ab6a0f88efc596672f48cb407e2b33a090629168c",
+            "as_of": "2026-11-10T17:17:03.692278+00:00"
+          },
+          "goalie_player_id": 8482076,
+          "goalie_provider_status": "confirmed",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 6,
+              "shots_against": 132,
+              "saves": 117,
+              "save_pct": 0.886364
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 100,
+              "saves": 91,
+              "save_pct": 0.91
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8482076/game-log/20262027/2",
+              "sha256": "64453e6bb5800855504db9d8ef63d5547403a37afb3242296486fd1e40fcc200",
+              "retrieved_at": "2026-11-10T17:17:07.740583+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        },
+        "NJD": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/NJD/current",
+            "source_sha256": "ff98d7ade75189e271193fd3d88e2441f14a4ea46e9a01415681172d93b6af40",
+            "as_of": "2026-11-10T17:17:03.508851+00:00"
+          },
+          "goalie_player_id": 8474596,
+          "goalie_provider_status": "projected",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 9,
+              "shots_against": 244,
+              "saves": 215,
+              "save_pct": 0.881148
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 140,
+              "saves": 123,
+              "save_pct": 0.878571
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8474596/game-log/20262027/2",
+              "sha256": "3895c40d1ac6c69828f68671a3eeba273473cbb687d81600781b44e0e86136f2",
+              "retrieved_at": "2026-11-10T17:17:07.400667+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        }
+      },
+      "applied_probability_delta": null,
+      "training_ready": false
+    },
+    {
+      "game_id": "2026020289",
+      "home": "CBJ",
+      "away": "FLA",
+      "start_utc": "2026-11-11T00:30:00Z",
+      "feature_as_of_utc": "2026-11-10T17:17:20.382209+00:00",
+      "editorial_source": null,
+      "teams": {
+        "CBJ": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/CBJ/current",
+            "source_sha256": "720cf8a86c6c211b99ffcb40fd37ffe63fe0fb1489b4bd009fb83aef3d838000",
+            "as_of": "2026-11-10T17:17:03.328319+00:00"
+          },
+          "goalie_player_id": 8475660,
+          "goalie_provider_status": "confirmed",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 8,
+              "shots_against": 203,
+              "saves": 185,
+              "save_pct": 0.91133
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 123,
+              "saves": 115,
+              "save_pct": 0.934959
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8475660/game-log/20262027/2",
+              "sha256": "a90635be409d5fdf9c70674f30e067fcf2b2a38479ed146e051c90055e18ca13",
+              "retrieved_at": "2026-11-10T17:17:07.368758+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        },
+        "FLA": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/FLA/current",
+            "source_sha256": "a25348aec9da961fbaeecdc496261879dca1b2cd9db14283ff687da9eb127e2b",
+            "as_of": "2026-11-10T17:17:03.333988+00:00"
+          },
+          "goalie_player_id": 8474593,
+          "goalie_provider_status": "projected",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 9,
+              "shots_against": 202,
+              "saves": 179,
+              "save_pct": 0.886139
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 119,
+              "saves": 103,
+              "save_pct": 0.865546
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8474593/game-log/20262027/2",
+              "sha256": "73c6ab5f243261c01e659375e043224bd9dbd975d67233d36cb5f192f40f9d87",
+              "retrieved_at": "2026-11-10T17:17:07.363867+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        }
+      },
+      "applied_probability_delta": null,
+      "training_ready": false
+    },
+    {
+      "game_id": "2026020290",
+      "home": "STL",
+      "away": "DET",
+      "start_utc": "2026-11-11T01:00:00Z",
+      "feature_as_of_utc": "2026-11-10T17:17:20.382209+00:00",
+      "editorial_source": null,
+      "teams": {
+        "STL": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/STL/current",
+            "source_sha256": "e57f99a8268f39cfed3660d2144bd0c1105d196be6cb48491884837b30465a0e",
+            "as_of": "2026-11-10T17:17:03.597573+00:00"
+          },
+          "goalie_player_id": 8480981,
+          "goalie_provider_status": "projected",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 12,
+              "shots_against": 344,
+              "saves": 316,
+              "save_pct": 0.918605
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 155,
+              "saves": 142,
+              "save_pct": 0.916129
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8480981/game-log/20262027/2",
+              "sha256": "1b0c1a0e3a83e1f685d45923c05a086407c35ab95571884f5382712d93c72d4e",
+              "retrieved_at": "2026-11-10T17:17:07.578787+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        },
+        "DET": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/DET/current",
+            "source_sha256": "004f69c841dd45f9fa6e76558e08f95ce6bf16b999608c0e359c77d751dfa4a0",
+            "as_of": "2026-11-10T17:17:03.365261+00:00"
+          },
+          "goalie_player_id": 8476434,
+          "goalie_provider_status": "projected",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 11,
+              "shots_against": 235,
+              "saves": 202,
+              "save_pct": 0.859574
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 77,
+              "saves": 64,
+              "save_pct": 0.831169
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8476434/game-log/20262027/2",
+              "sha256": "947a9958bd876907738c10818e314864582b130e3447388cefcc8ffb73374633",
+              "retrieved_at": "2026-11-10T17:17:07.540074+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        }
+      },
+      "applied_probability_delta": null,
+      "training_ready": false
+    },
+    {
+      "game_id": "2026020292",
+      "home": "LAK",
+      "away": "NSH",
+      "start_utc": "2026-11-11T03:00:00Z",
+      "feature_as_of_utc": "2026-11-10T17:17:20.382209+00:00",
+      "editorial_source": null,
+      "teams": {
+        "LAK": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/LAK/current",
+            "source_sha256": "51b166c113983e442ad9235034844a970fcadd85a752d2e3d7a8914e3102f3dd",
+            "as_of": "2026-11-10T17:17:03.360264+00:00"
+          },
+          "goalie_player_id": 8475311,
+          "goalie_provider_status": "projected",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 10,
+              "shots_against": 271,
+              "saves": 238,
+              "save_pct": 0.878229
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 141,
+              "saves": 125,
+              "save_pct": 0.886525
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8475311/game-log/20262027/2",
+              "sha256": "4c94245785ab772fc7f638a1c3eee8573665cbcb568cce3fd2f61c1a4437dd57",
+              "retrieved_at": "2026-11-10T17:17:07.369913+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        },
+        "NSH": {
+          "projected": {
+            "forwards": null,
+            "defense": null,
+            "goalies": null,
+            "injuries": null,
+            "scratches": null
+          },
+          "projected_skaters_identity_complete": false,
+          "duplicate_player_ids": false,
+          "availability_conflict": false,
+          "roster_source": {
+            "source_url": "https://api-web.nhle.com/v1/roster/NSH/current",
+            "source_sha256": "6276e1f46b28613234122b14c0f5c926a1cbb12f5fa1c244995b83e7527a3df8",
+            "as_of": "2026-11-10T17:17:03.528167+00:00"
+          },
+          "goalie_player_id": 8477424,
+          "goalie_provider_status": "projected",
+          "goalie_source": "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard?dates=20261110",
+          "goalie_source_captured_at": "2026-11-10T17:17:03.965759+00:00",
+          "independent_starter_confirmation": false,
+          "goalie_prior_statistics": {
+            "season_to_date": {
+              "games": 12,
+              "shots_against": 361,
+              "saves": 329,
+              "save_pct": 0.911357
+            },
+            "last_5_games": {
+              "games": 5,
+              "shots_against": 148,
+              "saves": 136,
+              "save_pct": 0.918919
+            },
+            "source": {
+              "url": "https://api-web.nhle.com/v1/player/8477424/game-log/20262027/2",
+              "sha256": "790f5701ca72a3cdacd3b27b2da409bc1c0db62d620e1e6a54d1cf42d0f1429d",
+              "retrieved_at": "2026-11-10T17:17:07.550472+00:00"
+            },
+            "cutoff_exclusive": "2026-11-10"
+          },
+          "blockers": [
+            "projected_lines_incomplete_or_unresolved",
+            "injuries_missing_or_unresolved",
+            "projected_not_confirmed_availability",
+            "incremental_effect_not_fitted_or_validated"
+          ],
+          "model_eligible": false
+        }
+      },
+      "applied_probability_delta": null,
+      "training_ready": false
+    }
+  ],
+  "skipped_started_games": [],
+  "probabilities_modified": false,
+  "automatic_promotion": false,
+  "status": "prospective_observations_not_fitted",
+  "note": "Projected lines and provider goalie assertions are not independently confirmed availability. Never impute missing ratings or train on the display snapshot.",
+  "run_id": "42863226533",
+  "source_files_sha256": {
+    "report.json": "83071a6b18cce18d83eb0b7db135e3bc368b7703e4cea3c7bb695e28d1a3760c",
+    "official_roster_candidates.json": "9827fc6671c5078a8f705e695f6d4138e8e80e081fcaf8a4370694338ce45d7d",
+    "goalie_identity_crosswalk.json": "c316a36e567162d1983e2270aec980783e962ea705b175a29002d45da1e11233",
+    "goalie_history_251.json": "548385f9e93e03ca90c2cda1a9ecdbc1208050b1cd17251a303ea7dd71e85ae3",
+    "editorial_lineup_raw.html": "f2efc236098a5dff2d023601451bbb32d9a568e912589545522327d8019c50e9",
+    "goalie_observations.json": "37bdfcb5075f662bf3bcb869d3142154fe0d545829a04812dc3a0300010038f0",
+    "espn_raw.json": "28c77e20be23a465057d601f3352de0639d2863bb186232a58f388f2a5b403b9"
+  },
+  "content_sha256": "be9d3f625d8c6fa386deda88ab710e036739a2dd3a3ab22f058f363e7a5a0dcf"
+}
