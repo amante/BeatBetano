@@ -1,0 +1,463 @@
+{
+  "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+  "emitted_at_utc": "2026-11-10T23:51:21.755707+00:00",
+  "fixtures": 6,
+  "research_scenarios": 1,
+  "coverage_status": "captured",
+  "source_failure": null,
+  "games": [
+    {
+      "game_id": "401909960",
+      "emitted_at_utc": "2026-11-10T23:51:19.572286+00:00",
+      "tipoff_utc": "2026-11-11T00:30:00Z",
+      "home_team": "NY",
+      "away_team": "MIL",
+      "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+      "baseline_snapshot_sha256": "ca139a2cf2cd77d21ad0e865a445560ffc672e1f5f4617533964fc572672a5f1",
+      "scenario_sha256": "8fd74040ee9c1c1e7d4340b50b54a597ea83c8f7398fe1a3019d753a916c1dbc",
+      "coverage_sha256": "b30b4817b983433dddc9b91cbbe0ea4526260d7b8dc7fba994646956b8bb59b2",
+      "team_ml_sha256": "f5d9b58fef0f4fdd72d9da0cbdd9a41e85dfa021799269b34ad7bfb3b2dc472b",
+      "possession_sha256": "4bb1f8d2aa9e4af14c3f6140f92e9aa51cb8cd2762f510541f9377c62cfa9f24",
+      "status": "PASS",
+      "rotation_rating_deltas": {
+        "NY": {
+          "offense_delta_per_100": 0.04929433485425337,
+          "defense_delta_per_100": 0.044778638034141185,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "MIL": {
+          "offense_delta_per_100": 0.17023449649656705,
+          "defense_delta_per_100": 0.02076264551549019,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "blocked": {
+        "NY": [
+          "missing_path_features",
+          "unsupported_player_effect:5289900"
+        ],
+        "MIL": [
+          "insufficient_opponent_adjusted_ratings",
+          "unsupported_player_effect:4997526",
+          "unsupported_player_effect:4277922"
+        ]
+      },
+      "comparison": null,
+      "assumptions": [
+        "Conditional minutes and availability from the scenario.",
+        "Turnover pressure and fatigue held fixed across both branches.",
+        "Historical usage is a coverage check and does not alter the rating deltas."
+      ],
+      "calibrated": false,
+      "production_approved": false,
+      "no_odds_input": true,
+      "content_sha256": "b3fa06465f762346cf4bb83c354cacba3d178fb03cad87e378fb577e2d878334"
+    },
+    {
+      "game_id": "401909961",
+      "emitted_at_utc": "2026-11-10T23:51:19.572286+00:00",
+      "tipoff_utc": "2026-11-11T01:00:00Z",
+      "home_team": "PHI",
+      "away_team": "BOS",
+      "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+      "baseline_snapshot_sha256": "ca139a2cf2cd77d21ad0e865a445560ffc672e1f5f4617533964fc572672a5f1",
+      "scenario_sha256": "6800dd0eab5576199da096cc07e01d566ebbad5509522ccf193b75788639a180",
+      "coverage_sha256": "b30b4817b983433dddc9b91cbbe0ea4526260d7b8dc7fba994646956b8bb59b2",
+      "team_ml_sha256": "f5d9b58fef0f4fdd72d9da0cbdd9a41e85dfa021799269b34ad7bfb3b2dc472b",
+      "possession_sha256": "4bb1f8d2aa9e4af14c3f6140f92e9aa51cb8cd2762f510541f9377c62cfa9f24",
+      "status": "PASS",
+      "rotation_rating_deltas": {
+        "PHI": {
+          "offense_delta_per_100": 0.06262148561049119,
+          "defense_delta_per_100": -0.14379489182542973,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "BOS": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "blocked": {
+        "PHI": [
+          "unsupported_player_effect:4711297",
+          "unsupported_player_effect:4873090",
+          "unsupported_player_effect:4432446"
+        ]
+      },
+      "comparison": null,
+      "assumptions": [
+        "Conditional minutes and availability from the scenario.",
+        "Turnover pressure and fatigue held fixed across both branches.",
+        "Historical usage is a coverage check and does not alter the rating deltas."
+      ],
+      "calibrated": false,
+      "production_approved": false,
+      "no_odds_input": true,
+      "content_sha256": "9008e8dad57937915cb007555750bb8dccdfdcdaad4aa92d2e94f2594fcf94eb"
+    },
+    {
+      "game_id": "401909962",
+      "emitted_at_utc": "2026-11-10T23:51:19.572286+00:00",
+      "tipoff_utc": "2026-11-11T02:00:00Z",
+      "home_team": "PHX",
+      "away_team": "LAC",
+      "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+      "baseline_snapshot_sha256": "ca139a2cf2cd77d21ad0e865a445560ffc672e1f5f4617533964fc572672a5f1",
+      "scenario_sha256": "e2d6db54df46804601c8b6456b17056ea1959138278c0aff48a30c26d42b1661",
+      "coverage_sha256": "b30b4817b983433dddc9b91cbbe0ea4526260d7b8dc7fba994646956b8bb59b2",
+      "team_ml_sha256": "f5d9b58fef0f4fdd72d9da0cbdd9a41e85dfa021799269b34ad7bfb3b2dc472b",
+      "possession_sha256": "4bb1f8d2aa9e4af14c3f6140f92e9aa51cb8cd2762f510541f9377c62cfa9f24",
+      "status": "PASS",
+      "rotation_rating_deltas": {
+        "PHX": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "LAC": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "blocked": {
+        "LAC": [
+          "insufficient_opponent_adjusted_ratings"
+        ]
+      },
+      "comparison": null,
+      "assumptions": [
+        "Conditional minutes and availability from the scenario.",
+        "Turnover pressure and fatigue held fixed across both branches.",
+        "Historical usage is a coverage check and does not alter the rating deltas."
+      ],
+      "calibrated": false,
+      "production_approved": false,
+      "no_odds_input": true,
+      "content_sha256": "38e7c0364058fc0bdbe424c4d293a6cedfa552055d71a2b698ffe8ddcc67fb29"
+    },
+    {
+      "game_id": "401909963",
+      "emitted_at_utc": "2026-11-10T23:51:19.572286+00:00",
+      "tipoff_utc": "2026-11-11T02:00:00Z",
+      "home_team": "UTAH",
+      "away_team": "MIA",
+      "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+      "baseline_snapshot_sha256": "ca139a2cf2cd77d21ad0e865a445560ffc672e1f5f4617533964fc572672a5f1",
+      "scenario_sha256": "40ae2bbe37b39051430b944798f958cb1d2fa20c130642f4f4cd7bdcabfbb3aa",
+      "coverage_sha256": "b30b4817b983433dddc9b91cbbe0ea4526260d7b8dc7fba994646956b8bb59b2",
+      "team_ml_sha256": "f5d9b58fef0f4fdd72d9da0cbdd9a41e85dfa021799269b34ad7bfb3b2dc472b",
+      "possession_sha256": "4bb1f8d2aa9e4af14c3f6140f92e9aa51cb8cd2762f510541f9377c62cfa9f24",
+      "status": "PASS",
+      "rotation_rating_deltas": {
+        "UTAH": {
+          "offense_delta_per_100": 0.1563629720261753,
+          "defense_delta_per_100": 0.07358213670132664,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "MIA": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "blocked": {
+        "UTAH": [
+          "missing_path_features",
+          "insufficient_opponent_adjusted_ratings",
+          "unsupported_player_effect:4277919",
+          "unsupported_player_effect:4065673",
+          "unsupported_player_effect:4684793"
+        ],
+        "MIA": [
+          "incomplete_usage_sample"
+        ]
+      },
+      "comparison": null,
+      "assumptions": [
+        "Conditional minutes and availability from the scenario.",
+        "Turnover pressure and fatigue held fixed across both branches.",
+        "Historical usage is a coverage check and does not alter the rating deltas."
+      ],
+      "calibrated": false,
+      "production_approved": false,
+      "no_odds_input": true,
+      "content_sha256": "c636489608cdd17597fed3d63d852d321b7ff91540230195ba7b5056d48898a2"
+    },
+    {
+      "game_id": "401909964",
+      "emitted_at_utc": "2026-11-10T23:51:19.572286+00:00",
+      "tipoff_utc": "2026-11-11T03:00:00Z",
+      "home_team": "SAC",
+      "away_team": "ORL",
+      "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+      "baseline_snapshot_sha256": "ca139a2cf2cd77d21ad0e865a445560ffc672e1f5f4617533964fc572672a5f1",
+      "scenario_sha256": "3d87cba460cd3378d08b23aeca6f347b78192738f6a8b17dbdbcaadf6c28d946",
+      "coverage_sha256": "b30b4817b983433dddc9b91cbbe0ea4526260d7b8dc7fba994646956b8bb59b2",
+      "team_ml_sha256": "f5d9b58fef0f4fdd72d9da0cbdd9a41e85dfa021799269b34ad7bfb3b2dc472b",
+      "possession_sha256": "4bb1f8d2aa9e4af14c3f6140f92e9aa51cb8cd2762f510541f9377c62cfa9f24",
+      "status": "research_scenario",
+      "rotation_rating_deltas": {
+        "SAC": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "ORL": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "blocked": {},
+      "comparison": {
+        "reference": {
+          "teams": {
+            "SAC": {
+              "offense_delta_per_100": 0.0,
+              "defense_delta_per_100": 0.0,
+              "turnover_rate_delta": 0.0,
+              "forced_turnover_rate_delta": 0.0
+            },
+            "ORL": {
+              "offense_delta_per_100": 0.0,
+              "defense_delta_per_100": 0.0,
+              "turnover_rate_delta": 0.0,
+              "forced_turnover_rate_delta": 0.0
+            }
+          },
+          "projections": {
+            "SAC": {
+              "availability_adjusted_ortg": 108.14756069152718,
+              "availability_adjusted_drtg": 111.91758087100597,
+              "possessions": 98.26666666666667,
+              "ppp": 1.0946729758709728,
+              "regulation_points": 107.56986442892092,
+              "turnover_rate": 0.1573766865266793,
+              "expected_turnovers": 15.464882396021686,
+              "turnover_pressure_delta_ppp": 0.010212551893996238,
+              "points_after_opponent_turnovers": 15.901802243047271,
+              "transition_bonus": 0,
+              "offensive_explosiveness": {
+                "observed_blocks": 101,
+                "eight_plus_points_in_four_non_turnover_possessions": 0.09900990099009901
+              }
+            },
+            "ORL": {
+              "availability_adjusted_ortg": 106.21934380661195,
+              "availability_adjusted_drtg": 110.55458934219074,
+              "possessions": 98.26666666666667,
+              "ppp": 1.094288438622126,
+              "regulation_points": 107.5320772352676,
+              "turnover_rate": 0.14782766834808764,
+              "expected_turnovers": 14.526532209672078,
+              "turnover_pressure_delta_ppp": 0.015480268206149436,
+              "points_after_opponent_turnovers": 17.81403643641436,
+              "transition_bonus": 0.08023566658161252,
+              "offensive_explosiveness": {
+                "observed_blocks": 118,
+                "eight_plus_points_in_four_non_turnover_possessions": 0.2457627118644068
+              }
+            }
+          },
+          "path": {
+            "probabilities": {
+              "home_ml": 0.499,
+              "away_ml": 0.501,
+              "home_plus20": 0.22775,
+              "away_plus20": 0.21375,
+              "either_plus20": 0.441,
+              "both_plus20": 0.0005
+            },
+            "monte_carlo_se": {
+              "home_ml": 0.007905678339016836,
+              "away_ml": 0.007905678339016836,
+              "home_plus20": 0.006630986681859646,
+              "away_plus20": 0.006481915949393359,
+              "either_plus20": 0.007850461769857873,
+              "both_plus20": 0.000353464991194319
+            },
+            "mean_points_including_overtime": {
+              "home": 107.976,
+              "away": 107.92575
+            },
+            "simulations": 4000,
+            "seed": 2026271,
+            "includes_overtime": true,
+            "overtime_games": 103,
+            "method": "empirical_four_possession_block_tilt_v1",
+            "calibrated": false
+          }
+        },
+        "conditional": {
+          "teams": {
+            "SAC": {
+              "offense_delta_per_100": 0.0,
+              "defense_delta_per_100": 0.0,
+              "turnover_rate_delta": 0.0,
+              "forced_turnover_rate_delta": 0.0
+            },
+            "ORL": {
+              "offense_delta_per_100": 0.0,
+              "defense_delta_per_100": 0.0,
+              "turnover_rate_delta": 0.0,
+              "forced_turnover_rate_delta": 0.0
+            }
+          },
+          "projections": {
+            "SAC": {
+              "availability_adjusted_ortg": 108.14756069152718,
+              "availability_adjusted_drtg": 111.91758087100597,
+              "possessions": 98.26666666666667,
+              "ppp": 1.0946729758709728,
+              "regulation_points": 107.56986442892092,
+              "turnover_rate": 0.1573766865266793,
+              "expected_turnovers": 15.464882396021686,
+              "turnover_pressure_delta_ppp": 0.010212551893996238,
+              "points_after_opponent_turnovers": 15.901802243047271,
+              "transition_bonus": 0,
+              "offensive_explosiveness": {
+                "observed_blocks": 101,
+                "eight_plus_points_in_four_non_turnover_possessions": 0.09900990099009901
+              }
+            },
+            "ORL": {
+              "availability_adjusted_ortg": 106.21934380661195,
+              "availability_adjusted_drtg": 110.55458934219074,
+              "possessions": 98.26666666666667,
+              "ppp": 1.094288438622126,
+              "regulation_points": 107.5320772352676,
+              "turnover_rate": 0.14782766834808764,
+              "expected_turnovers": 14.526532209672078,
+              "turnover_pressure_delta_ppp": 0.015480268206149436,
+              "points_after_opponent_turnovers": 17.81403643641436,
+              "transition_bonus": 0.08023566658161252,
+              "offensive_explosiveness": {
+                "observed_blocks": 118,
+                "eight_plus_points_in_four_non_turnover_possessions": 0.2457627118644068
+              }
+            }
+          },
+          "path": {
+            "probabilities": {
+              "home_ml": 0.499,
+              "away_ml": 0.501,
+              "home_plus20": 0.22775,
+              "away_plus20": 0.21375,
+              "either_plus20": 0.441,
+              "both_plus20": 0.0005
+            },
+            "monte_carlo_se": {
+              "home_ml": 0.007905678339016836,
+              "away_ml": 0.007905678339016836,
+              "home_plus20": 0.006630986681859646,
+              "away_plus20": 0.006481915949393359,
+              "either_plus20": 0.007850461769857873,
+              "both_plus20": 0.000353464991194319
+            },
+            "mean_points_including_overtime": {
+              "home": 107.976,
+              "away": 107.92575
+            },
+            "simulations": 4000,
+            "seed": 2026271,
+            "includes_overtime": true,
+            "overtime_games": 103,
+            "method": "empirical_four_possession_block_tilt_v1",
+            "calibrated": false
+          }
+        },
+        "delta": {
+          "home_ml": 0.0,
+          "away_ml": 0.0,
+          "home_plus20": 0.0,
+          "away_plus20": 0.0,
+          "either_plus20": 0.0,
+          "both_plus20": 0.0
+        }
+      },
+      "assumptions": [
+        "Conditional minutes and availability from the scenario.",
+        "Turnover pressure and fatigue held fixed across both branches.",
+        "Historical usage is a coverage check and does not alter the rating deltas."
+      ],
+      "calibrated": false,
+      "production_approved": false,
+      "no_odds_input": true,
+      "content_sha256": "554b99f5964d0cca9c3acbfdf804716b2773d391fee783a272ad14721df6b065"
+    },
+    {
+      "game_id": "401909965",
+      "emitted_at_utc": "2026-11-10T23:51:19.572286+00:00",
+      "tipoff_utc": "2026-11-11T04:00:00Z",
+      "home_team": "POR",
+      "away_team": "OKC",
+      "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+      "baseline_snapshot_sha256": "ca139a2cf2cd77d21ad0e865a445560ffc672e1f5f4617533964fc572672a5f1",
+      "scenario_sha256": "5508269ea97592053a8314f01fe38238a1cf008f8bf89c702ab4e5108b7d8d7e",
+      "coverage_sha256": "b30b4817b983433dddc9b91cbbe0ea4526260d7b8dc7fba994646956b8bb59b2",
+      "team_ml_sha256": "f5d9b58fef0f4fdd72d9da0cbdd9a41e85dfa021799269b34ad7bfb3b2dc472b",
+      "possession_sha256": "4bb1f8d2aa9e4af14c3f6140f92e9aa51cb8cd2762f510541f9377c62cfa9f24",
+      "status": "PASS",
+      "rotation_rating_deltas": {
+        "POR": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "OKC": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "blocked": {
+        "POR": [
+          "PASS_insufficient_path_sample",
+          "unsupported_player_effect:4683021",
+          "unsupported_player_effect:4431736",
+          "unsupported_player_effect:4592435",
+          "unsupported_player_effect:5081727",
+          "unsupported_player_effect:5105565",
+          "unsupported_player_effect:5217746",
+          "unsupported_player_effect:4683678",
+          "unsupported_player_effect:3995",
+          "unsupported_player_effect:4578893",
+          "unsupported_player_effect:6606",
+          "unsupported_player_effect:4066399",
+          "unsupported_player_effect:4066211",
+          "unsupported_player_effect:4706557"
+        ],
+        "OKC": [
+          "insufficient_opponent_adjusted_ratings"
+        ]
+      },
+      "comparison": null,
+      "assumptions": [
+        "Conditional minutes and availability from the scenario.",
+        "Turnover pressure and fatigue held fixed across both branches.",
+        "Historical usage is a coverage check and does not alter the rating deltas."
+      ],
+      "calibrated": false,
+      "production_approved": false,
+      "no_odds_input": true,
+      "content_sha256": "c821c95c57977f283b4923cc4a7a71d7c2f843e20d3a19e5f2dc1178ba6f9f90"
+    }
+  ],
+  "calibrated": false,
+  "production_approved": false,
+  "content_sha256": "32bb794d2c4d54058823fddbd5401450799b0c30cd483ee2df917945d047c5a8"
+}
