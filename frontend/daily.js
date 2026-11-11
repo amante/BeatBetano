@@ -132,7 +132,7 @@ function renderGames(){
   grouped.get(key).push(g);
  }
  for(const [group,items] of grouped){
-  const sec=make("section",undefined,"daily-group");sec.append(make("h3",group));
+  const sec=make("section",undefined,"daily-group");if(group!=="Partidos")sec.append(make("h3",group));
   for(const g of items){
    const row=makeMatchRow(g);
    sec.append(row);
