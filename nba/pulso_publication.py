@@ -60,10 +60,11 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None):
      if isinstance(module,dict):
       module['status']='research_scenario';module['affects_prediction']=True;module['entered_prediction']=True
       module['detail']='Cambia el porcentaje del candidato NBA mediante bajas oficiales, minutos redistribuidos y producción histórica; escenario experimental no calibrado.'
-  copy['model_p_home']=model_home
-  copy['model_p_away']=1.0-model_home
-  copy['model_probability_status']='injury_adjusted_research_candidate' if candidate and candidate.get('status')=='research_scenario' else 'baseline_only'
-  copy['model_probability_calibrated']=False
+  if candidate:
+   copy['model_p_home']=model_home
+   copy['model_p_away']=1.0-model_home
+   copy['model_probability_status']='injury_adjusted_research_candidate' if candidate.get('status')=='research_scenario' else 'baseline_only'
+   copy['model_probability_calibrated']=False
   if module_context:copy['supporting_modules']=modules
   predictions.append(copy)
  research_count=sum(row.get('model_probability_status')=='injury_adjusted_research_candidate' for row in predictions)
