@@ -84,16 +84,19 @@ jobs:
             frontend/data/forecast_status.json
             frontend/data/nba-livedata-evaluation.json
             frontend/data/forecast_archive
+            frontend/data/forecast-evaluation-latest.json
           retention-days: 90
       - name: Validate JSON output
         run: |
           python -m json.tool frontend/data/daily.json > /dev/null
           python -m json.tool frontend/data/history.json > /dev/null
+          python -m json.tool frontend/data/forecast-evaluation-latest.json > /dev/null
       - name: Save snapshot to main
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add frontend/data/daily.json frontend/data/history.json frontend/data/forecast_status.json frontend/data/forecast_archive
+          git add frontend/data/forecast-evaluation-latest.json
           git add frontend/data/nba-livedata-evaluation.json
           if compgen -G 'frontend/data/nba-livedata-forward/*.json' > /dev/null; then
             git add frontend/data/nba-livedata-forward
