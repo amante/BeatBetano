@@ -21,7 +21,7 @@ async function render(p,{sport='nba',ok=true,date='2026-11-06'}={}){
  const text=e=>[e.textContent,...e.children.map(text)].join(' ');return text(root);
 }
 test('renders initial, latest, delta, assumptions and complete revision history',async()=>{
- const text=await render(packet());assert.match(text,/55,0 %/);assert.match(text,/60,0 %/);assert.match(text,/\+5,0 p.p./);assert.match(text,/Starting lineup/);assert.match(text,/#1/);assert.match(text,/#2/);assert.match(text,/Selección pendiente/);
+ const text=await render(packet());assert.match(text,/55,0 %/);assert.match(text,/60,0 %/);assert.match(text,/\+5,0 p.p./);assert.match(text,/Starting lineup/);assert.match(text,/#1/);assert.match(text,/#2/);assert.match(text,/calibración no certificada/);
 });
 test('unchanged probability is explicit and error never shows old percentages',async()=>{
  const p=packet();p.events[0].latest.probabilities={...p.events[0].initial.probabilities};p.events[0].delta={home:0,away:0};assert.match(await render(p),/Sin cambio/);
