@@ -11,67 +11,446 @@
     "nba": {
       "inventory_state": "audited",
       "modules": [
-        {"id":"starting_lineups","name":"Quintetos titulares","created":true,"connected":true,"affects_prediction":false,"evidence":"nba/lineup_live_collector.py; nba/injury_lineup_joint.py; .github/workflows/nba-auto-history.yml","scope":"La captura y el estado aparecen en el paquete diario; no modifican el porcentaje integrado.","note":"Falta que un efecto de quinteto validado entre en la fórmula."},
-        {"id":"injury_report","name":"Informe oficial de lesiones","created":true,"connected":true,"affects_prediction":false,"evidence":"nba/official_injury_pdf.py; nba/injury_lineup_joint.py; .github/workflows/nba-auto-history.yml","scope":"El reporte oficial se extrae y se muestra; el porcentaje final integrado sigue nulo.","note":"Falta convertir ausencias y reemplazos en un ajuste cuantificado y validado."},
-        {"id":"rotation_minutes","name":"Rotación y distribución de minutos","created":true,"connected":true,"affects_prediction":false,"evidence":"nba/rotation_efficiency_report.py; nba/joint_minutes_report.py; nba/availability_scenarios.py","scope":"Produce rotaciones y escenarios, pero no pesos de probabilidad integrados.","note":"Faltan pesos de escenarios y su entrada en la fórmula del ganador."},
-        {"id":"player_matchups","name":"Cruces de jugadores y posiciones","created":true,"connected":true,"affects_prediction":false,"evidence":"nba/roster_matchups.py; nba/availability_impact.py","scope":"Se generan observaciones/características; no hay delta validado en la probabilidad.","note":"Falta un efecto numérico aprobado dentro del cálculo."},
-        {"id":"team_form","name":"Forma reciente del equipo","created":true,"connected":true,"affects_prediction":true,"evidence":"nba/challenger.py; nba/prospective.py","scope":"Modifica los porcentajes del challenger NBA; sigue siendo candidato experimental, no pronóstico final integrado.","note":"La fórmula usa diferencial reciente de puntos; calibración y validación siguen pendientes."},
-        {"id":"rest_travel","name":"Descanso y viajes","created":true,"connected":true,"affects_prediction":true,"evidence":"nba/challenger.py; nba/prospective.py","scope":"El descanso tiene efecto en el porcentaje del challenger; el viaje no tiene efecto propio.","note":"Estado parcial: solo descanso modifica porcentajes; viajes quedan pendientes."},
-        {"id":"availability_impact","name":"Impacto cuantificado de disponibilidad","created":true,"connected":true,"affects_prediction":false,"evidence":"nba/availability_impact.py; nba/integrated_model.py","scope":"Extrae características; el modelo integrado exige una calibración independiente y no produce p integrada sin ella.","note":"No existe actualmente un ajuste de disponibilidad validado que cambie el porcentaje final."}
+        {
+          "id": "starting_lineups",
+          "name": "Quintetos titulares",
+          "created": true,
+          "connected": true,
+          "affects_prediction": false,
+          "evidence": "nba/lineup_live_collector.py; nba/injury_lineup_joint.py; .github/workflows/nba-auto-history.yml",
+          "scope": "La captura y el estado aparecen en el paquete diario; no modifican el porcentaje integrado.",
+          "note": "Falta que un efecto de quinteto validado entre en la fórmula."
+        },
+        {
+          "id": "injury_report",
+          "name": "Informe oficial de lesiones",
+          "created": true,
+          "connected": true,
+          "affects_prediction": false,
+          "evidence": "nba/official_injury_pdf.py; nba/injury_lineup_joint.py; .github/workflows/nba-auto-history.yml",
+          "scope": "El reporte oficial se extrae y se muestra; el porcentaje final integrado sigue nulo.",
+          "note": "Falta convertir ausencias y reemplazos en un ajuste cuantificado y validado."
+        },
+        {
+          "id": "rotation_minutes",
+          "name": "Rotación y distribución de minutos",
+          "created": true,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "nba/rotation_efficiency_report.py; nba/joint_minutes_report.py; nba/availability_scenarios.py",
+          "scope": "Produce rotaciones y escenarios, pero no pesos de probabilidad integrados.",
+          "note": "Faltan pesos de escenarios y su entrada en la fórmula del ganador."
+        },
+        {
+          "id": "player_matchups",
+          "name": "Cruces de jugadores y posiciones",
+          "created": true,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "nba/roster_matchups.py; nba/availability_impact.py",
+          "scope": "Se generan observaciones/características; no hay delta validado en la probabilidad.",
+          "note": "Falta un efecto numérico aprobado dentro del cálculo."
+        },
+        {
+          "id": "team_form",
+          "name": "Forma reciente del equipo",
+          "created": true,
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nba/challenger.py; nba/prospective.py",
+          "scope": "Modifica los porcentajes del challenger NBA; sigue siendo candidato experimental, no pronóstico final integrado.",
+          "note": "La fórmula usa diferencial reciente de puntos; calibración y validación siguen pendientes."
+        },
+        {
+          "id": "rest",
+          "name": "Descanso",
+          "created": true,
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nba/challenger.py; nba/prospective.py",
+          "scope": "El descanso modifica los porcentajes del challenger NBA experimental.",
+          "note": "El descanso pasa a seguimiento y calibración; esto no certifica el pronóstico final."
+        },
+        {
+          "id": "availability_impact",
+          "name": "Impacto cuantificado de disponibilidad",
+          "created": true,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "nba/availability_impact.py; nba/integrated_model.py",
+          "scope": "Extrae características; el modelo integrado exige una calibración independiente y no produce p integrada sin ella.",
+          "note": "No existe actualmente un ajuste de disponibilidad validado que cambie el porcentaje final."
+        },
+        {
+          "id": "travel",
+          "name": "Viajes y zona horaria",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "nba/challenger.py; multisport/ROADMAP.md",
+          "scope": "El challenger actual usa descanso, pero no estima distancia, cambios de zona horaria ni fatiga de viaje.",
+          "note": "Pendiente de creación."
+        }
       ]
     },
     "nhl": {
       "inventory_state": "audited",
       "modules": [
-        {"id":"crs","name":"Plantilla y estado de jugadores (CRS)","created":true,"connected":true,"affects_prediction":false,"evidence":"nhl/pulso_sporting_core_245.py; nhl/module_validation_readiness.py","scope":"La evidencia de plantilla/ausencias se registra, pero no está conectada a la probabilidad de ganador.","note":"Falta ajuste cuantificado por jugador disponible o ausente."},
-        {"id":"unit_ratings","name":"Líneas de ataque y pares defensivos","created":true,"connected":true,"affects_prediction":false,"evidence":"nhl/team_units.py; nhl/nhl_hoy.py","scope":"La fortaleza de unidades se adjunta como evidencia del partido; no mueve el porcentaje base.","note":"Falta un coeficiente con evidencia histórica que entre en la fórmula."},
-        {"id":"goalie_daily","name":"Arqueros y calidad del titular/suplente","created":true,"connected":true,"affects_prediction":false,"evidence":"nhl/goalie_daily.py; nhl/nhl_hoy.py","scope":"La comparación de arqueros se adjunta al partido; no modifica statistical_p_home.","note":"Falta incorporar el arquero y su reemplazo en el cálculo del ganador."},
-        {"id":"special_teams","name":"Power play y penalty kill","created":true,"connected":true,"affects_prediction":false,"evidence":"nhl/official_team_stats.py; nhl/nhl_hoy.py","scope":"Las estadísticas oficiales se incluyen como evidencia, no como ajuste de probabilidad.","note":"Falta impacto PP/PK calculado dentro del modelo de goles/ganador."},
-        {"id":"context","name":"Descanso, localía, viaje y árbitros","created":true,"connected":false,"affects_prediction":false,"evidence":"nhl/module_validation_readiness.py; nhl/module_audit.py","scope":"Hay auditorías y requisitos; no hay módulo diario completo conectado al porcentaje.","note":"Conectar variables puntuales al modelo tras definir datos y coeficientes."},
-        {"id":"team_rating","name":"Fuerza del equipo por diferencial de goles","created":true,"connected":true,"affects_prediction":true,"evidence":"nhl/nhl_hoy.py","scope":"Cambia statistical_p_home en el baseline exploratorio; final_probability permanece nulo.","note":"Afecta el porcentaje candidato; no es un pronóstico final calibrado."},
-        {"id":"division_rivalry","name":"División y rivalidad","created":true,"connected":false,"affects_prediction":false,"evidence":"nhl/module_audit.py; nhl/all_module_historical_audit.py","scope":"Existe auditoría histórica, pero no se ejecuta como ajuste del pronóstico diario.","note":"Falta integrarlo al modelo diario y cuantificar su efecto."},
-        {"id":"goal_process_rt","name":"Ganador en tiempo reglamentario","created":true,"connected":true,"affects_prediction":true,"evidence":"nhl/goal_process.py; .github/workflows/nhl-hoy.yml","scope":"Genera porcentajes experimentales para este mercado; no altera la probabilidad ML principal.","note":"Afecta el porcentaje de su mercado experimental; calibración pendiente."},
-        {"id":"three_goal_lead","name":"Ventaja de tres goles","created":true,"connected":true,"affects_prediction":true,"evidence":"nhl/goal_process.py; .github/workflows/nhl-hoy.yml","scope":"Genera probabilidades experimentales para el mercado +3.","note":"Afecta su mercado propio, separado del ganador final."},
-        {"id":"first_to_three_goal_lead","name":"Primero en alcanzar +3","created":true,"connected":true,"affects_prediction":true,"evidence":"nhl/goal_process.py; .github/workflows/nhl-hoy.yml","scope":"Genera probabilidades experimentales para la secuencia de goles.","note":"Afecta su mercado propio, separado del ganador final."},
-        {"id":"rescue_probability","name":"Probabilidad de remontada","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md; nhl/module_validation_readiness.py","scope":"Está identificada como objetivo, sin modelo ejecutable conectado.","note":"Pendiente de creación."},
-        {"id":"fuertes_dual","name":"Clasificación FUERTE / DUAL","created":false,"connected":false,"affects_prediction":false,"evidence":"nhl/module_validation_readiness.py","scope":"El registro de preparación enumera el objetivo, sin implementación de predicción diaria.","note":"Pendiente de creación."},
-        {"id":"return_injury","name":"Retorno tras lesión","created":true,"connected":false,"affects_prediction":false,"evidence":"nhl/module_audit.py; nhl/module_validation_readiness.py","scope":"Se revisa en auditoría; no se conecta a la probabilidad diaria.","note":"Faltan captura punto-en-el-tiempo y cálculo de efecto."},
-        {"id":"opponent_style","name":"Estilo y emparejamiento del rival","created":true,"connected":false,"affects_prediction":false,"evidence":"nhl/joint_match_engine_320.py; nhl/module_validation_readiness.py","scope":"Hay exploración de variables; no están conectadas al pronóstico NHL de PULSO.","note":"Falta validar y conectar el efecto al cálculo publicado."}
+        {
+          "id": "crs",
+          "name": "Plantilla y estado de jugadores (CRS)",
+          "created": true,
+          "connected": true,
+          "affects_prediction": false,
+          "evidence": "nhl/pulso_sporting_core_245.py; nhl/module_validation_readiness.py",
+          "scope": "La evidencia de plantilla/ausencias se registra, pero no está conectada a la probabilidad de ganador.",
+          "note": "Falta ajuste cuantificado por jugador disponible o ausente."
+        },
+        {
+          "id": "unit_ratings",
+          "name": "Líneas de ataque y pares defensivos",
+          "created": true,
+          "connected": true,
+          "affects_prediction": false,
+          "evidence": "nhl/team_units.py; nhl/nhl_hoy.py",
+          "scope": "La fortaleza de unidades se adjunta como evidencia del partido; no mueve el porcentaje base.",
+          "note": "Falta un coeficiente con evidencia histórica que entre en la fórmula."
+        },
+        {
+          "id": "goalie_daily",
+          "name": "Arqueros y calidad del titular/suplente",
+          "created": true,
+          "connected": true,
+          "affects_prediction": false,
+          "evidence": "nhl/goalie_daily.py; nhl/nhl_hoy.py",
+          "scope": "La comparación de arqueros se adjunta al partido; no modifica statistical_p_home.",
+          "note": "Falta incorporar el arquero y su reemplazo en el cálculo del ganador."
+        },
+        {
+          "id": "special_teams",
+          "name": "Power play y penalty kill",
+          "created": true,
+          "connected": true,
+          "affects_prediction": false,
+          "evidence": "nhl/official_team_stats.py; nhl/nhl_hoy.py",
+          "scope": "Las estadísticas oficiales se incluyen como evidencia, no como ajuste de probabilidad.",
+          "note": "Falta impacto PP/PK calculado dentro del modelo de goles/ganador."
+        },
+        {
+          "id": "context",
+          "name": "Descanso, localía, viaje y árbitros",
+          "created": true,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "nhl/module_validation_readiness.py; nhl/module_audit.py",
+          "scope": "Hay auditorías y requisitos; no hay módulo diario completo conectado al porcentaje.",
+          "note": "Conectar variables puntuales al modelo tras definir datos y coeficientes."
+        },
+        {
+          "id": "team_rating",
+          "name": "Fuerza del equipo por diferencial de goles",
+          "created": true,
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nhl/nhl_hoy.py",
+          "scope": "Cambia statistical_p_home en el baseline exploratorio; final_probability permanece nulo.",
+          "note": "Afecta el porcentaje candidato; no es un pronóstico final calibrado."
+        },
+        {
+          "id": "division_rivalry",
+          "name": "División y rivalidad",
+          "created": true,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "nhl/module_audit.py; nhl/all_module_historical_audit.py",
+          "scope": "Existe auditoría histórica, pero no se ejecuta como ajuste del pronóstico diario.",
+          "note": "Falta integrarlo al modelo diario y cuantificar su efecto."
+        },
+        {
+          "id": "goal_process_rt",
+          "name": "Ganador en tiempo reglamentario",
+          "created": true,
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nhl/pulso_outcome_forecast_218.py; nhl/pulso_research_presentation_275.py",
+          "scope": "La publicación experimental en PULSO incluye el porcentaje del mercado de ganador en tiempo reglamentario.",
+          "note": "La estimación se basa en resultados históricos agregados; no incorpora arqueros, bajas ni líneas."
+        },
+        {
+          "id": "three_goal_lead",
+          "name": "Ventaja de tres goles",
+          "created": true,
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nhl/pulso_outcome_forecast_218.py; nhl/pulso_research_presentation_275.py",
+          "scope": "La publicación experimental en PULSO incluye probabilidades de que cada equipo alcance +3.",
+          "note": "La estimación se basa en resultados históricos agregados; no incorpora arqueros, bajas ni líneas."
+        },
+        {
+          "id": "first_to_three_goal_lead",
+          "name": "Primero en alcanzar +3",
+          "created": true,
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nhl/pulso_outcome_forecast_218.py; nhl/pulso_research_presentation_275.py",
+          "scope": "La publicación experimental en PULSO incluye quién llega primero a +3 y la opción ninguno.",
+          "note": "La estimación se basa en resultados históricos agregados; no incorpora arqueros, bajas ni líneas."
+        },
+        {
+          "id": "rescue_probability",
+          "name": "Probabilidad de remontada",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md; nhl/module_validation_readiness.py",
+          "scope": "Está identificada como objetivo, sin modelo ejecutable conectado.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "fuertes_dual",
+          "name": "Clasificación FUERTE / DUAL",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "nhl/module_validation_readiness.py",
+          "scope": "El registro de preparación enumera el objetivo, sin implementación de predicción diaria.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "return_injury",
+          "name": "Retorno tras lesión",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "nhl/module_audit.py; nhl/module_validation_readiness.py",
+          "scope": "El código disponible solo lo enumera como requisito de evaluación; no hay predictor ejecutable de retorno a forma.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "opponent_style",
+          "name": "Estilo y emparejamiento del rival",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "nhl/joint_match_engine_320.py; nhl/module_validation_readiness.py",
+          "scope": "La hoja de preparación solicita variables del rival; no existe un predictor de estilo identificado.",
+          "note": "Pendiente de creación."
+        }
       ]
     },
     "nfl": {
       "inventory_state": "roadmap_audited",
       "modules": [
-        {"id":"official_inactives","name":"Inactivos oficiales y titulares","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md; nfl/nfl_hoy.py","scope":"El modelo NFL informa que no verifica inactivos ni titulares oficiales.","note":"Pendiente de crear."},
-        {"id":"injury_observations","name":"Observaciones suplementarias de lesiones","created":true,"connected":false,"affects_prediction":false,"evidence":"nfl/pregame_evidence.py","scope":"Recolecta observaciones ESPN; el pronóstico no las consume ni ajusta porcentajes.","note":"Captura auxiliar; no equivale a inactivos confirmados."},
-        {"id":"snap_shares","name":"Participación de snaps","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"Módulo de hoja de ruta.","note":"Pendiente de creación."},
-        {"id":"offensive_line","name":"Disponibilidad de línea ofensiva","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"Módulo de hoja de ruta.","note":"Pendiente de creación."},
-        {"id":"secondary_matchups","name":"Cruces CB1/CB2/nickel","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"Módulo de hoja de ruta.","note":"Pendiente de creación."},
-        {"id":"coverage_schemes","name":"Esquemas de cobertura","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"Módulo de hoja de ruta.","note":"Pendiente de creación."},
-        {"id":"weather","name":"Clima del partido","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md; nfl/nfl_hoy.py","scope":"El pronóstico NFL declara el clima como evidencia faltante.","note":"Pendiente de creación."},
-        {"id":"defensive_returns","name":"Regresos defensivos","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"Módulo de hoja de ruta.","note":"Pendiente de creación."},
-        {"id":"game_management","name":"Gestión del partido","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"Módulo de hoja de ruta.","note":"Pendiente de creación."},
-        {"id":"validated_props","name":"Probabilidades de props validadas","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md; nfl/nfl_hoy.py","scope":"No hay probabilidades de props en el modelo actual.","note":"Pendiente de creación."}
+        {
+          "id": "official_inactives",
+          "name": "Inactivos oficiales y titulares",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md; nfl/nfl_hoy.py",
+          "scope": "El modelo NFL informa que no verifica inactivos ni titulares oficiales.",
+          "note": "Pendiente de crear."
+        },
+        {
+          "id": "injury_observations",
+          "name": "Observaciones suplementarias de lesiones",
+          "created": true,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "nfl/pregame_evidence.py",
+          "scope": "Recolecta observaciones ESPN; el pronóstico no las consume ni ajusta porcentajes.",
+          "note": "Captura auxiliar; no equivale a inactivos confirmados."
+        },
+        {
+          "id": "snap_shares",
+          "name": "Participación de snaps",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "Módulo de hoja de ruta.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "offensive_line",
+          "name": "Disponibilidad de línea ofensiva",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "Módulo de hoja de ruta.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "secondary_matchups",
+          "name": "Cruces CB1/CB2/nickel",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "Módulo de hoja de ruta.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "coverage_schemes",
+          "name": "Esquemas de cobertura",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "Módulo de hoja de ruta.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "weather",
+          "name": "Clima del partido",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md; nfl/nfl_hoy.py",
+          "scope": "El pronóstico NFL declara el clima como evidencia faltante.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "defensive_returns",
+          "name": "Regresos defensivos",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "Módulo de hoja de ruta.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "game_management",
+          "name": "Gestión del partido",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "Módulo de hoja de ruta.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "validated_props",
+          "name": "Probabilidades de props validadas",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md; nfl/nfl_hoy.py",
+          "scope": "No hay probabilidades de props en el modelo actual.",
+          "note": "Pendiente de creación."
+        }
       ]
     },
     "soccer": {
       "inventory_state": "roadmap_audited",
       "modules": [
-        {"id":"opponent_adjusted_xg","name":"xG ajustado por rival","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"El modelo Poisson existente no implementa una métrica xG separada.","note":"Pendiente de creación."},
-        {"id":"squad_unit_integrity","name":"Integridad de plantilla y defensa","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"No se incluyen alineaciones ni disponibilidad actual en el modelo diario.","note":"Pendiente de creación."},
-        {"id":"three_way_poisson","name":"Probabilidades local / empate / visita","created":true,"connected":true,"affects_prediction":true,"evidence":"soccer/poisson.py; multisport/daily_pipeline.py","scope":"El Poisson existente genera las tres probabilidades del modelo base de fútbol.","note":"Módulo base conectado; calibración y cobertura de ligas siguen en seguimiento."},
-        {"id":"availability","name":"Disponibilidad de jugadores","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md; multisport/daily_pipeline.py","scope":"El pronóstico diario declara disponibilidad como entrada no resuelta.","note":"Pendiente de crear."},
-        {"id":"tactical_mismatch","name":"Desajuste táctico","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"Módulo de hoja de ruta.","note":"Pendiente de creación."}
+        {
+          "id": "opponent_adjusted_xg",
+          "name": "xG ajustado por rival",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "El modelo Poisson existente no implementa una métrica xG separada.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "squad_unit_integrity",
+          "name": "Integridad de plantilla y defensa",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "No se incluyen alineaciones ni disponibilidad actual en el modelo diario.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "three_way_poisson",
+          "name": "Probabilidades local / empate / visita",
+          "created": true,
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "soccer/poisson.py; multisport/daily_pipeline.py",
+          "scope": "El Poisson existente genera las tres probabilidades del modelo base de fútbol.",
+          "note": "Módulo base conectado; calibración y cobertura de ligas siguen en seguimiento."
+        },
+        {
+          "id": "availability",
+          "name": "Disponibilidad de jugadores",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md; multisport/daily_pipeline.py",
+          "scope": "El pronóstico diario declara disponibilidad como entrada no resuelta.",
+          "note": "Pendiente de crear."
+        },
+        {
+          "id": "tactical_mismatch",
+          "name": "Desajuste táctico",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "Módulo de hoja de ruta.",
+          "note": "Pendiente de creación."
+        }
       ]
     },
     "tennis": {
       "inventory_state": "roadmap_audited",
       "modules": [
-        {"id":"ctl","name":"Nivel de juego (CTL)","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"No existe modelo de probabilidades de tenis en el pipeline diario.","note":"Pendiente de creación."},
-        {"id":"tournament_adaptation","name":"Adaptación al torneo","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"No existe modelo de probabilidades de tenis en el pipeline diario.","note":"Pendiente de creación."},
-        {"id":"post_retirement_recovery","name":"Recuperación tras retiro","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"No existe modelo de probabilidades de tenis en el pipeline diario.","note":"Pendiente de creación."},
-        {"id":"surface_h2h","name":"Superficie y enfrentamientos directos","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"No existe modelo de probabilidades de tenis en el pipeline diario.","note":"Pendiente de creación."},
-        {"id":"fatigue_format","name":"Fatiga y formato BO3/BO5","created":false,"connected":false,"affects_prediction":false,"evidence":"multisport/ROADMAP.md","scope":"No existe modelo de probabilidades de tenis en el pipeline diario.","note":"Pendiente de creación."}
+        {
+          "id": "ctl",
+          "name": "Nivel de juego (CTL)",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "No existe modelo de probabilidades de tenis en el pipeline diario.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "tournament_adaptation",
+          "name": "Adaptación al torneo",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "No existe modelo de probabilidades de tenis en el pipeline diario.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "post_retirement_recovery",
+          "name": "Recuperación tras retiro",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "No existe modelo de probabilidades de tenis en el pipeline diario.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "surface_h2h",
+          "name": "Superficie y enfrentamientos directos",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "No existe modelo de probabilidades de tenis en el pipeline diario.",
+          "note": "Pendiente de creación."
+        },
+        {
+          "id": "fatigue_format",
+          "name": "Fatiga y formato BO3/BO5",
+          "created": false,
+          "connected": false,
+          "affects_prediction": false,
+          "evidence": "multisport/ROADMAP.md",
+          "scope": "No existe modelo de probabilidades de tenis en el pipeline diario.",
+          "note": "Pendiente de creación."
+        }
       ]
     }
   }
