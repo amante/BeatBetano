@@ -4,6 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from starting_lineup_minutes import apply_role_weights, estimate, resolve_starter_ids
+from official_injury_impact import _allocations
 
 
 class StartingLineupMinuteTests(unittest.TestCase):
@@ -58,6 +59,19 @@ class StartingLineupMinuteTests(unittest.TestCase):
         self.assertEqual(applied, ["1"])
         self.assertEqual(samples["1"]["minutes_projection"], 38.5)
         self.assertTrue(samples["1"]["lineup_role_weight_applied"])
+
+    def test_starter_role_weight_changes_replacement_minute_allocation(self):
+        rotation = {"provisional_rotation": [
+            {"player_id": str(i), "player": f"P{i}", "minutes_projection": 30.0,
+             "sample_games": 5, "projection_method": "mean_last_five_observed_minutes"}
+            for i in range(7)]}
+        evidence = {"status": "role_weights_ready", "weights": {"0": 45.0},
+                    "players": [{"player_id": "0", "player": "P0", "position": "G"}]}
+        result = _allocations("BOS", rotation, {"6"}, {}, [{"player_id": "6", "player": "P6"}], evidence)
+        self.assertEqual(result["status"], "conditional_historical_rotation_scenario")
+        self.assertEqual(result["lineup_role_weights_applied"], 1)
+        allocation = result["conditional"]["allocations"]
+        self.assertGreater(allocation["0"], allocation["1"])
 
 
 
