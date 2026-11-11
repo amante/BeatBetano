@@ -21,7 +21,7 @@
     baseline_input_unavailable: "No se pudo construir la emisión base para este partido",
     missing_rotation_scenario: "Escenario de rotación ausente",
     no_reliable_minute_history: "Falta una muestra histórica fiable de minutos",
-    out_player_missing_minute_estimate: "Falta una estimación de minutos para una baja confirmada",
+    out_player_missing_minute_estimate: "No hay dos apariciones históricas para estimar los minutos de una baja",
     minute_allocation_infeasible: "No se pueden distribuir los 240 minutos con estos límites"
   };
   const el = (tag, value, className) => {
@@ -124,8 +124,10 @@
                 : " · sin muestra histórica suficiente";
               const minutes = player.estimated_minutes_lost == null
                 ? " · minutos históricos: —" : " · ~" + number(player.estimated_minutes_lost) + " min/partido";
+              const minuteQuality = player.estimated_minutes_confidence === "limited"
+                ? " · estimación con muestra limitada" : "";
               const sample = history?.sample_games ? " · muestra: " + history.sample_games + " partidos" : "";
-              list.append(el("li", player.player + " · " + statusLabel(player.official_status) + minutes + sample + productionText));
+              list.append(el("li", player.player + " · " + statusLabel(player.official_status) + minutes + minuteQuality + sample + productionText));
             }
             group.append(list);
           } else {
@@ -157,7 +159,9 @@
               group.append(el("p", "No hay cambios de minutos estimables con la evidencia disponible.", "forecast-meta"));
             }
           } else if (team.official_out_count) {
-            group.append(el("p", "Redistribución no calculable: " + (labels[scenario?.status] || "faltan datos de rotación"), "forecast-meta"));
+            const missingNames = (scenario?.missing_out_players || []).map(player => player.player).filter(Boolean);
+            const detail = missingNames.length ? " · Sin historial suficiente: " + missingNames.join(", ") : "";
+            group.append(el("p", "Redistribución no calculable: " + (labels[scenario?.status] || "faltan datos de rotación") + detail, "forecast-meta"));
           }
           group.append(el("p", team.scenario_assumption || "Escenario de investigación; la disponibilidad de los reemplazos no está confirmada.", "forecast-footnote"));
           group.append(el("p", "Jugadores sin disponibilidad confirmada: " + number(team.players_without_confirmed_availability, 0) + ". Probabilidades base sin cambios.", "forecast-footnote"));

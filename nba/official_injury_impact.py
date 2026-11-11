@@ -16,6 +16,7 @@ from rotation_allocation_adapter import project_nba_minutes
 
 STAT_FIELDS = ("points", "rebounds", "assists", "turnovers")
 MIN_HISTORY = 3
+MIN_MINUTE_HISTORY = 2
 MAX_HISTORY = 5
 OFFICIAL_CONFIDENCE = "official_nba_injury_report_unique_roster_match"
 NORMALIZED = {
@@ -89,24 +90,49 @@ def _history_by_player(rows, team, emitted_at, tipoff):
         valid_minutes = [row["minutes_played"] for row in sample
                          if type(row["minutes_played"]) in (int, float)
                          and math.isfinite(row["minutes_played"]) and row["minutes_played"] > 0]
+        minute_count = len(valid_minutes)
         result[pid] = {"sample_games": len(sample), "average_minutes":
-                       round(sum(valid_minutes) / len(valid_minutes), 2) if len(valid_minutes) >= MIN_HISTORY else None,
+                       round(sum(valid_minutes) / minute_count, 2)
+                       if minute_count >= MIN_MINUTE_HISTORY else None,
+                       "minutes_sample_games": minute_count,
+                       "minutes_estimate_confidence": ("moderate" if minute_count >= 4 else
+                                                       "limited" if minute_count >= MIN_MINUTE_HISTORY else None),
+                       "minutes_estimate_method": "mean_last_5_observed_appearances"
+                       if minute_count >= MIN_MINUTE_HISTORY else None,
                        "per_game": rates,
                        "observed_through_utc": max(row["observed_at_utc"] for row in sample)}
     return result
 
 
-def _allocations(team, rotation_team, out_ids):
+def _allocations(team, rotation_team, out_ids, history_by_player, out_players):
     samples = {str(row.get("player_id")): row for row in rotation_team.get("provisional_rotation", [])
                if row.get("player_id") and type(row.get("minutes_projection")) in (int, float)
                and math.isfinite(row["minutes_projection"]) and row["minutes_projection"] >= 0}
-    if not samples:
-        return {"status": "no_reliable_minute_history", "baseline": None,
-                "conditional": None, "changes": []}
+    # Officially OUT players can be absent from the recent rotation list
+    # precisely because they have been unavailable. Recover their weight from
+    # pre-tipoff appearances in the longer current-season sample.
+    out_by_id = {str(row["player_id"]): row for row in out_players}
+    for pid in sorted(out_ids - set(samples)):
+        historical = history_by_player.get(pid, {})
+        estimate = historical.get("average_minutes")
+        if (type(estimate) in (int, float) and math.isfinite(estimate)
+                and estimate > 0 and historical.get("minutes_sample_games", 0) >= MIN_MINUTE_HISTORY):
+            samples[pid] = {"player_id": pid,
+                            "player": out_by_id.get(pid, {}).get("player"),
+                            "minutes_projection": estimate,
+                            "sample_games": historical.get("minutes_sample_games", 0),
+                            "projection_method": historical.get("minutes_estimate_method")}
     missing_out = sorted(out_ids - set(samples))
     if missing_out:
         return {"status": "out_player_missing_minute_estimate", "missing_out_player_ids": missing_out,
+                "missing_out_players": [{"player_id": pid,
+                                         "player": out_by_id.get(pid, {}).get("player")}
+                                        for pid in missing_out],
+                "minimum_required_appearances": MIN_MINUTE_HISTORY,
                 "baseline": None, "conditional": None, "changes": []}
+    if not samples:
+        return {"status": "no_reliable_minute_history", "baseline": None,
+                "conditional": None, "changes": []}
 
     def allocate(excluded):
         candidates = [{"player_id": pid, "status": "out" if pid in excluded else "available",
@@ -127,6 +153,7 @@ def _allocations(team, rotation_team, out_ids):
         after = conditional["allocations"].get(pid, 0.0)
         changes.append({"player_id": pid, "player": row.get("player"),
                         "historical_minutes_projection": row["minutes_projection"],
+                        "projection_method": row.get("projection_method"),
                         "baseline_minutes": before, "scenario_minutes": after,
                         "minute_delta": round(after - before, 3),
                         "sample_games": row.get("sample_games", 0),
@@ -168,13 +195,17 @@ def _team_impact(team, roster, rotation_team, history, emitted_at, tipoff, repor
             unsupported.append(row["player_id"])
             continue
         row["estimated_minutes_lost"] = historical["average_minutes"]
+        row["estimated_minutes_sample_games"] = historical.get("minutes_sample_games", 0)
+        row["estimated_minutes_confidence"] = historical.get("minutes_estimate_confidence")
+        row["estimated_minutes_method"] = historical.get("minutes_estimate_method")
         for field in STAT_FIELDS:
             value = historical["per_game"].get(field)
             if value is None:
                 unsupported.append(row["player_id"] + ":" + field)
             else:
                 losses[field] += value
-    allocation = _allocations(team, rotation_team, out_ids) if out_ids else {
+    out_players = [row for row in explicit if row["official_status"] == "out"]
+    allocation = _allocations(team, rotation_team, out_ids, samples, out_players) if out_ids else {
         "status": "no_official_out_players", "baseline": None,
         "conditional": None, "changes": []}
 
