@@ -171,7 +171,14 @@
       "partial_context_modules": 1,
       "context_modules_not_affecting_probability": 13,
       "current_output": "Solo la heurística por diferencial de goles da una probabilidad candidata; módulos especializados no la ajustan.",
-      "connected_probability_signals": 1
+      "connected_probability_signals": 1,
+      "historical_baseline_validation": {
+        "sample_games": 100,
+        "minimum_games": 100,
+        "minimum_met": true,
+        "scope": "baseline histórico evaluado; separado del holdout prospectivo del PR #384"
+      }
     }
-  }
+  },
+  "shared_infrastructure_note": "El PR #384 agrega trazabilidad y seguimiento prospectivo compartidos. Su muestra de dos temporadas no reemplaza ni reinicia la evaluación histórica del baseline NHL."
 }
