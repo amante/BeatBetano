@@ -2,7 +2,8 @@ import hashlib
 import json
 import unittest
 
-from nba.injury_probability import build\nfrom nba.pulso_publication import build as publish
+from nba.injury_probability import build
+from nba.pulso_publication import build as publish
 
 
 def seal(document):
