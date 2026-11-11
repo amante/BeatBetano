@@ -5,7 +5,7 @@ const qs=new URLSearchParams(location.search),sport=qs.get("sport");
 if(!Object.hasOwn(SPORTS,sport)){location.replace("./index.html");throw Error("Seleccione una disciplina desde la portada");}
 // Shared markup is owned by one discipline; keep it out of every other route.
 document.querySelectorAll('[data-sport-only]').forEach(panel=>{
- const visible=panel.dataset.sportOnly===sport;
+ const visible=panel.dataset.sportOnly.split(",").map(value=>value.trim()).includes(sport);
  panel.hidden=!visible;panel.style.display=visible?"":"none";
 });
 const title=SPORTS[sport];
@@ -243,10 +243,55 @@ function renderCertificationReadiness(report){
  note.textContent="Los resultados descriptivos no certifican el modelo. La aprobación requiere revisión humana; no se activa automáticamente.";
  root.append(note);
 }
+function renderModelModuleStatus(report){
+ const root=$("model-module-status");if(!root)return;
+ const data=report?.sports?.[sport];
+ root.replaceChildren();
+ if(!data){root.textContent="El inventario disponible cubre NBA y NHL.";return;}
+ const intro=make("p",data.current_output,"module-inventory-intro");root.append(intro);
+ const counts=make("div",undefined,"module-inventory-counts");
+ const items=[
+  [data.planned_context_modules,"grupos de contexto planeados"],
+  [data.full_context_modules_connected,"conectados por completo"],
+  [data.partial_context_modules,"parciales"],
+  [data.context_modules_not_affecting_probability,"sin efecto en la probabilidad actual"]
+ ];
+ if(sport==="nba")items.unshift([data.baseline_components.length,"componentes estadísticos calculados"]);
+ for(const [value,label] of items){const chip=make("div",undefined,"module-inventory-count");chip.append(make("strong",String(value)),make("span",label));counts.append(chip);}
+ root.append(counts);
+ const labels={
+  affects_candidate_probability:"Afecta la probabilidad candidata",
+  partial:"Conectado parcialmente",
+  evidence_only:"Solo captura o muestra evidencia",
+  pending:"Pendiente"
+ };
+ const classes={affects_candidate_probability:"module-state-connected",partial:"module-state-partial",evidence_only:"module-state-evidence",pending:"module-state-pending"};
+ const section=(title,rows)=>{
+  const panel=make("section",undefined,"module-inventory-section");panel.append(make("h4",title));
+  const list=make("div",undefined,"module-inventory-list");
+  for(const item of rows){
+   const card=make("article",undefined,"module-inventory-item");
+   card.append(make("h5",item.name),make("p",item.detail));
+   const badge=make("span",labels[item.state]||"Pendiente","module-inventory-badge "+(classes[item.state]||classes.pending));
+   card.append(badge);list.append(card);
+  }
+  panel.append(list);root.append(panel);
+ };
+ if(data.baseline_components?.length)section("Motor estadístico actual",data.baseline_components);
+ section("Módulos de contexto planeados ("+data.planned_context_modules+")",data.context_modules);
+ const note=make("p","“Conectado” significa que entra al cálculo candidato. No implica calibración ni aprobación para apuestas.","module-inventory-footnote");root.append(note);
+}
+async function loadModuleStatus(){
+ try{
+  const response=await fetch("./data/nba-nhl-module-status.json",{cache:"no-store"});
+  if(!response.ok)throw Error("HTTP "+response.status);
+  renderModelModuleStatus(await response.json());
+ }catch(error){const root=$("model-module-status");if(root)root.textContent="No se pudo cargar el inventario de módulos.";}
+}
 async function load(){
  $("daily-date").value=localDay();
  // NBA has a separate frozen-cohort source; do not load the legacy shared feed.
- if(sport==="nba"){fetch("./data/certification-readiness-latest.json",{cache:"no-store"}).then(response=>response.ok?response.json():null).then(renderCertificationReadiness).catch(()=>renderCertificationReadiness(null));return;}
+ if(sport==="nba"){fetch("./data/certification-readiness-latest.json",{cache:"no-store"}).then(response=>response.ok?response.json():null).then(renderCertificationReadiness).catch(()=>renderCertificationReadiness(null));loadModuleStatus();return;}
  const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json","./data/nhl-complete-slate-latest.json","./data/nhl-schedule.json","./data/certification-readiness-latest.json"].map(async path=>{
   const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw Error(path+" "+response.status);return response.json();
  }));
@@ -257,6 +302,7 @@ async function load(){
  snapshot=got(0)||nhlScheduleSnapshot(got(4));history=Array.isArray(got(1))?got(1):[];const p=got(2);
  predictions=Array.isArray(p)?p:Array.isArray(p?.predictions)?p.predictions:[];runtime=got(3)||{};
  renderCertificationReadiness(readiness);
+ loadModuleStatus();
  renderGames();
 }
 function changeDate(){
