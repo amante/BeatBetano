@@ -81,7 +81,7 @@ def slate(score,standings,as_of,game_date,unit_evidence=None,goalie_evidence=Non
             "predictor_input_sha256":lineage(base),
             "predictor_input_as_of_utc":now.isoformat(),
             "schedule_input_sha256":lineage(score),
-            "model_code_revision":os.environ.get("GITHUB_SHA") or None,
+            "model_code_revision":os.environ.get("GITHUB_SHA") or None,\n            "model_code_sha256":hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             "model_family":"nhl-prior-day-standings"},
         "date":game_date,"source_score":API+"/score/"+game_date,
         "source_standings":API+"/standings/"+(day-timedelta(days=1)).isoformat(),
