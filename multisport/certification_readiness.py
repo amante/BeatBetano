@@ -117,7 +117,7 @@ def build_status(evaluation, evidence_dir=None, holdout=None):
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "evaluation_sha256": digest(evaluation),
         "holdout_protocol_id": (holdout or {}).get("protocol_id"),
-        "holdout_sha256": digest(holdout or {}),
+        "holdout_sha256": digest(holdout or {}),\n        "holdout_protocol_frozen_at_utc": (holdout or {}).get("protocol_frozen_at_utc"),
         "scored_model_versions": len(models),
         "models": models,
         "policy": {
