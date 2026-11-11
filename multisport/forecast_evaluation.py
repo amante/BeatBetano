@@ -208,6 +208,7 @@ def _forecast_versions(chains):
                 "emitted_at_utc": snap["emitted_at_utc"],
                 "model_version": version,
                 "stage": forecast["stage"],
+                "model_provenance": snap.get("model_provenance"),
             })
     return selected, issues
 
@@ -274,12 +275,21 @@ def evaluate(archive, history):
         scored[key].append({
             "probabilities": item["forecast"]["probabilities"],
             "outcome": outcome,
+            "model_provenance": item.get("model_provenance"),
         })
     groups = []
     for (sport, version, stage), rows in sorted(scored.items()):
+        provenance=[row.get("model_provenance") or {} for row in rows]
         groups.append({
             "sport": sport, "model_version": version, "stage": stage,
             "metrics": _score(rows, CATEGORIES.get(sport, ("home", "away"))),
+            "lineage_coverage":{
+                "scored_forecasts":len(rows),
+                "with_model_code_revision":sum(bool(x.get("model_code_revision")) for x in provenance),
+                "with_training_data_sha256":sum(bool(x.get("training_data_sha256")) for x in provenance),
+                "with_training_cutoff_utc":sum(bool(x.get("training_cutoff_utc")) for x in provenance),
+                "with_predictor_input_sha256":sum(bool(x.get("predictor_input_sha256")) for x in provenance),
+            },
         })
     return {
         "schema_version": 1,
