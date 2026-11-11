@@ -116,13 +116,15 @@
    for(const prediction of currentRows){
     const card=el("article","");card.className="nba-current-run__game";
     card.append(el("h4",teamName(prediction.away_team)+" — "+teamName(prediction.home_team)));
-    const probability=prediction.hybrid_p_home;
-    if(typeof probability==="number")card.append(el("p","Base: "+teamName(prediction.away_team)+" "+((1-probability)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(probability*100).toFixed(1)+"%"));
     const injury=prediction.injury_probability_scenario;
+    const baseline=prediction.statistical_baseline_p_home??prediction.hybrid_p_home;
+    const modelHome=prediction.model_p_home??baseline;
+    if(typeof modelHome==="number")card.append(el("p",(prediction.model_probability_status==="injury_adjusted_research_candidate"?"Modelo candidato con lesiones confirmadas: ":"Modelo base: ")+teamName(prediction.away_team)+" "+((1-modelHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(modelHome*100).toFixed(1)+"%","nba-model-probability"));
+    if(prediction.model_probability_status==="injury_adjusted_research_candidate"&&typeof baseline==="number")card.append(el("p","Referencia estadística sin ajuste: "+teamName(prediction.away_team)+" "+((1-baseline)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(baseline*100).toFixed(1)+"%"));
     if(injury?.status==="research_scenario"){
      const delta=Number(injury.home_probability_delta_pp||0);
      const direction=delta>0?"+" :"";
-     card.append(el("p","Bajas oficiales confirmadas · escenario experimental: "+teamName(prediction.away_team)+" "+(injury.injury_adjusted_away_probability*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(injury.injury_adjusted_home_probability*100).toFixed(1)+"% ("+direction+delta.toFixed(1)+" puntos porcentuales para "+teamName(prediction.home_team)+").","nba-injury-scenario"));
+     card.append(el("p","Cambio aplicado por bajas: "+direction+delta.toFixed(1)+" puntos porcentuales para "+teamName(prediction.home_team)+". El candidato mostrado ya incorpora este cambio.","nba-injury-scenario"));
      const evidence=el("details","");evidence.className="nba-module-run-status";
      evidence.append(el("summary","Bajas y redistribución estimada"));
      for(const team of [prediction.away_team,prediction.home_team]){

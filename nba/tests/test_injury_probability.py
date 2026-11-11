@@ -86,20 +86,24 @@ class ConfirmedInjuryProbabilityTests(unittest.TestCase):
         self.assertEqual(report["games"][0]["margin_sample_games"], 99)
         self.assertEqual(report["games"][0]["status"], "blocked")
 
-    def test_publication_exposes_scenario_without_replacing_baseline(self):
+    def test_publication_uses_injury_candidate_and_preserves_baseline_reference(self):
         adjustment = build(self.snapshot, self.context, self.history)
         modules = seal({"snapshot_sha256": self.snapshot["content_sha256"],
             "games": {self.gid: {
                 "official_injury_report": {"status": "available_not_used", "affects_prediction": False},
+                "rotation_minutes": {"status": "available_not_used", "affects_prediction": False},
                 "availability_impact": {"status": "available_not_used", "affects_prediction": False}
             }}})
         published = publish(self.snapshot, "run-1", modules, adjustment)
         prediction = published["predictions"][0]
         self.assertEqual(prediction["hybrid_p_home"], 0.58)
+        self.assertEqual(prediction["statistical_baseline_p_home"], 0.58)
+        self.assertEqual(prediction["model_p_home"], prediction["injury_probability_scenario"]["injury_adjusted_home_probability"])
         self.assertEqual(prediction["injury_probability_scenario"]["status"], "research_scenario")
-        self.assertTrue(prediction["supporting_modules"]["official_injury_report"]["affects_prediction"])
+        for module in ("official_injury_report", "rotation_minutes", "availability_impact"):
+            self.assertTrue(prediction["supporting_modules"][module]["affects_prediction"])
         self.assertEqual(published["research_scenarios_affect_probabilities"], 1)
-        self.assertFalse(published["modules_change_probabilities"])
+        self.assertTrue(published["modules_change_probabilities"])
 
     def test_missing_official_report_match_blocks_adjustment(self):
         scenario = self.context["games"][self.gid]["availability_impact"]["conditional_production_scenario"]
