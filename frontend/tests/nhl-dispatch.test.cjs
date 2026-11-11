@@ -21,8 +21,10 @@ function harness(response){
 }
 test('runtime config contains only public endpoint settings',()=>{
  const config=JSON.parse(fs.readFileSync('frontend/data/runtime-config.json','utf8'));
- assert.deepEqual(Object.keys(config).sort(),['simulation_endpoint','simulation_endpoint_origin']);
+ assert.deepEqual(Object.keys(config).sort(),['nba_simulation_endpoint','simulation_endpoint','simulation_endpoint_origin']);
  assert.equal(new URL(config.simulation_endpoint).origin,config.simulation_endpoint_origin);
+ assert.equal(new URL(config.nba_simulation_endpoint).pathname,'/api/nba/run');
+ assert.equal(new URL(config.nba_simulation_endpoint).origin,config.simulation_endpoint_origin);
 });
 test('frontend dispatch includes credentials and reports acknowledgement',async()=>{
  const h=harness({ok:true,status:202,headers:new Headers({'Content-Type':'application/json'}),json:async()=>({accepted:true})});
