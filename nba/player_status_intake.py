@@ -45,7 +45,18 @@ def matchup_matches(row,game):
  if len(matchup)!=2:return True
  expected={game["home_team"],game["away_team"]}
  return all(any(same_team(code,team) for team in expected) for code in matchup)
-def official_rows_for_game(game,official):
+def _unique_fixture_roster_team(row,game,roster):
+ """Resolve a missing vertically centered PDF team cell by exact roster name."""
+ roster_game=roster.get("games",{}).get(str(game.get("game_id")),{})
+ matches=[]
+ for team in (game.get("home_team"),game.get("away_team")):
+  members=roster_game.get("teams",{}).get(team,{}).get("players",[])
+  ids=[str(p.get("player_id")) for p in members
+       if p.get("player_id") and normalize(p.get("player"))==normalize(row.get("player"))]
+  if len(ids)==1:matches.append((team,ids[0]))
+ return matches[0] if len(matches)==1 else None
+
+def official_rows_for_game(game,official,roster=None):
  """Return rows for one fixture and expose each scope-filter count."""
  diagnostic={"game_id":str(game.get("game_id")),"status":"not_evaluated",
   "source_rows":0,"date_rows":0,"date_and_matchup_rows":0,"fixture_team_rows":0}
@@ -71,13 +82,17 @@ def official_rows_for_game(game,official):
  diagnostic["date_rows"]=len(date_rows)
  matchup_rows=[row for row in date_rows if matchup_matches(row,game)]
  diagnostic["date_and_matchup_rows"]=len(matchup_rows)
- relevant=[row for row in matchup_rows
-           if any(same_team(row.get("team"),team) for team in teams)]
+ relevant=[]
+ for row in date_rows:
+  if any(same_team(row.get("team"),team) for team in teams):
+   relevant.append(row)
+  elif not row.get("team") and roster and _unique_fixture_roster_team(row,game,roster):
+   relevant.append(row)
  diagnostic["fixture_team_rows"]=len(relevant)
- diagnostic["status"]="rows_selected" if relevant else "no_rows_for_fixture"
+ diagnostic["status"]=("rows_selected" if relevant else
+                        "report_rows_outside_fixture_rosters" if date_rows else "no_rows_for_fixture")
  pending=[row for row in submissions
           if report_game_day(row.get("game_date"))==expected_day
-          and matchup_matches(row,game)
           and any(same_team(row.get("team"),team) for team in teams)]
  return relevant,pending,diagnostic
 def reconcile(snapshot,roster,sporting,official=None):
@@ -97,7 +112,7 @@ def reconcile(snapshot,roster,sporting,official=None):
   report_time=utc(official.get("source_report_as_of_utc"))
   downloaded=utc(official.get("downloaded_at_utc"))
   official_time_valid=bool(official.get("official_document_retrieved") is True and tip and report_time and downloaded and report_time<=downloaded<tip)
-  official_rows,pending,official_diag=official_rows_for_game(game,official)
+  official_rows,pending,official_diag=official_rows_for_game(game,official,roster)
   if not official_time_valid and official_diag["status"]=="not_evaluated":
    official_diag["status"]="report_time_not_pregame"
   official_diagnostics.append(official_diag)
@@ -129,7 +144,11 @@ def reconcile(snapshot,roster,sporting,official=None):
      "reported_at_utc":row.get("reported_at_utc"),
      "confidence":"supplementary_espn_injury_claim_not_official"})
    for row in official_rows:
-    if not same_team(row.get("team"),team):continue
+    row_team=row.get("team")
+    if row_team and not same_team(row_team,team):continue
+    if not row_team:
+     resolved_team=_unique_fixture_roster_team(row,game,roster)
+     if not resolved_team or resolved_team[0]!=team:continue
     state=official_status(row.get("status"))
     ids=by_name.get(normalize(row.get("player")),[])
     if state is None or len(ids)!=1:
