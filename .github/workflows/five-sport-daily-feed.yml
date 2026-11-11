@@ -51,6 +51,12 @@ jobs:
             --archive frontend/data/forecast_archive \
             --history frontend/data/history.json \
             --output frontend/data/forecast-evaluation-latest.json
+      - name: Publish certification readiness by model version
+        run: |
+          python -m multisport.certification_readiness \
+            --evaluation frontend/data/forecast-evaluation-latest.json \
+            --evidence-dir frontend/data/certification-evidence \
+            --output frontend/data/certification-readiness-latest.json
       - name: Archive and evaluate paired NBA research forecasts
         run: |
           python nba/livedata_forward_evaluation.py \
