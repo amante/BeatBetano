@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "updated_for_commit": "50f0b4adc4321c3fb72f2a9e8703a5348a602367",
+  "scope": [
+    "nba",
+    "nhl"
+  ],
+  "legend": {
+    "affects_candidate_probability": "Afecta la probabilidad candidata actual",
+    "partial": "Afecta parcialmente; no completa el módulo",
+    "evidence_only": "Se captura o muestra, pero no cambia la probabilidad",
+    "pending": "Pendiente de conexión o implementación"
+  },
+  "sports": {
+    "nba": {
+      "title": "NBA",
+      "baseline_components": [
+        {
+          "name": "Elo",
+          "state": "affects_candidate_probability",
+          "detail": "Base estadística odds-free."
+        },
+        {
+          "name": "Margen reciente",
+          "state": "affects_candidate_probability",
+          "detail": "Challenger con ventana reciente; coeficientes experimentales."
+        },
+        {
+          "name": "Descanso",
+          "state": "affects_candidate_probability",
+          "detail": "Ajuste básico de días de descanso; sin viaje."
+        },
+        {
+          "name": "Híbrido y guardrail",
+          "state": "affects_candidate_probability",
+          "detail": "Selecciona Challenger o vuelve a Elo según reglas; sigue siendo candidato no validado."
+        }
+      ],
+      "context_modules": [
+        {
+          "name": "Quintetos titulares",
+          "state": "evidence_only",
+          "detail": "Hay captura de alineaciones, pero no quinteto completo confirmado e integrado."
+        },
+        {
+          "name": "Informe de lesiones",
+          "state": "evidence_only",
+          "detail": "Se lee y reconcilia el informe oficial; no modifica la probabilidad."
+        },
+        {
+          "name": "Minutos y rotación",
+          "state": "evidence_only",
+          "detail": "Hay estimaciones y escenarios de minutos; no alimentan el híbrido."
+        },
+        {
+          "name": "Matchups de jugadores",
+          "state": "evidence_only",
+          "detail": "Hay reconciliación/captura; efectos no conectados al cálculo final."
+        },
+        {
+          "name": "Forma del equipo",
+          "state": "partial",
+          "detail": "Elo y margen reciente sí entran; métricas avanzadas del equipo siguen en investigación."
+        },
+        {
+          "name": "Descanso y viaje",
+          "state": "partial",
+          "detail": "Descanso básico entra en Challenger; viaje y carga reciente no."
+        },
+        {
+          "name": "Impacto de disponibilidad",
+          "state": "evidence_only",
+          "detail": "Hay escenarios de ausencias/reemplazos, pero falta un ajuste de impacto validado."
+        }
+      ],
+      "planned_context_modules": 7,
+      "full_context_modules_connected": 0,
+      "partial_context_modules": 2,
+      "context_modules_not_affecting_probability": 5,
+      "current_output": "Elo / Challenger / Híbrido se calculan; integrado_p_home sigue null y sin aprobación formal."
+    },
+    "nhl": {
+      "title": "NHL",
+      "baseline_components": [
+        {
+          "name": "Forma previa por diferencial de goles",
+          "state": "affects_candidate_probability",
+          "detail": "Heurística de tabla previa; candidato exploratorio."
+        },
+        {
+          "name": "Regla de selección híbrida validada",
+          "state": "pending",
+          "detail": "No hay modelo calibrado aprobado que combine los módulos especializados."
+        }
+      ],
+      "context_modules": [
+        {
+          "name": "CRS y bajas",
+          "state": "pending",
+          "detail": "Faltan bajas históricas fechadas y su efecto cuantificado."
+        },
+        {
+          "name": "Ratings de líneas y unidades",
+          "state": "evidence_only",
+          "detail": "Se adjunta evidencia de unidades; no entra en la probabilidad."
+        },
+        {
+          "name": "Arquero titular y forma",
+          "state": "evidence_only",
+          "detail": "Se presenta evidencia de arqueros; no modifica la probabilidad."
+        },
+        {
+          "name": "Equipos especiales PP/PK",
+          "state": "evidence_only",
+          "detail": "Se capturan estadísticas; falta snapshot prepartido completo y ajuste modelado."
+        },
+        {
+          "name": "Contexto: hielo, descanso, viaje y árbitros",
+          "state": "pending",
+          "detail": "No está integrado al cálculo actual."
+        },
+        {
+          "name": "Rating de equipo",
+          "state": "partial",
+          "detail": "Solo diferencial de goles previo alimenta la heurística; rating más completo pendiente."
+        },
+        {
+          "name": "División y rivalidad",
+          "state": "pending",
+          "detail": "No cambia la probabilidad."
+        },
+        {
+          "name": "Ganador en tiempo reglamentario",
+          "state": "pending",
+          "detail": "Probabilidades de local/empate/visita no calculadas."
+        },
+        {
+          "name": "Ventaja de tres goles",
+          "state": "pending",
+          "detail": "Trayectorias y probabilidades no calculadas."
+        },
+        {
+          "name": "Primero en alcanzar +3",
+          "state": "pending",
+          "detail": "Trayectoria de goles no conectada."
+        },
+        {
+          "name": "Rescate tras desventaja",
+          "state": "pending",
+          "detail": "Probabilidad de remontada no calculada."
+        },
+        {
+          "name": "Fuertes / dual",
+          "state": "pending",
+          "detail": "Mercado conjunto y umbrales no validados."
+        },
+        {
+          "name": "Retorno tras lesión",
+          "state": "pending",
+          "detail": "Sin historial temporal de lesiones y retorno conectado."
+        },
+        {
+          "name": "Estilo del rival",
+          "state": "pending",
+          "detail": "Sin variables históricas de estilo ajustadas por rival."
+        }
+      ],
+      "planned_context_modules": 14,
+      "full_context_modules_connected": 0,
+      "partial_context_modules": 1,
+      "context_modules_not_affecting_probability": 13,
+      "current_output": "Solo la heurística por diferencial de goles da una probabilidad candidata; módulos especializados no la ajustan."
+    }
+  }
+}
