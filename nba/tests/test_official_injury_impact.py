@@ -77,6 +77,16 @@ class OfficialInjuryImpactTests(unittest.TestCase):
         self.assertFalse(result["baseline_probabilities_changed"])
         self.assertFalse(game["probabilities_adjusted"])
 
+    def test_player_history_array_shape_is_accepted(self):
+        wrapped = build(self.snapshot, self.availability, self.rotation, self.history,
+                        "2026-11-10T19:00:00Z")
+        array_input = build(self.snapshot, self.availability, self.rotation,
+                            self.history["players"], "2026-11-10T19:00:00Z")
+        self.assertEqual(
+            array_input["games"]["g1"]["teams"]["BOS"]["historical_output_loss_per_game"],
+            wrapped["games"]["g1"]["teams"]["BOS"]["historical_output_loss_per_game"],
+        )
+
     def test_wrong_snapshot_is_rejected(self):
         self.rotation["snapshot_sha256"] = "other"
         with self.assertRaisesRegex(ValueError, "another baseline snapshot"):
