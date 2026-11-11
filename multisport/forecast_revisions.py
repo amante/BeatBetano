@@ -50,6 +50,25 @@ def verify_snapshot(report):
     body={k:v for k,v in report.items() if k!='content_sha256'}
     if report.get('content_sha256')!=digest(body):
         raise ValueError('Forecast snapshot digest mismatch')
+    lineage=report.get('model_provenance')
+    if lineage is not None:
+        if not isinstance(lineage,dict):
+            raise ValueError('Model provenance must be an object')
+        for key in ('training_data_sha256','predictor_input_sha256','schedule_input_sha256',
+                    'training_manifest_sha256','source_output_sha256'):
+            value=lineage.get(key)
+            if value is not None and (not isinstance(value,str) or len(value)!=64 or
+                    any(ch not in '0123456789abcdef' for ch in value)):
+                raise ValueError('Invalid model provenance digest')
+        for key in ('training_cutoff_utc','predictor_input_as_of_utc'):
+            value=lineage.get(key)
+            if value is not None and utc(value)>utc(report['as_of_utc']):
+                raise ValueError('Model provenance cutoff is after forecast cutoff')
+        revision=lineage.get('model_code_revision')
+        if revision is not None and (not isinstance(revision,str) or
+                len(revision)<7 or len(revision)>40 or
+                any(ch not in '0123456789abcdef' for ch in revision)):
+            raise ValueError('Invalid model code revision')
     from multisport.contract import validate_report
     validate_report(report)
 

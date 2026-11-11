@@ -4,7 +4,7 @@ Not a calibrated CRS/goalie/3GLP model. Never use same-day standings which can
 contain results unavailable at freeze time. Missing data produces no probabilities.
 """
 import sys
-import argparse,json,math
+import argparse,json,math,hashlib,os
 from datetime import date,datetime,timedelta,timezone
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
@@ -74,7 +74,14 @@ def slate(score,standings,as_of,game_date,unit_evidence=None,goalie_evidence=Non
             "goalie_confirmed":False,"special_teams_verified":False,
             "roster_verified":False,"rivalry_verified":False,
             "eligible_for_bet":False,"status":reason})
+    lineage=lambda value:hashlib.sha256(json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=False,allow_nan=False).encode()).hexdigest()
     return {"schema_version":1,"sport":"nhl","as_of_utc":now.isoformat(),
+        "model_provenance":{"data_role":"prior_day_standings_heuristic_inputs",
+            "predictor_input_sha256":lineage(base),
+            "predictor_input_as_of_utc":now.isoformat(),
+            "schedule_input_sha256":lineage(score),
+            "model_code_revision":os.environ.get("GITHUB_SHA") or None,
+            "model_family":"nhl-prior-day-standings"},
         "date":game_date,"source_score":API+"/score/"+game_date,
         "source_standings":API+"/standings/"+(day-timedelta(days=1)).isoformat(),
         "standings_effective_prior_day":True,"odds_used_in_sport_model":False,

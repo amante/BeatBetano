@@ -1,5 +1,6 @@
 """Daily five-sport forecast runner; isolate source failures and retain revisions."""
 import argparse
+import os
 import csv
 import io
 import json
@@ -53,7 +54,16 @@ def soccer_source(games,as_of,cache):
             e['probabilities']=predict(model,names[0][0],names[1][0],utc(game['start_utc']).date().isoformat())['probabilities']
         else:e['missing_baseline_reason']='No supported league model or unique historical team mapping'
         events.append(e)
-    return {'as_of_utc':as_of,'events':events,'odds_used_in_sport_model':False}
+    training_latest_event_date=max((row['date'] for row in rows),default=None)
+    return {'as_of_utc':as_of,'events':events,'odds_used_in_sport_model':False,
+            'model_provenance':{
+                'data_role':'completed_season_training_history',
+                'training_data_sha256':digest(rows),
+                'training_manifest_sha256':digest(manifest),
+                'training_cutoff_utc':None,
+                'training_latest_event_date':training_latest_event_date,
+                'model_code_revision':os.environ.get('GITHUB_SHA') or None,
+                'model_family':'soccer-existing-poisson'}}
 
 
 def generate_source(sport,games,as_of,workdir,archive):

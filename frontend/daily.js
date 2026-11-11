@@ -217,7 +217,8 @@ function renderCertificationReadiness(report){
   paired_baseline_and_ablation_walk_forward_not_provided:"Falta comparar, en los mismos partidos, el modelo base y las variables añadidas.",
   training_data_and_model_code_lineage_not_attested:"Falta la trazabilidad verificable del código y datos de entrenamiento.",
   independent_source_and_reliability_review_not_attested:"Falta la revisión independiente de fuentes, filtraciones temporales y calibración.",
-  certification_evidence_packet_missing:"Todavía no existe un expediente de certificación para esta versión."
+  certification_evidence_packet_missing:"Todavía no existe un expediente de certificación para esta versión.",
+  model_lineage_incomplete:"Falta identificar el código y la huella de los datos con su fecha de corte."
  };
  for(const item of rows){
   const card=document.createElement("article");card.className="certification-model";

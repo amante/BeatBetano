@@ -4,7 +4,7 @@ Source: ESPN public scoreboard + completed nflverse games ledger.
 No roster, injury, weather or prop probabilities are invented.
 """
 import sys
-import argparse,json,math
+import argparse,json,math,hashlib,os
 from datetime import datetime,timezone
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
@@ -42,8 +42,7 @@ def fixtures(payload,as_of):
                          "home_team":home,"away_team":away})
     return sorted(rows,key=lambda x:(x["start_utc"],x["event_id"])),counts
 
-def elo(games,cutoff):
-    ratings={};season=None
+def _prepared_history(games,cutoff):
     prepared=[]
     for r in games:
         try:
@@ -55,7 +54,12 @@ def elo(games,cutoff):
         if tip>=cutoff or not math.isfinite(hs) or not math.isfinite(aw) or hs==aw:continue
         if r.get("game_type") not in (None,"REG","WC","DIV","CON","SB"):continue
         prepared.append((tip,year,h,a,hs,aw))
-    prepared.sort()
+    return sorted(prepared)
+
+
+def elo(games,cutoff):
+    ratings={};season=None
+    prepared=_prepared_history(games,cutoff)
     for (day,yr),batch in __import__("itertools").groupby(prepared,key=lambda r:(r[0],r[1])):
         rows=list(batch)
         if season is not None and yr!=season:
@@ -73,6 +77,11 @@ def elo(games,cutoff):
 def report(payload,ledger,as_of):
     now=utc(as_of);games,status=fixtures(payload,as_of)
     ratings,n=elo(ledger,now)
+    training_rows=_prepared_history(ledger,now)
+    training_payload=[{"gameday":row[0].date().isoformat(),"season":row[1],"home_team":row[2],
+                       "away_team":row[3],"home_score":row[4],"away_score":row[5]}
+                      for row in training_rows]
+    training_cutoff=training_rows[-1][0].isoformat() if training_rows else None
     for g in games:
         home,away=g["participants"]
         p=1/(1+10**(-(ratings.get(home,1500)-ratings.get(away,1500)+55)/400))
@@ -85,6 +94,10 @@ def report(payload,ledger,as_of):
     return {"schema_version":1,"command":"NFL hoy","sport":"nfl","as_of_utc":now.isoformat(),
       "odds_used_in_sport_model":False,"events":games,"event_status_counts":status,
       "historical_games_used":n,"complete_vs_league":False,
+      "model_provenance":{"data_role":"historical_elo_training_history",
+        "training_data_sha256":hashlib.sha256(json.dumps(training_payload,sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest(),
+        "training_cutoff_utc":training_cutoff,"model_code_revision":os.environ.get("GITHUB_SHA") or None,
+        "model_family":"nfl-historical-elo"},
       "note":"Historical Elo exploratory candidate only; no official calibrated model or injury-adjusted/prop picks."}
 
 def main():
