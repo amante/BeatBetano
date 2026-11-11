@@ -60,7 +60,7 @@
    const first=e.initial,last=e.latest,card=el("article",undefined,"forecast-card");
    const keys=Object.keys(last.probabilities),previous=e.history.length>1?e.history[e.history.length-2]:null;
    const noProbabilityChange=previous&&keys.every(key=>pct(previous.probabilities[key])===pct(last.probabilities[key]));
-   const top=el("div",undefined,"forecast-card-top");top.append(el("span",noProbabilityChange?"Actualización · sin cambio":stages[last.stage],"forecast-badge"),el("span",Date.now()>=Date.parse(e.start_utc)?"Historial pregame · partido iniciado":last.source_classification==="illustrative"?"Ejemplo ilustrativo":"Base provisional","forecast-state"));card.append(top);
+   const top=el("div",undefined,"forecast-card-top");top.append(el("span",noProbabilityChange?"Actualización · sin cambio":stages[last.stage],"forecast-badge"),el("span",Date.now()>=Date.parse(e.start_utc)?"Historial pregame · partido iniciado":last.source_classification==="illustrative"?"Ejemplo ilustrativo":last.calibration_certified?"Calibración certificada":"Sin calibración certificada","forecast-state"));card.append(top);
    card.append(el("h3",e.participants[1]+" — "+e.participants[0]),el("p",local(e.start_utc)+" · "+(sport==="soccer"?"Resultado en 90 minutos":"Ganador"),"forecast-meta"));
    card.append(el("p","Inicial: "+local(first.emitted_at_utc)+" · Última: "+local(last.emitted_at_utc),"forecast-meta"));
    if(Date.now()<Date.parse(e.start_utc)&&Date.now()-Date.parse(last.emitted_at_utc)>8*3600000)card.append(el("p","Sin actualización en las últimas 8 horas.","forecast-notice"));
@@ -80,7 +80,7 @@
     const state=index===0?"Inicial":unchanged?"Sin cambio de probabilidad":"Probabilidad modificada";
     history.append(el("p","#"+r.revision+" · "+stages[r.stage]+" · "+local(r.emitted_at_utc)+" · "+state+" · Modelo: "+r.model_version+" · "+Object.entries(r.probabilities).map(([k,v])=>(k==="draw"?"Empate":e.participants[k==="home"?0:1])+" "+pct(v)).join(" / ")));
    }card.append(history);
-   card.append(el("p","Pronóstico provisional · Selección pendiente de aprobación","forecast-footnote"));grid.append(card);
+   card.append(el("p",last.calibration_certified?"Calibración certificada.":"Estado experimental · calibración no certificada y sin evaluación de rendimiento.","forecast-footnote"));grid.append(card);
   }root.append(grid);
  }
  const ready=(async()=>{render();try{const response=await fetch("./data/forecast-index.json",{cache:"no-store"});if(!response.ok)throw Error("Missing forecast index");const payload=await response.json();if(!validate(payload))throw Error("Invalid forecast index");data=payload;}catch(e){error=e.message;}render();})();
