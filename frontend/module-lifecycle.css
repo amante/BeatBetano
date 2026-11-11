@@ -1,0 +1,23 @@
+.module-lifecycle { margin-top: 22px; }
+.module-lifecycle-header h2 { margin: 7px 0; }
+.module-lifecycle-header > p { color: var(--muted, #b8cbd8); max-width: 850px; }
+.module-lifecycle-summary { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.module-lifecycle-count { border: 1px solid rgba(133, 210, 230, .25); border-radius: 999px; padding: 7px 11px; color: #c7dce7; font-size: .88rem; }
+.module-lifecycle-count--closed { color: #a8efc0; border-color: rgba(74, 201, 120, .55); }
+.module-lifecycle-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 12px; }
+.module-lifecycle-card { border: 1px solid rgba(120, 178, 201, .2); border-radius: 14px; padding: 15px; background: rgba(8, 29, 44, .42); }
+.module-lifecycle-card__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.module-lifecycle-card h3 { margin: 0; font-size: 1rem; }
+.module-lifecycle-stage { color: #a9bfcc; font-size: .78rem; text-align: right; }
+.module-lifecycle-card[data-stage="tracking"] { border-color: rgba(74, 201, 120, .48); }
+.module-lifecycle-card[data-stage="tracking"] .module-lifecycle-stage { color: #a8efc0; }
+.module-lifecycle-flags { display: flex; flex-wrap: wrap; gap: 7px; margin: 13px 0; }
+.module-lifecycle-flag { border-radius: 7px; padding: 5px 8px; font-size: .78rem; font-weight: 700; }
+.module-lifecycle-flag.is-yes { color: #a8efc0; background: rgba(33, 139, 77, .16); }
+.module-lifecycle-flag.is-no { color: #ffaaa8; background: rgba(189, 50, 55, .14); }
+.module-lifecycle-details { border-top: 1px solid rgba(120, 178, 201, .16); padding-top: 9px; color: #bfd0dc; font-size: .88rem; }
+.module-lifecycle-details summary { cursor: pointer; color: #76dff1; }
+.module-lifecycle-details p { margin: 9px 0; }
+.module-lifecycle-details small { color: #91a9b8; overflow-wrap: anywhere; }
+.module-lifecycle-empty { color: #ffaaa8; }
+@media (max-width: 600px) { .module-lifecycle-card__top { display: block; } .module-lifecycle-stage { display: block; text-align: left; margin-top: 6px; } }
