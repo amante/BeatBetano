@@ -206,18 +206,49 @@ function nhlScheduleSnapshot(slate){
  }));
  return {games,as_of_utc:slate.schedule_captured_at,errors:[],source:"Calendario oficial NHL publicado"};
 }
+function renderCertificationReadiness(report){
+ const root=$("certification-readiness");if(!root)return;
+ root.replaceChildren();
+ if(!report||!Array.isArray(report.models)){root.textContent="Aún no se publicó el informe de evidencia.";return;}
+ const rows=report.models.filter(item=>item.sport===sport);
+ if(!rows.length){root.textContent="Todavía no hay pronósticos evaluados para este deporte.";return;}
+ const labels={
+  two_independent_seasons_and_temporal_holdout_not_provided:"Falta una prueba temporal en dos temporadas independientes.",
+  paired_baseline_and_ablation_walk_forward_not_provided:"Falta comparar, en los mismos partidos, el modelo base y las variables añadidas.",
+  training_data_and_model_code_lineage_not_attested:"Falta la trazabilidad verificable del código y datos de entrenamiento.",
+  independent_source_and_reliability_review_not_attested:"Falta la revisión independiente de fuentes, filtraciones temporales y calibración.",
+  certification_evidence_packet_missing:"Todavía no existe un expediente de certificación para esta versión."
+ };
+ for(const item of rows){
+  const card=document.createElement("article");card.className="certification-model";
+  const heading=document.createElement("h4");heading.textContent=item.model_version;
+  const summary=document.createElement("p");summary.textContent=(item.eligible_for_certification_review?"Listo para revisión humana · ":"Revisión pendiente · ")+item.scored_forecasts+" resultados evaluados";
+  card.append(heading,summary);
+  const list=document.createElement("ul");
+  for(const reason of item.blockers||[]){
+   const li=document.createElement("li");li.textContent=labels[reason]||reason;list.append(li);
+  }
+  if(list.children.length)card.append(list);
+  root.append(card);
+ }
+ const note=document.createElement("p");note.className="certification-note";
+ note.textContent="Los resultados descriptivos no certifican el modelo. La aprobación requiere revisión humana; no se activa automáticamente.";
+ root.append(note);
+}
 async function load(){
  $("daily-date").value=localDay();
  // NBA has a separate frozen-cohort source; do not load the legacy shared feed.
- if(sport==="nba")return;
- const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json","./data/nhl-complete-slate-latest.json","./data/nhl-schedule.json"].map(async path=>{
+ if(sport==="nba"){fetch("./data/certification-readiness-latest.json",{cache:"no-store"}).then(response=>response.ok?response.json():null).then(renderCertificationReadiness).catch(()=>renderCertificationReadiness(null));return;}
+ const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json","./data/nhl-complete-slate-latest.json","./data/nhl-schedule.json","./data/certification-readiness-latest.json"].map(async path=>{
   const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw Error(path+" "+response.status);return response.json();
  }));
  const got=i=>entries[i].status==="fulfilled"?entries[i].value:null;
+ const readiness=entries[6]?.status==="fulfilled"?entries[6].value:null;
  feedFailure=[0,...(sport==="nhl"?[4]:[])].map(i=>entries[i].status==="rejected"?entries[i].reason.message:"").filter(Boolean).join(" · ");
  nhlCalendar=got(5)?.kind==="nhl_calendar"&&Array.isArray(got(5).games)&&Array.isArray(got(5).included_dates)?got(5):null;
  snapshot=got(0)||nhlScheduleSnapshot(got(4));history=Array.isArray(got(1))?got(1):[];const p=got(2);
  predictions=Array.isArray(p)?p:Array.isArray(p?.predictions)?p.predictions:[];runtime=got(3)||{};
+ renderCertificationReadiness(readiness);
  renderGames();
 }
 function changeDate(){
