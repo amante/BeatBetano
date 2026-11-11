@@ -1,9 +1,9 @@
 {
-  "as_of_utc": "2026-11-11T03:48:24.038301+00:00",
+  "as_of_utc": "2026-11-11T21:57:10.599491+00:00",
   "model_version": "NBA_LIVEDATA_TEAM_ML_RESEARCH_V1",
   "selection": "first_pregame_candidate_per_game",
   "observed_fixtures": 24,
-  "candidate_fixtures": 18,
+  "candidate_fixtures": 19,
   "pending_results": 10,
   "result_errors": [],
   "scored_games": [
@@ -70,18 +70,32 @@
       "livedata_home": 0.436906,
       "emitted_at_utc": "2026-11-10T17:01:22.549653+00:00",
       "research_sha256": "d2dd65a4b3be77fb3696eb82791576a9eb42802260ae2395e10e10c177051774"
+    },
+    {
+      "game_id": "401909964",
+      "outcome_home": 0,
+      "hybrid_home": 0.3648231214056771,
+      "livedata_home": 0.400676,
+      "emitted_at_utc": "2026-11-10T17:01:22.549653+00:00",
+      "research_sha256": "d2dd65a4b3be77fb3696eb82791576a9eb42802260ae2395e10e10c177051774"
     }
   ],
   "metrics": {
     "hybrid": {
-      "n": 8,
-      "brier": 0.1946240929834047,
-      "log_loss": 0.5691365097449359,
+      "n": 9,
+      "brier": 0.18778762819771322,
+      "log_loss": 0.5563270942076728,
       "calibration": [
         {
           "bin": 2,
           "n": 1,
           "mean_probability": 0.29520499734251404,
+          "observed_rate": 0.0
+        },
+        {
+          "bin": 3,
+          "n": 1,
+          "mean_probability": 0.3648231214056771,
           "observed_rate": 0.0
         },
         {
@@ -105,9 +119,9 @@
       ]
     },
     "livedata": {
-      "n": 8,
-      "brier": 0.19707332698625,
-      "log_loss": 0.57642150204569,
+      "n": 9,
+      "brier": 0.19301420809622222,
+      "log_loss": 0.5692583268849102,
       "calibration": [
         {
           "bin": 3,
@@ -117,8 +131,8 @@
         },
         {
           "bin": 4,
-          "n": 2,
-          "mean_probability": 0.432157,
+          "n": 3,
+          "mean_probability": 0.42166333333333333,
           "observed_rate": 0.0
         },
         {
@@ -143,7 +157,7 @@
     }
   },
   "delta_livedata_minus_hybrid": {
-    "brier": 0.002449234002845302,
-    "log_loss": 0.0072849923007540784
+    "brier": 0.005226579898508998,
+    "log_loss": 0.012931232677237392
   }
 }

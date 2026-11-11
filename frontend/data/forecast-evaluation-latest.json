@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "kind": "sealed_forecast_outcome_evaluation",
+  "generated_at_utc": "2026-11-11T21:57:10.473185+00:00",
+  "inputs": {
+    "forecast_snapshot_count": 0,
+    "forecast_snapshot_manifest_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "settled_history_row_count": 184,
+    "settled_history_sha256": "75d2ab52177537989f8c658b54825b9da11454019c2cdc36486ee4b6fdd4095a"
+  },
+  "coverage": {
+    "verified_chains": 0,
+    "latest_pregame_forecasts": 0,
+    "forecasts_bound_to_history": 0,
+    "pending_forecasts": 0,
+    "scored_forecast_groups": 0
+  },
+  "groups": [],
+  "exclusion_counts": {
+    "source_output_digest_mismatch": 99
+  },
+  "certification": {
+    "certified": false,
+    "independent_validation_passed": false,
+    "automatic_promotion_allowed": false,
+    "note": "Descriptive postgame scoring only; no independent holdout, model comparison, calibration fit, or certification is performed."
+  },
+  "score_definition": "Brier is mean squared error across outcome classes; log loss uses the probability assigned to the observed outcome; reliability bins are fixed deciles.",
+  "result_source_note": "Results are taken from the persisted daily history feed. Event identity is bound by provider ID and exact start, with an explicit NHL team-name crosswalk when provider IDs differ. Source authenticity is not independently attested."
+}
