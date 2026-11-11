@@ -89,7 +89,8 @@ def _result_rows(payload):
 def capture(snapshot, session=None, season=None):
     """Fetch only historical pair data for the teams in this pregame slate."""
     observed = datetime.now(timezone.utc).isoformat()
-    start_year = int(season or snapshot.get("season_start_year") or observed[:4])
+    now = datetime.now(timezone.utc)
+    start_year = int(season or snapshot.get("season_start_year") or (now.year if now.month >= 10 else now.year - 1))
     season_label = f"{start_year}-{(start_year + 1) % 100:02d}"
     client = session or requests.Session()
     games = {}
