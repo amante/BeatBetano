@@ -112,15 +112,16 @@
    section.append(el("p","Generada "+local(currentRun.created_at_utc)+" · Los módulos pendientes no bloquean el cálculo base."));
    if(!currentRows.length)section.append(el("p","La última corrida no contiene partidos para la fecha seleccionada."));
    const moduleNames={statistical_baseline:"Probabilidad estadística base",official_injury_report:"Informe oficial de lesiones",starting_lineups:"Quintetos titulares",player_matchups:"Cruces de jugadores",rotation_minutes:"Rotación y minutos",availability_impact:"Impacto de disponibilidad",travel_time_zones:"Viajes y zonas horarias"};
-   const statusLabels={included:"Incluido en la predicción",available_not_used:"Datos recibidos; no entran en porcentajes",pending:"Pendiente de publicación o validación",failed:"Falló la consulta",research_scenario:"Afecta el escenario experimental por lesiones"};
+   const statusLabels={included:"Incluido en la predicción",available_not_used:"Datos recibidos; no entran en porcentajes",pending:"Pendiente de publicación o validación",failed:"Falló la consulta",research_scenario:"Afecta el candidato experimental"};
    for(const prediction of currentRows){
     const card=el("article","");card.className="nba-current-run__game";
     card.append(el("h4",teamName(prediction.away_team)+" — "+teamName(prediction.home_team)));
     const injury=prediction.injury_probability_scenario;
     const baseline=prediction.statistical_baseline_p_home??prediction.hybrid_p_home;
     const modelHome=prediction.model_p_home??baseline;
-    if(typeof modelHome==="number")card.append(el("p",(prediction.model_probability_status==="injury_adjusted_research_candidate"?"Modelo candidato con lesiones confirmadas: ":"Modelo base: ")+teamName(prediction.away_team)+" "+((1-modelHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(modelHome*100).toFixed(1)+"%","nba-model-probability"));
-    if(prediction.model_probability_status==="injury_adjusted_research_candidate"&&typeof baseline==="number")card.append(el("p","Referencia estadística sin ajuste: "+teamName(prediction.away_team)+" "+((1-baseline)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(baseline*100).toFixed(1)+"%"));
+    const adjustedStatus=["injury_adjusted_research_candidate","matchup_adjusted_research_candidate","travel_adjusted_research_candidate","combined_research_candidate"].includes(prediction.model_probability_status);
+    if(typeof modelHome==="number")card.append(el("p",(adjustedStatus?"Candidato experimental (no calibrado): ":"Modelo base: ")+teamName(prediction.away_team)+" "+((1-modelHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(modelHome*100).toFixed(1)+"%","nba-model-probability"));
+    if(adjustedStatus&&typeof baseline==="number")card.append(el("p","Referencia estadística sin ajustes: "+teamName(prediction.away_team)+" "+((1-baseline)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(baseline*100).toFixed(1)+"%"));
     if(injury?.status==="research_scenario"){
      const delta=Number(injury.home_probability_delta_pp||0);
      const direction=delta>0?"+" :"";
@@ -141,6 +142,25 @@
      card.append(el("p","Sin ajuste por lesiones: "+(injury.reason||"faltan datos verificables.")+" Se conserva la probabilidad base.","nba-module-run-status__item nba-module-run-status__item--failed"));
     }else if(injury?.status==="no_confirmed_out_claims"){
      card.append(el("p","Sin bajas OUT oficiales asociadas; se conserva la probabilidad base."));
+    }
+    const matchup=prediction.player_matchup_probability_scenario;
+    if(matchup){
+     const evidence=el("details","");evidence.className="nba-module-run-status";
+     evidence.append(el("summary","Cruces históricos y quinteto estimado"));
+     if(matchup.status==="research_scenario"){
+      evidence.append(el("p","Variación estimada del margen local: "+Number(matchup.estimated_home_margin_delta_per_100_possessions||0).toFixed(2)+" puntos por 100 posesiones. Asignaciones aproximadas por posición; no son marcas confirmadas."));
+      for(const team of [prediction.away_team,prediction.home_team]){
+       const teamData=matchup.teams?.[team];if(!teamData)continue;
+       for(const pair of teamData.assignments||[]){
+        if(pair.status!=="historical_pair_sample_usable")continue;
+        evidence.append(el("p",teamName(team)+": "+(pair.offense_player.player||pair.offense_player.player_id)+" vs "+(pair.defender_player.player||pair.defender_player.player_id)+" · historial "+Number(pair.partial_possessions).toFixed(0)+" posesiones parciales"));
+       }
+      }
+      evidence.append(el("p","Escenario experimental no calibrado. El proveedor registra cruces anteriores; el emparejamiento de hoy se estima con las posiciones del quinteto."));
+     }else{
+      evidence.append(el("p","Sin ajuste por cruces: "+(matchup.reason||"faltan datos verificables.")+" Se conserva el resto del candidato."));
+     }
+     card.append(evidence);
     }
     const details=el("details","");details.className="nba-module-run-status";
     details.append(el("summary","Módulos usados y pendientes"));
@@ -164,7 +184,7 @@
   const label=document.getElementById("daily-label"),source=document.getElementById("feed-message");
   if(label)label.textContent="NBA · "+selected+" · "+rows.length+" partido"+(rows.length===1?" registrado":"s registrados");
   if(source)source.textContent="Calendario y emisiones del registro NBA · captura "+local(data.last_source_capture_utc)+" · fecha Chile.";
-  root.append(el("p","Elo y Challenger experimentales · sin ajustes de lesiones ni alineaciones · Knicks excluido."));
+  root.append(el("p","Elo y Challenger experimentales · los ajustes de lesiones, quintetos, cruces y viajes dependen de evidencia suficiente."));
   root.append(el("p","Última captura: "+local(data.last_source_capture_utc)+(stale(data)?" · Datos desactualizados; revisar la fuente.":"")));
   if(data.source_error_count)root.append(el("p","El registro conserva fallos de fuente. La cobertura requiere revisión."));
   if(data.sporting_evidence_errors.length)root.append(el("p","Hay evidencia deportiva que no pudo verificarse."));
