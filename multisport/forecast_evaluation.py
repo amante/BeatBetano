@@ -106,6 +106,18 @@ def _same_start(forecast, result):
         return False
 
 
+def season_label(sport, start_utc):
+    start=utc(start_utc)
+    year=start.year
+    if sport in ("nba","nhl","soccer") and start.month<7:
+        year-=1
+    elif sport=="nfl" and start.month<8:
+        year-=1
+    if sport=="tennis":
+        return str(year)
+    return f"{year}-{str(year+1)[-2:]}"
+
+
 def _bind_result(sport, event, results_by_id, history):
     event_id = str(event["event_id"])
     direct = results_by_id.get((sport, event_id), [])
@@ -186,6 +198,8 @@ def _forecast_versions(chains):
             if not isinstance(forecast, dict):
                 continue
             version = forecast.get("model_version")
+            provenance = snap.get("model_provenance") or {}
+            model_code_sha256 = provenance.get("model_code_sha256") or "missing"
             probs = forecast.get("probabilities")
             expected = set(CATEGORIES.get(sport, ("home", "away")))
             if not isinstance(version, str) or not version or not isinstance(probs, dict) or set(probs) != expected:
@@ -197,8 +211,8 @@ def _forecast_versions(chains):
             if abs(sum(probs.values()) - 1) > 1e-6:
                 issues["probabilities_do_not_sum_to_one"] += 1
                 continue
-            candidates[version].append((emitted, snap, forecast))
-        for version, rows in candidates.items():
+            candidates[(version, model_code_sha256)].append((emitted, snap, forecast))
+        for (version, model_code_sha256), rows in candidates.items():
             _, snap, forecast = max(rows, key=lambda item: item[0])
             selected.append({
                 "sport": sport,
@@ -207,6 +221,7 @@ def _forecast_versions(chains):
                 "snapshot_sha256": snap["content_sha256"],
                 "emitted_at_utc": snap["emitted_at_utc"],
                 "model_version": version,
+                "model_code_sha256": model_code_sha256,
                 "stage": forecast["stage"],
                 "model_provenance": snap.get("model_provenance"),
             })
@@ -271,21 +286,29 @@ def evaluate(archive, history):
             else:
                 exclusions[reason] += 1
             continue
-        key = (sport, item["model_version"], item["stage"])
+        key = (sport, item["model_version"], item["model_code_sha256"], item["stage"])
         scored[key].append({
             "probabilities": item["forecast"]["probabilities"],
             "outcome": outcome,
+            "season": season_label(sport, event["start_utc"]),
             "model_provenance": item.get("model_provenance"),
         })
     groups = []
-    for (sport, version, stage), rows in sorted(scored.items()):
+    for (sport, version, model_code_sha256, stage), rows in sorted(scored.items()):
         provenance=[row.get("model_provenance") or {} for row in rows]
+        categories=CATEGORIES.get(sport, ("home", "away"))
+        by_season={}
+        for season in sorted({row["season"] for row in rows}):
+            season_rows=[row for row in rows if row["season"]==season]
+            by_season[season]=_score(season_rows,categories)
         groups.append({
-            "sport": sport, "model_version": version, "stage": stage,
-            "metrics": _score(rows, CATEGORIES.get(sport, ("home", "away"))),
+            "sport": sport, "model_version": version, "model_code_sha256": model_code_sha256, "stage": stage,
+            "metrics": _score(rows, categories),
+            "by_season": by_season,
             "lineage_coverage":{
                 "scored_forecasts":len(rows),
                 "with_model_code_revision":sum(bool(x.get("model_code_revision")) for x in provenance),
+                "with_model_code_sha256":sum(bool(x.get("model_code_sha256")) for x in provenance),
                 "with_training_data_sha256":sum(bool(x.get("training_data_sha256")) for x in provenance),
                 "with_training_cutoff_utc":sum(bool(x.get("training_cutoff_utc")) for x in provenance),
                 "with_predictor_input_sha256":sum(bool(x.get("predictor_input_sha256")) for x in provenance),

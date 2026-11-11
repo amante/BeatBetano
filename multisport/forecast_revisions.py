@@ -55,7 +55,7 @@ def verify_snapshot(report):
         if not isinstance(lineage,dict):
             raise ValueError('Model provenance must be an object')
         for key in ('training_data_sha256','predictor_input_sha256','schedule_input_sha256',
-                    'training_manifest_sha256','source_output_sha256'):
+                    'training_manifest_sha256','source_output_sha256','model_code_sha256'):
             value=lineage.get(key)
             if value is not None and (not isinstance(value,str) or len(value)!=64 or
                     any(ch not in '0123456789abcdef' for ch in value)):

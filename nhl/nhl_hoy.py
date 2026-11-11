@@ -75,8 +75,9 @@ def slate(score,standings,as_of,game_date,unit_evidence=None,goalie_evidence=Non
             "roster_verified":False,"rivalry_verified":False,
             "eligible_for_bet":False,"status":reason})
     lineage=lambda value:hashlib.sha256(json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=False,allow_nan=False).encode()).hexdigest()
+    model_code_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     return {"schema_version":1,"sport":"nhl","as_of_utc":now.isoformat(),
-        "model_provenance":{"data_role":"prior_day_standings_heuristic_inputs",
+        "model_provenance":{"model_code_sha256":model_code_sha256,"data_role":"prior_day_standings_heuristic_inputs",
             "predictor_input_sha256":lineage(base),
             "predictor_input_as_of_utc":now.isoformat(),
             "schedule_input_sha256":lineage(score),

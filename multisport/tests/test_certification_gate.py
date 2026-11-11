@@ -23,7 +23,8 @@ def packet():
                 },
             })
     return {
-        "scope": {"sport": "nba", "market": "moneyline", "model_version": "candidate-v1"},
+        "scope": {"sport": "nba", "market": "moneyline", "model_version": "candidate-v1",
+                  "model_code_sha256": "c" * 64},
         "protocol": {
             "holdout_seasons": [2024, 2025],
             "min_games_per_season": 100,
@@ -35,6 +36,7 @@ def packet():
             "forecast_archive_sha256": "a" * 64,
             "training_data_manifest_sha256": "b" * 64,
             "model_code_revision": "1234567890abcdef",
+            "model_code_sha256": "c" * 64,
         },
         "walk_forward_rows": rows,
         "independent_review": {
