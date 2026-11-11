@@ -16,10 +16,10 @@
           "name": "Quintetos titulares",
           "created": true,
           "connected": true,
-          "affects_prediction": false,
+          "affects_prediction": true,
           "evidence": "nba/lineup_live_collector.py; nba/injury_lineup_joint.py; .github/workflows/nba-auto-history.yml",
-          "scope": "La captura y el estado aparecen en el paquete diario; no modifican el porcentaje integrado.",
-          "note": "Falta que un efecto de quinteto validado entre en la fórmula."
+          "scope": "Los titulares reportados por RotoWire modifican los pesos de minutos del escenario con bajas oficiales usando minutos históricos del jugador cuando fue titular, cuando la fuente y los cinco IDs se resuelven.",
+          "note": "Solo se marca influyente en partidos donde las cinco identidades, el historial de roles y el ajuste de disponibilidad pasaron sus controles."
         },
         {
           "id": "injury_report",
