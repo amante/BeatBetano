@@ -33,7 +33,8 @@ def parse_boxscore(payload,game,observed_at):
         for block in group.get("statistics",[]):
             labels=block.get("labels",[])
             if not isinstance(labels,list):continue
-            minute_col=next((i for i,x in enumerate(labels) if str(x).upper() in ("MIN","MINUTES")),None)
+            columns={str(label).strip().upper():i for i,label in enumerate(labels)}
+            minute_col=next((columns[x] for x in ("MIN","MINUTES") if x in columns),None)
             for row in block.get("athletes",[]):
                 athlete=row.get("athlete",{})
                 pid=str(athlete.get("id",""))
@@ -50,9 +51,23 @@ def parse_boxscore(payload,game,observed_at):
                 elif isinstance(value,str) and re.fullmatch(r"\d{1,2}(?:\.\d+)?",value):
                     minutes=float(value)
                 if minutes is not None and not 0<=minutes<=65:raise ValueError("Invalid minutes")
+                # Keep only box-score counting stats needed for a transparent
+                # historical production estimate. Percentages/compound strings
+                # are deliberately excluded rather than guessed from display text.
+                counting={"points":("PTS","POINTS"),"rebounds":("REB","REBOUNDS"),
+                          "assists":("AST","ASSISTS"),"turnovers":("TO","TOV","TURNOVERS")}
+                numeric={}
+                for key,names in counting.items():
+                    col=next((columns[name] for name in names if name in columns),None)
+                    raw=stats[col] if col is not None and col<len(stats) else None
+                    if isinstance(raw,int) and raw>=0:numeric[key]=raw
+                    elif isinstance(raw,str) and re.fullmatch(r"\d+",raw.strip()):numeric[key]=int(raw)
+                    else:numeric[key]=None
                 rows.append({"game_id":str(game["game_id"]),"team":team,
+                    "tipoff_utc":game["tipoff_utc"],
                     "player_id":pid,"player":athlete.get("displayName"),
                     "minutes_played":minutes,
+                    **numeric,
                     "did_not_play":bool(row.get("didNotPlay",False)),
                     "starter_reported_postgame":row.get("starter") if type(row.get("starter")) is bool else None,
                     "availability_known_pregame":False,

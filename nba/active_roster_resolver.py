@@ -49,7 +49,12 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
     if status=="unknown" or status=="questionable":unresolved.append(pid)
     players.append({"player_id":pid,"player":name,"status":status,
       "starter_projected":name in starter_names,
-      "status_sources":[{"url":r["source_url"],"status":r["status"],"observed_at_utc":r["observed_at_utc"]} for r in claims],
+      "status_sources":[{"url":r["source_url"],"status":r["status"],
+        "observed_at_utc":r["observed_at_utc"],
+        "reported_at_utc":r.get("reported_at_utc"),
+        "confidence":r.get("confidence"),
+        "identity_match":r.get("identity_match"),
+        "official_row":r.get("official_row")} for r in claims],
       "max_minutes":member.get("max_minutes",48)})
    ready=good and not unresolved and all(p["status"] in ("available","out") for p in players)
    teams[team]={"roster_complete":bool(good),"roster_source":evidence.get("source_url") if good else None,
@@ -59,7 +64,16 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
     "availability_source_verified":bool(ready),
     "status":"resolved" if ready else "unresolved_statuses" if good else "roster_unverified"}
   output[gid]={"teams":teams}
- return {"snapshot_sha256":digest,"games":output,"no_odds_input":True,"probabilities_adjusted":False,
+ return {"snapshot_sha256":digest,"games":output,
+  "official_report_evidence":{
+   "retrieved":status_feed.get("official_report_retrieved") is True,
+   "as_of_utc":status_feed.get("official_report_as_of_utc"),
+   "candidate_rows":status_feed.get("official_structured_candidate_rows",0),
+   "rows_for_fixtures":status_feed.get("official_rows_for_fixtures",0),
+   "matched_claims":status_feed.get("official_matched_claims",0),
+   "unmatched_claims":status_feed.get("official_unmatched_claims",[]),
+   "rows_by_fixture":status_feed.get("official_rows_by_fixture",[])},
+  "no_odds_input":True,"probabilities_adjusted":False,
   "note":"Requires explicit full roster feed and individually sourced statuses. Absence of injury mention is NOT active confirmation."}
 
 def markdown(result):

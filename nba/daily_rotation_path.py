@@ -15,6 +15,7 @@ from player_possession_coverage import build as player_coverage
 from postmortem_engine import save_new, verify_seal
 from prospective import utc
 from replacement_minute_scenarios import build_slate as rotations
+from official_injury_impact import build as build_official_injury_impact
 from reproducible_slate import digest
 
 
@@ -34,6 +35,7 @@ def process(path, archive_override=None):
     requested = [g for g in snapshot['predictions'] if utc(now()) < utc(g['tipoff_utc'])]
     if not requested:
         return None
+    injury_impact = None
     try:
         crosswalk = read(metrics / 'player_crosswalk.json')
         manifest = read(available / 'manifest.json')['files']
@@ -48,6 +50,10 @@ def process(path, archive_override=None):
 
         availability = observed('availability.json')
         rotation = observed('rotation.json')
+        player_history = (observed('player_history.json') if 'player_history.json' in manifest
+                          else {'players': [], 'unavailable_games': []})
+        injury_impact = build_official_injury_impact(
+            snapshot, availability, rotation, player_history, now())
         team_ml = read(metrics / 'team_ml_research.json')
         data = read(metrics / 'team_metrics.json')
         if archive_override is None:
@@ -83,6 +89,10 @@ def process(path, archive_override=None):
         coverage = player_coverage(snapshot, crosswalk, availability, archive, now(), rotation)
         slate = rotations(coverage, snapshot, now(), archive, directories, data['fallback']['games'], team_ml)
         report = paths(snapshot, slate, coverage, team_ml, archive, now())
+        for game in report['games']:
+            game['official_injury_impact'] = injury_impact['games'].get(game['game_id'])
+            game['content_sha256'] = digest({k:v for k,v in game.items() if k != 'content_sha256'})
+        report['content_sha256'] = digest({k:v for k,v in report.items() if k != 'content_sha256'})
         for name, artifact in (('player-coverage', coverage), ('minute-slate', slate), ('rotation-path', report)):
             save_new(path.with_suffix(f'.{name}.json'), artifact)
         return report['games']
@@ -90,7 +100,9 @@ def process(path, archive_override=None):
         print(f'{path.name}: {type(exc).__name__}: {exc}', file=sys.stderr)
         return [{'game_id': str(g['game_id']), 'home_team': g['home_team'], 'away_team': g['away_team'],
                  'tipoff_utc': g['tipoff_utc'], 'status': 'PASS', 'comparison': None,
-                 'blocked': {'source': ['rotation_inputs_unavailable']}} for g in requested]
+                 'blocked': {'source': ['rotation_inputs_unavailable']},
+                 'official_injury_impact': (injury_impact or {}).get('games', {}).get(str(g['game_id']))}
+                for g in requested]
 
 
 def missing_schedule_games(daily_path, status_path, existing, as_of):
@@ -164,8 +176,17 @@ def main():
             for key in ('comparison', 'content_sha256', 'rotation_rating_deltas'):
                 row.pop(key, None)
             row.update(status='PASS', comparison=None, blocked={'fixture': ['already_started']})
+    impact_games = [g.get('official_injury_impact') for g in games.values()
+                    if isinstance(g.get('official_injury_impact'), dict)]
     report = {'model_version': 'NBA_CONDITIONAL_ROTATION_PATH_V1', 'emitted_at_utc': emitted,
               'fixtures': len(games), 'research_scenarios': sum(g['comparison'] is not None for g in games.values()),
+              'official_injury_impact_summary': {
+                  'games_with_injury_scenario': sum(x.get('status') == 'research_only' for x in impact_games),
+                  'official_out_players': sum(team.get('official_out_count', 0)
+                      for game in impact_games for team in game.get('teams', {}).values()),
+                  'baseline_probabilities_changed': False,
+                  'calibrated': False,
+              },
               'coverage_status': 'source_gaps' if missing else 'captured',
               'source_failure': source_failure if missing else None,
               'games': list(games.values()), 'calibrated': False, 'production_approved': False}
