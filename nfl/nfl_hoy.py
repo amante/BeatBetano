@@ -97,7 +97,7 @@ def report(payload,ledger,as_of):
       "historical_games_used":n,"complete_vs_league":False,
       "model_provenance":{"model_code_sha256":model_code_sha256,"data_role":"historical_elo_training_history",
         "training_data_sha256":hashlib.sha256(json.dumps(training_payload,sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest(),
-        "training_cutoff_utc":training_cutoff,"model_code_revision":os.environ.get("GITHUB_SHA") or None,
+        "training_cutoff_utc":training_cutoff,"model_code_revision":os.environ.get("GITHUB_SHA") or None,\n        "model_code_sha256":hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "model_family":"nfl-historical-elo"},
       "note":"Historical Elo exploratory candidate only; no official calibrated model or injury-adjusted/prop picks."}
 
