@@ -64,7 +64,7 @@ def soccer_source(games,as_of,cache):
                 'training_manifest_sha256':digest(manifest),
                 'training_cutoff_utc':None,
                 'training_latest_event_date':training_latest_event_date,
-                'model_code_revision':os.environ.get('GITHUB_SHA') or None
+                'model_code_revision':os.environ.get('GITHUB_SHA') or None,
                 'model_family':'soccer-existing-poisson'}}
 
 
