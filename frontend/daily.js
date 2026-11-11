@@ -35,14 +35,14 @@ function teamInfo(raw,league=sport){
 }
 function appendTeam(row,raw,side,league,providedLogo){
  const info=teamInfo(raw,league),team=make("span",undefined,"daily-team daily-team-"+side);
- team.setAttribute("aria-label",info.name);
+ team.setAttribute?.("aria-label",info.name);
  const mark=make("span",undefined,"daily-team-logo");
  const initials=info.name.split(" ").filter(Boolean).map(x=>x[0]).slice(0,2).join("").toUpperCase();
  mark.append(make("span",initials,"daily-team-initials"));
  const source=providedLogo||info.logo;
  if(source&&/^https:\/\//i.test(source)){
   const img=document.createElement("img");img.src=source;img.alt="";img.loading="lazy";img.decoding="async";
-  img.addEventListener("error",()=>img.remove(),{once:true});mark.append(img);
+  img.addEventListener?.("error",()=>img.remove(),{once:true});mark.append(img);
  }
  team.append(mark,make("span",info.name,"daily-team-name"));row.append(team);return info;
 }
@@ -59,20 +59,20 @@ function matchState(g,options={}){
 }
 function makeMatchRow(g,options={}){
  const league=options.sport||g.sport||sport,row=make("article",undefined,"daily-match daily-match-card");
- row.dataset.sport=league;
+ if(row.dataset)row.dataset.sport=league;
  const time=Number.isFinite(Date.parse(g.start_utc))?new Intl.DateTimeFormat("es-CL",{timeZone:"America/Santiago",hour:"2-digit",minute:"2-digit"}).format(new Date(g.start_utc)):"Hora no disponible";
  row.append(make("time",time,"daily-time"));
  const away=appendTeam(row,g.away,"away",league,g.away_logo||g.awayLogo||g.away_badge);
  row.append(make("span","—","daily-match-versus"));
  const home=appendTeam(row,g.home,"home",league,g.home_logo||g.homeLogo||g.home_badge);
  const state=make("span",matchState(g,options),"daily-state");
- const text=state.textContent.toLowerCase();if(text.includes("en juego")||text.includes("entretiempo"))state.classList.add("is-live");if(text.includes("final")||g.completed)state.classList.add("is-final");
+ const text=state.textContent.toLowerCase();if(text.includes("en juego")||text.includes("entretiempo"))state.classList?.add("is-live");if(text.includes("final")||g.completed)state.classList?.add("is-final");
  row.append(state);
- if(league==="nhl"&&g.id!=null){row.dataset.nhlId=String(g.id).replace(/^nhl[-_:]/,"");row.dataset.home=home.code||String(g.home);row.dataset.away=away.code||String(g.away);}
+ if(league==="nhl"&&g.id!=null&&row.dataset){row.dataset.nhlId=String(g.id).replace(/^nhl[-_:]/,"");row.dataset.home=home.code||String(g.home);row.dataset.away=away.code||String(g.away);}
  else if(league!=="nhl"&&text.includes("en juego")&&g.home_score==null&&g.away_score==null)row.append(make("small","Marcador en vivo no disponible; se conserva la última información del calendario.","live-note"));
  return row;
 }
-window.PulsoCalendar={makeMatchRow,teamInfo,matchState};
+if(typeof window!=="undefined")window.PulsoCalendar={makeMatchRow,teamInfo,matchState};
 const localDay=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const previousDay=d=>{const x=new Date(d+"T12:00:00Z");x.setUTCDate(x.getUTCDate()-1);return x.toISOString().slice(0,10);};
 const dayOf=utc=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(utc));
