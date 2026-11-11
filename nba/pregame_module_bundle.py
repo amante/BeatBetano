@@ -148,6 +148,13 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
         travel_data = travel.get("games", {}).get(gid, {})
         injury_state = official.get("retrieval_status") or (
             "available" if official.get("official_document_retrieved") is True else "pending")
+        if injury_state not in ("available", "pending", "failed"):
+            try:
+                attempt = utc(official["retrieval_attempted_at_utc"])
+                release = attempt.replace(hour=10, minute=30, second=0, microsecond=0, tzinfo=timezone.utc)
+                injury_state = "pending" if attempt < release else "failed"
+            except (KeyError, ValueError, TypeError):
+                injury_state = "pending"
         lineup_ready = any(team.get("starters") for team in lineup_data.get("teams", {}).values())
         matchup_ready = any(team.get("reported_starters") for team in matchup_data.get("teams", {}).values())
         minutes_ready = any(team.get("allocations") is not None for team in minutes_data.get("teams", {}).values())
