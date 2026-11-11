@@ -218,13 +218,20 @@ function renderCertificationReadiness(report){
   training_data_and_model_code_lineage_not_attested:"Falta la trazabilidad verificable del código y datos de entrenamiento.",
   independent_source_and_reliability_review_not_attested:"Falta la revisión independiente de fuentes, filtraciones temporales y calibración.",
   certification_evidence_packet_missing:"Todavía no existe un expediente de certificación para esta versión.",
-  model_lineage_incomplete:"Falta identificar el código y la huella de los datos con su fecha de corte."
+  model_lineage_incomplete:"Falta identificar el código y la huella de los datos con su fecha de corte.",
+  prospective_holdout_sample_incomplete:"La cohorte prospectiva sigue reuniendo partidos asentados: se requieren 100 por temporada en al menos dos temporadas."
  };
  for(const item of rows){
   const card=document.createElement("article");card.className="certification-model";
   const heading=document.createElement("h4");heading.textContent=item.model_version;
   const summary=document.createElement("p");summary.textContent=(item.eligible_for_certification_review?"Listo para revisión humana · ":"Revisión pendiente · ")+item.scored_forecasts+" resultados evaluados";
   card.append(heading,summary);
+  const seasons=Object.entries(item.holdout_by_season||{});
+  if(seasons.length){
+   const holdout=document.createElement("p");holdout.className="certification-holdout";
+   holdout.textContent="Muestra prospectiva · "+(item.holdout_frozen_forecasts||0)+" partidos congelados · "+seasons.map(([season,counts])=>season+": "+(counts.settled_forecasts_scored||0)+"/100 resultados").join(" · ");
+   card.append(holdout);
+  }
   const list=document.createElement("ul");
   for(const reason of item.blockers||[]){
    const li=document.createElement("li");li.textContent=labels[reason]||reason;list.append(li);
