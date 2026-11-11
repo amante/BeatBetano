@@ -29,7 +29,7 @@ test('full NBA page skips legacy fetch, hides NHL/simulator/stats and keeps date
  vm.runInContext(fs.readFileSync(require.resolve('../daily.js'),'utf8'),context);
  vm.runInContext(fs.readFileSync(require.resolve('../nba-predictions.js'),'utf8'),context);
  await window.PulsoNbaForward.ready;
- assert.deepEqual(urls,['./data/certification-readiness-latest.json','./data/nba-forward-latest.json']);
+ assert.deepEqual(urls,['./data/certification-readiness-latest.json','./data/nba-forward-latest.json','./data/nba-predictions-latest.json']);
  for(const panel of [yesterday,simulator,elements['daily-stats'],elements['nhl-five-market'],elements['nhl-joint-model'],elements['pulso-nhl-research']])assert.equal(panel.hidden,true);
  elements['daily-date'].value='2026-11-04';for(const fn of elements['daily-date'].listeners.change)fn();
  assert.equal(elements['daily-label'].textContent,'NBA · 2026-11-04 · 1 partido registrado');
