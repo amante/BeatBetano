@@ -57,8 +57,13 @@ def generate(history,fixtures,created_at):
     # Only current prospective emissions have a real runner revision. Historical
     # replay must not claim that today's code revision produced the old forecast.
     if created.date() >= datetime.now(timezone.utc).date():
+        code_paths=[Path(__file__).with_name(name) for name in ("model.py","challenger.py","guardrails.py")]
+        code_manifest={"prospective.py":hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+        code_manifest.update({path.name:hashlib.sha256(path.read_bytes()).hexdigest() for path in code_paths})
+        model_code_sha256=hashlib.sha256(json.dumps(code_manifest,sort_keys=True,separators=(",",":")).encode()).hexdigest()
         snapshot["model_provenance"]={
             "data_role":"historical_training_history",
+            "model_code_sha256":model_code_sha256,
             "training_data_sha256":hashlib.sha256(json.dumps(historical,sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest(),
             "training_cutoff_utc":max(utc(g["tipoff_utc"]) for g in historical).isoformat(),
             "model_code_revision":os.environ.get("GITHUB_SHA") or None,
