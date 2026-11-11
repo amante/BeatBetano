@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "protocol_id": "prospective-certification-holdout-2026-27-v1",
+  "frozen_at_utc": "2026-11-11T04:31:29Z",
+  "frozen_from_commit": "b54172b0da4889a7a51bb3eaa138cb602436e006",
+  "minimum_holdout_seasons": 2,
+  "minimum_settled_forecasts_per_season": 100,
+  "sport_seasons": {
+    "nba": "July-June",
+    "nhl": "July-June",
+    "nfl": "August-February",
+    "soccer": "July-June",
+    "tennis": "calendar-year"
+  },
+  "accepted_model_version_prefixes": {
+    "nba": [
+      "nba-existing-baselines"
+    ],
+    "nfl": [
+      "nfl-historical-elo"
+    ],
+    "nhl": [
+      "nhl-prior-day-standings"
+    ],
+    "soccer": [
+      "soccer-existing-poisson-"
+    ]
+  },
+  "excluded_sports": {
+    "tennis": "No numeric forecast model is currently implemented."
+  },
+  "note": "Only latest valid pregame emission per event, model version and sport-specific model-code hash is assigned to the cohort. Holdout scores remain descriptive and cannot certify or promote a model."
+}
