@@ -41,7 +41,8 @@ class ConfirmedInjuryProbabilityTests(unittest.TestCase):
             "created_at_utc": "2026-11-11T20:00:00Z",
             "predictions": [{
                 "game_id": self.gid, "tipoff_utc": "2026-11-11T23:00:00Z",
-                "home_team": "BOS", "away_team": "MIA", "elo_p_home": 0.56,\n                "challenger_p_home": 0.60, "hybrid_p_home": 0.58
+                "home_team": "BOS", "away_team": "MIA", "elo_p_home": 0.56,
+                "challenger_p_home": 0.60, "hybrid_p_home": 0.58
             }]
         })
         scenario = {
