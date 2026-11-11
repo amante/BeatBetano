@@ -58,7 +58,9 @@
   const grid=el("div",undefined,"forecast-grid");
   for(const e of rows){
    const first=e.initial,last=e.latest,card=el("article",undefined,"forecast-card");
-   const top=el("div",undefined,"forecast-card-top");top.append(el("span",stages[last.stage],"forecast-badge"),el("span",Date.now()>=Date.parse(e.start_utc)?"Historial pregame · partido iniciado":last.source_classification==="illustrative"?"Ejemplo ilustrativo":"Base provisional","forecast-state"));card.append(top);
+   const keys=Object.keys(last.probabilities),previous=e.history.length>1?e.history[e.history.length-2]:null;
+   const noProbabilityChange=previous&&keys.every(key=>pct(previous.probabilities[key])===pct(last.probabilities[key]));
+   const top=el("div",undefined,"forecast-card-top");top.append(el("span",noProbabilityChange?"Actualización · sin cambio":stages[last.stage],"forecast-badge"),el("span",Date.now()>=Date.parse(e.start_utc)?"Historial pregame · partido iniciado":last.source_classification==="illustrative"?"Ejemplo ilustrativo":"Base provisional","forecast-state"));card.append(top);
    card.append(el("h3",e.participants[1]+" — "+e.participants[0]),el("p",local(e.start_utc)+" · "+(sport==="soccer"?"Resultado en 90 minutos":"Ganador"),"forecast-meta"));
    card.append(el("p","Inicial: "+local(first.emitted_at_utc)+" · Última: "+local(last.emitted_at_utc),"forecast-meta"));
    if(Date.now()<Date.parse(e.start_utc)&&Date.now()-Date.parse(last.emitted_at_utc)>8*3600000)card.append(el("p","Sin actualización en las últimas 8 horas.","forecast-notice"));
@@ -70,9 +72,14 @@
    const info=el("details"),summary=el("summary","Supuestos e información pendiente");info.append(summary);
    info.append(el("p","Supuestos","forecast-detail-label"));for(const value of last.assumptions)info.append(el("p",textMap[value]||value));
    info.append(el("p","Pendiente","forecast-detail-label"));if(!last.unresolved_inputs.length)info.append(el("p","No se declararon pendientes en esta corrida."));for(const value of last.unresolved_inputs)info.append(el("p",textMap[value]||value));
-   info.append(el("p","Versión: "+last.model_version),el("p","Corte de datos: "+local(last.cutoff_utc)));card.append(info);
-   const history=el("details");history.append(el("summary","Ver "+e.history.length+" corrida"+(e.history.length===1?"":"s")));
-   for(const r of e.history)history.append(el("p","#"+r.revision+" · "+stages[r.stage]+" · "+local(r.emitted_at_utc)+" · Modelo: "+r.model_version+" · "+Object.entries(r.probabilities).map(([k,v])=>(k==="draw"?"Empate":e.participants[k==="home"?0:1])+" "+pct(v)).join(" / ")));card.append(history);
+   info.append(el("p","Versión: "+last.model_version),el("p","Campo de probabilidad: "+(last.source_probability_field||"no declarado")),el("p","Corte de datos: "+local(last.cutoff_utc)));card.append(info);
+   const history=el("details");history.append(el("summary","Ver "+e.history.length+" corridas"));
+   for(const [index,r] of e.history.entries()){
+    const prior=index?e.history[index-1]:null;
+    const unchanged=prior&&Object.keys(r.probabilities).every(key=>pct(prior.probabilities[key])===pct(r.probabilities[key]));
+    const state=index===0?"Inicial":unchanged?"Sin cambio de probabilidad":"Probabilidad modificada";
+    history.append(el("p","#"+r.revision+" · "+stages[r.stage]+" · "+local(r.emitted_at_utc)+" · "+state+" · Modelo: "+r.model_version+" · "+Object.entries(r.probabilities).map(([k,v])=>(k==="draw"?"Empate":e.participants[k==="home"?0:1])+" "+pct(v)).join(" / ")));
+   }card.append(history);
    card.append(el("p","Pronóstico provisional · Selección pendiente de aprobación","forecast-footnote"));grid.append(card);
   }root.append(grid);
  }

@@ -25,7 +25,7 @@ def source_probabilities(sport, event):
             return dict(zip(('home','draw','away'),values)),'probabilities'
         if isinstance(values,dict):return values,'probabilities'
         return None,None
-    for key in ('elo_p_home','historical_elo_candidate','statistical_p_home','p_home','p_home_elo','baseline_p_home','p_challenger'):
+    for key in (('hybrid_p_home','p_challenger','elo_p_home','historical_elo_candidate','statistical_p_home','p_home','p_home_elo','baseline_p_home') if sport=='nba' else ('elo_p_home','historical_elo_candidate','statistical_p_home','p_home','p_home_elo','baseline_p_home','p_challenger')):
         if event.get(key) is not None:
             p=event[key]
             if type(p) not in (int,float):raise ValueError('Invalid source forecast probability')
@@ -60,7 +60,10 @@ def adapt(sport,source,revision="unrecorded",stage="initial"):
         values,source_key=source_probabilities(sport,x)
         forecast=None
         if values is not None:
-            forecast=make_forecast(sport,values,str(x.get('model_version') or source.get('model_version') or revision),stage,
+            model_version=str(x.get('model_version') or source.get('model_version') or revision)
+            if sport=='nba' and source_key=='hybrid_p_home':
+                model_version+='-hybrid-'+str(x.get('hybrid_route') or 'selected')
+            forecast=make_forecast(sport,values,model_version,stage,
                 assumptions=x.get('assumptions',['Existing source-model forecast; availability has not been independently audited by this adapter.']),
                 unresolved_inputs=x.get('unresolved_inputs',['Current lineup and availability not verified by this adapter']))
             forecast['source_probability_field']=source_key
