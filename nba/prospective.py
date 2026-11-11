@@ -4,7 +4,7 @@ Input JSON must be verified completed games from historical seasons and 2026-27
 season-to-date, plus separate future fixtures. No market information is read.
 Snapshots are create-only, UTC stamped, and never updated by settlement.
 """
-import argparse,hashlib,json
+import argparse,hashlib,json,os
 from datetime import datetime,timezone
 from pathlib import Path
 from model import evaluate
@@ -53,6 +53,12 @@ def generate(history,fixtures,created_at):
               "predictions":sorted(predictions,key=lambda x:x["game_id"]),
               "source":"user_supplied_verified_inputs",
               "point_in_time_lineups_verified":False,
+              "model_provenance":{
+                  "data_role":"historical_training_history",
+                  "training_data_sha256":hashlib.sha256(json.dumps(historical,sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest(),
+                  "training_cutoff_utc":max(utc(g["tipoff_utc"]) for g in historical).isoformat(),
+                  "model_code_revision":os.environ.get("GITHUB_SHA") or None,
+                  "model_family":"nba-existing-baselines"},
               "calibrated":False}
     encoded=json.dumps(snapshot,sort_keys=True,separators=(",",":")).encode()
     snapshot["content_sha256"]=hashlib.sha256(encoded).hexdigest()
