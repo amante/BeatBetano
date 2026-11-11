@@ -35,21 +35,21 @@
           "id": "rotation_minutes",
           "name": "Rotación y distribución de minutos",
           "created": true,
-          "connected": false,
+          "connected": true,
           "affects_prediction": false,
           "evidence": "nba/rotation_efficiency_report.py; nba/joint_minutes_report.py; nba/availability_scenarios.py",
-          "scope": "Produce rotaciones y escenarios, pero no pesos de probabilidad integrados.",
-          "note": "Faltan pesos de escenarios y su entrada en la fórmula del ganador."
+          "scope": "La rotación histórica, la asignación conjunta disponible y escenarios de disponibilidad viajan en el contexto diario consumido por el informe NBA. No cambian porcentajes.",
+          "note": "Conectado al flujo diario; cobertura y minutos confirmados varían según la evidencia disponible. Afecta la predicción: no."
         },
         {
           "id": "player_matchups",
           "name": "Cruces de jugadores y posiciones",
           "created": true,
-          "connected": false,
+          "connected": true,
           "affects_prediction": false,
           "evidence": "nba/roster_matchups.py; nba/availability_impact.py",
-          "scope": "Se generan observaciones/características; no hay delta validado en la probabilidad.",
-          "note": "Falta un efecto numérico aprobado dentro del cálculo."
+          "scope": "El informe diario incluye cruce roster-alineación con posiciones y cobertura por equipo; no infiere marcas defensivas. No cambia porcentajes.",
+          "note": "Conectado al flujo diario; los emparejamientos defensivos verificados aún no están disponibles. Afecta la predicción: no."
         },
         {
           "id": "team_form",
@@ -75,21 +75,21 @@
           "id": "availability_impact",
           "name": "Impacto cuantificado de disponibilidad",
           "created": true,
-          "connected": false,
+          "connected": true,
           "affects_prediction": false,
           "evidence": "nba/availability_impact.py; nba/integrated_model.py",
-          "scope": "Extrae características; el modelo integrado exige una calibración independiente y no produce p integrada sin ella.",
-          "note": "No existe actualmente un ajuste de disponibilidad validado que cambie el porcentaje final."
+          "scope": "El informe diario transporta impactos condicionales cuantificados cuando existen minutos y lesiones resueltos, junto con auditoría estricta. No cambia porcentajes.",
+          "note": "Conectado al flujo diario; estados desconocidos no se convierten en ausencias y escenarios incompletos se conservan como bloqueados. Afecta la predicción: no."
         },
         {
           "id": "travel",
           "name": "Viajes y zona horaria",
-          "created": false,
-          "connected": false,
+          "created": true,
+          "connected": true,
           "affects_prediction": false,
-          "evidence": "nba/challenger.py; multisport/ROADMAP.md",
-          "scope": "El challenger actual usa descanso, pero no estima distancia, cambios de zona horaria ni fatiga de viaje.",
-          "note": "Pendiente de creación."
+          "evidence": "nba/travel_context.py; nba/pregame_module_bundle.py; nba/integrated_model.py; nba/pulso_publication.py",
+          "scope": "El paquete de partido incluye distancia aproximada arena-a-arena, zona horaria y tiempo entre inicios usando el historial. No modifica porcentajes.",
+          "note": "Conectado al flujo diario. El descanso usa diferencia de tipoffs, no hora final; distancia de gran círculo no es ruta aérea. Afecta la predicción: no."
         }
       ]
     },
