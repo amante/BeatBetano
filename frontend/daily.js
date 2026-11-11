@@ -238,7 +238,7 @@ function renderCertificationReadiness(report){
 async function load(){
  $("daily-date").value=localDay();
  // NBA has a separate frozen-cohort source; do not load the legacy shared feed.
- if(sport==="nba"){renderCertificationReadiness(got(6));return;}
+ if(sport==="nba"){fetch("./data/certification-readiness-latest.json",{cache:"no-store"}).then(response=>response.ok?response.json():null).then(renderCertificationReadiness).catch(()=>renderCertificationReadiness(null));return;}
  const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json","./data/nhl-complete-slate-latest.json","./data/nhl-schedule.json","./data/certification-readiness-latest.json"].map(async path=>{
   const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw Error(path+" "+response.status);return response.json();
  }));
