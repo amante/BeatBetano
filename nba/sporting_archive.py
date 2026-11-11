@@ -2,9 +2,32 @@
 import hashlib
 import json
 from pathlib import Path
+from datetime import datetime,time,timezone
 from prospective import utc
 
 LEGACY=Path('reports/nba-availability-2026-11-04-2147')
+OFFICIAL_REPORT_RELEASE_UTC=time(10,30)
+
+def official_report_module_state(summary,error=None):
+    if summary.get('official_injury_report_retrieved') is True:
+        return {'status':'available','entered_prediction':False,
+                'detail':'Fuente capturada; el modelo actual no aplica ajuste de lesiones.'}
+    if error is None and not summary.get('errors',{}).get('official_injury_report'):
+        return {'status':'not_observed','entered_prediction':False,
+                'detail':'No hay captura de la fuente oficial en este paquete.'}
+    captured=summary.get('captured_at_utc')
+    try:
+        at=datetime.fromisoformat(str(captured).replace('Z','+00:00'))
+        if at.tzinfo is None:raise ValueError('Capture timestamp must include timezone')
+        release=datetime.combine(at.date(),OFFICIAL_REPORT_RELEASE_UTC,tzinfo=timezone.utc)
+    except (TypeError,ValueError):
+        return {'status':'failed','entered_prediction':False,
+                'detail':'No se pudo validar la hora de captura de la fuente oficial.'}
+    if at.astimezone(timezone.utc)<release:
+        return {'status':'pending','entered_prediction':False,
+                'detail':'Captura anterior a las 10:30 UTC; el informe aún puede no estar publicado.'}
+    detail=(error or summary.get('errors',{}).get('official_injury_report') or {}).get('detail','Fuente oficial no disponible tras la hora de publicación esperada.')
+    return {'status':'failed','entered_prediction':False,'detail':str(detail)[:500]}
 
 
 def bundles(root):
@@ -18,9 +41,17 @@ def bundles(root):
                 if Path(name).name!=name:raise ValueError('Invalid manifest path')
                 if hashlib.sha256((folder/name).read_bytes()).hexdigest()!=expected:raise ValueError('Manifest mismatch')
             summary=json.loads((folder/'summary.json').read_text()) if (folder/'summary.json').is_file() else {}
-            errors.extend({'path':str(folder),'scope':name,**error} for name,error in summary.get('errors',{}).items())
+            source_errors=summary.get('errors',{})
+            official_error=source_errors.get('official_injury_report')
+            module_status={**official_report_module_state(summary,official_error),
+                           'captured_at_utc':summary.get('captured_at_utc')}
+            for name,error in source_errors.items():
+                if name=='official_injury_report' and module_status['status']=='pending':
+                    continue
+                errors.append({'path':str(folder),'scope':name,**error})
             good.append({'ref':str(folder),'availability':json.loads((folder/'availability.json').read_text()),
-                         'lineups':json.loads((folder/'lineups.json').read_text())})
+                         'lineups':json.loads((folder/'lineups.json').read_text()),
+                         'module_statuses':{'official_injury_report':module_status}})
         except (OSError,ValueError,KeyError,TypeError) as exc:
             errors.append({'path':str(folder),'error_type':type(exc).__name__})
     return good,errors

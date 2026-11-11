@@ -75,6 +75,7 @@ def source_at_freeze(official,snapshot):
 
 def compile_report(snapshot,official=None,preview=None):
     official=official or {};preview=preview or {}
+    official_state=official.get("retrieval_status") or ("available" if official.get("official_document_retrieved") is True else "pending")
     text=official.get("raw_page_text",[])
     extracted=parse_lines(text)
     all_candidates=extract_official_table(text)+structured_rows(text)
@@ -92,6 +93,8 @@ def compile_report(snapshot,official=None,preview=None):
           "away_team":normalize_team(game["away_team"]),
           "official_pdf_url":official.get("report_url"),
           "official_pdf_sha256":official.get("pdf_sha256"),
+          "official_source_status":official_state,
+          "official_source_error":official.get("retrieval_error_detail") if official_state=="failed" else None,
           "official_raw_status_lines":extracted,
           "official_structured_candidate_rows":[r for r in resolved if r["team"] in (normalize_team(game["home_team"]),normalize_team(game["away_team"]))],
           "official_player_team_status_confirmed":False,
@@ -103,6 +106,8 @@ def compile_report(snapshot,official=None,preview=None):
           "separate_post_snapshot_evidence":eligible and not source_at_freeze(official,snapshot),
           "status":"pending_official_player_reconciliation_and_confirmed_lineups"}
     return {"games":games,"source_document_available":bool(official.get("official_document_retrieved")),
+      "official_source_status":official_state,
+      "official_source_error":official.get("retrieval_error_detail") if official_state=="failed" else None,
       "official_player_rows_resolved":sum(len(v["official_structured_candidate_rows"]) for v in games.values()),"confirmed_starting_fives":0,
       "note":"Later observed evidence is distinct from the frozen forecast; parse candidates are not roster-verified and starting fives remain unconfirmed."}
 

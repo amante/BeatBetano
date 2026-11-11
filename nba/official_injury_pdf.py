@@ -14,6 +14,14 @@ from official_injury_table import extract as extract_official_rows
 from official_injury_table import extract_team_submissions
 
 INDEX="https://official.nba.com/nba-injury-report-2026-27-season/"
+REPORT_RELEASE_UTC=(10,30)
+
+def report_source_state(observed_at):
+    at=observed_at.astimezone(timezone.utc)
+    release=at.replace(hour=REPORT_RELEASE_UTC[0],minute=REPORT_RELEASE_UTC[1],second=0,microsecond=0)
+    return "pending" if at<release else "failed"
+
+
 
 class AnchorReader(HTMLParser):
     def __init__(self):
@@ -137,7 +145,7 @@ def retrieve(snapshot,session=None,report_url=None):
     extracted,structured,parse_mode,text_mode=best
     submissions=extract_team_submissions(extracted)
     return {"source_index":INDEX,"report_url":chosen["url"],
-      "link_label":chosen["label"],"downloaded_at_utc":datetime.now(timezone.utc).isoformat(),
+      "link_label":chosen["label"],"downloaded_at_utc":datetime.now(timezone.utc).isoformat(),"retrieval_status":"available",
       "pdf_sha256":hashlib.sha256(pdf.content).hexdigest(),
       "pages":len(pages),"raw_page_text":extracted,
       "source_report_as_of_utc":report_time.isoformat(),
@@ -162,11 +170,13 @@ def main():
     try:
         report=retrieve(data,report_url=args.report_url or None)
     except (requests.RequestException, ValueError, ImportError) as exc:
+        attempted=datetime.now(timezone.utc)
         report={"source_index":INDEX,"report_url":None,"official_document_retrieved":False,
                 "individual_player_status_verified":False,"raw_page_text":[],
                 "structured_player_rows":[],"team_report_statuses":[],
                 "source_report_as_of_utc":None,
-                "retrieval_status":"unavailable",
+                "retrieval_attempted_at_utc":attempted.isoformat(),
+                "retrieval_status":report_source_state(attempted),
                 "retrieval_error_type":type(exc).__name__,
                 "retrieval_error_detail":str(exc)[:2000],
                 "retrieval_http_status":getattr(getattr(exc,"response",None),"status_code",None),

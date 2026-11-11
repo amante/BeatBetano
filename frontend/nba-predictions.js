@@ -100,10 +100,36 @@
   if(!s.official_injury_status_verified)body.append(el("p","El reporte oficial NBA de lesiones no está verificado en esta captura; los porcentajes no incorporan estas disponibilidades.","nba-source-warning"));
   details.append(body);return details;
  }
- let data=null,error="";
+ let data=null,currentRun=null,error="";
  function render(){
   root.replaceChildren(el("h2","Resultado de la última corrida NBA"));
   if(agenda)agenda.replaceChildren();
+  if(currentRun){
+   const selectedDay=document.getElementById("daily-date").value;
+   const currentRows=currentRun.predictions.filter(p=>day(p.tipoff_utc)===selectedDay);
+   const section=el("section","");section.className="nba-current-run";
+   section.append(el("h3","Predicción base · corrida #"+currentRun.run_id));
+   section.append(el("p","Generada "+local(currentRun.created_at_utc)+" · Los módulos pendientes no bloquean el cálculo base."));
+   if(!currentRows.length)section.append(el("p","La última corrida no contiene partidos para la fecha seleccionada."));
+   const moduleNames={statistical_baseline:"Probabilidad estadística base",official_injury_report:"Informe oficial de lesiones",starting_lineups:"Quintetos titulares",player_matchups:"Cruces de jugadores",rotation_minutes:"Rotación y minutos",availability_impact:"Impacto de disponibilidad",travel_time_zones:"Viajes y zonas horarias"};
+   const statusLabels={included:"Incluido en la predicción",available_not_used:"Datos recibidos; no entran en porcentajes",pending:"Pendiente de publicación o validación",failed:"Falló la consulta"};
+   for(const prediction of currentRows){
+    const card=el("article","");card.className="nba-current-run__game";
+    card.append(el("h4",teamName(prediction.away_team)+" — "+teamName(prediction.home_team)));
+    const probability=prediction.hybrid_p_home;
+    if(typeof probability==="number")card.append(el("p","Base: "+teamName(prediction.away_team)+" "+((1-probability)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(probability*100).toFixed(1)+"%"));
+    const details=el("details","");details.className="nba-module-run-status";
+    details.append(el("summary","Módulos usados y pendientes"));
+    for(const [key,module] of Object.entries(prediction.supporting_modules||{})){
+     const state=module.status||(module.entered_prediction?"included":module.connected?"available_not_used":"pending");
+     const line=el("p",(statusLabels[state]||"Estado sin clasificar")+" · "+(moduleNames[key]||key)+(module.detail?" — "+module.detail:""));
+     line.className="nba-module-run-status__item nba-module-run-status__item--"+state;
+     details.append(line);
+    }
+    card.append(details);section.append(card);
+   }
+   root.append(section);
+  }
   if(!data){
    const label=document.getElementById("daily-label"),source=document.getElementById("feed-message");
    if(label)label.textContent="NBA · Registro prospectivo";
@@ -144,7 +170,14 @@
  }
  document.getElementById("daily-date").addEventListener("change",render);render();
  window.PulsoNbaForward={ready:(async()=>{try{
-  const response=await fetch("./data/nba-forward-latest.json",{cache:"no-store"});
+  const [response,currentResponse]=await Promise.all([
+   fetch("./data/nba-forward-latest.json",{cache:"no-store"}),
+   fetch("./data/nba-predictions-latest.json",{cache:"no-store"}).catch(()=>null)
+  ]);
   if(!response.ok)throw Error("source");const x=await response.json();if(!validate(x))throw Error("contract");data=x;
+  if(currentResponse?.ok){
+   const latest=await currentResponse.json();
+   if(latest?.kind==="nba_pulso_research_publication_v1"&&stamp(latest.created_at_utc)&&Array.isArray(latest.predictions))currentRun=latest;
+  }
  }catch{error="No se pudo cargar un registro NBA válido. No se muestran porcentajes de otra emisión.";}render();})()};
 })();

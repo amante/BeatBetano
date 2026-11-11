@@ -140,18 +140,54 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
     modules = {}
     for fixture in issued["predictions"]:
         gid = str(fixture["game_id"])
+        lineup_data = lineups.get("games", {}).get(gid, {})
+        matchup_data = matchups["games"].get(gid, {})
+        rotation_data = rotation.get("games", {}).get(gid, {})
+        minutes_data = minutes.get("games", {}).get(gid, {})
+        impact_data = injury_impact.get("games", {}).get(gid, {})
+        travel_data = travel.get("games", {}).get(gid, {})
+        injury_state = official.get("retrieval_status") or (
+            "available" if official.get("official_document_retrieved") is True else "pending")
+        if injury_state not in ("available", "pending", "failed"):
+            try:
+                attempt = utc(official["retrieval_attempted_at_utc"])
+                release = attempt.replace(hour=10, minute=30, second=0, microsecond=0, tzinfo=timezone.utc)
+                injury_state = "pending" if attempt < release else "failed"
+            except (KeyError, ValueError, TypeError):
+                injury_state = "pending"
+        lineup_ready = any(team.get("starters") for team in lineup_data.get("teams", {}).values())
+        matchup_ready = any(team.get("reported_starters") for team in matchup_data.get("teams", {}).values())
+        minutes_ready = any(team.get("allocations") is not None for team in minutes_data.get("teams", {}).values())
+        impact_ready = any(team.get("official_reported_players") for team in impact_data.get("teams", {}).values())
+        travel_ready = any(team.get("travel_distance_km") is not None for team in travel_data.get("teams", {}).values())
         modules[gid] = {
+            "statistical_baseline": {"connected": True, "affects_prediction": True,
+                "status": "included", "entered_prediction": True,
+                "detail": "La probabilidad estadística base sí se utilizó."},
+            "official_injury_report": {"connected": True, "affects_prediction": False,
+                "status": "failed" if injury_state == "failed" else "pending" if injury_state == "pending" else "available_not_used",
+                "entered_prediction": False,
+                "detail": official.get("retrieval_error_detail") if injury_state == "failed" else
+                    "Fuente capturada, pero lesiones no cambian los porcentajes actuales." if injury_state == "available" else
+                    "El informe todavía no estaba disponible al capturar."},
+            "starting_lineups": {"connected": True, "affects_prediction": False,
+                "status": "available_not_used" if lineup_ready else "pending",
+                "entered_prediction": False, "data": lineup_data},
             "player_matchups": {"connected": True, "affects_prediction": False,
-                "data": matchups["games"].get(gid, {})},
+                "status": "available_not_used" if matchup_ready else "pending",
+                "entered_prediction": False, "data": matchup_data},
             "rotation_minutes": {"connected": True, "affects_prediction": False,
-                "historical_rotation": rotation.get("games", {}).get(gid, {}),
-                "joint_allocation": minutes.get("games", {}).get(gid, {}),
+                "status": "available_not_used" if minutes_ready else "pending",
+                "entered_prediction": False, "historical_rotation": rotation_data,
+                "joint_allocation": minutes_data,
                 "availability_scenarios": scenarios.get("games", {}).get(gid, {})},
             "availability_impact": {"connected": True, "affects_prediction": False,
-                "conditional_production_scenario": injury_impact.get("games", {}).get(gid, {}),
+                "status": "available_not_used" if impact_ready else "pending",
+                "entered_prediction": False, "conditional_production_scenario": impact_data,
                 "feature_readiness": availability_features.get("games", {}).get(gid, {})},
             "travel_time_zones": {"connected": True, "affects_prediction": False,
-                "data": travel.get("games", {}).get(gid, {})},
+                "status": "available_not_used" if travel_ready else "pending",
+                "entered_prediction": False, "data": travel_data},
         }
     body = {"schema_version": 1, "snapshot_sha256": issued_sha,
         "seed_snapshot_sha256": seed_sha, "created_at_utc": issued["created_at_utc"],
