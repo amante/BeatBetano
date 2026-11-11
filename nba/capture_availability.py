@@ -25,11 +25,19 @@ def observe_rotation(snapshot, history, availability):
     from rotation_efficiency_report import build
 
     teams = {g[side] for g in snapshot['predictions'] for side in ('home_team','away_team')}
-    historical = sorted((g for g in history if stamp(g['tipoff_utc']) < stamp(snapshot['created_at_utc'])),
-                        key=lambda g: stamp(g['tipoff_utc']), reverse=True)
+    prior = [g for g in history if stamp(g['tipoff_utc']) < stamp(snapshot['created_at_utc'])]
+    # Injury-related rotation estimates need to look past a player's recent
+    # absence. Restrict to the latest season to avoid silently treating an old
+    # team role as current, then retain a longer team-game window than the
+    # five-game form sample used by the base rotation report.
+    seasons = [g.get('season') for g in prior if type(g.get('season')) is int]
+    current_season = max(seasons) if seasons else None
+    if current_season is not None:
+        prior = [g for g in prior if g.get('season') == current_season]
+    historical = sorted(prior, key=lambda g: stamp(g['tipoff_utc']), reverse=True)
     selected = {}
     for team in sorted(teams):
-        recent = [g for g in historical if team in (g['home_team'],g['away_team'])][:5]
+        recent = [g for g in historical if team in (g['home_team'],g['away_team'])][:15]
         selected.update((str(g['game_id']),g) for g in recent)
     with ThreadPoolExecutor(max_workers=8) as pool:
         samples = list(pool.map(lambda game: collect([game]), selected.values()))
