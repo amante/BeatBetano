@@ -106,6 +106,18 @@ def _same_start(forecast, result):
         return False
 
 
+def season_label(sport, start_utc):
+    start=utc(start_utc)
+    year=start.year
+    if sport in ("nba","nhl","soccer") and start.month<7:
+        year-=1
+    elif sport=="nfl" and start.month<8:
+        year-=1
+    if sport=="tennis":
+        return str(year)
+    return f"{year}-{str(year+1)[-2:]}"
+
+
 def _bind_result(sport, event, results_by_id, history):
     event_id = str(event["event_id"])
     direct = results_by_id.get((sport, event_id), [])
@@ -278,14 +290,21 @@ def evaluate(archive, history):
         scored[key].append({
             "probabilities": item["forecast"]["probabilities"],
             "outcome": outcome,
+            "season": season_label(sport, event["start_utc"]),
             "model_provenance": item.get("model_provenance"),
         })
     groups = []
     for (sport, version, model_code_sha256, stage), rows in sorted(scored.items()):
         provenance=[row.get("model_provenance") or {} for row in rows]
+        categories=CATEGORIES.get(sport, ("home", "away"))
+        by_season={}
+        for season in sorted({row["season"] for row in rows}):
+            season_rows=[row for row in rows if row["season"]==season]
+            by_season[season]=_score(season_rows,categories)
         groups.append({
             "sport": sport, "model_version": version, "model_code_sha256": model_code_sha256, "stage": stage,
-            "metrics": _score(rows, CATEGORIES.get(sport, ("home", "away"))),
+            "metrics": _score(rows, categories),
+            "by_season": by_season,
             "lineage_coverage":{
                 "scored_forecasts":len(rows),
                 "with_model_code_revision":sum(bool(x.get("model_code_revision")) for x in provenance),
