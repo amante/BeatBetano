@@ -1,0 +1,62 @@
+{
+  "sport": "nba",
+  "as_of_utc": "2026-11-11T03:47:58.321457Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401909970",
+      "start_utc": "2026-11-12T01:00:00Z",
+      "participants": [
+        "MEM",
+        "DEN"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.3680921112150932,
+          "away": 0.6319078887849068
+        },
+        "model_version": "nba-existing-baselines-hybrid-challenger",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "hybrid_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nba-existing-baselines",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": false,
+  "automatic_promotion": false,
+  "source_output_sha256": "d8e3befbd873c4d5a9cc744efed2c0008daf41fa294e5fd8597a8767b82fa883",
+  "source_model_output": {
+    "game_id": "401909970",
+    "tipoff_utc": "2026-11-12T01:00:00Z",
+    "home_team": "MEM",
+    "away_team": "DEN",
+    "elo_p_home": 0.3321524265384339,
+    "challenger_p_home": 0.3680921112150932,
+    "hybrid_p_home": 0.3680921112150932,
+    "hybrid_route": "challenger",
+    "dual_challenger": false,
+    "eligible_for_bet": false,
+    "status": "unvalidated_candidate"
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-11T03:47:58.948106+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "1e141b471223f8bcb659252f27572d905898bac426de202b7c8a4893ac61afdb"
+}
