@@ -29,12 +29,12 @@
  const local=x=>new Date(x).toLocaleString("es-CL",{timeZone:"America/Santiago"});
  const teamNames={ATL:"Atlanta Hawks",BOS:"Boston Celtics",BKN:"Brooklyn Nets",CHA:"Charlotte Hornets",CHI:"Chicago Bulls",CLE:"Cleveland Cavaliers",DAL:"Dallas Mavericks",DEN:"Denver Nuggets",DET:"Detroit Pistons",GS:"Golden State Warriors",GSW:"Golden State Warriors",HOU:"Houston Rockets",IND:"Indiana Pacers",LAC:"LA Clippers",LAL:"Los Angeles Lakers",MEM:"Memphis Grizzlies",MIA:"Miami Heat",MIL:"Milwaukee Bucks",MIN:"Minnesota Timberwolves",NO:"New Orleans Pelicans",NOP:"New Orleans Pelicans",NY:"New York Knicks",NYK:"New York Knicks",OKC:"Oklahoma City Thunder",ORL:"Orlando Magic",PHI:"Philadelphia 76ers",PHX:"Phoenix Suns",POR:"Portland Trail Blazers",SA:"San Antonio Spurs",SAS:"San Antonio Spurs",SAC:"Sacramento Kings",TOR:"Toronto Raptors",UTA:"Utah Jazz",UTAH:"Utah Jazz",WAS:"Washington Wizards",WSH:"Washington Wizards"};
  const teamName=code=>teamNames[code]||code;
- const normalize=value=>String(value||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase().replace(/[^a-z0-9 ]/g," ").trim().replace(/\\s+/g," ");
+ const normalize=value=>Array.from(String(value||"").normalize("NFD")).filter(ch=>ch.codePointAt(0)<768||ch.codePointAt(0)>879).join("").toLowerCase().replaceAll(".","").trim().split(" ").filter(Boolean).join(" ");
  const rosterPlayer=(raw,players)=>{
   const key=normalize(raw),exact=players.find(p=>normalize(p.player)===key);if(exact)return exact;
-  const initial=key.match(/^([a-z])\\s+(.+)$/);if(!initial)return null;
-  const surname=initial[2].split(" ").at(-1);
-  const matches=players.filter(p=>normalize(p.player).split(" ").at(-1)===surname&&normalize(p.player).startsWith(initial[1]));
+  const parts=key.split(" ");if(parts.length<2||parts[0].length!==1)return null;
+  const initial=parts[0],surname=parts[parts.length-1];
+  const matches=players.filter(p=>{const name=normalize(p.player).split(" ");return name[name.length-1]===surname&&name[0]?.startsWith(initial)});
   return matches.length===1?matches[0]:null;
  };
  const statusLabels={out:"Baja reportada",questionable:"En duda",doubtful:"Dudoso",probable:"Probable",available:"Disponible según fuente",unknown:"Sin estado reportado"};
