@@ -47,10 +47,13 @@ function appendTeam(row,raw,side,league,providedLogo){
  team.append(mark,make("span",info.name,"daily-team-name"));row.append(team);return info;
 }
 function matchState(g,options={}){
- if(options.stateText)return options.stateText;
- const status=String(g.status||"").toUpperCase();
- const hasScore=g.away_score!=null&&g.home_score!=null;
- if(hasScore)return String(g.away_score)+" : "+String(g.home_score)+(g.completed?" · Final":["LIVE","CRIT","STATUS_IN_PROGRESS"].includes(status)?" · En juego":"");
+ const status=String(g.status||"").toUpperCase(),hasScore=g.away_score!=null&&g.home_score!=null;
+ const supplied=options.stateText||"";
+ if(hasScore){
+  const label=g.completed||/final/i.test(supplied)?"Final":/en juego|intermedio|entretiempo/i.test(supplied)?"En juego":"";
+  return String(g.away_score)+" : "+String(g.home_score)+(label?" · "+label:"");
+ }
+ if(supplied)return supplied;
  if(g.completed||["FINAL","OFF","STATUS_FINAL"].includes(status))return "Finalizado";
  return ({FUT:"Por comenzar",PRE:"Por comenzar",SCHEDULED:"Por comenzar",STATUS_SCHEDULED:"Por comenzar",LIVE:"En juego",CRIT:"En juego",STATUS_IN_PROGRESS:"En juego",STATUS_HALFTIME:"Entretiempo",STATUS_POSTPONED:"Aplazado",POSTPONED:"Aplazado",STATUS_CANCELED:"Cancelado",STATUS_DELAYED:"Demorado"}[status]||g.status||"Programado");
 }
