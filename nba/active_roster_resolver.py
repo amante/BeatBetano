@@ -47,14 +47,16 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
     normalized={"out" if r["status"] in OUT else "available" if r["status"] in IN else "questionable" for r in claims}
     status=next(iter(normalized)) if len(normalized)==1 else "unknown"
     if status=="unknown" or status=="questionable":unresolved.append(pid)
+    status_sources=[]
+    for r in claims:
+     source={"url":r["source_url"],"status":r["status"],
+             "observed_at_utc":r["observed_at_utc"]}
+     for key in ("reported_at_utc","confidence","identity_match","official_row"):
+      if r.get(key) is not None:source[key]=r[key]
+     status_sources.append(source)
     players.append({"player_id":pid,"player":name,"status":status,
       "starter_projected":name in starter_names,
-      "status_sources":[{"url":r["source_url"],"status":r["status"],
-        "observed_at_utc":r["observed_at_utc"],
-        "reported_at_utc":r.get("reported_at_utc"),
-        "confidence":r.get("confidence"),
-        "identity_match":r.get("identity_match"),
-        "official_row":r.get("official_row")} for r in claims],
+      "status_sources":status_sources,
       "max_minutes":member.get("max_minutes",48)})
    ready=good and not unresolved and all(p["status"] in ("available","out") for p in players)
    teams[team]={"roster_complete":bool(good),"roster_source":evidence.get("source_url") if good else None,
@@ -64,17 +66,20 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
     "availability_source_verified":bool(ready),
     "status":"resolved" if ready else "unresolved_statuses" if good else "roster_unverified"}
   output[gid]={"teams":teams}
- return {"snapshot_sha256":digest,"games":output,
-  "official_report_evidence":{
+ result={"snapshot_sha256":digest,"games":output,
+  "no_odds_input":True,"probabilities_adjusted":False,
+  "note":"Requires explicit full roster feed and individually sourced statuses. Absence of injury mention is NOT active confirmation."}
+ if any(key in status_feed for key in ("official_report_retrieved","official_report_as_of_utc",
+                                        "official_structured_candidate_rows","official_rows_by_fixture")):
+  result["official_report_evidence"]={
    "retrieved":status_feed.get("official_report_retrieved") is True,
    "as_of_utc":status_feed.get("official_report_as_of_utc"),
    "candidate_rows":status_feed.get("official_structured_candidate_rows",0),
    "rows_for_fixtures":status_feed.get("official_rows_for_fixtures",0),
    "matched_claims":status_feed.get("official_matched_claims",0),
    "unmatched_claims":status_feed.get("official_unmatched_claims",[]),
-   "rows_by_fixture":status_feed.get("official_rows_by_fixture",[])},
-  "no_odds_input":True,"probabilities_adjusted":False,
-  "note":"Requires explicit full roster feed and individually sourced statuses. Absence of injury mention is NOT active confirmation."}
+   "rows_by_fixture":status_feed.get("official_rows_by_fixture",[])}
+ return result
 
 def markdown(result):
  lines=["## NBA — Plantilla actual y disponibilidad por partido","",
