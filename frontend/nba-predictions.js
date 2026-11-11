@@ -19,9 +19,9 @@
  if(typeof module!=="undefined")module.exports={validate,forDay,stale};
  if(typeof window==="undefined"||typeof document==="undefined")return;
  if(new URLSearchParams(location.search).get("sport")!=="nba")return;
- const root=document.createElement("section");root.className="panel";
+ const root=document.getElementById("nba-results")||document.createElement("section");root.className="panel nba-results-panel";root.hidden=false;
  const agenda=document.getElementById("daily-results");
- if(agenda)agenda.replaceChildren(root);else document.querySelector("main").prepend(root);
+ if(!root.isConnected){const runner=document.getElementById("nba-runner");if(runner)runner.after(root);else document.querySelector("main").prepend(root);}
  for(const selector of ["#daily-stats",".daily-yesterday",".simulation-panel","#nhl-five-market","#nhl-joint-model","#pulso-nhl-research"]){
   const panel=document.querySelector(selector);if(panel){panel.hidden=true;panel.style.display="none";}
  }
@@ -102,7 +102,8 @@
  }
  let data=null,error="";
  function render(){
-  root.replaceChildren(el("h2","Pronósticos NBA"));
+  root.replaceChildren(el("h2","Resultado de la última corrida NBA"));
+  if(agenda)agenda.replaceChildren();
   if(!data){
    const label=document.getElementById("daily-label"),source=document.getElementById("feed-message");
    if(label)label.textContent="NBA · Registro prospectivo";
@@ -117,12 +118,16 @@
   root.append(el("p","Última captura: "+local(data.last_source_capture_utc)+(stale(data)?" · Datos desactualizados; revisar la fuente.":"")));
   if(data.source_error_count)root.append(el("p","El registro conserva fallos de fuente. La cobertura requiere revisión."));
   if(data.sporting_evidence_errors.length)root.append(el("p","Hay evidencia deportiva que no pudo verificarse."));
-  if(!rows.length)root.append(el("p",data.calendar_date_coverage_chile[selected]?"La fuente no reporta partidos dentro de esta cohorte para la fecha elegida.":"La fecha elegida todavía no tiene cobertura suficiente."));
+  if(!rows.length){const empty=data.calendar_date_coverage_chile[selected]?"La fuente no reporta partidos dentro de esta cohorte para la fecha elegida.":"La fecha elegida todavía no tiene cobertura suficiente.";root.append(el("p",empty));if(agenda)agenda.append(el("p",empty));}
   for(const g of rows){
    const card=el("article","");card.className="nba-forward-game";
    const state=g.outcome?"Final":g.source_state==="in"?"En juego al último corte":g.source_status==="STATUS_FINAL"?"Final · cierre emparejado pendiente":g.source_status==="STATUS_POSTPONED"?"Aplazado":g.source_status==="STATUS_CANCELED"?"Cancelado":g.status.includes("review")?"Requiere revisión":Date.now()>=Date.parse(g.tipoff_utc)?"Sin actualización posterior al inicio":"Por comenzar";
-   const match=window.PulsoCalendar?.makeMatchRow({sport:"nba",id:g.game_id,away:g.away_team,home:g.home_team,start_utc:g.tipoff_utc,status:g.source_status||g.status,completed:Boolean(g.outcome),away_score:g.outcome?.away_points,home_score:g.outcome?.home_points},{sport:"nba",stateText:state});
-   if(match)card.append(match);else card.append(el("h3",teamName(g.away_team)+" — "+teamName(g.home_team)),el("p",local(g.tipoff_utc)+" · "+state));
+   const matchData={sport:"nba",id:g.game_id,away:g.away_team,home:g.home_team,start_utc:g.tipoff_utc,status:g.source_status||g.status,completed:Boolean(g.outcome),away_score:g.outcome?.away_points,home_score:g.outcome?.home_points};
+   const calendarRow=window.PulsoCalendar?.makeMatchRow(matchData,{sport:"nba",stateText:state});
+   if(agenda)agenda.append(calendarRow||el("p",teamName(g.away_team)+" — "+teamName(g.home_team)+" · "+local(g.tipoff_utc)+" · "+state));
+   card.append(el("h3",teamName(g.away_team)+" — "+teamName(g.home_team)));
+   card.append(el("p",local(g.tipoff_utc)+" · "+state));
+   if(g.outcome)card.append(el("p","Resultado final: "+g.outcome.away_points+" — "+g.outcome.home_points));
    const p=g.first_prediction;
    if(p&&!g.issues.length){
     card.append(el("p","Emisión pregame original: "+local(p.prediction_as_of_utc)));

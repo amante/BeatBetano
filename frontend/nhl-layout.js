@@ -18,7 +18,7 @@ if(new URLSearchParams(location.search).get("sport")==="nhl"){
  });
  controls.prepend(previous);controls.append(next);toolbar.append(dateLabel,controls);intro.append(toolbar);
  const summary=make("div","nhl-summary");summary.id="nhl-day-summary";summary.setAttribute("role","status");intro.append(summary);
- const grid=make("div","nhl-workspace-grid");
+ 
  const predictions=byId("nhl-five-market");predictions.querySelector("h3").textContent="Pronósticos de la jornada";
  const run=document.querySelector(".simulation-panel");run.id="nhl-run-panel";
  run.querySelector(".eyebrow").textContent="ACTUALIZAR ANÁLISIS";
@@ -28,7 +28,7 @@ if(new URLSearchParams(location.search).get("sport")==="nhl"){
  run.querySelector("fieldset").hidden=true;
  byId("run-simulation").textContent="Ejecutar jornada NHL";
  run.append(make("p","nhl-run-note","Se procesa la jornada completa. Solo se generan nuevos pronósticos para encuentros que aún no comienzan."));
- grid.append(predictions,run);
+ 
  const agenda=byId("daily-panel");agenda.querySelector(".eyebrow").textContent="CALENDARIO · HORA DE CHILE";
  const legacyHistory=make("div");legacyHistory.hidden=true;legacyHistory.append(byId("daily-stats"),document.querySelector(".daily-yesterday"));
  const history=disclosure("Historial y resultados","panel nhl-disclosure",legacyHistory);history.id="nhl-history";
@@ -37,7 +37,7 @@ if(new URLSearchParams(location.search).get("sport")==="nhl"){
  agenda.append(sources);
  const research=byId("pulso-nhl-research");research.querySelector("h3").textContent="Comparación de modelos";
  const method=disclosure("Metodología y seguimiento experimental","panel nhl-disclosure",make("p",null,"Probabilidades experimentales; no son recomendaciones de apuesta. El modelo principal usa resultados históricos y no incorpora cuotas ni probabilidades condicionadas por arquero."),research);method.id="nhl-method";
- main.prepend(intro,grid);main.append(agenda,history,method);
+ main.prepend(intro,agenda,run,predictions);main.append(history,method);
  for(const button of document.querySelectorAll("[data-nav]")){
   const target={overview:"nhl-overview",games:"nhl-five-market",calibration:"nhl-history"}[button.dataset.nav];
   if(button.dataset.nav==="games")button.lastChild.textContent=" Jornada y pronósticos";
