@@ -37,9 +37,10 @@ def assess(evidence):
     scope = evidence.get("scope")
     if not isinstance(scope, dict) or any(
         not isinstance(scope.get(key), str) or not scope[key].strip()
-        for key in ("sport", "market", "model_version")
+        for key in ("sport", "market", "model_version", "model_code_sha256")
     ):
-        raise ValueError("Sport, market, and model version are required")
+        raise ValueError("Sport, market, model version, and exact model code hash are required")
+    _sha(scope.get("model_code_sha256"), "scope.model_code_sha256")
 
     protocol = evidence.get("protocol")
     if not isinstance(protocol, dict):
@@ -65,6 +66,7 @@ def assess(evidence):
         raise ValueError("Model and data lineage is required")
     _sha(lineage.get("forecast_archive_sha256"), "forecast_archive_sha256")
     _sha(lineage.get("training_data_manifest_sha256"), "training_data_manifest_sha256")
+    _sha(lineage.get("model_code_sha256"), "model_code_sha256")
     if not isinstance(lineage.get("model_code_revision"), str) or not HEX_REVISION.fullmatch(lineage["model_code_revision"]):
         raise ValueError("A Git model-code revision is required")
 
