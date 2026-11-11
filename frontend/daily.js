@@ -9,6 +9,70 @@ document.querySelectorAll('[data-sport-only]').forEach(panel=>{
  panel.hidden=!visible;panel.style.display=visible?"":"none";
 });
 const title=SPORTS[sport];
+const NHL_TEAMS={ANA:"Anaheim Ducks",BOS:"Boston Bruins",BUF:"Buffalo Sabres",CAR:"Carolina Hurricanes",CBJ:"Columbus Blue Jackets",CGY:"Calgary Flames",CHI:"Chicago Blackhawks",COL:"Colorado Avalanche",DAL:"Dallas Stars",DET:"Detroit Red Wings",EDM:"Edmonton Oilers",FLA:"Florida Panthers",LAK:"Los Angeles Kings",MIN:"Minnesota Wild",MTL:"Montreal Canadiens",NJD:"New Jersey Devils",NSH:"Nashville Predators",NYI:"New York Islanders",NYR:"New York Rangers",OTT:"Ottawa Senators",PHI:"Philadelphia Flyers",PIT:"Pittsburgh Penguins",SEA:"Seattle Kraken",SJS:"San Jose Sharks",STL:"St. Louis Blues",TBL:"Tampa Bay Lightning",TOR:"Toronto Maple Leafs",UTA:"Utah Mammoth",VAN:"Vancouver Canucks",VGK:"Vegas Golden Knights",WPG:"Winnipeg Jets",WSH:"Washington Capitals"};
+const NBA_TEAMS={ATL:{name:"Atlanta Hawks",id:1610612737},BOS:{name:"Boston Celtics",id:1610612738},BKN:{name:"Brooklyn Nets",id:1610612751},CHA:{name:"Charlotte Hornets",id:1610612766},CHI:{name:"Chicago Bulls",id:1610612741},CLE:{name:"Cleveland Cavaliers",id:1610612739},DAL:{name:"Dallas Mavericks",id:1610612742},DEN:{name:"Denver Nuggets",id:1610612743},DET:{name:"Detroit Pistons",id:1610612765},GSW:{name:"Golden State Warriors",id:1610612744},HOU:{name:"Houston Rockets",id:1610612745},IND:{name:"Indiana Pacers",id:1610612754},LAC:{name:"LA Clippers",id:1610612746},LAL:{name:"Los Angeles Lakers",id:1610612747},MEM:{name:"Memphis Grizzlies",id:1610612763},MIA:{name:"Miami Heat",id:1610612748},MIL:{name:"Milwaukee Bucks",id:1610612749},MIN:{name:"Minnesota Timberwolves",id:1610612750},NOP:{name:"New Orleans Pelicans",id:1610612740},NYK:{name:"New York Knicks",id:1610612752},OKC:{name:"Oklahoma City Thunder",id:1610612760},ORL:{name:"Orlando Magic",id:1610612753},PHI:{name:"Philadelphia 76ers",id:1610612755},PHX:{name:"Phoenix Suns",id:1610612756},POR:{name:"Portland Trail Blazers",id:1610612757},SAC:{name:"Sacramento Kings",id:1610612758},SAS:{name:"San Antonio Spurs",id:1610612759},TOR:{name:"Toronto Raptors",id:1610612761},UTA:{name:"Utah Jazz",id:1610612762},WAS:{name:"Washington Wizards",id:1610612764}};
+const NBA_ALIASES={NY:"NYK",NO:"NOP",SA:"SAS",UTAH:"UTA",WSH:"WAS",GS:"GSW"};
+const NFL_TEAMS={ARI:"Arizona Cardinals",ATL:"Atlanta Falcons",BAL:"Baltimore Ravens",BUF:"Buffalo Bills",CAR:"Carolina Panthers",CHI:"Chicago Bears",CIN:"Cincinnati Bengals",CLE:"Cleveland Browns",DAL:"Dallas Cowboys",DEN:"Denver Broncos",DET:"Detroit Lions",GB:"Green Bay Packers",HOU:"Houston Texans",IND:"Indianapolis Colts",JAX:"Jacksonville Jaguars",KC:"Kansas City Chiefs",LV:"Las Vegas Raiders",LAC:"Los Angeles Chargers",LAR:"Los Angeles Rams",MIA:"Miami Dolphins",MIN:"Minnesota Vikings",NE:"New England Patriots",NO:"New Orleans Saints",NYG:"New York Giants",NYJ:"New York Jets",PHI:"Philadelphia Eagles",PIT:"Pittsburgh Steelers",SF:"San Francisco 49ers",SEA:"Seattle Seahawks",TB:"Tampa Bay Buccaneers",TEN:"Tennessee Titans",WSH:"Washington Commanders"};
+const teamKey=value=>Array.from(String(value||"").normalize("NFD")).filter(ch=>ch.codePointAt(0)<768||ch.codePointAt(0)>879).join("").toLowerCase().replaceAll(".","").trim().split(" ").filter(Boolean).join(" ");
+function teamInfo(raw,league=sport){
+ const value=String(raw||""),code=value.toUpperCase();
+ if(league==="nhl"){
+  const found=NHL_TEAMS[code]?code:Object.keys(NHL_TEAMS).find(k=>teamKey(NHL_TEAMS[k])===teamKey(value));
+  return found?{code:found,name:NHL_TEAMS[found],logo:"https://assets.nhle.com/logos/nhl/svg/"+found+"_light.svg"}:{code:"",name:value,logo:""};
+ }
+ if(league==="nba"){
+  const resolved=NBA_ALIASES[code]||code;
+  let found=NBA_TEAMS[resolved]?resolved:Object.keys(NBA_TEAMS).find(k=>teamKey(NBA_TEAMS[k].name)===teamKey(value));
+  if(!found)found=Object.keys(NBA_TEAMS).find(k=>teamKey(NBA_TEAMS[k].name.replace("LA ","Los Angeles "))===teamKey(value));
+  return found?{code:found,name:NBA_TEAMS[found].name,logo:"https://cdn.nba.com/logos/nba/"+NBA_TEAMS[found].id+"/global/L/logo.svg"}:{code:"",name:value,logo:""};
+ }
+ if(league==="nfl"){
+  let found=NFL_TEAMS[code]?code:Object.keys(NFL_TEAMS).find(k=>teamKey(NFL_TEAMS[k])===teamKey(value));
+  if(!found)found=Object.keys(NFL_TEAMS).find(k=>teamKey(NFL_TEAMS[k])===teamKey(value.replace("Las Vegas","Las Vegas")));
+  return found?{code:found,name:NFL_TEAMS[found],logo:"https://a.espncdn.com/i/teamlogos/nfl/500/"+found.toLowerCase()+".png"}:{code:"",name:value,logo:""};
+ }
+ return {code:"",name:value,logo:""};
+}
+function appendTeam(row,raw,side,league,providedLogo){
+ const info=teamInfo(raw,league),team=make("span",undefined,"daily-team daily-team-"+side);
+ team.setAttribute?.("aria-label",info.name);
+ const mark=make("span",undefined,"daily-team-logo");
+ const initials=info.name.split(" ").filter(Boolean).map(x=>x[0]).slice(0,2).join("").toUpperCase();
+ mark.append(make("span",initials,"daily-team-initials"));
+ const source=providedLogo||info.logo;
+ if(source&&/^https:\/\//i.test(source)){
+  const img=document.createElement("img");img.src=source;img.alt="";img.loading="lazy";img.decoding="async";
+  img.addEventListener?.("error",()=>img.remove(),{once:true});mark.append(img);
+ }
+ team.append(mark,make("span",info.name,"daily-team-name"));row.append(team);return info;
+}
+function matchState(g,options={}){
+ const status=String(g.status||"").toUpperCase(),hasScore=g.away_score!=null&&g.home_score!=null;
+ const supplied=options.stateText||"";
+ if(hasScore){
+  const label=g.completed||/final/i.test(supplied)?"Final":/en juego|intermedio|entretiempo/i.test(supplied)?"En juego":"";
+  return String(g.away_score)+" : "+String(g.home_score)+(label?" · "+label:"");
+ }
+ if(supplied)return supplied;
+ if(g.completed||["FINAL","OFF","STATUS_FINAL"].includes(status))return "Finalizado";
+ return ({FUT:"Por comenzar",PRE:"Por comenzar",SCHEDULED:"Por comenzar",STATUS_SCHEDULED:"Por comenzar",LIVE:"En juego",CRIT:"En juego",STATUS_IN_PROGRESS:"En juego",STATUS_HALFTIME:"Entretiempo",STATUS_POSTPONED:"Aplazado",POSTPONED:"Aplazado",STATUS_CANCELED:"Cancelado",STATUS_DELAYED:"Demorado"}[status]||g.status||"Programado");
+}
+function makeMatchRow(g,options={}){
+ const league=options.sport||g.sport||sport,row=make("article",undefined,"daily-match daily-match-card");
+ if(row.dataset)row.dataset.sport=league;
+ const time=Number.isFinite(Date.parse(g.start_utc))?new Intl.DateTimeFormat("es-CL",{timeZone:"America/Santiago",hour:"2-digit",minute:"2-digit"}).format(new Date(g.start_utc)):"Hora no disponible";
+ row.append(make("time",time,"daily-time"));
+ const away=appendTeam(row,g.away,"away",league,g.away_logo||g.awayLogo||g.away_badge);
+ row.append(make("span","—","daily-match-versus"));
+ const home=appendTeam(row,g.home,"home",league,g.home_logo||g.homeLogo||g.home_badge);
+ const state=make("span",matchState(g,options),"daily-state");
+ const text=state.textContent.toLowerCase();if(text.includes("en juego")||text.includes("entretiempo"))state.classList?.add("is-live");if(text.includes("final")||g.completed)state.classList?.add("is-final");
+ row.append(state);
+ if(league==="nhl"&&g.id!=null&&row.dataset){row.dataset.nhlId=String(g.id).replace(/^nhl[-_:]/,"");row.dataset.home=home.code||String(g.home);row.dataset.away=away.code||String(g.away);}
+ else if(league!=="nhl"&&text.includes("en juego")&&g.home_score==null&&g.away_score==null)row.append(make("small","Marcador en vivo no disponible; se conserva la última información del calendario.","live-note"));
+ return row;
+}
+if(typeof window!=="undefined")window.PulsoCalendar={makeMatchRow,teamInfo,matchState};
 const localDay=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const previousDay=d=>{const x=new Date(d+"T12:00:00Z");x.setUTCDate(x.getUTCDate()-1);return x.toISOString().slice(0,10);};
 const dayOf=utc=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(utc));
@@ -70,11 +134,9 @@ function renderGames(){
   grouped.get(key).push(g);
  }
  for(const [group,items] of grouped){
-  const sec=make("section",undefined,"daily-group");sec.append(make("h3",group));
+  const sec=make("section",undefined,"daily-group");if(group!=="Partidos")sec.append(make("h3",group));
   for(const g of items){
-   const row=make("div",undefined,"daily-match");if(sport==="nhl"){row.dataset.nhlId=String(g.id).replace(/^nhl[-_:]/,"");row.dataset.home=g.home;row.dataset.away=g.away;}
-   row.append(make("span",new Date(g.start_utc).toLocaleTimeString("es-CL",{timeZone:"America/Santiago",hour:"2-digit",minute:"2-digit"}),"daily-time"),
-     make("strong",g.away+" — "+g.home),make("span",g.completed?(g.away_score!=null&&g.home_score!=null?g.away_score+" : "+g.home_score:"Finalizado"):({FUT:"Por comenzar",PRE:"Por comenzar",LIVE:"En juego",CRIT:"En juego",STATUS_SCHEDULED:"Por comenzar",STATUS_IN_PROGRESS:"En juego"}[g.status]||g.status||"Programado"),"daily-state"));
+   const row=makeMatchRow(g);
    sec.append(row);
   }root.append(sec);
  }

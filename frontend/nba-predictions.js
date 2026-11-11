@@ -119,16 +119,16 @@
   if(data.sporting_evidence_errors.length)root.append(el("p","Hay evidencia deportiva que no pudo verificarse."));
   if(!rows.length)root.append(el("p",data.calendar_date_coverage_chile[selected]?"La fuente no reporta partidos dentro de esta cohorte para la fecha elegida.":"La fecha elegida todavía no tiene cobertura suficiente."));
   for(const g of rows){
-   const card=el("article","");card.append(el("h3",teamName(g.away_team)+" — "+teamName(g.home_team)));
+   const card=el("article","");card.className="nba-forward-game";
    const state=g.outcome?"Final":g.source_state==="in"?"En juego al último corte":g.source_status==="STATUS_FINAL"?"Final · cierre emparejado pendiente":g.source_status==="STATUS_POSTPONED"?"Aplazado":g.source_status==="STATUS_CANCELED"?"Cancelado":g.status.includes("review")?"Requiere revisión":Date.now()>=Date.parse(g.tipoff_utc)?"Sin actualización posterior al inicio":"Por comenzar";
-   card.append(el("p",local(g.tipoff_utc)+" · "+state));
+   const match=window.PulsoCalendar?.makeMatchRow({sport:"nba",id:g.game_id,away:g.away_team,home:g.home_team,start_utc:g.tipoff_utc,status:g.source_status||g.status,completed:Boolean(g.outcome),away_score:g.outcome?.away_points,home_score:g.outcome?.home_points},{sport:"nba",stateText:state});
+   if(match)card.append(match);else card.append(el("h3",teamName(g.away_team)+" — "+teamName(g.home_team)),el("p",local(g.tipoff_utc)+" · "+state));
    const p=g.first_prediction;
    if(p&&!g.issues.length){
     card.append(el("p","Emisión pregame original: "+local(p.prediction_as_of_utc)));
     for(const [name,key] of [["Elo","elo_p_home"],["Challenger","challenger_p_home"]])card.append(el("p",name+": "+teamName(g.away_team)+" "+((1-p[key])*100).toFixed(1)+"% · "+teamName(g.home_team)+" "+(p[key]*100).toFixed(1)+"%"));
    }else card.append(el("p",g.issues.length?"PASS · La emisión original requiere revisión por cambios de la ficha.":"PASS · No hay una pareja de pronósticos pregame válida."));
    if(g.issues.length)card.append(el("p","El partido presenta cambios o conflictos de fuente; requiere revisión."));
-   if(g.outcome)card.append(el("p","Marcador final: "+teamName(g.away_team)+" "+g.outcome.away_points+" — "+teamName(g.home_team)+" "+g.outcome.home_points));
    for(const team of [g.away_team,g.home_team]){
     const s=g.sporting[team];
     if(!s){card.append(el("p",teamName(team)+": disponibilidad pregame sin cobertura.","nba-coverage-empty"));continue;}
