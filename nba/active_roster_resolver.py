@@ -51,8 +51,12 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
     for r in claims:
      source={"url":r["source_url"],"status":r["status"],
              "observed_at_utc":r["observed_at_utc"]}
-     for key in ("reported_at_utc","confidence","identity_match","official_row"):
-      if r.get(key) is not None:source[key]=r[key]
+     # Keep the archived availability schema stable for existing feeds.
+     # Rich provenance is required only for official NBA PDF claims and is
+     # consumed by the research impact sidecar.
+     if r.get("confidence")=="official_nba_injury_report_unique_roster_match":
+      for key in ("reported_at_utc","confidence","identity_match","official_row"):
+       if r.get(key) is not None:source[key]=r[key]
      status_sources.append(source)
     players.append({"player_id":pid,"player":name,"status":status,
       "starter_projected":name in starter_names,
