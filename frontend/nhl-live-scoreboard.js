@@ -21,6 +21,7 @@
      if(date!==document.getElementById("daily-date")?.value||!row.isConnected)return;
      const state=game.gameState,live=["LIVE","CRIT"].includes(state),final=["OFF","FINAL"].includes(state);const period=game.periodDescriptor;
      const stage=period?.periodType==="OT"?"Prórroga":period?.periodType==="SO"?"Penales":period?.number?period.number+".º período":"Período no informado";
+     stateNode.classList.toggle("is-live",live);stateNode.classList.toggle("is-final",final);
      stateNode.textContent=(live||final?game.awayTeam.score+" : "+game.homeTeam.score+" · ":"")+(final?"Final":live?(game.clock?.inIntermission?"Intermedio · ":"")+stage+(game.clock?.timeRemaining?" · "+game.clock.timeRemaining:""):"Por comenzar");
      const goals=game.summary?.scoring||[];const scorers=goals.flatMap(p=>(p.goals||[]).map(g=>{const name=g.name?.default||[g.firstName?.default,g.lastName?.default].filter(Boolean).join(" ");return name?name+" ("+(g.teamAbbrev?.default||g.teamAbbrev||"")+", "+(g.timeInPeriod||"")+")":null;})).filter(Boolean);
      note.textContent=(scorers.length?"Goles: "+scorers.join(" · ")+". ":live?"Goleadores aún no informados. ":"")+"Actualizado "+new Date().toLocaleTimeString("es-CL",{timeZone:"America/Santiago"});
