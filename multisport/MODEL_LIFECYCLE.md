@@ -132,3 +132,14 @@ NFL and NHL commands accept the same `--forecast-archive` option. Reuse the arch
 on reruns and keep raw NBA baseline filenames new, because its existing raw-source
 snapshots remain create-only. No market odds, validation certifications or sporting
 selection gates are changed by running these publication commands.
+
+
+## Módulos: creado, conectado y con efecto en probabilidades
+
+PULSO mantiene un estado independiente por módulo y deporte:
+
+1. **Creado:** existe una implementación ejecutable; una mención en la hoja de ruta no basta.
+2. **Conectado:** la ejecución diaria incorpora su salida al paquete del pronóstico o a uno de sus mercados publicados. Recopilarla en un archivo aislado no basta.
+3. **Afecta porcentajes:** la salida entra en la fórmula de su mercado y puede cambiar sus probabilidades.
+
+Solo los módulos con las tres etapas pasan a seguimiento y calibración. Eso no significa que estén certificados. La tabla visible en PULSO etiqueta el alcance de candidatos experimentales por separado del pronóstico final. El inventario transversal está en `frontend/data/model-modules.json` y se valida en CI.
