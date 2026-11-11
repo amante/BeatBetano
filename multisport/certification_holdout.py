@@ -47,7 +47,8 @@ def capture(archive, policy, evaluation=None):
         if emitted < frozen_at:
             rejected["emitted_before_protocol_freeze"] += 1
             continue
-        if emitted >= start or _utc(item.get("model_provenance", {}).get("predictor_input_as_of_utc", item["emitted_at_utc"])) >= start:
+        provenance=item.get("model_provenance") or {}
+        if emitted >= start or _utc(provenance.get("predictor_input_as_of_utc", item["emitted_at_utc"])) >= start:
             # The snapshot verifier already enforces pregame emission. This second check
             # catches a declared predictor input observed after the fixture began.
             rejected["not_point_in_time"] += 1
@@ -77,6 +78,9 @@ def capture(archive, policy, evaluation=None):
             for season, metrics in group.get("by_season", {}).items()
         }
 
+    exclusions=Counter(chain_issues)
+    exclusions.update(forecast_issues)
+    exclusions.update(rejected)
     models = []
     for (sport, version, code_hash), row in sorted(grouped.items()):
         by_season = {}
@@ -114,7 +118,7 @@ def capture(archive, policy, evaluation=None):
             "history_sha256": digest((evaluation or {}).get("inputs", {})),
         },
         "models": models,
-        "rejected_counts": dict(sorted({**dict(chain_issues), **dict(forecast_issues), **dict(rejected)}.items())),
+        "rejected_counts": dict(sorted(exclusions.items())),
         "certified": False,
         "automatic_promotion_allowed": False,
         "note": "Counts reflect frozen forecast coverage. A mature cohort is only sample-size readiness; it is not an independent review or certification.",
