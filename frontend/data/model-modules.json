@@ -26,20 +26,20 @@
           "name": "Informe oficial de lesiones",
           "created": true,
           "connected": true,
-          "affects_prediction": false,
+          "affects_prediction": true,
           "evidence": "nba/official_injury_pdf.py; nba/injury_lineup_joint.py; .github/workflows/nba-auto-history.yml",
-          "scope": "El reporte oficial se extrae y se muestra; el porcentaje final integrado sigue nulo.",
-          "note": "Falta convertir ausencias y reemplazos en un ajuste cuantificado y validado."
+          "scope": "Las bajas OUT con identidad oficial y única modifican el porcentaje candidato cuando hay reparto de minutos y producción histórica suficientes. El ajuste queda visible por partido y no está calibrado.",
+          "note": "Afecta el candidato NBA experimental solo con evidencia oficial utilizable. Dudas y estados desconocidos no se tratan como ausencias."
         },
         {
           "id": "rotation_minutes",
           "name": "Rotación y distribución de minutos",
           "created": true,
           "connected": true,
-          "affects_prediction": false,
+          "affects_prediction": true,
           "evidence": "nba/rotation_efficiency_report.py; nba/joint_minutes_report.py; nba/availability_scenarios.py",
-          "scope": "La rotación histórica, la asignación conjunta disponible y escenarios de disponibilidad viajan en el contexto diario consumido por el informe NBA. No cambian porcentajes.",
-          "note": "Conectado al flujo diario; cobertura y minutos confirmados varían según la evidencia disponible. Afecta la predicción: no."
+          "scope": "La redistribución de minutos por bajas oficiales entra en el cálculo de producción de reemplazos y cambia el porcentaje candidato cuando hay historia suficiente.",
+          "note": "Afecta el candidato experimental mediante los minutos reasignados; roles y minutos no confirmados conservan sus límites explícitos."
         },
         {
           "id": "player_matchups",
@@ -76,10 +76,10 @@
           "name": "Impacto cuantificado de disponibilidad",
           "created": true,
           "connected": true,
-          "affects_prediction": false,
+          "affects_prediction": true,
           "evidence": "nba/availability_impact.py; nba/integrated_model.py",
-          "scope": "El informe diario transporta impactos condicionales cuantificados cuando existen minutos y lesiones resueltos, junto con auditoría estricta. No cambia porcentajes.",
-          "note": "Conectado al flujo diario; estados desconocidos no se convierten en ausencias y escenarios incompletos se conservan como bloqueados. Afecta la predicción: no."
+          "scope": "La pérdida histórica de producción de bajas OUT y la ganancia estimada de los reemplazos alimentan un ajuste logístico limitado sobre la probabilidad base.",
+          "note": "Afecta la salida experimental del candidato NBA cuando todos los controles pasan. No equivale a calibración ni certificación."
         },
         {
           "id": "travel",
