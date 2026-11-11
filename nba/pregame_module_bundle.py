@@ -140,17 +140,34 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
     modules = {}
     for fixture in issued["predictions"]:
         gid = str(fixture["game_id"])
+        injury_status = official.get("retrieval_status") or ("available" if official.get("official_document_retrieved") is True else "pending")
         modules[gid] = {
+            "official_injury_report": {"connected": True, "affects_prediction": False,
+                "status": injury_status, "entered_prediction": False,
+                "detail": official.get("retrieval_error_detail") if injury_status == "failed" else
+                    "Capturado, pero las lesiones no modifican los porcentajes actuales." if injury_status == "available" else
+                    "El informe aún no estaba disponible al momento de la captura."},
+            "starting_lineups": {"connected": True, "affects_prediction": False,
+                "status": "available_not_used" if lineups.get("games", {}).get(gid, {}).get("teams") else "pending",
+                "entered_prediction": False, "data": lineups.get("games", {}).get(gid, {})},
             "player_matchups": {"connected": True, "affects_prediction": False,
+                "status": "available_not_used" if matchups["games"].get(gid, {}).get("teams") else "pending",
+                "entered_prediction": False,
                 "data": matchups["games"].get(gid, {})},
             "rotation_minutes": {"connected": True, "affects_prediction": False,
+                "status": "available_not_used" if minutes.get("games", {}).get(gid, {}).get("teams") else "pending",
+                "entered_prediction": False,
                 "historical_rotation": rotation.get("games", {}).get(gid, {}),
                 "joint_allocation": minutes.get("games", {}).get(gid, {}),
                 "availability_scenarios": scenarios.get("games", {}).get(gid, {})},
             "availability_impact": {"connected": True, "affects_prediction": False,
+                "status": "available_not_used" if injury_impact.get("games", {}).get(gid) else "pending",
+                "entered_prediction": False,
                 "conditional_production_scenario": injury_impact.get("games", {}).get(gid, {}),
                 "feature_readiness": availability_features.get("games", {}).get(gid, {})},
             "travel_time_zones": {"connected": True, "affects_prediction": False,
+                "status": "available_not_used" if travel.get("games", {}).get(gid) else "pending",
+                "entered_prediction": False,
                 "data": travel.get("games", {}).get(gid, {})},
         }
     body = {"schema_version": 1, "snapshot_sha256": issued_sha,
