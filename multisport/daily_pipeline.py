@@ -55,8 +55,10 @@ def soccer_source(games,as_of,cache):
         else:e['missing_baseline_reason']='No supported league model or unique historical team mapping'
         events.append(e)
     training_latest_event_date=max((row['date'] for row in rows),default=None)
+    model_code=(ROOT/'soccer/poisson.py').read_text()
     return {'as_of_utc':as_of,'events':events,'odds_used_in_sport_model':False,
             'model_provenance':{
+                'model_code_sha256':digest(model_code),
                 'data_role':'completed_season_training_history',
                 'training_data_sha256':digest(rows),
                 'training_manifest_sha256':digest(manifest),
