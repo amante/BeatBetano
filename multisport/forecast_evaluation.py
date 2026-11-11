@@ -286,6 +286,7 @@ def evaluate(archive, history):
             "lineage_coverage":{
                 "scored_forecasts":len(rows),
                 "with_model_code_revision":sum(bool(x.get("model_code_revision")) for x in provenance),
+                "with_model_code_sha256":sum(bool(x.get("model_code_sha256")) for x in provenance),
                 "with_training_data_sha256":sum(bool(x.get("training_data_sha256")) for x in provenance),
                 "with_training_cutoff_utc":sum(bool(x.get("training_cutoff_utc")) for x in provenance),
                 "with_predictor_input_sha256":sum(bool(x.get("predictor_input_sha256")) for x in provenance),
