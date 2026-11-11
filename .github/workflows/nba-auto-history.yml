@@ -14,6 +14,10 @@ on:
         description: 'Successful NBA prepare historical evidence workflow run ID for same game_date'
         required: true
         type: string
+      official_injury_report_url:
+        description: 'Optional direct NBA-hosted injury PDF URL when the official index cannot be read'
+        required: false
+        type: string
 permissions:
   contents: read
   actions: read
@@ -168,8 +172,14 @@ jobs:
           cat results/nba/prospective/pipeline_readiness.md >> "$GITHUB_STEP_SUMMARY"
       - name: Preserve official NBA injury report PDF extraction or explicit unavailability
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
+        env:
+          OFFICIAL_REPORT_URL: ${{ inputs.official_injury_report_url }}
         run: |
-          python nba/official_injury_pdf.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/official_injury_source.json
+          if [ -n "$OFFICIAL_REPORT_URL" ]; then
+            python nba/official_injury_pdf.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/official_injury_source.json --report-url "$OFFICIAL_REPORT_URL"
+          else
+            python nba/official_injury_pdf.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/official_injury_source.json
+          fi
       - name: Collect per-game ESPN preview observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         continue-on-error: true
@@ -231,14 +241,21 @@ jobs:
         run: |
           python nba/injury_coverage_summary.py --official results/nba/prospective/official_injury_source.json --joint results/nba/prospective/injury_lineup_status.json --coverage results/nba/prospective/availability_coverage.json --output results/nba/prospective/injury_coverage_summary.json --summary results/nba/prospective/injury_coverage_summary.md
           cat results/nba/prospective/injury_coverage_summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Freeze post-capture baseline and connect pregame module context
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' && hashFiles('results/nba/history.json') != '' && hashFiles('results/nba/initial_scoreboard.json') != '' }}
+        run: |
+          python nba/pregame_module_bundle.py --seed-snapshot results/nba/prospective/snapshot.json --history results/nba/history.json --fixtures results/nba/initial_scoreboard.json --date "${{ inputs.game_date }}" --roster results/nba/prospective/current_roster_feed.json --lineups results/nba/prospective/lineup_cascade.json --sporting results/nba/prospective/sporting_observations.json --official results/nba/prospective/official_injury_source.json --players results/nba/player_game_history.json --snapshot-output results/nba/prospective/snapshot_module_freeze.json --context-output results/nba/prospective/pregame_module_context.json --summary-output results/nba/prospective/pregame_module_connection_summary.json
+          if [ -s results/nba/prospective/pregame_module_connection_summary.json ]; then
+            cat results/nba/prospective/pregame_module_connection_summary.json >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Generate unified NBA model output
-        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
+        if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' }}
         run: |
-          python nba/integrated_model.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/integrated_model.json $(test -s results/nba/prospective/sporting_observations.json && echo "--sporting-data results/nba/prospective/sporting_observations.json")
+          python nba/integrated_model.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --output results/nba/prospective/integrated_model.json $(test -s results/nba/prospective/sporting_observations.json && echo "--sporting-data results/nba/prospective/sporting_observations.json")
       - name: Produce complete NBA hoy slate report
-        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
+        if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' }}
         run: |
-          python nba/nba_hoy.py --snapshot results/nba/prospective/snapshot.json --integrated results/nba/prospective/integrated_model.json --injury-lineups results/nba/prospective/injury_lineup_status.json --output results/nba/prospective/nba_hoy.json
+          python nba/nba_hoy.py --snapshot results/nba/prospective/snapshot_module_freeze.json --integrated results/nba/prospective/integrated_model.json --injury-lineups results/nba/prospective/injury_lineup_status.json --output results/nba/prospective/nba_hoy.json
       - name: Publish clearly labeled NBA baseline probabilities
         if: ${{ hashFiles('results/nba/prospective/nba_hoy.json') != '' }}
         run: python nba/preliminary_release.py --input results/nba/prospective/nba_hoy.json --output results/nba/prospective/nba_preliminary.json
@@ -267,9 +284,15 @@ jobs:
             results/nba/player_game_history.json
             results/nba/player_history_coverage.json
             results/nba/prospective/snapshot.json
+            results/nba/prospective/snapshot_module_freeze.json
+            results/nba/prospective/pregame_module_context.json
+            results/nba/prospective/pregame_module_connection_summary.json
             results/nba/prospective/pregame_status.json
             results/nba/prospective/full_pregame_status.json
             results/nba/prospective/integrated_model.json
+            results/nba/prospective/snapshot_module_freeze.json
+            results/nba/prospective/pregame_module_context.json
+            results/nba/prospective/pregame_module_connection_summary.json
             results/nba/prospective/nba_hoy.json
             results/nba/prospective/nba_preliminary.json
             results/nba/prospective/model_comparison.json
@@ -323,11 +346,11 @@ jobs:
           retention-days: 90
 
       - name: Publish frozen NBA comparison to PULSO
-        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
+        if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
         run: |
-          python nba/pulso_publication.py --snapshot results/nba/prospective/snapshot.json --run-id "${{ github.run_id }}" --output frontend/data/nba-predictions-latest.json
+          python nba/pulso_publication.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --run-id "${{ github.run_id }}" --output frontend/data/nba-predictions-latest.json
           mkdir -p nba/learning/predictions
-          cp results/nba/prospective/snapshot.json "nba/learning/predictions/run-${{ github.run_id }}.json"
+          cp results/nba/prospective/snapshot_module_freeze.json "nba/learning/predictions/run-${{ github.run_id }}.json"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -f frontend/data/nba-predictions-latest.json "nba/learning/predictions/run-${{ github.run_id }}.json"
