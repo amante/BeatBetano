@@ -15,10 +15,21 @@ def utc(value):
         raise ValueError("UTC datetime required")
     return d
 
-def integrate(snapshot,evidence,sporting_data=None):
+def integrate(snapshot,evidence,sporting_data=None,module_context=None):
     original={k:v for k,v in snapshot.items() if k!="content_sha256"}
     sha=hashlib.sha256(json.dumps(original,sort_keys=True,separators=(",",":")).encode()).hexdigest()
     if sha!=snapshot.get("content_sha256"):raise ValueError("Tampered statistical snapshot")
+    module_context = module_context or {}
+    if module_context and module_context.get("snapshot_sha256") != snapshot.get("content_sha256"):
+        raise ValueError("Module context does not match statistical snapshot")
+    module_games=module_context.get("games",{})
+    if module_context:
+        module_body={k:v for k,v in module_context.items() if k!="content_sha256"}
+        module_digest=hashlib.sha256(json.dumps(module_body,sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest()
+        if module_context.get("content_sha256")!=module_digest:
+            raise ValueError("Tampered module context")
+        if set(module_games)!={str(p["game_id"]) for p in snapshot.get("predictions",[])}:
+            raise ValueError("Module context must cover the full slate exactly")
     records=evidence.get("games",{})
     supplemental=(sporting_data or {}).get("games",{})
     if not isinstance(records,dict):raise ValueError("Expected games evidence mapping")
@@ -55,6 +66,7 @@ def integrate(snapshot,evidence,sporting_data=None):
         output.append({"game_id":p["game_id"],"home_team":p["home_team"],"away_team":p["away_team"],
                        "tipoff_utc":p["tipoff_utc"],
                        "sporting_observations":supplemental.get(str(p["game_id"]),{}),
+                       "supporting_modules":module_games.get(str(p["game_id"]),{}),
                        "elo_p_home":p["elo_p_home"],
                        "challenger_p_home":p["challenger_p_home"],
                        "hybrid_p_home":base,"evidence_checks":checks,
@@ -64,6 +76,8 @@ def integrate(snapshot,evidence,sporting_data=None):
                        "eligible_for_bet":False,"status":status})
     return {"schema_version":1,"model":"NBA_INTEGRATED_CANDIDATE_2026_27",
             "statistical_snapshot_sha256":snapshot["content_sha256"],
+            "module_context_sha256":module_context.get("content_sha256"),
+            "modules_change_probabilities":False,
             "predictions":output,"all_games_integrated":all(x["integrated_p_home"] is not None for x in output),
             "no_bookmaker_odds_as_input":True,
             "note":"Single integrated output; null until every pregame step and independently validated impact estimator are available."}
@@ -73,12 +87,14 @@ def main():
     parser.add_argument("--snapshot",required=True)
     parser.add_argument("--evidence")
     parser.add_argument("--sporting-data")
+    parser.add_argument("--module-context")
     parser.add_argument("--output",required=True)
     a=parser.parse_args()
     snapshot=json.loads(Path(a.snapshot).read_text())
     evidence=json.loads(Path(a.evidence).read_text()) if a.evidence else {}
     sporting=json.loads(Path(a.sporting_data).read_text()) if a.sporting_data else {}
-    result=integrate(snapshot,evidence,sporting)
+    module_context=json.loads(Path(a.module_context).read_text()) if a.module_context else {}
+    result=integrate(snapshot,evidence,sporting,module_context)
     dest=Path(a.output);dest.parent.mkdir(parents=True,exist_ok=True)
     with dest.open("x") as f:json.dump(result,f,indent=2)
     print(json.dumps({"games":len(result["predictions"]),"integrated":sum(x["integrated_p_home"] is not None for x in result["predictions"])},indent=2))
