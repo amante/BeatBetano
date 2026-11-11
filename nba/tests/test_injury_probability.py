@@ -2,7 +2,7 @@ import hashlib
 import json
 import unittest
 
-from nba.injury_probability import build
+from nba.injury_probability import build\nfrom nba.pulso_publication import build as publish
 
 
 def seal(document):
@@ -83,6 +83,21 @@ class ConfirmedInjuryProbabilityTests(unittest.TestCase):
         report = build(self.snapshot, self.context, self.history[:99] + [future])
         self.assertEqual(report["games"][0]["margin_sample_games"], 99)
         self.assertEqual(report["games"][0]["status"], "blocked")
+
+    def test_publication_exposes_scenario_without_replacing_baseline(self):
+        adjustment = build(self.snapshot, self.context, self.history)
+        modules = seal({"snapshot_sha256": self.snapshot["content_sha256"],
+            "games": {self.gid: {
+                "official_injury_report": {"status": "available_not_used", "affects_prediction": False},
+                "availability_impact": {"status": "available_not_used", "affects_prediction": False}
+            }}})
+        published = publish(self.snapshot, "run-1", modules, adjustment)
+        prediction = published["predictions"][0]
+        self.assertEqual(prediction["hybrid_p_home"], 0.58)
+        self.assertEqual(prediction["injury_probability_scenario"]["status"], "research_scenario")
+        self.assertTrue(prediction["supporting_modules"]["official_injury_report"]["affects_prediction"])
+        self.assertEqual(published["research_scenarios_affect_probabilities"], 1)
+        self.assertFalse(published["modules_change_probabilities"])
 
     def test_missing_official_report_match_blocks_adjustment(self):
         scenario = self.context["games"][self.gid]["availability_impact"]["conditional_production_scenario"]
