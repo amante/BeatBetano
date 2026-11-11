@@ -322,7 +322,7 @@ def main():
     args = parser.parse_args()
     load = lambda path: json.loads(Path(path).read_text())
     report = build(load(args.snapshot), load(args.availability), load(args.rotation),
-                   load(args.player_history))
+                   load(args.player_history), lineups=load(args.lineups) if args.lineups else None)
     target = Path(args.output)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(report, indent=2, allow_nan=False))
