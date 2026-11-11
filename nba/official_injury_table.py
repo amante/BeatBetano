@@ -42,13 +42,23 @@ def extract(pages, continuous_table=False):
           or not any('Game Date' in line and 'Player Name' in line for line in normalized_first)):
    raise ValueError('Continuous table requires identical report headers and an initial table heading')
  rows=[]
- matchup=None;game_date=None
+ matchup=None;game_date=None;previous_team=None
  for page_no,page in enumerate(pages,1):
   # A team cell can be vertically centered across many player rows and may
-  # fall after a page break. Never carry the prior page's team into those rows;
-  # leave missing team labels unresolved for the unique roster crosswalk.
-  team=None
+  # fall after a page break. Carry context only when this page has no new game
+  # marker; otherwise leave leading rows unresolved for the unique roster
+  # crosswalk instead of assigning them to the preceding team.
   lines=page.splitlines()
+  if not continuous_table:
+   team=None;matchup=None;game_date=None
+  elif page_no==1 or any(MATCHUP_RE.search(line) for line in lines):
+   # A new matchup on this page means leading unlabeled rows could belong to
+   # its vertically merged team cell; defer those rows to the roster crosswalk.
+   team=None
+  else:
+   # With matching report headers and no new game marker, this page continues
+   # the previous game/team block (the common page-break case).
+   team=previous_team
   date_positions=[(i,DATE_RE.search(line)) for i,line in enumerate(lines) if DATE_RE.search(line)]
   first_page_date=date_positions[0][1].group() if date_positions else None
   for line_no,line in enumerate(lines,1):
@@ -72,7 +82,7 @@ def extract(pages, continuous_table=False):
    if matchup_found and not team_match:team=None
    candidate=line[team_match.end():] if team_match else line
    hit=PLAYER_RE.search(candidate)
-   if not hit:continue
+   if not hit or (not team and not continuous_table):continue
    last=hit.group("last").strip()
    first=hit.group("first").strip()
    if not first or len(last)<2:continue
@@ -80,6 +90,7 @@ def extract(pages, continuous_table=False):
     "game_date":game_date,"matchup":matchup,"page":page_no,"line":line_no,
     "raw":line.strip(),"mapping":"explicit_team_cell_or_same_page_continuation" if team else "team_label_deferred_to_unique_fixture_roster_match",
     "independently_identity_verified":False})
+  previous_team=team
  return rows
 
 def extract_team_submissions(pages):
