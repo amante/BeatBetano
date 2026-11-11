@@ -60,13 +60,15 @@ function matchState(g,options={}){
 function makeMatchRow(g,options={}){
  const league=options.sport||g.sport||sport,row=make("article",undefined,"daily-match daily-match-card");
  row.dataset.sport=league;
+ const time=Number.isFinite(Date.parse(g.start_utc))?new Intl.DateTimeFormat("es-CL",{timeZone:"America/Santiago",hour:"2-digit",minute:"2-digit"}).format(new Date(g.start_utc)):"Hora no disponible";
+ row.append(make("time",time,"daily-time"));
  const away=appendTeam(row,g.away,"away",league,g.away_logo||g.awayLogo||g.away_badge);
  row.append(make("span","—","daily-match-versus"));
  const home=appendTeam(row,g.home,"home",league,g.home_logo||g.homeLogo||g.home_badge);
  const state=make("span",matchState(g,options),"daily-state");
  const text=state.textContent.toLowerCase();if(text.includes("en juego")||text.includes("entretiempo"))state.classList.add("is-live");if(text.includes("final")||g.completed)state.classList.add("is-final");
  row.append(state);
- if(league==="nhl"&&g.id!=null){row.dataset.nhlId=String(g.id).replace(/^nhl[-_:]/,"");row.dataset.home=away.code?teamInfo(g.home,league).code||String(g.home):String(g.home);row.dataset.away=away.code||String(g.away);}
+ if(league==="nhl"&&g.id!=null){row.dataset.nhlId=String(g.id).replace(/^nhl[-_:]/,"");row.dataset.home=home.code||String(g.home);row.dataset.away=away.code||String(g.away);}
  else if(league!=="nhl"&&text.includes("en juego")&&g.home_score==null&&g.away_score==null)row.append(make("small","Marcador en vivo no disponible; se conserva la última información del calendario.","live-note"));
  return row;
 }
