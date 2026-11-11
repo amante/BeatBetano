@@ -28,7 +28,14 @@ def extract_roster(payload):
   for p in items if isinstance(items,list) else [entry]:
    if not isinstance(p,dict):continue
    pid=p.get("id");name=p.get("displayName")
-   if pid and name:roster.append({"player_id":str(pid),"player":str(name)})
+   position=p.get("position") if isinstance(p.get("position"),dict) else {}
+   if pid and name:
+    player={"player_id":str(pid),"player":str(name)}
+    abbreviation=position.get("abbreviation") or p.get("positionAbbreviation")
+    position_name=position.get("displayName") or position.get("name")
+    if abbreviation:player["position_abbreviation"]=str(abbreviation)
+    if position_name:player["position_name"]=str(position_name)
+    roster.append(player)
  if len({p["player_id"] for p in roster})!=len(roster):
   raise ValueError("Duplicate player ID in roster")
  return roster

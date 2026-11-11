@@ -155,12 +155,12 @@ def retrieve(snapshot,session=None,report_url=None):
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument("--snapshot",required=True);p.add_argument("--output",required=True)
+    p.add_argument("--snapshot",required=True);p.add_argument("--output",required=True);p.add_argument("--report-url")
     args=p.parse_args()
     data=json.loads(Path(args.snapshot).read_text())
     if not data.get("predictions"):raise ValueError("No prospective fixtures")
     try:
-        report=retrieve(data)
+        report=retrieve(data,report_url=args.report_url or None)
     except (requests.RequestException, ValueError, ImportError) as exc:
         report={"source_index":INDEX,"report_url":None,"official_document_retrieved":False,
                 "individual_player_status_verified":False,"raw_page_text":[],
