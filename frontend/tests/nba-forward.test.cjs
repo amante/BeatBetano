@@ -13,7 +13,7 @@ async function render(p,date='2026-11-04',ok=true){
  await window.PulsoNbaForward.ready;
  const text=n=>[n.textContent||'',...(n.children||[]).map(text)].join(' ');return text(main);
 }
-test('render includes per-game original ML and explicit unsupported sporting/+20 status',async()=>{const text=await render(packet());assert.match(text,/MIL 40\.0% · BOS 60\.0%/);assert.match(text,/MIL 35\.0% · BOS 65\.0%/);assert.match(text,/ventaja \+20: PASS/);assert.doesNotMatch(text,/Híbrido/);});
+test('render includes per-game original ML and explicit unsupported sporting/+20 status',async()=>{const text=await render(packet());assert.match(text,/Milwaukee Bucks 40\.0% · Boston Celtics 60\.0%/);assert.match(text,/Milwaukee Bucks 35\.0% · Boston Celtics 65\.0%/);assert.match(text,/ventaja \+20: PASS/);assert.doesNotMatch(text,/Híbrido/);});
 test('uncovered date differs from no games, and fetch failure never falls back to stale percentages',async()=>{assert.match(await render(packet(),'2026-11-05'),/no tiene cobertura suficiente/);const text=await render(packet(),'2026-11-04',false);assert.match(text,/No se pudo cargar/);assert.doesNotMatch(text,/60\.0%/);});
 test('missing paired emission is PASS, changed fixtures hide unsupported percentages',async()=>{let p=packet();p.games[0].first_prediction=null;assert.match(await render(p),/No hay una pareja/);p=packet();p.games[0].issues=['fixture_tipoff_utc_changed'];const text=await render(p);assert.match(text,/requiere revisión/);assert.doesNotMatch(text,/60\.0%/);});
 
