@@ -104,7 +104,7 @@ def _history_by_player(rows, team, emitted_at, tipoff):
     return result
 
 
-def _allocations(team, rotation_team, out_ids, history_by_player, out_players):
+def _allocations(team, rotation_team, out_ids, history_by_player, out_players, starter_evidence=None):
     samples = {str(row.get("player_id")): row for row in rotation_team.get("provisional_rotation", [])
                if row.get("player_id") and type(row.get("minutes_projection")) in (int, float)
                and math.isfinite(row["minutes_projection"]) and row["minutes_projection"] >= 0}
@@ -122,6 +122,10 @@ def _allocations(team, rotation_team, out_ids, history_by_player, out_players):
                             "minutes_projection": estimate,
                             "sample_games": historical.get("minutes_sample_games", 0),
                             "projection_method": historical.get("minutes_estimate_method")}
+    starter_evidence = starter_evidence or {"status": "lineup_source_unavailable", "weights": {}, "players": []}
+    from starting_lineup_minutes import apply_role_weights
+    starter_details = {str(row.get("player_id")): row for row in starter_evidence.get("players", [])}
+    starter_applied = apply_role_weights(samples, starter_evidence, history_by_player)
     missing_out = sorted(out_ids - set(samples))
     if missing_out:
         return {"status": "out_player_missing_minute_estimate", "missing_out_player_ids": missing_out,
@@ -157,12 +161,18 @@ def _allocations(team, rotation_team, out_ids, history_by_player, out_players):
                         "baseline_minutes": before, "scenario_minutes": after,
                         "minute_delta": round(after - before, 3),
                         "sample_games": row.get("sample_games", 0),
+                        "position_abbreviation": row.get("position_abbreviation"),
+                        "lineup_role_weight_applied": row.get("lineup_role_weight_applied", False),
                         "role_is_confirmed": False})
     return {"status": "conditional_historical_rotation_scenario",
-            "baseline": baseline, "conditional": conditional, "changes": changes}
+            "baseline": baseline, "conditional": conditional, "changes": changes,
+            "lineup_role_weights_applied": len(starter_applied),
+            "lineup_role_players": [starter_details[pid] for pid in starter_applied],
+            "lineup_evidence_status": starter_evidence.get("status"),
+            "lineup_source_url": starter_evidence.get("source_url")}
 
 
-def _team_impact(team, roster, rotation_team, history, emitted_at, tipoff, report_diagnostic):
+def _team_impact(team, roster, rotation_team, history, emitted_at, tipoff, report_diagnostic, lineup_record=None):
     players = roster.get("players", [])
     by_id = {str(player.get("player_id")): player for player in players if player.get("player_id")}
     samples = _history_by_player(history, team, emitted_at, tipoff)
@@ -205,9 +215,17 @@ def _team_impact(team, roster, rotation_team, history, emitted_at, tipoff, repor
             else:
                 losses[field] += value
     out_players = [row for row in explicit if row["official_status"] == "out"]
-    allocation = _allocations(team, rotation_team, out_ids, samples, out_players) if out_ids else {
+    starter_evidence = {"status": "lineup_source_unavailable", "weights": {}, "players": []}
+    if out_ids:
+        from starting_lineup_minutes import estimate as estimate_starter_minutes
+        starter_evidence = estimate_starter_minutes(team, roster, lineup_record or {}, history, emitted_at, tipoff)
+        if out_ids.intersection(starter_evidence.get("weights", {})):
+            starter_evidence = {"status": "official_injury_conflicts_with_reported_starters",
+                                "weights": {}, "players": []}
+    allocation = _allocations(team, rotation_team, out_ids, samples, out_players, starter_evidence) if out_ids else {
         "status": "no_official_out_players", "baseline": None,
-        "conditional": None, "changes": []}
+        "conditional": None, "changes": [], "lineup_role_weights_applied": 0,
+        "lineup_evidence_status": "no_official_out_players"}
 
     change_by_id = {row["player_id"]: row for row in allocation["changes"]}
     redistributed = {field: 0.0 for field in STAT_FIELDS}
@@ -249,10 +267,12 @@ def _team_impact(team, roster, rotation_team, history, emitted_at, tipoff, repor
             "all_player_changes_are_research_estimates": True}
 
 
-def build(snapshot, availability, rotation, player_history, emitted_at=None):
+def build(snapshot, availability, rotation, player_history, emitted_at=None, lineups=None):
     seal = snapshot.get("content_sha256")
     if not seal or availability.get("snapshot_sha256") != seal or rotation.get("snapshot_sha256") != seal:
         raise ValueError("Injury/rotation evidence belongs to another baseline snapshot")
+    if lineups and lineups.get("snapshot_sha256") != seal:
+        raise ValueError("Lineup evidence belongs to another baseline snapshot")
     emitted_at = emitted_at or datetime.now(timezone.utc).isoformat()
     if utc(emitted_at) < utc(snapshot["created_at_utc"]):
         raise ValueError("Impact scenario predates the baseline")
@@ -273,6 +293,7 @@ def build(snapshot, availability, rotation, player_history, emitted_at=None):
             continue
         availability_game = availability.get("games", {}).get(gid, {}).get("teams", {})
         rotation_game = rotation.get("games", {}).get(gid, {}).get("teams", {})
+        lineup_game = lineups.get("games", {}).get(gid, {}).get("teams", {}) if lineups else {}
         official_evidence = availability.get("official_report_evidence", {})
         diagnostic = next((row for row in official_evidence.get("rows_by_fixture", [])
                            if str(row.get("game_id")) == gid), {})
@@ -282,7 +303,7 @@ def build(snapshot, availability, rotation, player_history, emitted_at=None):
             team_rotation = rotation_game.get(team, {})
             teams[team] = _team_impact(team, roster, team_rotation,
                                        history_rows, emitted_at, tipoff,
-                                       diagnostic)
+                                       diagnostic, lineup_game.get(team, {}))
         result[gid] = {"status": "research_only", "emitted_at_utc": emitted_at, "teams": teams,
                        "probabilities_adjusted": False,
                        "baseline_snapshot_sha256": seal}
@@ -297,10 +318,11 @@ def main():
     parser = argparse.ArgumentParser()
     for arg in ("snapshot", "availability", "rotation", "player-history", "output"):
         parser.add_argument("--" + arg, required=True)
+    parser.add_argument("--lineups")
     args = parser.parse_args()
     load = lambda path: json.loads(Path(path).read_text())
     report = build(load(args.snapshot), load(args.availability), load(args.rotation),
-                   load(args.player_history))
+                   load(args.player_history), lineups=load(args.lineups) if args.lineups else None)
     target = Path(args.output)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(report, indent=2, allow_nan=False))

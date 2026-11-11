@@ -129,7 +129,8 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
     minutes = build_minutes(issued, rotation, availability)
     scenarios = build_scenarios(issued, rotation, availability)
     injury_impact = build_injury_impact(issued, availability, rotation,
-        player_history.get("players", []), emitted_at=issued["created_at_utc"])
+        player_history.get("players", []), emitted_at=issued["created_at_utc"],
+        lineups=rebound_lineups)
     matchups = player_matchup_context(issued, rebound_roster, rebound_lineups)
     # Preserve the existing strict roster/matchup audit beside the richer
     # projected-position context. It remains non-verified unless human/source
