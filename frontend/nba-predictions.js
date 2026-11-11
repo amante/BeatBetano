@@ -82,6 +82,7 @@
    lineup.append(grid);
   }else lineup.append(el("p","El proveedor no entregó nombres de titulares para esta captura.","nba-section-empty"));
   body.append(lineup);
+  if(!outs.length&&!doubts.length)body.append(el("p","Esta captura no trae bajas ni dudas individuales reportadas.","nba-section-empty"));
   if(outs.length)body.append(statusGroup("Bajas reportadas",outs,"out"));
   if(doubts.length)body.append(statusGroup("En duda",doubts,"doubt"));
   const bench=el("details",undefined,"nba-roster-details");
