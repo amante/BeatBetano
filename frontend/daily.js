@@ -256,7 +256,7 @@ function renderModelModuleStatus(report){
   [data.partial_context_modules,"parciales"],
   [data.context_modules_not_affecting_probability,"sin efecto en la probabilidad actual"]
  ];
- if(sport==="nba")items.unshift([data.baseline_components.length,"componentes estadísticos calculados"]);
+ if(sport==="nba")items.unshift([data.connected_probability_signals||0,"señales estadísticas que afectan el candidato"]);
  for(const [value,label] of items){const chip=make("div",undefined,"module-inventory-count");chip.append(make("strong",String(value)),make("span",label));counts.append(chip);}
  root.append(counts);
  const labels={
