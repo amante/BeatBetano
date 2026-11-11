@@ -108,16 +108,38 @@
    const selectedDay=document.getElementById("daily-date").value;
    const currentRows=currentRun.predictions.filter(p=>day(p.tipoff_utc)===selectedDay);
    const section=el("section","");section.className="nba-current-run";
-   section.append(el("h3","Predicción base · corrida #"+currentRun.run_id));
+   section.append(el("h3","Probabilidad base y escenario por lesiones · corrida #"+currentRun.run_id));
    section.append(el("p","Generada "+local(currentRun.created_at_utc)+" · Los módulos pendientes no bloquean el cálculo base."));
    if(!currentRows.length)section.append(el("p","La última corrida no contiene partidos para la fecha seleccionada."));
    const moduleNames={statistical_baseline:"Probabilidad estadística base",official_injury_report:"Informe oficial de lesiones",starting_lineups:"Quintetos titulares",player_matchups:"Cruces de jugadores",rotation_minutes:"Rotación y minutos",availability_impact:"Impacto de disponibilidad",travel_time_zones:"Viajes y zonas horarias"};
-   const statusLabels={included:"Incluido en la predicción",available_not_used:"Datos recibidos; no entran en porcentajes",pending:"Pendiente de publicación o validación",failed:"Falló la consulta"};
+   const statusLabels={included:"Incluido en la predicción",available_not_used:"Datos recibidos; no entran en porcentajes",pending:"Pendiente de publicación o validación",failed:"Falló la consulta",research_scenario:"Afecta el escenario experimental por lesiones"};
    for(const prediction of currentRows){
     const card=el("article","");card.className="nba-current-run__game";
     card.append(el("h4",teamName(prediction.away_team)+" — "+teamName(prediction.home_team)));
     const probability=prediction.hybrid_p_home;
     if(typeof probability==="number")card.append(el("p","Base: "+teamName(prediction.away_team)+" "+((1-probability)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(probability*100).toFixed(1)+"%"));
+    const injury=prediction.injury_probability_scenario;
+    if(injury?.status==="research_scenario"){
+     const delta=Number(injury.home_probability_delta_pp||0);
+     const direction=delta>0?"+" :"";
+     card.append(el("p","Bajas oficiales confirmadas · escenario experimental: "+teamName(prediction.away_team)+" "+(injury.injury_adjusted_away_probability*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(injury.injury_adjusted_home_probability*100).toFixed(1)+"% ("+direction+delta.toFixed(1)+" puntos porcentuales para "+teamName(prediction.home_team)+").","nba-injury-scenario"));
+     const evidence=el("details","");evidence.className="nba-module-run-status";
+     evidence.append(el("summary","Bajas y redistribución estimada"));
+     for(const team of [prediction.away_team,prediction.home_team]){
+      const impact=injury.teams?.[team];if(!impact)continue;
+      const outNames=(impact.out_players||[]).map(player=>player.player).filter(Boolean);
+      let line=teamName(team)+": "+(outNames.length?outNames.join(", "):"sin baja OUT confirmada");
+      if(impact.estimated_points_lost_per_game!==null&&impact.estimated_points_lost_per_game!==undefined)line+=" · "+impact.estimated_points_lost_per_game.toFixed(1)+" puntos históricos perdidos";
+      if(impact.estimated_points_added_by_replacements_per_game!==null&&impact.estimated_points_added_by_replacements_per_game!==undefined)line+=" · "+impact.estimated_points_added_by_replacements_per_game.toFixed(1)+" puntos históricos redistribuidos";
+      evidence.append(el("p",line,"nba-module-run-status__item nba-module-run-status__item--research_scenario"));
+     }
+     evidence.append(el("p","Estimación basada en minutos redistribuidos y producción histórica; dudas y estados sin confirmar no se consideran bajas. Escenario experimental, no calibrado ni aprobado para producción."));
+     card.append(evidence);
+    }else if(injury?.status==="blocked"){
+     card.append(el("p","Sin ajuste por lesiones: "+(injury.reason||"faltan datos verificables.")+" Se conserva la probabilidad base.","nba-module-run-status__item nba-module-run-status__item--failed"));
+    }else if(injury?.status==="no_confirmed_out_claims"){
+     card.append(el("p","Sin bajas OUT oficiales asociadas; se conserva la probabilidad base."));
+    }
     const details=el("details","");details.className="nba-module-run-status";
     details.append(el("summary","Módulos usados y pendientes"));
     for(const [key,module] of Object.entries(prediction.supporting_modules||{})){
