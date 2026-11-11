@@ -27,6 +27,7 @@ def build_status(evaluation, evidence_dir=None):
                                         "scored_forecasts": 0, "stages": [],
                                         "lineage_coverage":{"scored_forecasts":0,
                                             "with_model_code_revision":0,
+                                            "with_model_code_sha256":0,
                                             "with_training_data_sha256":0,
                                             "with_training_cutoff_utc":0,
                                             "with_predictor_input_sha256":0,
@@ -64,6 +65,7 @@ def build_status(evaluation, evidence_dir=None):
         data_fingerprint_complete=lineage["with_any_data_fingerprint"]==lineage["scored_forecasts"]
         lineage_complete=(lineage["scored_forecasts"]>0 and
             lineage["with_model_code_revision"]==lineage["scored_forecasts"] and
+            lineage["with_model_code_sha256"]==lineage["scored_forecasts"] and
             source_cutoff_complete and data_fingerprint_complete)
         blockers = list(BASE_BLOCKERS)
         if not lineage_complete:
