@@ -45,6 +45,12 @@ jobs:
             --summary frontend/data/forecast_status.json
       - name: Maintain chronological outcomes archive
         run: python frontend/merge_daily_history.py --daily frontend/data/daily.json --history frontend/data/history.json
+      - name: Score sealed pregame forecasts against final results
+        run: |
+          python -m multisport.forecast_evaluation \
+            --archive frontend/data/forecast_archive \
+            --history frontend/data/history.json \
+            --output frontend/data/forecast-evaluation-latest.json
       - name: Archive and evaluate paired NBA research forecasts
         run: |
           python nba/livedata_forward_evaluation.py \
