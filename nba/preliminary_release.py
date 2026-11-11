@@ -30,6 +30,7 @@ def publish(report):
             "lineups_verified":row.get("starting_fives_confirmed") is True,
             "injuries_verified":row.get("official_injuries_resolved") is True,
             "missing_evidence":row.get("missing_evidence",[]),
+            "supporting_modules":row.get("supporting_modules",{}),
             "bet_authorized":False})
     return {"schema_version":1,"sport":"nba","command":"NBA hoy",
         "games":out,"games_expected":report["games_expected"],
