@@ -86,10 +86,10 @@
           "name": "Viajes y zona horaria",
           "created": true,
           "connected": true,
-          "affects_prediction": false,
+          "affects_prediction": true,
           "evidence": "nba/travel_context.py; nba/pregame_module_bundle.py; nba/integrated_model.py; nba/pulso_publication.py",
-          "scope": "El paquete de partido incluye distancia aproximada arena-a-arena, zona horaria y tiempo entre inicios usando el historial. No modifica porcentajes.",
-          "note": "Conectado al flujo diario. El descanso usa diferencia de tipoffs, no hora final; distancia de gran círculo no es ruta aérea. Afecta la predicción: no."
+          "scope": "El diferencial de distancia y cambio horario entra al porcentaje candidato solo si un ajuste aprendido de partidos anteriores mejora Brier y log loss en una ventana cronológica separada.",
+          "note": "El efecto se limita por partido, requiere al menos 500 casos de entrenamiento y 100 de holdout; queda experimental, no calibrado ni aprobado."
         }
       ]
     },
