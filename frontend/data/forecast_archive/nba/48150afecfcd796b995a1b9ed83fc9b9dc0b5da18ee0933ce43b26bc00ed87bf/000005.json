@@ -1,0 +1,104 @@
+{
+  "sport": "nba",
+  "as_of_utc": "2026-11-11T00:17:28.431316Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401909963",
+      "start_utc": "2026-11-11T02:00:00Z",
+      "participants": [
+        "UTAH",
+        "MIA"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.3321784609742869,
+          "away": 0.6678215390257132
+        },
+        "model_version": "nba-existing-baselines",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "elo_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nba-existing-baselines",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": false,
+  "automatic_promotion": false,
+  "source_output_sha256": "850c38b4235117a5187ee0694ea3030a0e2030b81247a2face504f2f687302a6",
+  "source_model_output": {
+    "game_id": "401909963",
+    "tipoff_utc": "2026-11-11T02:00:00Z",
+    "home_team": "UTAH",
+    "away_team": "MIA",
+    "elo_p_home": 0.3321784609742869,
+    "challenger_p_home": 0.2976844810352599,
+    "hybrid_p_home": 0.2976844810352599,
+    "hybrid_route": "challenger",
+    "dual_challenger": false,
+    "eligible_for_bet": false,
+    "status": "unvalidated_candidate"
+  },
+  "revision": 5,
+  "parent_snapshot_sha256": "fef77e60bc7c7cb696c62df5591a1fbf2352a5863c99e11a797f3079016aabc7",
+  "changes": [
+    {
+      "event_id": "401909963",
+      "before": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.3321784609742869,
+          "away": 0.6678215390257132
+        },
+        "model_version": "nba-existing-baselines",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "elo_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "after": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.3321784609742869,
+          "away": 0.6678215390257132
+        },
+        "model_version": "nba-existing-baselines",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "elo_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "previous_start_utc": "2026-11-11T02:00:00Z",
+      "start_utc": "2026-11-11T02:00:00Z"
+    }
+  ],
+  "emitted_at_utc": "2026-11-11T00:17:28.930598+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "9fafcb133c2433445d73acae4ca524256fa735ef036a70a400acb7a13db990bd"
+}
