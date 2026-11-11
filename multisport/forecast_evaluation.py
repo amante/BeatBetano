@@ -289,6 +289,7 @@ def evaluate(archive, history):
                 "with_training_data_sha256":sum(bool(x.get("training_data_sha256")) for x in provenance),
                 "with_training_cutoff_utc":sum(bool(x.get("training_cutoff_utc")) for x in provenance),
                 "with_predictor_input_sha256":sum(bool(x.get("predictor_input_sha256")) for x in provenance),
+                "with_predictor_input_as_of_utc":sum(bool(x.get("predictor_input_as_of_utc")) for x in provenance),
             },
         })
     return {
