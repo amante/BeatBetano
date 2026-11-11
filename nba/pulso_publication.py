@@ -72,6 +72,12 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
      if isinstance(module,dict):
       module['status']='research_scenario';module['affects_prediction']=True;module['entered_prediction']=True
       module['detail']='Cambia el porcentaje del candidato NBA mediante bajas oficiales, minutos redistribuidos y producción histórica; escenario experimental no calibrado.'
+    lineup_used=any(type(team.get('lineup_role_weights_applied')) is int and team.get('lineup_role_weights_applied')>0 for team in candidate.get('teams',{}).values())
+    if lineup_used:
+     module=modules.get('starting_lineups')
+     if isinstance(module,dict):
+      module['status']='research_scenario';module['affects_prediction']=True;module['entered_prediction']=True
+      module['detail']='El quinteto RotoWire, observado antes del partido, cambia el reparto de minutos usando el historial de cada jugador cuando fue titular; efecto experimental.'
   if travel:
    copy['travel_probability_scenario']=travel
    if travel.get('status')=='research_scenario' and travel.get('applied') is True:
