@@ -30,7 +30,9 @@ def build_status(evaluation, evidence_dir=None):
                                             "with_training_data_sha256":0,
                                             "with_training_cutoff_utc":0,
                                             "with_predictor_input_sha256":0,
-                                            "with_predictor_input_as_of_utc":0}})
+                                            "with_predictor_input_as_of_utc":0,
+                                            "with_any_data_cutoff":0,
+                                            "with_any_data_fingerprint":0}})
         metrics = group.get("metrics", {})
         n=int(metrics.get("n",0))
         row["scored_forecasts"] += n
@@ -58,10 +60,8 @@ def build_status(evaluation, evidence_dir=None):
             None,
         )
         lineage=row["lineage_coverage"]
-        source_cutoff_complete=(lineage["with_training_cutoff_utc"]+
-            lineage["with_predictor_input_as_of_utc"]>=lineage["scored_forecasts"])
-        data_fingerprint_complete=(lineage["with_training_data_sha256"]+
-            lineage["with_predictor_input_sha256"]>=lineage["scored_forecasts"])
+        source_cutoff_complete=lineage["with_any_data_cutoff"]==lineage["scored_forecasts"]
+        data_fingerprint_complete=lineage["with_any_data_fingerprint"]==lineage["scored_forecasts"]
         lineage_complete=(lineage["scored_forecasts"]>0 and
             lineage["with_model_code_revision"]==lineage["scored_forecasts"] and
             source_cutoff_complete and data_fingerprint_complete)
