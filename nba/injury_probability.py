@@ -149,7 +149,10 @@ def build(snapshot, module_context, history):
                 "estimated_points_lost_per_game": impact["points_lost_per_game"] if impact else None,
                 "estimated_points_added_by_replacements_per_game": impact["points_added_per_game"] if impact else None,
                 "estimated_net_points_per_game": impact["net_points_per_game"] if impact else None,
-                "unresolved_status_count": team_data.get("players_without_confirmed_availability")}
+                "unresolved_status_count": team_data.get("players_without_confirmed_availability"),
+                "lineup_role_weights_applied": (team_data.get("minute_redistribution") or {}).get("lineup_role_weights_applied", 0),
+                "lineup_role_players": (team_data.get("minute_redistribution") or {}).get("lineup_role_players", []),
+                "lineup_evidence_status": (team_data.get("minute_redistribution") or {}).get("lineup_evidence_status")}
             if reason:
                 reasons.append(team + ":" + reason)
             else:
