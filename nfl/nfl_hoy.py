@@ -93,10 +93,9 @@ def report(payload,ledger,as_of):
             "missing_evidence":["confirmed_inactives","starters","weather","matchups","independent_calibration"]})
     model_code_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     return {"schema_version":1,"command":"NFL hoy","sport":"nfl","as_of_utc":now.isoformat(),
-      "model_provenance":{"model_code_sha256":model_code_sha256},
       "odds_used_in_sport_model":False,"events":games,"event_status_counts":status,
       "historical_games_used":n,"complete_vs_league":False,
-      "model_provenance":{"data_role":"historical_elo_training_history",
+      "model_provenance":{"model_code_sha256":model_code_sha256,"data_role":"historical_elo_training_history",
         "training_data_sha256":hashlib.sha256(json.dumps(training_payload,sort_keys=True,separators=(",",":"),allow_nan=False).encode()).hexdigest(),
         "training_cutoff_utc":training_cutoff,"model_code_revision":os.environ.get("GITHUB_SHA") or None,
         "model_family":"nfl-historical-elo"},
