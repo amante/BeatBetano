@@ -172,7 +172,7 @@ def _allocations(team, rotation_team, out_ids, history_by_player, out_players, s
             "lineup_source_url": starter_evidence.get("source_url")}
 
 
-def _team_impact(team, roster, rotation_team, history, emitted_at, tipoff, report_diagnostic):
+def _team_impact(team, roster, rotation_team, history, emitted_at, tipoff, report_diagnostic, lineup_record=None):
     players = roster.get("players", [])
     by_id = {str(player.get("player_id")): player for player in players if player.get("player_id")}
     samples = _history_by_player(history, team, emitted_at, tipoff)
@@ -218,7 +218,7 @@ def _team_impact(team, roster, rotation_team, history, emitted_at, tipoff, repor
     starter_evidence = {"status": "lineup_source_unavailable", "weights": {}, "players": []}
     if out_ids:
         from starting_lineup_minutes import estimate as estimate_starter_minutes
-        starter_evidence = estimate_starter_minutes(team, roster, history, emitted_at, tipoff)
+        starter_evidence = estimate_starter_minutes(team, roster, lineup_record or {}, history, emitted_at, tipoff)
         if out_ids.intersection(starter_evidence.get("weights", {})):
             starter_evidence = {"status": "official_injury_conflicts_with_reported_starters",
                                 "weights": {}, "players": []}
@@ -267,10 +267,12 @@ def _team_impact(team, roster, rotation_team, history, emitted_at, tipoff, repor
             "all_player_changes_are_research_estimates": True}
 
 
-def build(snapshot, availability, rotation, player_history, emitted_at=None):
+def build(snapshot, availability, rotation, player_history, emitted_at=None, lineups=None):
     seal = snapshot.get("content_sha256")
     if not seal or availability.get("snapshot_sha256") != seal or rotation.get("snapshot_sha256") != seal:
         raise ValueError("Injury/rotation evidence belongs to another baseline snapshot")
+    if lineups and lineups.get("snapshot_sha256") != seal:
+        raise ValueError("Lineup evidence belongs to another baseline snapshot")
     emitted_at = emitted_at or datetime.now(timezone.utc).isoformat()
     if utc(emitted_at) < utc(snapshot["created_at_utc"]):
         raise ValueError("Impact scenario predates the baseline")
@@ -291,6 +293,7 @@ def build(snapshot, availability, rotation, player_history, emitted_at=None):
             continue
         availability_game = availability.get("games", {}).get(gid, {}).get("teams", {})
         rotation_game = rotation.get("games", {}).get(gid, {}).get("teams", {})
+        lineup_game = lineups.get("games", {}).get(gid, {}).get("teams", {}) if lineups else {}
         official_evidence = availability.get("official_report_evidence", {})
         diagnostic = next((row for row in official_evidence.get("rows_by_fixture", [])
                            if str(row.get("game_id")) == gid), {})
@@ -300,7 +303,7 @@ def build(snapshot, availability, rotation, player_history, emitted_at=None):
             team_rotation = rotation_game.get(team, {})
             teams[team] = _team_impact(team, roster, team_rotation,
                                        history_rows, emitted_at, tipoff,
-                                       diagnostic)
+                                       diagnostic, lineup_game.get(team, {}))
         result[gid] = {"status": "research_only", "emitted_at_utc": emitted_at, "teams": teams,
                        "probabilities_adjusted": False,
                        "baseline_snapshot_sha256": seal}
@@ -315,6 +318,7 @@ def main():
     parser = argparse.ArgumentParser()
     for arg in ("snapshot", "availability", "rotation", "player-history", "output"):
         parser.add_argument("--" + arg, required=True)
+    parser.add_argument("--lineups")
     args = parser.parse_args()
     load = lambda path: json.loads(Path(path).read_text())
     report = build(load(args.snapshot), load(args.availability), load(args.rotation),

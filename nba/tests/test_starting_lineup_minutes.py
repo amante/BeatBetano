@@ -10,12 +10,14 @@ from official_injury_impact import _allocations
 class StartingLineupMinuteTests(unittest.TestCase):
     def setUp(self):
         self.roster = {"lineup_status": "projected",
-                       "lineup_source_url": "https://www.rotowire.com/basketball/nba-lineups.php",
-                       "lineup_observed_at_utc": "2026-11-10T18:00:00Z",
                        "players": [{"player_id": str(i), "player": f"P{i}",
                                     "starter_projected": True,
                                     "position_abbreviation": "G" if i < 2 else "F"}
                                    for i in range(5)]}
+        self.lineup = {"lineup_status": "projected",
+                       "source_url": "https://www.rotowire.com/basketball/nba-lineups.php",
+                       "observed_at_utc": "2026-11-10T18:00:00Z",
+                       "starters": [f"P{i}" for i in range(5)]}
         self.emitted = "2026-11-10T19:00:00Z"
         self.tipoff = "2026-11-10T23:00:00Z"
         self.history = [{"player_id": str(i), "team": "BOS", "starter_reported_postgame": True,
@@ -25,18 +27,18 @@ class StartingLineupMinuteTests(unittest.TestCase):
                         for i in range(5) for d in (1, 2)]
 
     def test_uses_pre_tip_roto_wire_five_and_prior_starter_minutes(self):
-        result = estimate("BOS", self.roster, self.history, self.emitted, self.tipoff)
+        result = estimate("BOS", self.roster, self.lineup, self.history, self.emitted, self.tipoff)
         self.assertEqual(result["status"], "role_weights_ready")
         self.assertEqual(len(result["weights"]), 5)
         self.assertEqual(result["weights"]["0"], 30.0)
 
     def test_rejects_lineup_observed_after_tipoff(self):
-        roster = dict(self.roster, lineup_observed_at_utc="2026-11-11T00:00:00Z")
-        result = estimate("BOS", roster, self.history, self.emitted, self.tipoff)
+        lineup = dict(self.lineup, observed_at_utc="2026-11-11T00:00:00Z")
+        result = estimate("BOS", self.roster, lineup, self.history, self.emitted, self.tipoff)
         self.assertEqual(result["status"], "lineup_not_observed_before_issue_and_tipoff")
 
     def test_requires_all_five_players_to_have_historical_starts(self):
-        result = estimate("BOS", self.roster, self.history[:-1], self.emitted, self.tipoff)
+        result = estimate("BOS", self.roster, self.lineup, self.history[:-1], self.emitted, self.tipoff)
         self.assertEqual(result["status"], "insufficient_historical_starter_minutes")
         self.assertEqual(result["weights"], {})
 

@@ -44,10 +44,10 @@ def utc(value):
     return moment.astimezone(timezone.utc)
 
 
-def estimate(team, roster_team, player_history, emitted_at, tipoff):
-    lineup_status = roster_team.get("lineup_status")
-    source = roster_team.get("lineup_source_url")
-    observed = roster_team.get("lineup_observed_at_utc")
+def estimate(team, roster_team, lineup_record, player_history, emitted_at, tipoff):
+    lineup_status = lineup_record.get("lineup_status")
+    source = lineup_record.get("source_url")
+    observed = lineup_record.get("observed_at_utc")
     host = (urlparse(str(source)).hostname or "").lower()
     if not (lineup_status in ("projected", "confirmed") and host.endswith("rotowire.com")):
         return {"status": "lineup_source_unavailable", "weights": {}, "players": []}
@@ -59,8 +59,13 @@ def estimate(team, roster_team, player_history, emitted_at, tipoff):
         return {"status": "invalid_lineup_timestamp", "weights": {}, "players": []}
     if observed_at > emitted or observed_at >= start:
         return {"status": "lineup_not_observed_before_issue_and_tipoff", "weights": {}, "players": []}
-    starters = [p for p in roster_team.get("players", []) if p.get("starter_projected") is True]
-    ids = [str(p.get("player_id") or "") for p in starters]
+    lineup_names = lineup_record.get("starters", [])
+    roster_players = roster_team.get("players", [])
+    if not isinstance(lineup_names, list):
+        lineup_names = []
+    ids = resolve_starter_ids(roster_players, lineup_names)
+    roster_by_id = {str(p.get("player_id")): p for p in roster_players if p.get("player_id")}
+    starters = [roster_by_id.get(pid, {}) for pid in ids]
     if len(starters) != 5 or any(not pid for pid in ids) or len(set(ids)) != 5:
         return {"status": "five_unique_roster_matched_starters_required", "weights": {}, "players": []}
     rows = player_history if isinstance(player_history, list) else player_history.get("players", [])
