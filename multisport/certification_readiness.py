@@ -43,8 +43,9 @@ def build_status(evaluation, evidence_dir=None):
         packet_entry = next(
             ((name, packet) for name, packet in packets
              if isinstance(packet, dict)
-             and packet.get("scope", {}).get("sport") == key[0]
-             and packet.get("scope", {}).get("model_version") == key[1]),
+             and isinstance(packet.get("scope"), dict)
+             and packet["scope"].get("sport") == key[0]
+             and packet["scope"].get("model_version") == key[1]),
             None,
         )
         blockers = list(BASE_BLOCKERS)
