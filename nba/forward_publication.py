@@ -33,10 +33,25 @@ def build(protocol,observations,records,as_of,evidence_errors=None):
         dates={start.astimezone(ny).date().isoformat(),(start+timedelta(days=1,microseconds=-1)).astimezone(ny).date().isoformat()}
         calendar[day.isoformat()]=all(d in coverage for d in dates)
         day+=timedelta(days=1)
+    report_states=[bundle.get('module_statuses',{}).get('official_injury_report',{}) for bundle in records]
+    report_states=[state for state in report_states if state]
+    def capture_order(state):
+        try:return utc(state.get('captured_at_utc'))
+        except (ValueError,TypeError):return datetime.min.replace(tzinfo=timezone.utc)
+    report_states.sort(key=capture_order)
+    injury_state=report_states[-1] if report_states else {'status':'not_observed','entered_prediction':False,
+        'detail':'No se encontró captura de la fuente oficial.'}
     return {'kind':'nba_forward_publication_v2','as_of_utc':as_of,'protocol_sha256':ledger['protocol_sha256'],
             'last_source_capture_utc':max((o['created_at_utc'] for o in observations if utc(o['created_at_utc'])<=utc(as_of)),key=utc,default=None),
             'games':rows,'calendar_date_coverage_chile':calendar,
             'source_error_count':len(ledger['source_errors']),'sporting_evidence_errors':evidence_errors or [],
+            'module_statuses':[
+                {'module':'Probabilidad estadística base','status':'included','entered_prediction':True,
+                 'detail':'La probabilidad base se conserva aunque falte evidencia opcional.'},
+                {'module':'Informe oficial de lesiones','status':injury_state['status'],
+                 'entered_prediction':injury_state.get('entered_prediction') is True,
+                 'detail':injury_state.get('detail','')}
+            ],
             'performance_metrics':None,'evaluation_status':ledger['performance_evaluation_status'],
             'calibrated':False,'sporting_adjustment_applied':False,'no_odds_input':True,
             'scope_excludes_knicks':True}
