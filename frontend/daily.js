@@ -257,6 +257,10 @@ function renderModelModuleStatus(report){
   [data.context_modules_not_affecting_probability,"sin efecto en la probabilidad actual"]
  ];
  if(sport==="nba")items.unshift([data.connected_probability_signals||0,"señales estadísticas que afectan el candidato"]);
+ if(data.historical_baseline_validation){
+  const baseline=data.historical_baseline_validation;
+  items.push([baseline.sample_games+"/"+baseline.minimum_games,baseline.minimum_met?"baseline NHL histórico cumplido":"baseline NHL histórico"]);
+ }
  for(const [value,label] of items){const chip=make("div",undefined,"module-inventory-count");chip.append(make("strong",String(value)),make("span",label));counts.append(chip);}
  root.append(counts);
  const labels={
@@ -279,7 +283,7 @@ function renderModelModuleStatus(report){
  };
  if(data.baseline_components?.length)section("Motor estadístico actual",data.baseline_components);
  section("Módulos de contexto planeados ("+data.planned_context_modules+")",data.context_modules);
- const note=make("p","“Conectado” significa que entra al cálculo candidato. No implica calibración ni aprobación para apuestas.","module-inventory-footnote");root.append(note);
+ const note=make("p","“Conectado” significa que entra al cálculo candidato. No implica calibración ni aprobación para apuestas. "+(report.shared_infrastructure_note||""),"module-inventory-footnote");root.append(note);
 }
 async function loadModuleStatus(){
  try{
