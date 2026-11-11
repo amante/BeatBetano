@@ -2,7 +2,7 @@ import hashlib
 import json
 import unittest
 
-from injury_probability import build
+from nba.injury_probability import build
 
 
 def seal(document):
