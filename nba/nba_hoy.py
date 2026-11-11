@@ -73,6 +73,7 @@ def assemble(snapshot, integrated, injury_lineups=None, postmortem=None):
             "official_injuries_resolved": status.get("official_player_team_status_confirmed") is True,
             "missing_evidence": [k for k, v in row.get("evidence_checks", {}).items() if v is not True],
             "sporting_observations": row.get("sporting_observations", {}),
+            "supporting_modules": row.get("supporting_modules", {}),
         })
     games.sort(key=lambda x: (x["tipoff_utc"], x["game_id"]))
     return {
