@@ -51,10 +51,18 @@ jobs:
             --archive frontend/data/forecast_archive \
             --history frontend/data/history.json \
             --output frontend/data/forecast-evaluation-latest.json
-      - name: Publish certification readiness by model version
+      - name: Capture frozen prospective certification cohorts
+        run: |
+          python -m multisport.certification_holdout \
+            --archive frontend/data/forecast_archive \
+            --protocol multisport/certification_holdout_protocol.json \
+            --evaluation frontend/data/forecast-evaluation-latest.json \
+            --output frontend/data/forecast-holdout-latest.json
+      - name: Publish certification readiness by exact model version
         run: |
           python -m multisport.certification_readiness \
             --evaluation frontend/data/forecast-evaluation-latest.json \
+            --holdout frontend/data/forecast-holdout-latest.json \
             --evidence-dir frontend/data/certification-evidence \
             --output frontend/data/certification-readiness-latest.json
       - name: Archive and evaluate paired NBA research forecasts
@@ -91,6 +99,7 @@ jobs:
             frontend/data/nba-livedata-evaluation.json
             frontend/data/forecast_archive
             frontend/data/forecast-evaluation-latest.json
+            frontend/data/forecast-holdout-latest.json
             frontend/data/certification-readiness-latest.json
           retention-days: 90
       - name: Validate JSON output
@@ -98,13 +107,14 @@ jobs:
           python -m json.tool frontend/data/daily.json > /dev/null
           python -m json.tool frontend/data/history.json > /dev/null
           python -m json.tool frontend/data/forecast-evaluation-latest.json > /dev/null
+          python -m json.tool frontend/data/forecast-holdout-latest.json > /dev/null
           python -m json.tool frontend/data/certification-readiness-latest.json > /dev/null
       - name: Save snapshot to main
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add frontend/data/daily.json frontend/data/history.json frontend/data/forecast_status.json frontend/data/forecast_archive
-          git add frontend/data/forecast-evaluation-latest.json frontend/data/certification-readiness-latest.json
+          git add frontend/data/forecast-evaluation-latest.json frontend/data/forecast-holdout-latest.json frontend/data/certification-readiness-latest.json
           git add frontend/data/nba-livedata-evaluation.json
           if compgen -G 'frontend/data/nba-livedata-forward/*.json' > /dev/null; then
             git add frontend/data/nba-livedata-forward
