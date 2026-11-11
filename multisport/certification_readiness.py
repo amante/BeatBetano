@@ -11,7 +11,6 @@ from multisport.data_lineage import digest
 BASE_BLOCKERS = [
     "two_independent_seasons_and_temporal_holdout_not_provided",
     "paired_baseline_and_ablation_walk_forward_not_provided",
-    "training_data_and_model_code_lineage_not_attested",
     "independent_source_and_reliability_review_not_attested",
 ]
 
@@ -25,10 +24,19 @@ def build_status(evaluation, evidence_dir=None):
             continue
         key = (sport, version)
         row = by_model.setdefault(key, {"sport": sport, "model_version": version,
-                                        "scored_forecasts": 0, "stages": []})
+                                        "scored_forecasts": 0, "stages": [],
+                                        "lineage_coverage":{"scored_forecasts":0,
+                                            "with_model_code_revision":0,
+                                            "with_training_data_sha256":0,
+                                            "with_training_cutoff_utc":0,
+                                            "with_predictor_input_sha256":0}})
         metrics = group.get("metrics", {})
-        row["scored_forecasts"] += int(metrics.get("n", 0))
-        row["stages"].append({"stage": group.get("stage"), "n": int(metrics.get("n", 0))})
+        n=int(metrics.get("n",0))
+        row["scored_forecasts"] += n
+        row["stages"].append({"stage": group.get("stage"), "n": n})
+        coverage=group.get("lineage_coverage",{})
+        for field in row["lineage_coverage"]:
+            row["lineage_coverage"][field]+=int(coverage.get(field,0))
 
     packets = []
     if evidence_dir and Path(evidence_dir).exists():
@@ -48,7 +56,14 @@ def build_status(evaluation, evidence_dir=None):
              and packet["scope"].get("model_version") == key[1]),
             None,
         )
+        lineage=row["lineage_coverage"]
+        lineage_complete=(lineage["scored_forecasts"]>0 and
+            lineage["with_model_code_revision"]==lineage["scored_forecasts"] and
+            lineage["with_training_data_sha256"]==lineage["scored_forecasts"] and
+            lineage["with_training_cutoff_utc"]==lineage["scored_forecasts"])
         blockers = list(BASE_BLOCKERS)
+        if not lineage_complete:
+            blockers.append("model_lineage_incomplete")
         eligible = False
         packet_name = None
         if packet_entry:
