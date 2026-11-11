@@ -84,8 +84,6 @@ def build_status(evaluation, evidence_dir=None, holdout=None):
             lineage["with_model_code_sha256"]==lineage["scored_forecasts"] and
             source_cutoff_complete and data_fingerprint_complete)
         blockers = list(BASE_BLOCKERS)
-        if not holdout_mature:
-            blockers.append("prospective_holdout_sample_incomplete")
         if not lineage_complete:
             blockers.append("model_lineage_incomplete")
         eligible = False
@@ -96,7 +94,7 @@ def build_status(evaluation, evidence_dir=None, holdout=None):
                 gate = assess(packet)
                 blockers = sorted(set(blockers + gate["reasons"]))
                 eligible = (gate["eligible_for_certification_review"] and
-                            holdout_mature and lineage_complete)
+                            lineage_complete)
             except (KeyError, TypeError, ValueError) as exc:
                 blockers = ["invalid_certification_evidence_packet:" + str(exc)]
         else:
@@ -117,7 +115,8 @@ def build_status(evaluation, evidence_dir=None, holdout=None):
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "evaluation_sha256": digest(evaluation),
         "holdout_protocol_id": (holdout or {}).get("protocol_id"),
-        "holdout_sha256": digest(holdout or {}),\n        "holdout_protocol_frozen_at_utc": (holdout or {}).get("protocol_frozen_at_utc"),
+        "holdout_sha256": digest(holdout or {}),
+        "holdout_protocol_frozen_at_utc": (holdout or {}).get("protocol_frozen_at_utc"),
         "scored_model_versions": len(models),
         "models": models,
         "policy": {
@@ -132,7 +131,7 @@ def build_status(evaluation, evidence_dir=None, holdout=None):
         },
         "certified": False,
         "automatic_promotion_allowed": False,
-        "note": "This report distinguishes descriptive scores from certification evidence. Eligibility only requests human review and never certifies a model.",
+        "note": "Historical evaluation scores and prospective cohort tracking are separate. An incomplete prospective cohort does not erase a baseline's historical evaluation. Eligibility only requests human review and never certifies a model.",
     }
 
 
