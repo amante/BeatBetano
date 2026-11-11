@@ -1,0 +1,48 @@
+.nba-team-details{margin:14px 0;border:1px solid #31556e;border-radius:14px;background:#10283b;overflow:hidden}
+.nba-team-summary{list-style:none;display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer}
+.nba-team-summary::-webkit-details-marker{display:none}
+.nba-team-summary:before{content:"＋";display:grid;place-items:center;flex:none;width:25px;height:25px;border-radius:8px;background:#173e54;color:#5ee1f3;font-size:16px}
+.nba-team-details[open]>.nba-team-summary:before{content:"−"}
+.nba-team-name{font-size:14px;color:#edf5fa}
+.nba-team-count{margin-left:auto;color:#a9c0cf;font-size:11px;font-weight:600}
+.nba-team-body{padding:0 15px 15px;border-top:1px solid #294b63}
+.nba-capture-time{margin:10px 0 14px;color:#91adbd!important;font-size:11px}
+.nba-lineup-section{padding:13px;border-radius:12px;background:#143149;border:1px solid #31536a}
+.nba-lineup-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.nba-lineup-heading h4{margin:0;color:#eaf4f8;font-size:13px}
+.nba-lineup-badge{padding:4px 9px;border-radius:999px;font-size:10px;font-weight:750;background:#26394b;color:#c7d4de;border:1px solid #526577}
+.nba-lineup-badge.is-projected{background:#3a321d;color:#ffdb87;border-color:#796438}
+.nba-lineup-badge.is-confirmed{background:#193c35;color:#90ebc0;border-color:#34765c}
+.nba-player-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.nba-starters-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+.nba-player-card{display:flex;align-items:center;gap:8px;min-width:0;padding:9px 10px;border:1px solid #2c4e65;border-radius:10px;background:#10283b}
+.nba-player-number{display:grid;place-items:center;flex:none;width:22px;height:22px;border-radius:7px;background:#1a4960;color:#74e2f2;font-size:9px;font-weight:800}
+.nba-player-name{min-width:0;overflow-wrap:anywhere;color:#e3eef4;font-size:11px}
+.nba-player-status{margin-left:auto;flex:none;padding:3px 6px;border-radius:999px;background:#21384a;color:#b8cbd7;font-size:9px;line-height:1.25;text-align:center}
+.nba-player-starter{border-color:#356176}
+.nba-player-starter .nba-player-status{color:#9beafa;background:#163d51}
+.nba-player-out{border-color:#773f4c;background:#321f2b}
+.nba-player-out .nba-player-status{background:#512632;color:#ff9da1}
+.nba-player-doubt{border-color:#725d35;background:#302a1d}
+.nba-player-doubt .nba-player-status{background:#50401f;color:#ffda83}
+.nba-player-available .nba-player-status{background:#193c35;color:#9be7be}
+.nba-status-group{margin-top:13px;padding:12px;border:1px solid #294b63;border-radius:12px;background:#102638}
+.nba-status-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px;color:#d9e7ee;font-size:12px}
+.nba-status-count{display:grid;place-items:center;min-width:23px;height:23px;padding:0 6px;border-radius:999px;background:#213d51;color:#d8e9f1;font-size:10px}
+.nba-status-out{border-color:#6c3d49;background:#2c1d28}
+.nba-status-out .nba-status-heading,.nba-status-out .nba-status-count{color:#ff9da1}
+.nba-status-out .nba-status-count{background:#522632}
+.nba-status-doubt{border-color:#6b5934;background:#2b271e}
+.nba-status-doubt .nba-status-heading,.nba-status-doubt .nba-status-count{color:#ffdc88}
+.nba-roster-details,.nba-unknown-details{margin-top:12px;border:1px solid #294b63;border-radius:11px;background:#102638}
+.nba-roster-details>summary,.nba-unknown-details>summary{list-style:none;padding:11px 13px;cursor:pointer;color:#d7e5ed;font-size:11px;font-weight:700}
+.nba-roster-details>summary::-webkit-details-marker,.nba-unknown-details>summary::-webkit-details-marker{display:none}
+.nba-roster-details>summary:before,.nba-unknown-details>summary:before{content:"＋";display:inline-grid;place-items:center;width:20px;height:20px;margin-right:8px;border-radius:6px;background:#173e54;color:#63dff1}
+.nba-roster-details[open]>summary:before,.nba-unknown-details[open]>summary:before{content:"−"}
+.nba-roster-details>.nba-status-group,.nba-roster-details>.nba-unknown-details,.nba-roster-details>.nba-roster-note{margin:0 12px 12px}
+.nba-unknown-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 16px;margin:0;padding:4px 22px 14px;color:#a9c0cf;font-size:11px}
+.nba-roster-note{color:#91a9b8!important;font-size:10px;line-height:1.55}
+.nba-source-warning{margin:13px 0 0;padding:10px 12px;border:1px solid #6a5937;border-radius:10px;background:#302a1f;color:#ffe0a0!important;font-size:11px;line-height:1.5}
+.nba-section-empty,.nba-coverage-empty{padding:10px 12px;border-radius:10px;background:#102638;color:#a9c0cf!important;font-size:11px}
+@media(max-width:800px){.nba-starters-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.nba-player-grid,.nba-starters-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nba-team-summary{padding:11px}.nba-team-body{padding:0 10px 10px}.nba-lineup-section{padding:10px}.nba-player-card{align-items:flex-start;flex-wrap:wrap}.nba-player-status{margin-left:30px}.nba-unknown-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
