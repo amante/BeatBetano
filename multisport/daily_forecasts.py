@@ -55,6 +55,11 @@ def publish(sport,source,archive,revision='unrecorded',final_window_minutes=30,l
         single['events'][0]['forecast']['stage']=stage
         single['source_output_sha256']=digest(source)
         single['source_model_output']=copy.deepcopy(source_event(sport,source,event['event_id']))
+        declared=source.get('model_provenance')
+        if isinstance(declared,dict):
+            single['model_provenance']=copy.deepcopy(declared)
+            single['model_provenance']['forecast_model_version']=event['forecast']['model_version']
+            single['model_provenance']['source_output_sha256']=single['source_output_sha256']
         if prior and utc(prior['as_of_utc'])==utc(report['as_of_utc']):
             if prior['source_output_sha256']!=single['source_output_sha256']:
                 raise ValueError('Changed output with identical source cutoff')
