@@ -5,6 +5,7 @@ Current roster membership does not establish availability. Projected starters
 do not establish a complete active roster. Conflicting statuses stay unresolved.
 """
 import argparse,json
+from starting_lineup_minutes import resolve_starter_ids
 from datetime import datetime,timezone
 from pathlib import Path
 
@@ -31,7 +32,15 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
    members=evidence.get("players",[])
    good=bool(observed and tip and observed<tip and evidence.get("source_url") and evidence.get("roster_complete") is True and isinstance(members,list) and len(members)>=5)
    selected=lineups.get("games",{}).get(gid,{}).get("teams",{}).get(team,{})
-   starter_names=selected.get("starters",[]) if selected.get("lineup_status") in ("confirmed","projected") else []
+   lineup_status=selected.get("lineup_status","unavailable")
+   lineup_source_url=selected.get("source_url")
+   lineup_observed_at=selected.get("observed_at_utc")
+   lineup_observed=utc(lineup_observed_at)
+   source_host=(__import__("urllib.parse",fromlist=["urlparse"]).urlparse(str(lineup_source_url)).hostname or "").lower()
+   lineup_names=selected.get("starters",[]) if (lineup_status in ("confirmed","projected")
+      and source_host.endswith("rotowire.com") and lineup_observed and tip and lineup_observed<tip
+      and isinstance(selected.get("starters"),list)) else []
+   starter_ids=resolve_starter_ids(members,lineup_names) if good else []
    status_rows=status_feed.get("games",{}).get(gid,{}).get("teams",{}).get(team,[])
    statuses={}
    for row in status_rows if isinstance(status_rows,list) else []:
@@ -59,14 +68,17 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
        if r.get(key) is not None:source[key]=r[key]
      status_sources.append(source)
     players.append({"player_id":pid,"player":name,"status":status,
-      "starter_projected":name in starter_names,
+      "starter_projected":pid in starter_ids,
+      "position_abbreviation":member.get("position_abbreviation",member.get("position")),
       "status_sources":status_sources,
       "max_minutes":member.get("max_minutes",48)})
    ready=good and not unresolved and all(p["status"] in ("available","out") for p in players)
    teams[team]={"roster_complete":bool(good),"roster_source":evidence.get("source_url") if good else None,
     "observed_at_utc":evidence.get("observed_at_utc") if good else None,
     "players":players if good else [],"unresolved_player_ids":unresolved if good else [],
-    "lineup_status":selected.get("lineup_status","unavailable"),"allocation_ready":bool(ready),
+    "lineup_status":lineup_status,"lineup_source_url":lineup_source_url if starter_ids else None,
+    "lineup_observed_at_utc":lineup_observed_at if starter_ids else None,
+    "starter_ids":starter_ids,"allocation_ready":bool(ready),
     "availability_source_verified":bool(ready),
     "status":"resolved" if ready else "unresolved_statuses" if good else "roster_unverified"}
   output[gid]={"teams":teams}
