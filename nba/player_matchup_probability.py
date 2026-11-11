@@ -11,6 +11,7 @@ import json
 import math
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 import time
 
 import requests
@@ -198,7 +199,7 @@ def _lineups(module_context, gid, home, away):
         starters = source.get("reported_starters", [])
         if source.get("lineup_status") not in ("projected", "confirmed") or len(starters) != 5:
             return None, "five_source_lineup_players_required:" + team
-        if not source.get("lineup_source", "").lower().endswith("rotowire.com"):
+        if not (urlparse(str(source.get("lineup_source", ""))).hostname or "").lower().endswith("rotowire.com"):
             return None, "lineup_source_unverified:" + team
         cleaned = []
         for player in starters:
