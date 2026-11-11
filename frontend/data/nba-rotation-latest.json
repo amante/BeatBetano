@@ -1,11 +1,11 @@
 {
   "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-  "emitted_at_utc": "2026-11-11T00:58:10.546010+00:00",
-  "fixtures": 5,
-  "research_scenarios": 1,
+  "emitted_at_utc": "2026-11-11T01:01:30.832477+00:00",
+  "fixtures": 4,
+  "research_scenarios": 0,
   "official_injury_impact_summary": {
-    "games_with_injury_scenario": 5,
-    "official_out_players": 0,
+    "games_with_injury_scenario": 4,
+    "official_out_players": 18,
     "baseline_probabilities_changed": false,
     "calibrated": false
   },
@@ -13,128 +13,17 @@
   "source_failure": null,
   "games": [
     {
-      "game_id": "401909961",
-      "emitted_at_utc": "2026-11-11T00:58:08.292774+00:00",
-      "tipoff_utc": "2026-11-11T01:00:00Z",
-      "home_team": "PHI",
-      "away_team": "BOS",
-      "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-      "baseline_snapshot_sha256": "124cd9205764bc70f4c0d0c28622f87993e8c08512bef7ff133e76460c780869",
-      "scenario_sha256": "d1d40a313570857544086bd9b0ff9eb50b0b40d0289c9385a50b65ed395adf24",
-      "coverage_sha256": "ba7dccfaf102f47bdc0454c6488156a8bf2c844eef1c74c6e8dab21569ff9db6",
-      "team_ml_sha256": "98fa0417498870b03471087152bd2cda274c20e34fd5204cb2e25e9ddd52aeaa",
-      "possession_sha256": "1f85849260c841034f6cd17de758ab9e1289b529b238a7ead3b12329ce841523",
-      "status": "PASS",
-      "rotation_rating_deltas": {
-        "PHI": {
-          "offense_delta_per_100": 0.06726891402492474,
-          "defense_delta_per_100": -0.14982734179601123,
-          "turnover_rate_delta": 0.0,
-          "forced_turnover_rate_delta": 0.0
-        },
-        "BOS": {
-          "offense_delta_per_100": 0.0,
-          "defense_delta_per_100": 0.0,
-          "turnover_rate_delta": 0.0,
-          "forced_turnover_rate_delta": 0.0
-        }
-      },
-      "blocked": {
-        "PHI": [
-          "insufficient_opponent_adjusted_ratings",
-          "unsupported_player_effect:4711297",
-          "unsupported_player_effect:4873090",
-          "unsupported_player_effect:4432446"
-        ],
-        "BOS": [
-          "insufficient_opponent_adjusted_ratings"
-        ]
-      },
-      "comparison": null,
-      "assumptions": [
-        "Conditional minutes and availability from the scenario.",
-        "Turnover pressure and fatigue held fixed across both branches.",
-        "Historical usage is a coverage check and does not alter the rating deltas."
-      ],
-      "calibrated": false,
-      "production_approved": false,
-      "no_odds_input": true,
-      "content_sha256": "1ab50df489860ae3223388a4d51078f312de45c0641c9e4d8f0a3e92f4c0f56e",
-      "official_injury_impact": {
-        "status": "research_only",
-        "emitted_at_utc": "2026-11-11T00:57:48.807624+00:00",
-        "teams": {
-          "PHI": {
-            "team": "PHI",
-            "roster_complete": true,
-            "official_report_capture_status": "report_not_retrieved",
-            "official_report_fixture_rows": 0,
-            "official_reported_players": [],
-            "conflicting_official_claims": [],
-            "official_out_count": 0,
-            "historical_output_loss_per_game": {
-              "points": 0.0,
-              "rebounds": 0.0,
-              "assists": 0.0,
-              "turnovers": 0.0
-            },
-            "players_without_historical_minutes": [],
-            "minute_redistribution": {
-              "status": "no_official_out_players",
-              "baseline": null,
-              "conditional": null,
-              "changes": []
-            },
-            "historical_output_from_added_minutes_per_game": null,
-            "replacement_history_gaps": [],
-            "players_without_confirmed_availability": 14,
-            "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
-            "all_player_changes_are_research_estimates": true
-          },
-          "BOS": {
-            "team": "BOS",
-            "roster_complete": true,
-            "official_report_capture_status": "report_not_retrieved",
-            "official_report_fixture_rows": 0,
-            "official_reported_players": [],
-            "conflicting_official_claims": [],
-            "official_out_count": 0,
-            "historical_output_loss_per_game": {
-              "points": 0.0,
-              "rebounds": 0.0,
-              "assists": 0.0,
-              "turnovers": 0.0
-            },
-            "players_without_historical_minutes": [],
-            "minute_redistribution": {
-              "status": "no_official_out_players",
-              "baseline": null,
-              "conditional": null,
-              "changes": []
-            },
-            "historical_output_from_added_minutes_per_game": null,
-            "replacement_history_gaps": [],
-            "players_without_confirmed_availability": 17,
-            "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
-            "all_player_changes_are_research_estimates": true
-          }
-        },
-        "probabilities_adjusted": false,
-        "baseline_snapshot_sha256": "124cd9205764bc70f4c0d0c28622f87993e8c08512bef7ff133e76460c780869"
-      }
-    },
-    {
       "game_id": "401909962",
-      "emitted_at_utc": "2026-11-11T00:58:08.292774+00:00",
+      "emitted_at_utc": "2026-11-11T01:01:30.120845+00:00",
       "tipoff_utc": "2026-11-11T02:00:00Z",
       "home_team": "PHX",
       "away_team": "LAC",
       "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-      "baseline_snapshot_sha256": "124cd9205764bc70f4c0d0c28622f87993e8c08512bef7ff133e76460c780869",
-      "scenario_sha256": "220cad51cd9ccb8126ecc0d0e5a790e1a9960fd74a17beabd4d5735e1c9d950d",
-      "coverage_sha256": "ba7dccfaf102f47bdc0454c6488156a8bf2c844eef1c74c6e8dab21569ff9db6",
-      "team_ml_sha256": "98fa0417498870b03471087152bd2cda274c20e34fd5204cb2e25e9ddd52aeaa",
-      "possession_sha256": "1f85849260c841034f6cd17de758ab9e1289b529b238a7ead3b12329ce841523",
+      "baseline_snapshot_sha256": "9b30fb58cb92c5314ce253654e5e6428d437a8f3490b46a385fdfb17c2e00a27",
+      "scenario_sha256": "0732ace4d880f3c66172259424a19431cb2836b2813d77eff32ddab064b01188",
+      "coverage_sha256": "cb904685d68f9470d53eb7bac3652367d34d634e74e8eab4d138822a1b61a534",
+      "team_ml_sha256": "45da395d542b4e8e71142983ac5eb3edb632a6b8b2d209cc873b4c3bc1b1be36",
+      "possession_sha256": "85a5c2c64fd8c73ba5f211a3fc96f900a0280955643ddfe0e6cc5ec4bb62f20a",
       "status": "PASS",
       "rotation_rating_deltas": {
         "PHX": {
@@ -144,15 +33,18 @@
           "forced_turnover_rate_delta": 0.0
         },
         "LAC": {
-          "offense_delta_per_100": 0.0,
-          "defense_delta_per_100": 0.0,
+          "offense_delta_per_100": -0.0015405924397948407,
+          "defense_delta_per_100": 0.008152995992285647,
           "turnover_rate_delta": 0.0,
           "forced_turnover_rate_delta": 0.0
         }
       },
       "blocked": {
         "LAC": [
-          "insufficient_opponent_adjusted_ratings"
+          "insufficient_opponent_adjusted_ratings",
+          "unsupported_player_effect:4845363",
+          "unsupported_player_effect:5105832",
+          "unsupported_player_effect:4065778"
         ]
       },
       "comparison": null,
@@ -164,28 +56,48 @@
       "calibrated": false,
       "production_approved": false,
       "no_odds_input": true,
-      "content_sha256": "ac679bfa5fd9939e5d52c53208edd06d1849310b8a124ce4e636e50aa40dee45",
+      "content_sha256": "15dc87f2071f493549cdffa9e78c0db7136bae218f105341fd61e44e6299af4e",
       "official_injury_impact": {
         "status": "research_only",
-        "emitted_at_utc": "2026-11-11T00:57:48.807624+00:00",
+        "emitted_at_utc": "2026-11-11T01:01:15.075649+00:00",
         "teams": {
           "PHX": {
             "team": "PHX",
             "roster_complete": true,
-            "official_report_capture_status": "report_not_retrieved",
-            "official_report_fixture_rows": 0,
-            "official_reported_players": [],
+            "official_report_capture_status": "rows_selected",
+            "official_report_fixture_rows": 9,
+            "official_reported_players": [
+              {
+                "player_id": "4701232",
+                "player": "Mark Williams",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              }
+            ],
             "conflicting_official_claims": [],
-            "official_out_count": 0,
+            "official_out_count": 1,
             "historical_output_loss_per_game": {
               "points": 0.0,
               "rebounds": 0.0,
               "assists": 0.0,
               "turnovers": 0.0
             },
-            "players_without_historical_minutes": [],
+            "players_without_historical_minutes": [
+              "4701232"
+            ],
             "minute_redistribution": {
-              "status": "no_official_out_players",
+              "status": "out_player_missing_minute_estimate",
+              "missing_out_player_ids": [
+                "4701232"
+              ],
               "baseline": null,
               "conditional": null,
               "changes": []
@@ -199,52 +111,153 @@
           "LAC": {
             "team": "LAC",
             "roster_complete": true,
-            "official_report_capture_status": "report_not_retrieved",
-            "official_report_fixture_rows": 0,
-            "official_reported_players": [],
+            "official_report_capture_status": "rows_selected",
+            "official_report_fixture_rows": 9,
+            "official_reported_players": [
+              {
+                "player_id": "6580",
+                "player": "Bradley Beal",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              },
+              {
+                "player_id": "4845363",
+                "player": "Cam Christie",
+                "official_status": "questionable",
+                "official_status_sources": [
+                  {
+                    "status": "questionable",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": {
+                  "sample_games": 3,
+                  "average_minutes": 4.33,
+                  "per_game": {
+                    "points": 1.667,
+                    "rebounds": 0.667,
+                    "assists": 0.333,
+                    "turnovers": 0.667
+                  },
+                  "observed_through_utc": "2026-11-11T01:00:53.257516+00:00"
+                }
+              },
+              {
+                "player_id": "3913176",
+                "player": "Brandon Ingram",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              },
+              {
+                "player_id": "5105832",
+                "player": "Nick Martinelli",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": {
+                  "sample_games": 3,
+                  "average_minutes": 4.33,
+                  "per_game": {
+                    "points": 5.0,
+                    "rebounds": 1.0,
+                    "assists": 0.0,
+                    "turnovers": 0.333
+                  },
+                  "observed_through_utc": "2026-11-11T01:00:53.257516+00:00"
+                },
+                "estimated_minutes_lost": 4.33
+              },
+              {
+                "player_id": "4396818",
+                "player": "Jordan Miller",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              }
+            ],
             "conflicting_official_claims": [],
-            "official_out_count": 0,
+            "official_out_count": 4,
             "historical_output_loss_per_game": {
-              "points": 0.0,
-              "rebounds": 0.0,
+              "points": 5.0,
+              "rebounds": 1.0,
               "assists": 0.0,
-              "turnovers": 0.0
+              "turnovers": 0.33
             },
-            "players_without_historical_minutes": [],
+            "players_without_historical_minutes": [
+              "3913176",
+              "4396818",
+              "6580"
+            ],
             "minute_redistribution": {
-              "status": "no_official_out_players",
+              "status": "out_player_missing_minute_estimate",
+              "missing_out_player_ids": [
+                "3913176",
+                "4396818",
+                "6580"
+              ],
               "baseline": null,
               "conditional": null,
               "changes": []
             },
             "historical_output_from_added_minutes_per_game": null,
             "replacement_history_gaps": [],
-            "players_without_confirmed_availability": 15,
+            "players_without_confirmed_availability": 14,
             "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
             "all_player_changes_are_research_estimates": true
           }
         },
         "probabilities_adjusted": false,
-        "baseline_snapshot_sha256": "124cd9205764bc70f4c0d0c28622f87993e8c08512bef7ff133e76460c780869"
+        "baseline_snapshot_sha256": "9b30fb58cb92c5314ce253654e5e6428d437a8f3490b46a385fdfb17c2e00a27"
       }
     },
     {
       "game_id": "401909963",
-      "emitted_at_utc": "2026-11-11T00:58:08.292774+00:00",
+      "emitted_at_utc": "2026-11-11T01:01:30.120845+00:00",
       "tipoff_utc": "2026-11-11T02:00:00Z",
       "home_team": "UTAH",
       "away_team": "MIA",
       "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-      "baseline_snapshot_sha256": "124cd9205764bc70f4c0d0c28622f87993e8c08512bef7ff133e76460c780869",
-      "scenario_sha256": "59ed803188de08ca34765020a369d3b197a3796eaf15ccd77c57e2363bfe9da0",
-      "coverage_sha256": "ba7dccfaf102f47bdc0454c6488156a8bf2c844eef1c74c6e8dab21569ff9db6",
-      "team_ml_sha256": "98fa0417498870b03471087152bd2cda274c20e34fd5204cb2e25e9ddd52aeaa",
-      "possession_sha256": "1f85849260c841034f6cd17de758ab9e1289b529b238a7ead3b12329ce841523",
+      "baseline_snapshot_sha256": "9b30fb58cb92c5314ce253654e5e6428d437a8f3490b46a385fdfb17c2e00a27",
+      "scenario_sha256": "5f003032efc145f5a4a2f3be06dee5294470c640f48d2a0aaf611b9e37a4c7d6",
+      "coverage_sha256": "cb904685d68f9470d53eb7bac3652367d34d634e74e8eab4d138822a1b61a534",
+      "team_ml_sha256": "45da395d542b4e8e71142983ac5eb3edb632a6b8b2d209cc873b4c3bc1b1be36",
+      "possession_sha256": "85a5c2c64fd8c73ba5f211a3fc96f900a0280955643ddfe0e6cc5ec4bb62f20a",
       "status": "PASS",
       "rotation_rating_deltas": {
         "UTAH": {
-          "offense_delta_per_100": 0.15627491231763946,
-          "defense_delta_per_100": 0.0724808774575603,
+          "offense_delta_per_100": 0.16431820347430168,
+          "defense_delta_per_100": 0.06724300030545137,
           "turnover_rate_delta": 0.0,
           "forced_turnover_rate_delta": 0.0
         },
@@ -276,44 +289,89 @@
       "calibrated": false,
       "production_approved": false,
       "no_odds_input": true,
-      "content_sha256": "95f7c2f593e596ee77d0015f824b8af816564ad0e41cbdb898fadd8a6c828438",
+      "content_sha256": "3bd36f84eca36afbc84822898233c7a4dc2bb23ae2a236fc0513b6e8dcbeafc2",
       "official_injury_impact": {
         "status": "research_only",
-        "emitted_at_utc": "2026-11-11T00:57:48.807624+00:00",
+        "emitted_at_utc": "2026-11-11T01:01:15.075649+00:00",
         "teams": {
           "UTAH": {
             "team": "UTAH",
             "roster_complete": true,
-            "official_report_capture_status": "report_not_retrieved",
-            "official_report_fixture_rows": 0,
-            "official_reported_players": [],
+            "official_report_capture_status": "rows_selected",
+            "official_report_fixture_rows": 2,
+            "official_reported_players": [
+              {
+                "player_id": "4433268",
+                "player": "Trey Alexander",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              }
+            ],
             "conflicting_official_claims": [],
-            "official_out_count": 0,
+            "official_out_count": 1,
             "historical_output_loss_per_game": {
               "points": 0.0,
               "rebounds": 0.0,
               "assists": 0.0,
               "turnovers": 0.0
             },
-            "players_without_historical_minutes": [],
+            "players_without_historical_minutes": [
+              "4433268"
+            ],
             "minute_redistribution": {
-              "status": "no_official_out_players",
+              "status": "out_player_missing_minute_estimate",
+              "missing_out_player_ids": [
+                "4433268"
+              ],
               "baseline": null,
               "conditional": null,
               "changes": []
             },
             "historical_output_from_added_minutes_per_game": null,
             "replacement_history_gaps": [],
-            "players_without_confirmed_availability": 14,
+            "players_without_confirmed_availability": 13,
             "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
             "all_player_changes_are_research_estimates": true
           },
           "MIA": {
             "team": "MIA",
             "roster_complete": true,
-            "official_report_capture_status": "report_not_retrieved",
-            "official_report_fixture_rows": 0,
-            "official_reported_players": [],
+            "official_report_capture_status": "rows_selected",
+            "official_report_fixture_rows": 2,
+            "official_reported_players": [
+              {
+                "player_id": "3032977",
+                "player": "Giannis Antetokounmpo",
+                "official_status": "probable",
+                "official_status_sources": [
+                  {
+                    "status": "probable",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": {
+                  "sample_games": 5,
+                  "average_minutes": 34.2,
+                  "per_game": {
+                    "points": 27.4,
+                    "rebounds": 14.4,
+                    "assists": 6.0,
+                    "turnovers": 4.0
+                  },
+                  "observed_through_utc": "2026-11-11T01:00:54.158589+00:00"
+                }
+              }
+            ],
             "conflicting_official_claims": [],
             "official_out_count": 0,
             "historical_output_loss_per_game": {
@@ -337,22 +395,22 @@
           }
         },
         "probabilities_adjusted": false,
-        "baseline_snapshot_sha256": "124cd9205764bc70f4c0d0c28622f87993e8c08512bef7ff133e76460c780869"
+        "baseline_snapshot_sha256": "9b30fb58cb92c5314ce253654e5e6428d437a8f3490b46a385fdfb17c2e00a27"
       }
     },
     {
       "game_id": "401909964",
-      "emitted_at_utc": "2026-11-11T00:58:08.292774+00:00",
+      "emitted_at_utc": "2026-11-11T01:01:30.120845+00:00",
       "tipoff_utc": "2026-11-11T03:00:00Z",
       "home_team": "SAC",
       "away_team": "ORL",
       "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-      "baseline_snapshot_sha256": "124cd9205764bc70f4c0d0c28622f87993e8c08512bef7ff133e76460c780869",
-      "scenario_sha256": "0abf87c95412177899f513122a6c1bd815b11051a7cd1b7392b0a3e34b7dd80c",
-      "coverage_sha256": "ba7dccfaf102f47bdc0454c6488156a8bf2c844eef1c74c6e8dab21569ff9db6",
-      "team_ml_sha256": "98fa0417498870b03471087152bd2cda274c20e34fd5204cb2e25e9ddd52aeaa",
-      "possession_sha256": "1f85849260c841034f6cd17de758ab9e1289b529b238a7ead3b12329ce841523",
-      "status": "research_scenario",
+      "baseline_snapshot_sha256": "9b30fb58cb92c5314ce253654e5e6428d437a8f3490b46a385fdfb17c2e00a27",
+      "scenario_sha256": "9bf80ae6a70545da180d098eea48d9a1e72e47be7c9424bfcc89cbcdae7a84c1",
+      "coverage_sha256": "cb904685d68f9470d53eb7bac3652367d34d634e74e8eab4d138822a1b61a534",
+      "team_ml_sha256": "45da395d542b4e8e71142983ac5eb3edb632a6b8b2d209cc873b4c3bc1b1be36",
+      "possession_sha256": "85a5c2c64fd8c73ba5f211a3fc96f900a0280955643ddfe0e6cc5ec4bb62f20a",
+      "status": "PASS",
       "rotation_rating_deltas": {
         "SAC": {
           "offense_delta_per_100": 0.0,
@@ -367,173 +425,12 @@
           "forced_turnover_rate_delta": 0.0
         }
       },
-      "blocked": {},
-      "comparison": {
-        "reference": {
-          "teams": {
-            "SAC": {
-              "offense_delta_per_100": 0.0,
-              "defense_delta_per_100": 0.0,
-              "turnover_rate_delta": 0.0,
-              "forced_turnover_rate_delta": 0.0
-            },
-            "ORL": {
-              "offense_delta_per_100": 0.0,
-              "defense_delta_per_100": 0.0,
-              "turnover_rate_delta": 0.0,
-              "forced_turnover_rate_delta": 0.0
-            }
-          },
-          "projections": {
-            "SAC": {
-              "availability_adjusted_ortg": 108.38082570801838,
-              "availability_adjusted_drtg": 112.15084588749717,
-              "possessions": 98.26666666666667,
-              "ppp": 1.0972673839420497,
-              "regulation_points": 107.82480826203874,
-              "turnover_rate": 0.15732893769327128,
-              "expected_turnovers": 15.460190277325458,
-              "turnover_pressure_delta_ppp": 0.010474309800161025,
-              "points_after_opponent_turnovers": 15.97113042325641,
-              "transition_bonus": 0,
-              "offensive_explosiveness": {
-                "observed_blocks": 101,
-                "eight_plus_points_in_four_non_turnover_possessions": 0.09900990099009901
-              }
-            },
-            "ORL": {
-              "availability_adjusted_ortg": 106.45260882310315,
-              "availability_adjusted_drtg": 110.78785435868194,
-              "possessions": 98.26666666666667,
-              "ppp": 1.096850899338631,
-              "regulation_points": 107.7838817083428,
-              "turnover_rate": 0.14812111127935362,
-              "expected_turnovers": 14.555367868384483,
-              "turnover_pressure_delta_ppp": 0.01571007875774219,
-              "points_after_opponent_turnovers": 17.804899872175046,
-              "transition_bonus": 0.07635289760841318,
-              "offensive_explosiveness": {
-                "observed_blocks": 118,
-                "eight_plus_points_in_four_non_turnover_possessions": 0.2457627118644068
-              }
-            }
-          },
-          "path": {
-            "probabilities": {
-              "home_ml": 0.48125,
-              "away_ml": 0.51875,
-              "home_plus20": 0.224,
-              "away_plus20": 0.228,
-              "either_plus20": 0.45175,
-              "both_plus20": 0.00025
-            },
-            "monte_carlo_se": {
-              "home_ml": 0.007900133503618784,
-              "away_ml": 0.007900133503618784,
-              "home_plus20": 0.006592116503824853,
-              "away_plus20": 0.0066335510852031584,
-              "either_plus20": 0.007868798153148929,
-              "both_plus20": 0.0002499687480466308
-            },
-            "mean_points_including_overtime": {
-              "home": 107.98825,
-              "away": 108.35025
-            },
-            "simulations": 4000,
-            "seed": 2026271,
-            "includes_overtime": true,
-            "overtime_games": 85,
-            "method": "empirical_four_possession_block_tilt_v1",
-            "calibrated": false
-          }
-        },
-        "conditional": {
-          "teams": {
-            "SAC": {
-              "offense_delta_per_100": 0.0,
-              "defense_delta_per_100": 0.0,
-              "turnover_rate_delta": 0.0,
-              "forced_turnover_rate_delta": 0.0
-            },
-            "ORL": {
-              "offense_delta_per_100": 0.0,
-              "defense_delta_per_100": 0.0,
-              "turnover_rate_delta": 0.0,
-              "forced_turnover_rate_delta": 0.0
-            }
-          },
-          "projections": {
-            "SAC": {
-              "availability_adjusted_ortg": 108.38082570801838,
-              "availability_adjusted_drtg": 112.15084588749717,
-              "possessions": 98.26666666666667,
-              "ppp": 1.0972673839420497,
-              "regulation_points": 107.82480826203874,
-              "turnover_rate": 0.15732893769327128,
-              "expected_turnovers": 15.460190277325458,
-              "turnover_pressure_delta_ppp": 0.010474309800161025,
-              "points_after_opponent_turnovers": 15.97113042325641,
-              "transition_bonus": 0,
-              "offensive_explosiveness": {
-                "observed_blocks": 101,
-                "eight_plus_points_in_four_non_turnover_possessions": 0.09900990099009901
-              }
-            },
-            "ORL": {
-              "availability_adjusted_ortg": 106.45260882310315,
-              "availability_adjusted_drtg": 110.78785435868194,
-              "possessions": 98.26666666666667,
-              "ppp": 1.096850899338631,
-              "regulation_points": 107.7838817083428,
-              "turnover_rate": 0.14812111127935362,
-              "expected_turnovers": 14.555367868384483,
-              "turnover_pressure_delta_ppp": 0.01571007875774219,
-              "points_after_opponent_turnovers": 17.804899872175046,
-              "transition_bonus": 0.07635289760841318,
-              "offensive_explosiveness": {
-                "observed_blocks": 118,
-                "eight_plus_points_in_four_non_turnover_possessions": 0.2457627118644068
-              }
-            }
-          },
-          "path": {
-            "probabilities": {
-              "home_ml": 0.48125,
-              "away_ml": 0.51875,
-              "home_plus20": 0.224,
-              "away_plus20": 0.228,
-              "either_plus20": 0.45175,
-              "both_plus20": 0.00025
-            },
-            "monte_carlo_se": {
-              "home_ml": 0.007900133503618784,
-              "away_ml": 0.007900133503618784,
-              "home_plus20": 0.006592116503824853,
-              "away_plus20": 0.0066335510852031584,
-              "either_plus20": 0.007868798153148929,
-              "both_plus20": 0.0002499687480466308
-            },
-            "mean_points_including_overtime": {
-              "home": 107.98825,
-              "away": 108.35025
-            },
-            "simulations": 4000,
-            "seed": 2026271,
-            "includes_overtime": true,
-            "overtime_games": 85,
-            "method": "empirical_four_possession_block_tilt_v1",
-            "calibrated": false
-          }
-        },
-        "delta": {
-          "home_ml": 0.0,
-          "away_ml": 0.0,
-          "home_plus20": 0.0,
-          "away_plus20": 0.0,
-          "either_plus20": 0.0,
-          "both_plus20": 0.0
-        }
+      "blocked": {
+        "ORL": [
+          "insufficient_opponent_adjusted_ratings"
+        ]
       },
+      "comparison": null,
       "assumptions": [
         "Conditional minutes and availability from the scenario.",
         "Turnover pressure and fatigue held fixed across both branches.",
@@ -542,55 +439,193 @@
       "calibrated": false,
       "production_approved": false,
       "no_odds_input": true,
-      "content_sha256": "0722793f8a62ff438a4959a04890206f765ae2e19ff62649bdcb0fdfcabf7ac0",
+      "content_sha256": "c78a856e22f0b0a2a98a7c9ac702b77e876ec3148d12dbea4ba28791e94f3453",
       "official_injury_impact": {
         "status": "research_only",
-        "emitted_at_utc": "2026-11-11T00:57:48.807624+00:00",
+        "emitted_at_utc": "2026-11-11T01:01:15.075649+00:00",
         "teams": {
           "SAC": {
             "team": "SAC",
             "roster_complete": true,
-            "official_report_capture_status": "report_not_retrieved",
-            "official_report_fixture_rows": 0,
-            "official_reported_players": [],
+            "official_report_capture_status": "rows_selected",
+            "official_report_fixture_rows": 13,
+            "official_reported_players": [
+              {
+                "player_id": "5107897",
+                "player": "Jonathan Mogbo",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": {
+                  "sample_games": 2,
+                  "average_minutes": null,
+                  "per_game": {
+                    "points": null,
+                    "rebounds": null,
+                    "assists": null,
+                    "turnovers": null
+                  },
+                  "observed_through_utc": "2026-11-11T01:00:54.158589+00:00"
+                }
+              }
+            ],
             "conflicting_official_claims": [],
-            "official_out_count": 0,
+            "official_out_count": 1,
             "historical_output_loss_per_game": {
               "points": 0.0,
               "rebounds": 0.0,
               "assists": 0.0,
               "turnovers": 0.0
             },
-            "players_without_historical_minutes": [],
+            "players_without_historical_minutes": [
+              "5107897"
+            ],
             "minute_redistribution": {
-              "status": "no_official_out_players",
+              "status": "out_player_missing_minute_estimate",
+              "missing_out_player_ids": [
+                "5107897"
+              ],
               "baseline": null,
               "conditional": null,
               "changes": []
             },
             "historical_output_from_added_minutes_per_game": null,
             "replacement_history_gaps": [],
-            "players_without_confirmed_availability": 14,
+            "players_without_confirmed_availability": 13,
             "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
             "all_player_changes_are_research_estimates": true
           },
           "ORL": {
             "team": "ORL",
             "roster_complete": true,
-            "official_report_capture_status": "report_not_retrieved",
-            "official_report_fixture_rows": 0,
-            "official_reported_players": [],
+            "official_report_capture_status": "rows_selected",
+            "official_report_fixture_rows": 13,
+            "official_reported_players": [
+              {
+                "player_id": "4432573",
+                "player": "Paolo Banchero",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              },
+              {
+                "player_id": "4702382",
+                "player": "Tristan da Silva",
+                "official_status": "questionable",
+                "official_status_sources": [
+                  {
+                    "status": "questionable",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": {
+                  "sample_games": 5,
+                  "average_minutes": 31.8,
+                  "per_game": {
+                    "points": 15.6,
+                    "rebounds": 4.6,
+                    "assists": 1.6,
+                    "turnovers": 2.2
+                  },
+                  "observed_through_utc": "2026-11-11T01:00:53.626765+00:00"
+                }
+              },
+              {
+                "player_id": "4065654",
+                "player": "Jonathan Isaac",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              },
+              {
+                "player_id": "5107251",
+                "player": "Izaiyah Nelson",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              },
+              {
+                "player_id": "5214637",
+                "player": "Noah Penda",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              },
+              {
+                "player_id": "4432165",
+                "player": "Jalen Suggs",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              }
+            ],
             "conflicting_official_claims": [],
-            "official_out_count": 0,
+            "official_out_count": 5,
             "historical_output_loss_per_game": {
               "points": 0.0,
               "rebounds": 0.0,
               "assists": 0.0,
               "turnovers": 0.0
             },
-            "players_without_historical_minutes": [],
+            "players_without_historical_minutes": [
+              "4065654",
+              "4432165",
+              "4432573",
+              "5107251",
+              "5214637"
+            ],
             "minute_redistribution": {
-              "status": "no_official_out_players",
+              "status": "out_player_missing_minute_estimate",
+              "missing_out_player_ids": [
+                "4065654",
+                "4432165",
+                "4432573",
+                "5107251",
+                "5214637"
+              ],
               "baseline": null,
               "conditional": null,
               "changes": []
@@ -603,21 +638,21 @@
           }
         },
         "probabilities_adjusted": false,
-        "baseline_snapshot_sha256": "124cd9205764bc70f4c0d0c28622f87993e8c08512bef7ff133e76460c780869"
+        "baseline_snapshot_sha256": "9b30fb58cb92c5314ce253654e5e6428d437a8f3490b46a385fdfb17c2e00a27"
       }
     },
     {
       "game_id": "401909965",
-      "emitted_at_utc": "2026-11-11T00:58:08.292774+00:00",
+      "emitted_at_utc": "2026-11-11T01:01:30.120845+00:00",
       "tipoff_utc": "2026-11-11T04:00:00Z",
       "home_team": "POR",
       "away_team": "OKC",
       "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-      "baseline_snapshot_sha256": "124cd9205764bc70f4c0d0c28622f87993e8c08512bef7ff133e76460c780869",
-      "scenario_sha256": "7d7bd55b2186a6d0df07d72d8266a5c7b764019e039d55e4b0943ad7a1b8be70",
-      "coverage_sha256": "ba7dccfaf102f47bdc0454c6488156a8bf2c844eef1c74c6e8dab21569ff9db6",
-      "team_ml_sha256": "98fa0417498870b03471087152bd2cda274c20e34fd5204cb2e25e9ddd52aeaa",
-      "possession_sha256": "1f85849260c841034f6cd17de758ab9e1289b529b238a7ead3b12329ce841523",
+      "baseline_snapshot_sha256": "9b30fb58cb92c5314ce253654e5e6428d437a8f3490b46a385fdfb17c2e00a27",
+      "scenario_sha256": "ec519ffd63d5595234a669e6b08ba171ff6dbf629c33b2c37c70b2cf4b1dbc19",
+      "coverage_sha256": "cb904685d68f9470d53eb7bac3652367d34d634e74e8eab4d138822a1b61a534",
+      "team_ml_sha256": "45da395d542b4e8e71142983ac5eb3edb632a6b8b2d209cc873b4c3bc1b1be36",
+      "possession_sha256": "85a5c2c64fd8c73ba5f211a3fc96f900a0280955643ddfe0e6cc5ec4bb62f20a",
       "status": "PASS",
       "rotation_rating_deltas": {
         "POR": {
@@ -663,55 +698,178 @@
       "calibrated": false,
       "production_approved": false,
       "no_odds_input": true,
-      "content_sha256": "851c37720873d0e37123122010d878f0190f0cc53cea276cea364828d898a356",
+      "content_sha256": "ffda3a81a618950d54700282781eb43a6afa212e314de42fd7c285d72b5fb2f2",
       "official_injury_impact": {
         "status": "research_only",
-        "emitted_at_utc": "2026-11-11T00:57:48.807624+00:00",
+        "emitted_at_utc": "2026-11-11T01:01:15.075649+00:00",
         "teams": {
           "POR": {
             "team": "POR",
             "roster_complete": true,
-            "official_report_capture_status": "report_not_retrieved",
-            "official_report_fixture_rows": 0,
-            "official_reported_players": [],
+            "official_report_capture_status": "rows_selected",
+            "official_report_fixture_rows": 16,
+            "official_reported_players": [
+              {
+                "player_id": "4703889",
+                "player": "Jayson Kent",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": {
+                  "sample_games": 1,
+                  "average_minutes": null,
+                  "per_game": {
+                    "points": null,
+                    "rebounds": null,
+                    "assists": null,
+                    "turnovers": null
+                  },
+                  "observed_through_utc": "2026-11-11T01:00:53.774288+00:00"
+                }
+              },
+              {
+                "player_id": "4578893",
+                "player": "Vit Krejci",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": {
+                  "sample_games": 3,
+                  "average_minutes": 12.67,
+                  "per_game": {
+                    "points": 4.0,
+                    "rebounds": 2.333,
+                    "assists": 1.333,
+                    "turnovers": 0.0
+                  },
+                  "observed_through_utc": "2026-11-11T01:00:53.852174+00:00"
+                },
+                "estimated_minutes_lost": 12.67
+              },
+              {
+                "player_id": "4279888",
+                "player": "Ja Morant",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              },
+              {
+                "player_id": "4914336",
+                "player": "Shaedon Sharpe",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              },
+              {
+                "player_id": "4593043",
+                "player": "John Tonje",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              }
+            ],
             "conflicting_official_claims": [],
-            "official_out_count": 0,
+            "official_out_count": 5,
             "historical_output_loss_per_game": {
-              "points": 0.0,
-              "rebounds": 0.0,
-              "assists": 0.0,
+              "points": 4.0,
+              "rebounds": 2.33,
+              "assists": 1.33,
               "turnovers": 0.0
             },
-            "players_without_historical_minutes": [],
+            "players_without_historical_minutes": [
+              "4279888",
+              "4593043",
+              "4703889",
+              "4914336"
+            ],
             "minute_redistribution": {
-              "status": "no_official_out_players",
+              "status": "out_player_missing_minute_estimate",
+              "missing_out_player_ids": [
+                "4279888",
+                "4593043",
+                "4703889",
+                "4914336"
+              ],
               "baseline": null,
               "conditional": null,
               "changes": []
             },
             "historical_output_from_added_minutes_per_game": null,
             "replacement_history_gaps": [],
-            "players_without_confirmed_availability": 14,
+            "players_without_confirmed_availability": 12,
             "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
             "all_player_changes_are_research_estimates": true
           },
           "OKC": {
             "team": "OKC",
             "roster_complete": true,
-            "official_report_capture_status": "report_not_retrieved",
-            "official_report_fixture_rows": 0,
-            "official_reported_players": [],
+            "official_report_capture_status": "rows_selected",
+            "official_report_fixture_rows": 16,
+            "official_reported_players": [
+              {
+                "player_id": "4433255",
+                "player": "Chet Holmgren",
+                "official_status": "out",
+                "official_status_sources": [
+                  {
+                    "status": "out",
+                    "source_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-10_05_45PM.pdf",
+                    "reported_at_utc": "2026-11-10T22:45:00+00:00",
+                    "observed_at_utc": "2026-11-11T01:00:52.727260+00:00"
+                  }
+                ],
+                "historical": null
+              }
+            ],
             "conflicting_official_claims": [],
-            "official_out_count": 0,
+            "official_out_count": 1,
             "historical_output_loss_per_game": {
               "points": 0.0,
               "rebounds": 0.0,
               "assists": 0.0,
               "turnovers": 0.0
             },
-            "players_without_historical_minutes": [],
+            "players_without_historical_minutes": [
+              "4433255"
+            ],
             "minute_redistribution": {
-              "status": "no_official_out_players",
+              "status": "out_player_missing_minute_estimate",
+              "missing_out_player_ids": [
+                "4433255"
+              ],
               "baseline": null,
               "conditional": null,
               "changes": []
@@ -724,11 +882,11 @@
           }
         },
         "probabilities_adjusted": false,
-        "baseline_snapshot_sha256": "124cd9205764bc70f4c0d0c28622f87993e8c08512bef7ff133e76460c780869"
+        "baseline_snapshot_sha256": "9b30fb58cb92c5314ce253654e5e6428d437a8f3490b46a385fdfb17c2e00a27"
       }
     }
   ],
   "calibrated": false,
   "production_approved": false,
-  "content_sha256": "c7c4626caf0195dda11e80376daed5e9d50759df246a6d658c1b9cd10473270d"
+  "content_sha256": "09bbac82d689b71ccb194485ba927701cecaa038718522adeb66e85fe6f8469d"
 }
