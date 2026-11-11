@@ -256,6 +256,14 @@ def build(snapshot, availability, rotation, player_history, emitted_at=None):
     emitted_at = emitted_at or datetime.now(timezone.utc).isoformat()
     if utc(emitted_at) < utc(snapshot["created_at_utc"]):
         raise ValueError("Impact scenario predates the baseline")
+    # Archived player-game history is a JSON array; accept the older wrapper too.
+    if isinstance(player_history, list):
+        history_rows = player_history
+    elif isinstance(player_history, dict):
+        rows = player_history.get("players", [])
+        history_rows = rows if isinstance(rows, list) else []
+    else:
+        history_rows = []
     result = {}
     for game in snapshot.get("predictions", []):
         gid = str(game["game_id"])
@@ -273,7 +281,7 @@ def build(snapshot, availability, rotation, player_history, emitted_at=None):
             roster = availability_game.get(team, {})
             team_rotation = rotation_game.get(team, {})
             teams[team] = _team_impact(team, roster, team_rotation,
-                                       player_history.get("players", []), emitted_at, tipoff,
+                                       history_rows, emitted_at, tipoff,
                                        diagnostic)
         result[gid] = {"status": "research_only", "emitted_at_utc": emitted_at, "teams": teams,
                        "probabilities_adjusted": False,
