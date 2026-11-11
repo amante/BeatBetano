@@ -99,14 +99,23 @@ class ForecastEvaluationTests(unittest.TestCase):
         self.assertEqual(report["coverage"]["scored_forecast_groups"], 1)
 
     def test_tennis_score_is_not_guessed_from_raw_score_fields(self):
-        report = evaluate("/missing/archive", [{
-            "id": "1", "sport": "tennis", "home": "A", "away": "B",
-            "start_utc": "2026-11-07T18:00:00Z", "status": "STATUS_FINAL",
-            "completed": True, "home_score": "2", "away_score": "0",
-            "source_event_id": "1", "source": "test feed",
-        }])
+        start = "2026-11-07T18:00:00Z"
+        snap = frozen_snapshot(
+            "tennis", source("tennis", "1", "Player A", "Player B", start,
+                             "2026-11-07T10:00:00Z", .60),
+            instant=datetime(2026, 11, 7, 12, 0, tzinfo=timezone.utc),
+        )
+        history = [{
+            "id": "1", "source_event_id": "1", "sport": "tennis",
+            "home": "Player A", "away": "Player B", "start_utc": start,
+            "status": "STATUS_FINAL", "completed": True,
+            "home_score": "2", "away_score": "0", "source": "test feed",
+        }]
+        with tempfile.TemporaryDirectory() as tmp:
+            self.write_chain(tmp, "tennis", "1", [snap])
+            report = evaluate(tmp, history)
         self.assertFalse(report["groups"])
-        self.assertEqual(report["exclusion_counts"]["archive_missing"], 1)
+        self.assertEqual(report["exclusion_counts"]["sport_specific_winner_not_available"], 1)
         self.assertFalse(report["certification"]["certified"])
 
 
