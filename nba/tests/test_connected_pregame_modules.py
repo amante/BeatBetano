@@ -50,7 +50,7 @@ class ConnectedPregameModulesTests(unittest.TestCase):
     def test_travel_context_reports_distance_and_timezone_without_adjusting_probability(self):
         snapshot = self.snapshot()
         snapshot.pop("content_sha256")
-        snapshot["predictions"][0]["home_team"] = "NYK"
+        snapshot["predictions"][0]["home_team"] = "UTA"
         snapshot["predictions"][0]["away_team"] = "BOS"
         seal(snapshot)
         history = [{
@@ -58,15 +58,15 @@ class ConnectedPregameModulesTests(unittest.TestCase):
             "home_team": "BOS", "away_team": "MIA", "home_points": 110, "away_points": 105,
         }]
         result = build_travel(snapshot, history)
-        away = result["games"]["g1"]["teams"]["NYK"]
+        away = result["games"]["g1"]["teams"]["UTA"]
         self.assertEqual(away["status"], "no_prior_game_in_current_season")
         # Boston had its previous game at home and now travels to New York.
         home = result["games"]["g1"]["teams"]["BOS"]
         self.assertEqual(home["status"], "estimated_city_to_city_context")
-        self.assertGreater(home["travel_distance_km"], 250)
-        self.assertLess(home["travel_distance_km"], 350)
+        self.assertGreater(home["travel_distance_km"], 2500)
+        self.assertLess(home["travel_distance_km"], 3500)
         self.assertTrue(home["timezone_zone_changed"])
-        self.assertFalse(home["utc_offset_changed"])
+        self.assertTrue(home["utc_offset_changed"])
         self.assertFalse(result["probabilities_adjusted"])
 
     def test_context_reaches_daily_model_but_cannot_change_baseline_probability(self):
