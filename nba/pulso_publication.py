@@ -6,7 +6,7 @@ from datetime import datetime
 def digest(value):
  return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
 
-def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adjustment=None):
+def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adjustment=None,matchup_adjustment=None):
  body={k:v for k,v in snapshot.items() if k!='content_sha256'}
  snapshot_digest=digest(body)
  if snapshot.get('content_sha256')!=snapshot_digest:raise ValueError('Snapshot digest mismatch')
@@ -38,6 +38,16 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
   travel_games={str(row['game_id']):row for row in travel_adjustment.get('games',[])}
   if len(travel_games)!=len(travel_adjustment.get('games',[])) or set(travel_games)!={str(row['game_id']) for row in snapshot['predictions']}:
    raise ValueError('Travel adjustment must cover the full slate exactly')
+ matchup_games={}
+ if matchup_adjustment:
+  matchup_body={k:v for k,v in matchup_adjustment.items() if k!='content_sha256'}
+  if matchup_adjustment.get('content_sha256')!=digest(matchup_body):raise ValueError('Matchup adjustment digest mismatch')
+  if matchup_adjustment.get('snapshot_sha256')!=snapshot_digest:raise ValueError('Matchup adjustment / snapshot mismatch')
+  if matchup_adjustment.get('calibrated') is not False or matchup_adjustment.get('production_approved') is not False:
+   raise ValueError('Research matchup scenario must stay uncalibrated and unapproved')
+  matchup_games={str(row['game_id']):row for row in matchup_adjustment.get('games',[])}
+  if len(matchup_games)!=len(matchup_adjustment.get('games',[])) or set(matchup_games)!={str(row['game_id']) for row in snapshot['predictions']}:
+   raise ValueError('Matchup adjustment must cover the full slate exactly')
  for row in snapshot['predictions']:
   gid=str(row['game_id']);start=datetime.fromisoformat(row['tipoff_utc'].replace('Z','+00:00'))
   if gid in seen or start<=at or row['home_team']==row['away_team']:raise ValueError('Invalid pregame fixture')
@@ -52,8 +62,9 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
   modules=json.loads(json.dumps(module_games.get(gid,{}))) if module_context else {}
   candidate=adjustment_games.get(gid)
   model_home=baseline
-  injury_applied=False;travel_applied=False
+  injury_applied=False;travel_applied=False;matchup_applied=False
   travel=travel_games.get(gid)
+  matchup=matchup_games.get(gid)
   if candidate:
    if not math.isclose(candidate.get('base_home_probability',-1),baseline,rel_tol=0,abs_tol=1e-12):
     raise ValueError('Injury scenario baseline differs from frozen forecast')
@@ -78,6 +89,24 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
      if isinstance(module,dict):
       module['status']='research_scenario';module['affects_prediction']=True;module['entered_prediction']=True
       module['detail']='El quinteto RotoWire, observado antes del partido, cambia el reparto de minutos usando el historial de cada jugador cuando fue titular; efecto experimental.'
+  if matchup:
+   if not math.isclose(matchup.get('base_home_probability',-1),baseline,rel_tol=0,abs_tol=1e-12):
+    raise ValueError('Matchup scenario baseline differs from frozen forecast')
+   copy['player_matchup_probability_scenario']=matchup
+   if matchup.get('status')=='research_scenario' and matchup.get('applied') is True:
+    delta=matchup.get('log_odds_delta')
+    expected=matchup.get('adjusted_home_probability')
+    standalone=1.0/(1.0+math.exp(-(math.log(baseline/(1.0-baseline))+delta))) if type(delta) in (int,float) and abs(delta)<=0.15 else None
+    if (standalone is None or type(expected) not in (int,float) or not math.isfinite(expected)
+        or not 0<expected<1 or not math.isclose(standalone,expected,rel_tol=0,abs_tol=1e-8)):
+     raise ValueError('Invalid bounded matchup research probability')
+    prior_model_home=model_home
+    model_home=1.0/(1.0+math.exp(-(math.log(prior_model_home/(1.0-prior_model_home))+delta)))
+    matchup_applied=not math.isclose(model_home,prior_model_home,rel_tol=0,abs_tol=1e-12)
+    module=modules.get('player_matchups')
+    if isinstance(module,dict):
+     module['status']='research_scenario';module['affects_prediction']=matchup_applied;module['entered_prediction']=matchup_applied
+     module['detail']='El historial de cruces atacante-defensor y el quinteto por posición modifican este candidato; la asignación futura es estimada, no confirmada, y sigue experimental.'
   if travel:
    copy['travel_probability_scenario']=travel
    if travel.get('status')=='research_scenario' and travel.get('applied') is True:
@@ -91,15 +120,18 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
     if isinstance(module,dict):
      module['status']='research_scenario';module['affects_prediction']=travel_applied;module['entered_prediction']=travel_applied
      module['detail']='El viaje y el cambio horario modifican este candidato porque el ajuste superó una validación cronológica separada; sigue experimental.'
-  if candidate or travel:
+  if candidate or travel or matchup:
    copy['model_p_home']=model_home
    copy['model_p_away']=1.0-model_home
-   copy['model_probability_status']=('injury_adjusted_research_candidate' if injury_applied else 'travel_adjusted_research_candidate' if travel_applied else 'baseline_only')
+   applied=[name for name,used in (('injury',injury_applied),('matchup',matchup_applied),('travel',travel_applied)) if used]
+   status_by_source={'injury':'injury_adjusted_research_candidate','matchup':'matchup_adjusted_research_candidate','travel':'travel_adjusted_research_candidate'}
+   copy['model_probability_status']=status_by_source[applied[0]] if len(applied)==1 else 'combined_research_candidate' if applied else 'baseline_only'
+   copy['probability_adjustments_applied']=applied
    copy['model_probability_calibrated']=False
   if module_context:copy['supporting_modules']=modules
   predictions.append(copy)
- research_count=sum(row.get('model_probability_status') in ('injury_adjusted_research_candidate','travel_adjusted_research_candidate') for row in predictions)
+ research_count=sum(row.get('model_probability_status') in ('injury_adjusted_research_candidate','matchup_adjusted_research_candidate','travel_adjusted_research_candidate','combined_research_candidate') for row in predictions)
  return dict(kind='nba_pulso_research_publication_v1',run_id=str(run_id),snapshot_sha256=snapshot_digest,created_at_utc=snapshot['created_at_utc'],predictions=predictions,calibrated=False,availability_and_lineups_included=bool(module_context),modules_change_probabilities=research_count>0,research_scenarios_affect_probabilities=research_count,source='frozen_nba_prospective_snapshot')
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--snapshot',required=True);p.add_argument('--run-id',required=True);p.add_argument('--output',required=True);p.add_argument('--module-context');p.add_argument('--injury-adjustment');p.add_argument('--travel-adjustment');a=p.parse_args();out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);context=json.loads(Path(a.module_context).read_text()) if a.module_context else None;adjustment=json.loads(Path(a.injury_adjustment).read_text()) if a.injury_adjustment else None;travel=json.loads(Path(a.travel_adjustment).read_text()) if a.travel_adjustment else None;out.write_text(json.dumps(build(json.loads(Path(a.snapshot).read_text()),a.run_id,context,adjustment,travel),indent=2,allow_nan=False))
+ p=argparse.ArgumentParser();p.add_argument('--snapshot',required=True);p.add_argument('--run-id',required=True);p.add_argument('--output',required=True);p.add_argument('--module-context');p.add_argument('--injury-adjustment');p.add_argument('--travel-adjustment');p.add_argument('--matchup-adjustment');a=p.parse_args();out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);context=json.loads(Path(a.module_context).read_text()) if a.module_context else None;adjustment=json.loads(Path(a.injury_adjustment).read_text()) if a.injury_adjustment else None;travel=json.loads(Path(a.travel_adjustment).read_text()) if a.travel_adjustment else None;matchup=json.loads(Path(a.matchup_adjustment).read_text()) if a.matchup_adjustment else None;out.write_text(json.dumps(build(json.loads(Path(a.snapshot).read_text()),a.run_id,context,adjustment,travel,matchup),indent=2,allow_nan=False))
