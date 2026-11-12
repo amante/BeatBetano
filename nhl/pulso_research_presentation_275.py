@@ -39,7 +39,7 @@ def present(slate,run_id=None):
     "home_win_ml":ml["home"] if ml else None,"away_win_ml":ml["away"] if ml else None,
     "goalie_A_vs_B_probabilities":None,"goalies_confirmed":False,
     "module_effects":g.get("module_effects",{}),
-    "model":"outcome-only-206-rest-context-v1" if markets else None,
+    "model":g.get("model_version") if markets else None,
     "probability_status":"research_experimental_not_official" if markets else "not_available"})
  if sum(g["status"]=="experimental_forecast" for g in output)!=slate["experimental_predicted_games"]:
   raise ValueError("Count mismatch")
