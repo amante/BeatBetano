@@ -129,8 +129,9 @@ def generate(fixtures,history,issued,source_sha256,schedule_context=None,lineup_
      z=math.log(max(1e-12,p_before)/max(1e-12,1-p_before))+rest["logit_adjustment"]
      p_after=1/(1+math.exp(-max(-30,min(30,z))))
      probs=[p_after,1-p_after]
-     effect={**rest,"probability_before":round(p_before,8),"probability_after":round(p_after,8),
+     effect["rest"]={**rest,"probability_before":round(p_before,8),"probability_after":round(p_after,8),
       "probability_delta_percentage_points":round((p_after-p_before)*100,4)}
+     model_version=REST_VERSION
     else:effect["rest"]=rest
     lineup=_lineup_effect(fixture,lineup_row,lineup_asof,issued,probs[cats.index("home")])
     if lineup.get("status")=="applied_experimental":
