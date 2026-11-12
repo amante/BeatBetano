@@ -272,6 +272,10 @@ jobs:
         if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' && hashFiles('results/nba/prospective/player_matchup_source.json') != '' }}
         run: |
           python nba/player_matchup_probability.py predict --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --matchups results/nba/prospective/player_matchup_source.json --history results/nba/history.json --output results/nba/prospective/player_matchup_probability.json
+      - name: Generate NBA player points, rebounds and assists projections
+        if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' && hashFiles('results/nba/player_game_history.json') != '' && hashFiles('results/nba/prospective/current_roster_feed.json') != '' }}
+        run: |
+          python nba/player_stat_projections.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --players results/nba/player_game_history.json --roster results/nba/prospective/current_roster_feed.json --output results/nba/prospective/player_stat_projections.json
       - name: Publish clearly labeled NBA baseline probabilities
         if: ${{ hashFiles('results/nba/prospective/nba_hoy.json') != '' }}
         run: python nba/preliminary_release.py --input results/nba/prospective/nba_hoy.json --output results/nba/prospective/nba_preliminary.json
@@ -307,6 +311,7 @@ jobs:
             results/nba/prospective/travel_probability.json
             results/nba/prospective/player_matchup_source.json
             results/nba/prospective/player_matchup_probability.json
+            results/nba/prospective/player_stat_projections.json
             results/nba/prospective/pregame_status.json
             results/nba/prospective/full_pregame_status.json
             results/nba/prospective/integrated_model.json
@@ -368,7 +373,7 @@ jobs:
       - name: Publish frozen NBA comparison to PULSO
         if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
         run: |
-          python nba/pulso_publication.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --injury-adjustment results/nba/prospective/injury_probability.json --travel-adjustment results/nba/prospective/travel_probability.json --matchup-adjustment results/nba/prospective/player_matchup_probability.json --run-id "${{ github.run_id }}" --output frontend/data/nba-predictions-latest.json
+          python nba/pulso_publication.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --injury-adjustment results/nba/prospective/injury_probability.json --travel-adjustment results/nba/prospective/travel_probability.json --matchup-adjustment results/nba/prospective/player_matchup_probability.json --player-stat-projections results/nba/prospective/player_stat_projections.json --run-id "${{ github.run_id }}" --output frontend/data/nba-predictions-latest.json
           mkdir -p nba/learning/predictions
           cp results/nba/prospective/snapshot_module_freeze.json "nba/learning/predictions/run-${{ github.run_id }}.json"
           git config user.name 'github-actions[bot]'
