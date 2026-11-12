@@ -1,0 +1,87 @@
+{
+  "sport": "nfl",
+  "as_of_utc": "2026-11-12T17:35:09.534482Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401873052",
+      "start_utc": "2026-11-13T01:15:00Z",
+      "participants": [
+        "NYG",
+        "WSH"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.508432,
+          "away": 0.491568
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nfl-historical-elo",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_output_sha256": "931c02a1139c538669aad267afaec8923b8f2e4a98478eacd5a48f6e77e15b5d",
+  "source_model_output": {
+    "event_id": "401873052",
+    "start_utc": "2026-11-13T01:15:00+00:00",
+    "participants": [
+      "NYG",
+      "WSH"
+    ],
+    "home_team": "NYG",
+    "away_team": "WSH",
+    "official_baseline": null,
+    "historical_elo_candidate": 0.508432,
+    "challenger": null,
+    "final_probability": null,
+    "away_probability": null,
+    "all_inputs_verified": false,
+    "independent_validation_passed": false,
+    "starting_lineups_verified": false,
+    "injury_report_verified": false,
+    "weather_verified": false,
+    "props": null,
+    "missing_evidence": [
+      "confirmed_inactives",
+      "starters",
+      "weather",
+      "matchups",
+      "independent_calibration"
+    ]
+  },
+  "model_provenance": {
+    "model_code_sha256": "8d0cbf6bed0b5df374e91050966404d69dc34aae5970680a2419525c52e6201b",
+    "data_role": "historical_elo_training_history",
+    "training_data_sha256": "f2aa2a0e991c9ff965a64e862f065fdc808ce9a33946dc3e32907325dd25aab8",
+    "training_cutoff_utc": "2026-11-09T00:00:00+00:00",
+    "model_code_revision": "7eaabd92113300446964b717990a9125b163dbc1",
+    "model_family": "nfl-historical-elo",
+    "forecast_model_version": "nfl-historical-elo",
+    "source_output_sha256": "931c02a1139c538669aad267afaec8923b8f2e4a98478eacd5a48f6e77e15b5d"
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-12T17:35:09.752678+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "28d1660cc79df44725858a95c3dbd95c1dd9121524a0c1181f2085b57a1ef4de"
+}

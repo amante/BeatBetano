@@ -1,10 +1,10 @@
 {
-  "as_of_utc": "2026-11-12T02:15:41.292007+00:00",
+  "as_of_utc": "2026-11-12T17:35:10.437044+00:00",
   "model_version": "NBA_LIVEDATA_TEAM_ML_RESEARCH_V1",
   "selection": "first_pregame_candidate_per_game",
-  "observed_fixtures": 24,
+  "observed_fixtures": 28,
   "candidate_fixtures": 19,
-  "pending_results": 10,
+  "pending_results": 0,
   "result_errors": [],
   "scored_games": [
     {
@@ -78,14 +78,100 @@
       "livedata_home": 0.400676,
       "emitted_at_utc": "2026-11-10T17:01:22.549653+00:00",
       "research_sha256": "d2dd65a4b3be77fb3696eb82791576a9eb42802260ae2395e10e10c177051774"
+    },
+    {
+      "game_id": "401909966",
+      "outcome_home": 1,
+      "hybrid_home": 0.6193839650817775,
+      "livedata_home": 0.629025,
+      "emitted_at_utc": "2026-11-11T03:48:23.629028+00:00",
+      "research_sha256": "fd83f79658f97e03ce6c6339d6876696477ea44436b92d7328f31e43c1b0efff"
+    },
+    {
+      "game_id": "401909967",
+      "outcome_home": 0,
+      "hybrid_home": 0.654043738470298,
+      "livedata_home": 0.616989,
+      "emitted_at_utc": "2026-11-11T03:48:23.629028+00:00",
+      "research_sha256": "fd83f79658f97e03ce6c6339d6876696477ea44436b92d7328f31e43c1b0efff"
+    },
+    {
+      "game_id": "401909968",
+      "outcome_home": 0,
+      "hybrid_home": 0.3387717689946945,
+      "livedata_home": 0.31245,
+      "emitted_at_utc": "2026-11-11T03:48:23.629028+00:00",
+      "research_sha256": "fd83f79658f97e03ce6c6339d6876696477ea44436b92d7328f31e43c1b0efff"
+    },
+    {
+      "game_id": "401909969",
+      "outcome_home": 0,
+      "hybrid_home": 0.16661881957875097,
+      "livedata_home": 0.151581,
+      "emitted_at_utc": "2026-11-11T03:48:23.629028+00:00",
+      "research_sha256": "fd83f79658f97e03ce6c6339d6876696477ea44436b92d7328f31e43c1b0efff"
+    },
+    {
+      "game_id": "401909970",
+      "outcome_home": 0,
+      "hybrid_home": 0.3680921112150932,
+      "livedata_home": 0.369892,
+      "emitted_at_utc": "2026-11-11T03:48:23.629028+00:00",
+      "research_sha256": "fd83f79658f97e03ce6c6339d6876696477ea44436b92d7328f31e43c1b0efff"
+    },
+    {
+      "game_id": "401909972",
+      "outcome_home": 0,
+      "hybrid_home": 0.707007291023502,
+      "livedata_home": 0.641696,
+      "emitted_at_utc": "2026-11-11T03:48:23.629028+00:00",
+      "research_sha256": "fd83f79658f97e03ce6c6339d6876696477ea44436b92d7328f31e43c1b0efff"
+    },
+    {
+      "game_id": "401909973",
+      "outcome_home": 0,
+      "hybrid_home": 0.31732866266857357,
+      "livedata_home": 0.354991,
+      "emitted_at_utc": "2026-11-11T03:48:23.629028+00:00",
+      "research_sha256": "fd83f79658f97e03ce6c6339d6876696477ea44436b92d7328f31e43c1b0efff"
+    },
+    {
+      "game_id": "401909974",
+      "outcome_home": 1,
+      "hybrid_home": 0.7036952613267944,
+      "livedata_home": 0.645888,
+      "emitted_at_utc": "2026-11-11T03:48:23.629028+00:00",
+      "research_sha256": "fd83f79658f97e03ce6c6339d6876696477ea44436b92d7328f31e43c1b0efff"
+    },
+    {
+      "game_id": "401909975",
+      "outcome_home": 1,
+      "hybrid_home": 0.3675594538754315,
+      "livedata_home": 0.352779,
+      "emitted_at_utc": "2026-11-11T03:48:23.629028+00:00",
+      "research_sha256": "fd83f79658f97e03ce6c6339d6876696477ea44436b92d7328f31e43c1b0efff"
+    },
+    {
+      "game_id": "401909971",
+      "outcome_home": 0,
+      "hybrid_home": 0.18321534790602875,
+      "livedata_home": 0.197171,
+      "emitted_at_utc": "2026-11-11T21:57:09.932382+00:00",
+      "research_sha256": "2e02f0c73d32efbfdb1202cfe052117861b44d3fabf98fbe7d3b854569a7dfa4"
     }
   ],
   "metrics": {
     "hybrid": {
-      "n": 9,
-      "brier": 0.18778762819771322,
-      "log_loss": 0.5563270942076728,
+      "n": 19,
+      "brier": 0.19277118802395635,
+      "log_loss": 0.5666504129592599,
       "calibration": [
+        {
+          "bin": 1,
+          "n": 2,
+          "mean_probability": 0.17491708374238985,
+          "observed_rate": 0.0
+        },
         {
           "bin": 2,
           "n": 1,
@@ -94,9 +180,9 @@
         },
         {
           "bin": 3,
-          "n": 1,
-          "mean_probability": 0.3648231214056771,
-          "observed_rate": 0.0
+          "n": 5,
+          "mean_probability": 0.351315023631894,
+          "observed_rate": 0.2
         },
         {
           "bin": 4,
@@ -105,10 +191,16 @@
           "observed_rate": 0.3333333333333333
         },
         {
+          "bin": 6,
+          "n": 2,
+          "mean_probability": 0.6367138517760378,
+          "observed_rate": 0.5
+        },
+        {
           "bin": 7,
-          "n": 3,
-          "mean_probability": 0.7400545358284109,
-          "observed_rate": 0.6666666666666666
+          "n": 5,
+          "mean_probability": 0.7261732319671058,
+          "observed_rate": 0.6
         },
         {
           "bin": 8,
@@ -119,15 +211,21 @@
       ]
     },
     "livedata": {
-      "n": 9,
-      "brier": 0.19301420809622222,
-      "log_loss": 0.5692583268849102,
+      "n": 19,
+      "brier": 0.19125298655052636,
+      "log_loss": 0.5637361528994806,
       "calibration": [
         {
-          "bin": 3,
+          "bin": 1,
           "n": 2,
-          "mean_probability": 0.314645,
-          "observed_rate": 0.5
+          "mean_probability": 0.174376,
+          "observed_rate": 0.0
+        },
+        {
+          "bin": 3,
+          "n": 6,
+          "mean_probability": 0.336567,
+          "observed_rate": 0.3333333333333333
         },
         {
           "bin": 4,
@@ -137,9 +235,9 @@
         },
         {
           "bin": 6,
-          "n": 1,
-          "mean_probability": 0.695203,
-          "observed_rate": 0.0
+          "n": 5,
+          "mean_probability": 0.6457602,
+          "observed_rate": 0.4
         },
         {
           "bin": 7,
@@ -157,7 +255,7 @@
     }
   },
   "delta_livedata_minus_hybrid": {
-    "brier": 0.005226579898508998,
-    "log_loss": 0.012931232677237392
+    "brier": -0.0015182014734299865,
+    "log_loss": -0.002914260059779239
   }
 }
