@@ -38,7 +38,8 @@ def present(slate,run_id=None):
     "first_to_plus3":markets["first3"] if markets else None,
     "home_win_ml":ml["home"] if ml else None,"away_win_ml":ml["away"] if ml else None,
     "goalie_A_vs_B_probabilities":None,"goalies_confirmed":False,
-    "model":"outcome-only-206-frozen-params" if markets else None,
+    "module_effects":g.get("module_effects",{}),
+    "model":"outcome-only-206-rest-context-v1" if markets else None,
     "probability_status":"research_experimental_not_official" if markets else "not_available"})
  if sum(g["status"]=="experimental_forecast" for g in output)!=slate["experimental_predicted_games"]:
   raise ValueError("Count mismatch")
@@ -49,7 +50,9 @@ def present(slate,run_id=None):
    "limitations":["Outcome-only research baseline, not validated full NHL model",
       "No goalie-conditioned A/B probabilities","RT includes regulation draw",
       "home_plus3 and away_plus3 are not complementary events",
-      "First-to-+3 includes neither team"]}
+      "First-to-+3 includes neither team",
+      "Rest adjusts the ML market only when both prior fixtures are confirmed completed; missing rest leaves that probability unchanged",
+      "Travel, officials, goalie, lineup and special-teams adjustments are not part of this rest candidate"]}
 def main():
  p=argparse.ArgumentParser();p.add_argument("--slate",required=True);p.add_argument("--out",required=True)
  p.add_argument("--run-id")
