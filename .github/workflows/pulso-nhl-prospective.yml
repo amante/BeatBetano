@@ -69,7 +69,7 @@ jobs:
         name: Check the NHL pregame capture window
         env:
           EVENT_NAME: ${{ github.event_name }}
-          REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
+          REQUESTED_DAY: ${{ inputs.day }}
         run: |
           python - <<'PY'
           import json, os, urllib.request
@@ -109,8 +109,8 @@ jobs:
                   active = False
                   print(f"Could not read NHL schedule; scheduled capture skipped: {type(exc).__name__}: {exc}")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"active={str(active).lower()}\\n")
-              output.write(f"day={day}\\n")
+              output.write(f"active={str(active).lower()}\n")
+              output.write(f"day={day}\n")
           PY
   test:
     needs: schedule-window
