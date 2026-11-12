@@ -111,7 +111,10 @@ def build(snapshot, module_context, player_history, roster_feed):
                 if type(minutes) not in (int, float) or not math.isfinite(minutes) or minutes < 0:
                     minutes = historical_minutes
                     minutes_source = "recent_historical_minutes_not_availability_adjusted"
-                if type(minutes) not in (int, float) or not math.isfinite(minutes) or minutes <= 0:
+                if availability_status == "out":
+                    minutes = None
+                    minutes_source = "officially_reported_out"
+                elif type(minutes) not in (int, float) or not math.isfinite(minutes) or minutes <= 0:
                     minutes = None
                     minutes_source = "insufficient_minutes_evidence"
                 metrics = {}
@@ -125,7 +128,7 @@ def build(snapshot, module_context, player_history, roster_feed):
                         weighted_minutes += float(row["minutes_played"]) * weight
                         weighted_stat += float(row[metric]) * weight
                     enough = len(sample) >= 3 and sum(float(row["minutes_played"]) for row in sample) >= 60
-                    metrics[metric + "_projection"] = round((weighted_stat / weighted_minutes) * minutes, 1) if enough and minutes else None
+                    metrics[metric + "_projection"] = round((weighted_stat / weighted_minutes) * minutes, 1) if enough and minutes and availability_status != "out" else None
                     metrics[metric + "_sample_games"] = len(sample)
                 reason = None
                 if availability_status == "out":
