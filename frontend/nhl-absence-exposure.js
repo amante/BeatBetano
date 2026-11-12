@@ -7,7 +7,8 @@ api.create=game=>{
  const root=make('details');root.className='nhl-absence-exposure';root.append(make('summary','Bajas, reemplazos y reparto de minutos'));
  const matches=(snapshot?.games||[]).filter(g=>String(g.game_id)===String(game.game_id)&&g.home===game.home&&g.away===game.away&&g.start_utc===game.start_utc);
  if(matches.length!==1||!Number.isFinite(Date.parse(snapshot.as_of_utc))||Date.parse(snapshot.as_of_utc)>=Date.parse(game.start_utc)){root.append(make('p','Balance pendiente de una captura previa al inicio para este encuentro.'));return root;}
- root.append(make('p','Escenario con tasas históricas por minuto. No cambia la probabilidad de victoria. Captura: '+new Date(snapshot.as_of_utc).toLocaleString('es-CL',{timeZone:'America/Santiago'})));
+ const applied=game.module_effects?.lineup_availability?.status==='applied_experimental';
+ root.append(make('p','Escenario con tasas históricas por minuto. '+(applied?'Este escenario experimental también ajustó Ganador; aún no está validado.':'No se aplicó a Ganador porque falta evidencia completa para ambos equipos.')+' Captura: '+new Date(snapshot.as_of_utc).toLocaleString('es-CL',{timeZone:'America/Santiago'})));
  for(const team of [game.away,game.home]){
   const s=matches[0].teams[team],box=make('section');box.append(make('h5',team));
   if(s?.status!=='conditional_replacement_scenario'){box.append(make('p','Faltan líneas o historiales completos para calcular el balance.'));root.append(box);continue;}
