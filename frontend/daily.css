@@ -2,3 +2,12 @@
 .simulation-panel{margin:26px 0}.simulation-panel p{color:#a8b7ba;font-size:12px}.simulation-options{border:1px solid #34484a;border-radius:8px;display:flex;flex-direction:column;gap:14px;margin:18px 0;padding:17px}.simulation-options legend{font-size:12px;color:#c6f981}.simulation-options label,.selection-item{display:flex;gap:11px;align-items:center;color:#d2e1da;font-size:13px}.simulation-options input,.selection-item input{accent-color:#c5fa67}.selection-item{padding:9px;border-bottom:1px solid #293a40}#simulation-selection{margin:15px 0}#simulation-status{min-height:25px;color:#c9f79a!important}.upload{text-decoration:none}.daily-controls .daily-import{display:none}
 
 .nba-current-run{margin:14px 0;padding:14px;border:1px solid #315872;border-radius:10px;background:#102a40}.nba-current-run h3{margin:0 0 8px;color:#dcecf4}.nba-current-run__game{margin:12px 0;padding:12px;border:1px solid #315872;border-radius:9px}.nba-current-run__game h4{margin:0 0 8px}.nba-module-run-status{margin:12px 0;padding:10px 12px;border:1px solid #315872;border-radius:9px;background:#0d2538}.nba-module-run-status summary{cursor:pointer;font-weight:700;color:#dcecf4}.nba-module-run-status__item{margin:8px 0;font-size:13px;line-height:1.45;font-weight:600}.nba-module-run-status__item--included{color:#83e0a2}.nba-module-run-status__item--available_not_used,.nba-module-run-status__item--pending{color:#ffd479}.nba-module-run-status__item--failed{color:#ff7777;font-weight:800}
+
+.nba-player-stat-projections__team{margin:14px 0 8px;color:#8be7f1}
+.nba-player-stat-projections__player{display:grid;grid-template-columns:minmax(150px,1fr) auto;gap:4px 12px;align-items:center;margin:8px 0;padding:9px 10px;border:1px solid #315872;border-radius:8px;background:#102a40}
+.nba-player-stat-projections__name{color:#eaf5fb}
+.nba-player-stat-projections__meta,.nba-player-stat-projections__notice{font-size:12px;color:#b8cbd7}
+.nba-player-stat-projections__notice{grid-column:1/-1;color:#ffd479}
+.nba-player-stat-projections__metrics{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}
+.nba-player-stat-projections__metric{padding:4px 8px;border-radius:999px;background:#173b53;color:#d8eff5;font-size:12px;font-weight:700}
+@media(max-width:640px){.nba-player-stat-projections__player{grid-template-columns:1fr}.nba-player-stat-projections__meta{grid-row:auto}}

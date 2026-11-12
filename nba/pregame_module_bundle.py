@@ -181,6 +181,7 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
                 "status": "available_not_used" if minutes_ready else "pending",
                 "entered_prediction": False, "historical_rotation": rotation_data,
                 "joint_allocation": minutes_data,
+                "availability_status": availability.get("games", {}).get(gid, {}),
                 "availability_scenarios": scenarios.get("games", {}).get(gid, {})},
             "availability_impact": {"connected": True, "affects_prediction": False,
                 "status": "available_not_used" if impact_ready else "pending",
