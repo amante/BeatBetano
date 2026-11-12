@@ -125,7 +125,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m unittest nhl.tests.test_joint_match_input_builder_321 nhl.tests.test_freeze_lineup_dataset nhl.tests.test_lineup_features nhl.tests.test_lineup_changes nhl.tests.test_prior_lineup_reference nhl.tests.test_skater_history nhl.tests.test_pulso_live_sporting_246 nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_schedule_context nhl.tests.test_special_teams_capture nhl.tests.test_sporting_connections nhl.tests.test_all_goalie_pairings nhl.tests.test_goalie_ml_inference nhl.tests.test_player_evidence nhl.tests.test_match_context nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
+      - run: python -m unittest nhl.tests.test_pulso_fixture_identity_248 nhl.tests.test_pulso_goalie_history_251 nhl.tests.test_pulso_goalie_daily_253 nhl.tests.test_pulso_source_coverage_249 nhl.tests.test_pulso_individual_evidence_247 nhl.tests.test_joint_match_input_builder_321 nhl.tests.test_freeze_lineup_dataset nhl.tests.test_lineup_features nhl.tests.test_lineup_changes nhl.tests.test_prior_lineup_reference nhl.tests.test_skater_history nhl.tests.test_pulso_live_sporting_246 nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_schedule_context nhl.tests.test_special_teams_capture nhl.tests.test_sporting_connections nhl.tests.test_all_goalie_pairings nhl.tests.test_goalie_ml_inference nhl.tests.test_player_evidence nhl.tests.test_match_context nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
   capture:
     if: github.event_name != 'pull_request' && (github.event_name == 'workflow_dispatch' || needs.schedule-window.outputs.active == 'true')
     needs: schedule-window
@@ -148,7 +148,7 @@ jobs:
         run: |
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
-          python -m unittest nhl.tests.test_pulso_fixture_identity_248 -v
+
           python -m nhl.pulso_fixture_identity_248 \
             --report "results/pulso/nhl/$DAY/report.json" \
             --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" \
@@ -157,7 +157,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/fixture_identity_248.json"
       - name: Cross-check external named goalie statuses
         run: |
-          python -m unittest nhl.tests.test_pulso_goalie_multisource_257 -v
+
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_multisource_257 \
@@ -166,7 +166,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/external_goalie_observations_257.json"
       - name: Classify goalie certainty without artificial PASS
         run: |
-          python -m unittest nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 -v
+
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_states_255 \
@@ -176,7 +176,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/goalie_states_255.json"
       - name: Prepare goalie-conditional scenario matrix
         run: |
-          python -m unittest nhl.tests.test_pulso_goalie_scenarios_258 -v
+
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_scenarios_258 \
@@ -188,7 +188,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/goalie_scenarios_258.json"
       - name: Integrate goalie-conditioned predictions with strict validation gate
         run: |
-          python -m unittest nhl.tests.test_pulso_goalie_conditioned_259 -v
+
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_conditioned_259 \
@@ -196,7 +196,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/goalie_conditioned_259.json"
       - name: Capture individual candidate goalie history before puck drop
         run: |
-          python -m unittest nhl.tests.test_pulso_goalie_history_251 -v
+
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_history_251 \
@@ -205,13 +205,13 @@ jobs:
             --out "results/pulso/nhl/$DAY/goalie_history_251.json"
       - name: Capture every candidate goalie history
         run: |
-          python -m unittest nhl.tests.test_pulso_goalie_candidates_260 -v
+
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_candidates_260 --scenarios "results/pulso/nhl/$DAY/goalie_scenarios_258.json" --report "results/pulso/nhl/$DAY/report.json" --out "results/pulso/nhl/$DAY/all_goalie_candidates_260.json"
       - name: Compute non-calibrated goalie performance indicators
         run: |
-          python -m unittest nhl.tests.test_pulso_goalie_daily_253 -v
+
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_daily_253 \
@@ -298,7 +298,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/individual_evidence_247.json"
       - name: Audit real fixture-level sporting source coverage
         run: |
-          python -m unittest nhl.tests.test_pulso_source_coverage_249 nhl.tests.test_pulso_goalie_integration_254 -v
+
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_source_coverage_249 \
@@ -310,7 +310,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/source_coverage_249.json"
       - name: Execute original NHL sporting module integrity contract
         run: |
-          python -m unittest nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_pulso_live_sporting_246 nhl.tests.test_pulso_individual_evidence_247 -v
+
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_sporting_core_245 \
