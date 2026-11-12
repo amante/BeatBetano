@@ -41,7 +41,7 @@
   "Existing Premier League season-frozen Poisson model; no current lineup adjustment.":"Base histórica de Premier League, sin ajuste de la alineación actual.",
   "Confirmed lineup and current availability":"Alineación confirmada y disponibilidad actual."
  };
- let data=null,error="";
+ let data=null,error="",lineupScenarioData=null;
  function render(){
   root.replaceChildren();
   const header=el("div",undefined,"forecast-heading"),heading=el("div");heading.append(el("div","PRONÓSTICOS · EVOLUCIÓN PREGAME","eyebrow"),el("h2","Predicciones y actualizaciones"));header.append(heading);
@@ -58,6 +58,7 @@
   const grid=el("div",undefined,"forecast-grid");
   for(const e of rows){
    const first=e.initial,last=e.latest,card=el("article",undefined,"forecast-card");
+   const lineupScenario=sport==="nhl"?(lineupScenarioData?.games||[]).find(g=>String(g.game_id)===String(e.event_id)&&Date.parse(g.start_utc)===Date.parse(e.start_utc)):null;
    const keys=Object.keys(last.probabilities),previous=e.history.length>1?e.history[e.history.length-2]:null;
    const noProbabilityChange=previous&&keys.every(key=>pct(previous.probabilities[key])===pct(last.probabilities[key]));
    const top=el("div",undefined,"forecast-card-top");top.append(el("span",noProbabilityChange?"Actualización · sin cambio":stages[last.stage],"forecast-badge"),el("span",Date.now()>=Date.parse(e.start_utc)?"Historial pregame · partido iniciado":last.source_classification==="illustrative"?"Ejemplo ilustrativo":last.calibration_certified?"Calibración certificada":"Sin calibración certificada","forecast-state"));card.append(top);
@@ -68,6 +69,24 @@
    for(const key of (sport==="soccer"?["home","draw","away"]:["home","away"])){
     const tr=el("tr");tr.append(el("th",key==="draw"?"Empate":e.participants[key==="home"?0:1]),el("td",pct(first.probabilities[key])),el("td",pct(last.probabilities[key])),el("td",change(e.delta[key])));body.append(tr);
    }table.append(body);card.append(table);
+   if(lineupScenario?.status==="experimental_minute_scenario"&&
+      Number.isFinite(lineupScenario.baseline_ml_home)&&Number.isFinite(lineupScenario.scenario_ml_home)&&
+      Number.isFinite(lineupScenario.baseline_ml_away)&&Number.isFinite(lineupScenario.scenario_ml_away)){
+    const panel=el("section",undefined,"nhl-lineup-scenario");
+    panel.append(el("h4","Disponibilidad y minutos · escenario experimental"));
+    panel.append(el("p","Esta simulación es independiente del historial de arriba; no lo reemplaza.","forecast-meta"));
+    panel.append(el("p",e.participants[0]+" (local): "+pct(lineupScenario.baseline_ml_home)+" → "+pct(lineupScenario.scenario_ml_home)));
+    panel.append(el("p",e.participants[1]+" (visita): "+pct(lineupScenario.baseline_ml_away)+" → "+pct(lineupScenario.scenario_ml_away)));
+    const delta=Number(lineupScenario.delta_home_pp);
+    panel.append(el("p","Cambio local: "+(delta>0?"+":"")+delta.toLocaleString("es-CL",{minimumFractionDigits:2,maximumFractionDigits:2})+" p.p. · corte "+local(lineupScenarioData.as_of_utc),"forecast-notice"));
+    panel.append(el("p","Sin validación predictiva; usa tasas históricas por minuto y Poisson independiente.","forecast-meta"));
+    card.append(panel);
+   }else if(lineupScenario?.status==="blocked"){
+    const pending=el("details",undefined,"nhl-lineup-scenario-pending");
+    pending.append(el("summary","Escenario experimental de disponibilidad no calculado"));
+    pending.append(el("p",lineupScenario.reason||"Falta evidencia completa para ambos equipos."));
+    card.append(pending);
+   }
    if(first.model_version!==last.model_version)card.append(el("p","La versión del modelo cambió entre estas corridas.","forecast-notice"));
    const info=el("details"),summary=el("summary","Supuestos e información pendiente");info.append(summary);
    info.append(el("p","Supuestos","forecast-detail-label"));for(const value of last.assumptions)info.append(el("p",textMap[value]||value));
@@ -83,7 +102,9 @@
    card.append(el("p",last.calibration_certified?"Calibración certificada.":"Estado experimental · calibración no certificada y sin evaluación de rendimiento.","forecast-footnote"));grid.append(card);
   }root.append(grid);
  }
- const ready=(async()=>{render();try{const response=await fetch("./data/forecast-index.json",{cache:"no-store"});if(!response.ok)throw Error("Missing forecast index");const payload=await response.json();if(!validate(payload))throw Error("Invalid forecast index");data=payload;}catch(e){error=e.message;}render();})();
+ const ready=(async()=>{render();try{const response=await fetch("./data/forecast-index.json",{cache:"no-store"});if(!response.ok)throw Error("Missing forecast index");const payload=await response.json();if(!validate(payload))throw Error("Invalid forecast index");data=payload;}catch(e){error=e.message;}
+  if(sport==="nhl")try{const response=await fetch("./data/nhl-minute-adjusted-ml.json",{cache:"no-store"});if(response.ok){const scenario=await response.json();if(scenario.kind==="nhl_minute_adjusted_ml_v1"&&Array.isArray(scenario.games)&&date(scenario.as_of_utc))lineupScenarioData=scenario;}}catch{}
+  render();})();
  document.getElementById("daily-date")?.addEventListener("change",render);
  window.PulsoProgressiveForecasts={ready,render};
 })();
