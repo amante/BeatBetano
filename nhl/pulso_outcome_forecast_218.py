@@ -13,7 +13,8 @@ from nhl.pulso_pregame_v7 import parse_utc
 
 PARAMS={"ml":(80,.5),"rt":(80,.5),"first3":(40,.5),"home3":(8,.5),"away3":(80,.5)}
 SOURCE="https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026"
-VERSION="outcome-only-206-rest-context-v1"
+VERSION="outcome-only-206-frozen-params"
+REST_VERSION="outcome-only-206-rest-context-v1"
 REST_LOGIT_COEFFICIENT=0.06
 REST_MODULE="schedule_rest"
 def _schedule_index(schedule_context,issued):
@@ -93,7 +94,7 @@ def generate(fixtures,history,issued,source_sha256,schedule_context=None):
     else:effect=rest
    record={"game_id":gid,"home":fixture["home"],"away":fixture["away"],
     "start_utc":fixture["start_utc"],"game_date":day,"prediction_as_of_utc":issued,"source_asof_utc":issued,
-    "source_url":SOURCE,"model_version":VERSION,"market":market,
+    "source_url":SOURCE,"model_version":REST_VERSION if market=="ml" and effect.get("status")=="applied" else VERSION,"market":market,
     "probabilities":dict(zip(cats,probs)),"module_effects":{"rest":effect},"odds_used_in_model":False,
     "point_in_time_sources_verified":True,"historical_labels_sha256":source_sha256,
     "historical_prior_date_games":len(eligible),"official":False}
@@ -119,5 +120,5 @@ def main():
   path=dest/name
   if path.exists():raise FileExistsError(name)
   path.write_text(json.dumps(f,indent=2))
- print(json.dumps({"model_version":VERSION,"fixtures":len({x["record"]["game_id"] for x in frozen}),"frozen_market_forecasts":len(frozen),"official":False}))
+ print(json.dumps({"model_versions":sorted({x["record"]["model_version"] for x in frozen}),"fixtures":len({x["record"]["game_id"] for x in frozen}),"frozen_market_forecasts":len(frozen),"official":False}))
 if __name__=="__main__":main()
