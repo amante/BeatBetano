@@ -1,5 +1,8 @@
 name: PULSO NHL — prospective pregame source capture
 on:
+  schedule:
+    - cron: '0 * * * *'
+    - cron: '30 * * * *'
   pull_request:
     paths:
       - 'nhl/match_context.py'
@@ -54,7 +57,68 @@ concurrency:
   group: pulso-nhl-source-capture
   cancel-in-progress: false
 jobs:
+  schedule-window:
+    runs-on: ubuntu-24.04
+    outputs:
+      active: ${{ steps.window.outputs.active }}
+      day: ${{ steps.window.outputs.day }}
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - id: window
+        name: Check the NHL pregame capture window
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REQUESTED_DAY: ${{ inputs.day }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          from datetime import date, datetime, timedelta, timezone
+          from zoneinfo import ZoneInfo
+
+          event = os.environ["EVENT_NAME"]
+          requested = os.environ.get("REQUESTED_DAY", "").strip()
+          now = datetime.now(timezone.utc)
+          day = requested or now.astimezone(ZoneInfo("America/New_York")).date().isoformat()
+          active = event == "workflow_dispatch"
+          if event == "schedule":
+              day = now.astimezone(ZoneInfo("America/New_York")).date().isoformat()
+              url = f"https://api-web.nhle.com/v1/schedule/{day}"
+              try:
+                  request = urllib.request.Request(url, headers={"User-Agent": "PULSO-NHL-capture/1.0"})
+                  with urllib.request.urlopen(request, timeout=20) as response:
+                      payload = json.load(response)
+                  games = [
+                      game
+                      for slate in payload.get("gameWeek", [])
+                      if slate.get("date") == day
+                      for game in slate.get("games", [])
+                  ]
+                  starts = [
+                      datetime.fromisoformat(game["startTimeUTC"].replace("Z", "+00:00"))
+                      for game in games
+                      if isinstance(game.get("startTimeUTC"), str)
+                  ]
+                  if starts:
+                      first, last = min(starts), max(starts)
+                      if now.minute >= 30:
+                          active = first - timedelta(minutes=40) <= now <= first - timedelta(minutes=20)
+                      else:
+                          active = first - timedelta(hours=2) <= now < last
+                      print(f"NHL slate {day}: first={first.isoformat()}, last={last.isoformat()}, now={now.isoformat()}, active={active}")
+                  else:
+                      print(f"No NHL games found for {day}; scheduled capture skipped.")
+              except Exception as exc:
+                  active = False
+                  print(f"Could not read NHL schedule; scheduled capture skipped: {type(exc).__name__}: {exc}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"active={str(active).lower()}\n")
+              output.write(f"day={day}\n")
+          PY
   test:
+    needs: schedule-window
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
@@ -63,8 +127,8 @@ jobs:
           python-version: '3.11'
       - run: python -m unittest nhl.tests.test_joint_match_input_builder_321 nhl.tests.test_freeze_lineup_dataset nhl.tests.test_lineup_features nhl.tests.test_lineup_changes nhl.tests.test_prior_lineup_reference nhl.tests.test_skater_history nhl.tests.test_pulso_live_sporting_246 nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_schedule_context nhl.tests.test_special_teams_capture nhl.tests.test_sporting_connections nhl.tests.test_all_goalie_pairings nhl.tests.test_goalie_ml_inference nhl.tests.test_player_evidence nhl.tests.test_match_context nhl.tests.test_pulso_prospective_capture nhl.tests.test_pulso_209 nhl.tests.test_pulso_outcome_forecast_218 nhl.tests.test_pulso_goalie_integration_254 nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 nhl.tests.test_pulso_goalie_scenarios_258 nhl.tests.test_pulso_goalie_conditioned_259 nhl.tests.test_pulso_goalie_candidates_260 nhl.tests.test_pulso_goalie_training_263 nhl.tests.test_pulso_historical_goalie_join_264 nhl.tests.test_pulso_historical_boxscores_265 nhl.tests.test_pulso_boxscore_schema_audit_266 nhl.tests.test_pulso_historical_features_267 nhl.tests.test_pulso_historical_sequential_268 nhl.tests.test_pulso_goalie_model_269 nhl.tests.test_pulso_goalie_ablation_270 nhl.tests.test_pulso_ml_decision_271 nhl.tests.test_pulso_ml_strong_baseline_272 nhl.tests.test_pulso_pregame_publication_273 nhl.tests.test_pulso_daily_slate_274 nhl.tests.test_pulso_research_presentation_275 nhl.tests.test_pulso_prospective_monitor_276 -v
   capture:
-    if: github.event_name != 'pull_request'
-    needs: test
+    if: github.event_name != 'pull_request' && (github.event_name == 'workflow_dispatch' || needs.schedule-window.outputs.active == 'true')
+    needs: schedule-window
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -76,13 +140,13 @@ jobs:
           python-version: '3.11'
       - name: Capture current NHL source evidence
         env:
-          REQUESTED_DAY: ${{ inputs.day }}
+          REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
         run: |
           DAY="${REQUESTED_DAY:-$(date -u +%F)}"
           python -m nhl.pulso_prospective_capture --date "$DAY" --output-dir "results/pulso/nhl/$DAY" --public-status frontend/data/pulso-nhl-research.json
       - name: Audit fixture-attested player and goalie identities
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m unittest nhl.tests.test_pulso_fixture_identity_248 -v
           python -m nhl.pulso_fixture_identity_248 \
@@ -94,7 +158,7 @@ jobs:
       - name: Cross-check external named goalie statuses
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_multisource_257 -v
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_multisource_257 \
             --report "results/pulso/nhl/$DAY/report.json" \
@@ -103,7 +167,7 @@ jobs:
       - name: Classify goalie certainty without artificial PASS
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_states_255 nhl.tests.test_pulso_goalie_multisource_257 -v
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_states_255 \
             --report "results/pulso/nhl/$DAY/report.json" \
@@ -113,7 +177,7 @@ jobs:
       - name: Prepare goalie-conditional scenario matrix
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_scenarios_258 -v
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_scenarios_258 \
             --report "results/pulso/nhl/$DAY/report.json" \
@@ -125,7 +189,7 @@ jobs:
       - name: Integrate goalie-conditioned predictions with strict validation gate
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_conditioned_259 -v
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_conditioned_259 \
             --scenarios "results/pulso/nhl/$DAY/goalie_scenarios_258.json" \
@@ -133,7 +197,7 @@ jobs:
       - name: Capture individual candidate goalie history before puck drop
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_history_251 -v
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_history_251 \
             --report "results/pulso/nhl/$DAY/report.json" \
@@ -142,20 +206,20 @@ jobs:
       - name: Capture every candidate goalie history
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_candidates_260 -v
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_candidates_260 --scenarios "results/pulso/nhl/$DAY/goalie_scenarios_258.json" --report "results/pulso/nhl/$DAY/report.json" --out "results/pulso/nhl/$DAY/all_goalie_candidates_260.json"
       - name: Compute non-calibrated goalie performance indicators
         run: |
           python -m unittest nhl.tests.test_pulso_goalie_daily_253 -v
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_daily_253 \
             --history "results/pulso/nhl/$DAY/goalie_history_251.json" \
             --out "results/pulso/nhl/$DAY/goalie_daily_253.json"
       - name: Publish readable goalie-by-team report
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_goalie_display_256 \
             --identity "results/pulso/nhl/$DAY/fixture_identity_248.json" \
@@ -163,14 +227,14 @@ jobs:
             --out "results/pulso/nhl/$DAY/goalie_names_256.txt"
       - name: Capture official NHL prior-day team form and observed PP/PK
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_live_sporting_246 \
             --report "results/pulso/nhl/$DAY/report.json" \
             --out "results/pulso/nhl/$DAY/live_sporting_246.json"
       - name: Capture official schedule gaps, B2B and venue context
         env:
-          REQUESTED_DAY: ${{ inputs.day }}
+          REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
         run: |
           DAY="${REQUESTED_DAY:-$(date -u +%F)}"
           python -m nhl.schedule_context \
@@ -178,7 +242,7 @@ jobs:
             --output "results/pulso/nhl/$DAY/schedule_context.json"
       - name: Capture official dated PP and PK counts
         env:
-          REQUESTED_DAY: ${{ inputs.day }}
+          REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
         run: |
           DAY="${REQUESTED_DAY:-$(date -u +%F)}"
           python -m nhl.special_teams_capture \
@@ -188,7 +252,7 @@ jobs:
         run: python -c 'from datetime import datetime,timezone; print("SPORTING_ANALYSIS_AS_OF="+datetime.now(timezone.utc).isoformat())' >> "$GITHUB_ENV"
       - name: Normalize observed NHL sporting source evidence
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_sporting_bridge_226 \
             --report "results/pulso/nhl/$DAY/report.json" \
@@ -198,7 +262,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/sporting_bridge.json"
       - name: Produce gated quantitative sporting research vector
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           mkdir -p "results/pulso/nhl/$DAY"
           python -m nhl.sporting_packages \
@@ -215,17 +279,17 @@ jobs:
             --out "results/pulso/nhl/$DAY/quantitative_signals.json"
       - name: Capture actual previous-game participants as historical reference
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.prior_lineup_reference --context "results/pulso/nhl/$DAY/schedule_context.json" --output "results/pulso/nhl/$DAY/prior_lineup_reference.json"
       - name: Capture prior-day individual skater history and TOI
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.skater_history --report "results/pulso/nhl/$DAY/report.json" --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" --reference "results/pulso/nhl/$DAY/prior_lineup_reference.json" --output "results/pulso/nhl/$DAY/skater_history.json"
       - name: Preserve fixture-level individual player and goalie evidence
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           echo '{}' > "results/pulso/nhl/$DAY/verified_lineup_history_packages.json"
           python -m nhl.pulso_individual_evidence_247 \
@@ -235,7 +299,7 @@ jobs:
       - name: Audit real fixture-level sporting source coverage
         run: |
           python -m unittest nhl.tests.test_pulso_source_coverage_249 nhl.tests.test_pulso_goalie_integration_254 -v
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_source_coverage_249 \
             --report "results/pulso/nhl/$DAY/report.json" \
@@ -247,7 +311,7 @@ jobs:
       - name: Execute original NHL sporting module integrity contract
         run: |
           python -m unittest nhl.tests.test_pulso_sporting_core_245 nhl.tests.test_pulso_live_sporting_246 nhl.tests.test_pulso_individual_evidence_247 -v
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_sporting_core_245 \
             --report "results/pulso/nhl/$DAY/report.json" \
@@ -261,7 +325,7 @@ jobs:
             --out "results/pulso/nhl/$DAY/sporting_core_manifest.json"
       - name: Audit fixture-level sporting evidence coverage
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_evidence_coverage_222_223 \
             --report "results/pulso/nhl/$DAY/report.json" \
@@ -271,13 +335,13 @@ jobs:
             --out "results/pulso/nhl/$DAY/collective_coverage.json"
       - name: Preserve fixture-level coverage by immutable run ID
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           mkdir -p frontend/data/nhl-coverage
           cp "results/pulso/nhl/$DAY/collective_coverage.json" "frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json"
       - name: Freeze unique prospective source ledger entry
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_prospective_ledger_209 --report "results/pulso/nhl/$DAY/report.json" --output-dir frontend/data/nhl-ledger --run-id "${{ github.run_id }}"
       - name: Download and verify outcome-only historical labels
@@ -289,7 +353,7 @@ jobs:
           gh release download nhl-historical-2811-2026 --repo "$GITHUB_REPOSITORY" --pattern labels_manifest.json --dir .nhl_labels
       - name: Freeze player-linked prospective inputs before any forecast issuance
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.match_context \
             --pregame-evidence-dir "results/pulso/nhl/$DAY" \
@@ -297,28 +361,28 @@ jobs:
             --output "nhl/learning/pregame/run-${{ github.run_id }}.json"
       - name: Compare projected skaters against previous-game participation
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.lineup_changes --evidence "nhl/learning/pregame/run-${{ github.run_id }}.json" --reference "results/pulso/nhl/$DAY/prior_lineup_reference.json" --history "results/pulso/nhl/$DAY/skater_history.json" --output "results/pulso/nhl/$DAY/lineup_changes.json"
       - name: Quantify absent contributions and conditional replacement minutes
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.absence_exposure --changes "results/pulso/nhl/$DAY/lineup_changes.json" --report "results/pulso/nhl/$DAY/report.json" --output "results/pulso/nhl/$DAY/absence_exposure.json"
           cp "results/pulso/nhl/$DAY/absence_exposure.json" frontend/data/nhl-absence-exposure.json
       - name: Measure individual coverage and historical lineup features
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.lineup_features --changes "results/pulso/nhl/$DAY/lineup_changes.json" --output "results/pulso/nhl/$DAY/lineup_features.json"
       - name: Preserve immutable prospective lineup dataset and source archive
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.freeze_lineup_dataset --directory "results/pulso/nhl/$DAY" --destination "nhl/learning/lineups/run-${{ github.run_id }}.json" --run-id "${{ github.run_id }}"
       - name: Freeze experimental five-market predictions before puck drop
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_outcome_forecast_218 \
             --report "results/pulso/nhl/$DAY/report.json" \
@@ -329,7 +393,7 @@ jobs:
             --out-dir "frontend/data/nhl-forecasts/run-${{ github.run_id }}"
       - name: Audit frozen experimental forecasts before publication
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_pregame_publication_273 \
             --report "results/pulso/nhl/$DAY/report.json" \
@@ -342,7 +406,7 @@ jobs:
             --out frontend/data/nhl-baseline-latest.json
       - name: Publish complete official day slate with explicit forecast availability
         run: |
-          DAY="${{ inputs.day }}"
+          DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
           DAY="${DAY:-$(date -u +%F)}"
           python -m nhl.pulso_daily_slate_274 \
             --schedule "results/pulso/nhl/$DAY/schedule_evidence.json" \
@@ -359,7 +423,7 @@ jobs:
         run: python -m nhl.minute_adjusted_ml --publication frontend/data/nhl-daily-predictions-latest.json --exposure frontend/data/nhl-absence-exposure.json --output frontend/data/nhl-minute-adjusted-ml.json
       - name: Execute compatible goalie ML candidate or record explicit unavailability
         env:
-          REQUESTED_DAY: ${{ inputs.day }}
+          REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
         run: |
           DAY="${REQUESTED_DAY:-$(date -u +%F)}"
           python -m nhl.goalie_ml_inference run \
@@ -423,7 +487,7 @@ jobs:
           path: .
       - name: Assemble and run integrated NHL scenarios from captured evidence
         env:
-          REQUESTED_DAY: ${{ inputs.day }}
+          REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
         run: |
           DAY="${REQUESTED_DAY:-$(date -u +%F)}"
           python -m nhl.joint_match_input_builder_321 \
@@ -480,7 +544,7 @@ jobs:
           path: .
       - name: Validate and publish the latest conditional scenario feed
         env:
-          REQUESTED_DAY: ${{ inputs.day }}
+          REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
           RUN_ID: ${{ github.run_id }}
         run: |
           DAY="${REQUESTED_DAY:-$(date -u +%F)}"
