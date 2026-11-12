@@ -10,11 +10,15 @@ from pathlib import Path
 from nhl.historical_target_walkforward import CATEGORIES,outcomes,prediction
 from nhl.pulso_collective_audit_208 import freeze_prediction
 from nhl.pulso_pregame_v7 import parse_utc
+from nhl.minute_adjusted_ml import adjust as adjust_lineup_ml
 
 PARAMS={"ml":(80,.5),"rt":(80,.5),"first3":(40,.5),"home3":(8,.5),"away3":(80,.5)}
 SOURCE="https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026"
 VERSION="outcome-only-206-frozen-params"
 REST_VERSION="outcome-only-206-rest-context-v1"
+LINEUP_VERSION="outcome-only-206-lineup-scenario-v1"
+REST_LINEUP_VERSION="outcome-only-206-rest-lineup-scenario-v1"
+LINEUP_MODULE="crs_lineup_availability"
 REST_LOGIT_COEFFICIENT=0.06
 REST_MODULE="schedule_rest"
 def _schedule_index(schedule_context,issued):
@@ -55,9 +59,43 @@ def _rest_effect(fixture,context_row,context_asof,issued):
   "logit_adjustment":round(REST_LOGIT_COEFFICIENT*delta_days,6),
   "source_as_of_utc":context_asof.isoformat()}
 
-def generate(fixtures,history,issued,source_sha256,schedule_context=None):
+def _lineup_index(exposure,issued):
+ if exposure is None:return {},None
+ if exposure.get("kind")!="nhl_absence_exposure_v1":raise ValueError("Verified lineup exposure required")
+ asof=parse_utc(exposure["as_of_utc"])
+ if asof>parse_utc(issued):raise ValueError("Lineup exposure is newer than forecast")
+ rows=exposure.get("games")
+ if not isinstance(rows,list):raise ValueError("Invalid lineup exposure")
+ index={str(r["game_id"]):r for r in rows}
+ if len(index)!=len(rows):raise ValueError("Duplicate lineup-exposure fixture")
+ return index,asof
+
+def _lineup_effect(fixture,row,asof,issued,baseline_home):
+ if row is None:return {"module":LINEUP_MODULE,"status":"unavailable","reason":"lineup_exposure_not_found"}
+ if any(str(row.get(k))!=str(fixture.get(k)) for k in ("home","away","start_utc")):
+  raise ValueError("Lineup exposure fixture identity mismatch")
+ start=parse_utc(fixture["start_utc"])
+ if asof is None or asof>parse_utc(issued) or asof>=start:
+  return {"module":LINEUP_MODULE,"status":"unavailable","reason":"lineup_exposure_not_pregame"}
+ teams=row.get("teams")
+ if not isinstance(teams,dict) or fixture["home"] not in teams or fixture["away"] not in teams:
+  return {"module":LINEUP_MODULE,"status":"unavailable","reason":"both_team_scenarios_required"}
+ try:
+  result=adjust_lineup_ml({"ml":{"home":baseline_home}},teams[fixture["home"]],teams[fixture["away"]])
+ except (ValueError,KeyError,TypeError) as exc:
+  return {"module":LINEUP_MODULE,"status":"unavailable","reason":"scenario_incomplete:"+str(exc)}
+ return {"module":LINEUP_MODULE,"status":"applied_experimental","source_as_of_utc":asof.isoformat(),
+  "baseline_probability_home":round(result["baseline_ml_home"],8),
+  "scenario_probability_home":round(result["scenario_ml_home"],8),
+  "scenario_probability_away":round(result["scenario_ml_away"],8),
+  "probability_delta_home_percentage_points":round(result["delta_home_pp"],4),
+  "adjusted_goal_expectations":result["adjusted_goals"],
+  "validated":False,"assumptions":["Historical goals/minute held constant under redistributed minutes.","Independent Poisson goals; home rate anchored to preceding model probability.","Out of projection is not treated as confirmed injury."]}
+
+def generate(fixtures,history,issued,source_sha256,schedule_context=None,lineup_exposure=None):
  now=parse_utc(issued)
  schedule_index,context_asof=_schedule_index(schedule_context,issued)
+ lineup_index,lineup_asof=_lineup_index(lineup_exposure,issued)
  if len(source_sha256)!=64 or any(c not in "0123456789abcdef" for c in source_sha256):raise ValueError("Invalid verified digest")
  output=[];seen=set()
  for fixture in fixtures:
@@ -79,10 +117,12 @@ def generate(fixtures,history,issued,source_sha256,schedule_context=None):
     teams["home:"+row["home"]][target][value]+=1
     teams["away:"+row["away"]][target][value]+=1
   rest=_rest_effect(fixture,context_row,context_asof,issued)
+  lineup_row=lineup_index.get(gid)
   for market,cats in CATEGORIES.items():
    shrink,weight=PARAMS[market]
    probs=prediction(globals_,teams,fixture["home"],fixture["away"],market,shrink,weight)
-   effect={"module":REST_MODULE,"status":"not_used_for_market"}
+   effect={"rest":{"module":REST_MODULE,"status":"not_used_for_market"},"lineup_availability":{"module":LINEUP_MODULE,"status":"not_used_for_market"}}
+   model_version=VERSION
    if market=="ml":
     p_before=probs[cats.index("home")]
     if rest["status"]=="applied":
@@ -91,11 +131,17 @@ def generate(fixtures,history,issued,source_sha256,schedule_context=None):
      probs=[p_after,1-p_after]
      effect={**rest,"probability_before":round(p_before,8),"probability_after":round(p_after,8),
       "probability_delta_percentage_points":round((p_after-p_before)*100,4)}
-    else:effect=rest
+    else:effect["rest"]=rest
+    lineup=_lineup_effect(fixture,lineup_row,lineup_asof,issued,probs[cats.index("home")])
+    if lineup.get("status")=="applied_experimental":
+     p_after=lineup["scenario_probability_home"]
+     probs=[p_after,1-p_after]
+     model_version=REST_LINEUP_VERSION if effect["rest"].get("status")=="applied" else LINEUP_VERSION
+    effect["lineup_availability"]=lineup
    record={"game_id":gid,"home":fixture["home"],"away":fixture["away"],
     "start_utc":fixture["start_utc"],"game_date":day,"prediction_as_of_utc":issued,"source_asof_utc":issued,
-    "source_url":SOURCE,"model_version":REST_VERSION if market=="ml" and effect.get("status")=="applied" else VERSION,"market":market,
-    "probabilities":dict(zip(cats,probs)),"module_effects":{"rest":effect},"odds_used_in_model":False,
+    "source_url":SOURCE,"model_version":model_version if market=="ml" else VERSION,"market":market,
+    "probabilities":dict(zip(cats,probs)),"module_effects":effect,"odds_used_in_model":False,
     "point_in_time_sources_verified":True,"historical_labels_sha256":source_sha256,
     "historical_prior_date_games":len(eligible),"official":False}
    output.append(freeze_prediction(record))
@@ -104,6 +150,7 @@ def main():
  p=argparse.ArgumentParser()
  for key in ("report","labels","manifest","out-dir"):p.add_argument("--"+key,required=True)
  p.add_argument("--schedule-context")
+ p.add_argument("--lineup-exposure")
  a=p.parse_args();report=json.loads(Path(a.report).read_text())
  if report.get("data_kind")!="source_readiness_only" or report.get("official_predictions")!=0:raise ValueError("Unverified fixture report")
  path=Path(a.labels);sha=hashlib.sha256(path.read_bytes()).hexdigest()
@@ -113,7 +160,8 @@ def main():
  if len(rows)!=2811:raise ValueError("Incorrect label collection")
  issued=datetime.now(timezone.utc).isoformat()
  schedule_context=json.loads(Path(a.schedule_context).read_text()) if a.schedule_context else None
- frozen=generate(report["games"],rows,issued,sha,schedule_context)
+ lineup_exposure=json.loads(Path(a.lineup_exposure).read_text()) if a.lineup_exposure else None
+ frozen=generate(report["games"],rows,issued,sha,schedule_context,lineup_exposure)
  dest=Path(a.out_dir);dest.mkdir(parents=True,exist_ok=True)
  for f in frozen:
   record=f["record"];name=f'{record["game_id"]}-{record["market"]}.json'
