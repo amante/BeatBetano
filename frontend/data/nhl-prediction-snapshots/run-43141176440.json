@@ -1,0 +1,167 @@
+{
+  "kind": "nhl_prospective_snapshot_276",
+  "run_id": "43141176440",
+  "date": "2026-11-11",
+  "slate": {
+    "kind": "nhl_research_daily_presentation_275",
+    "date": "2026-11-11",
+    "source_schedule": "https://api-web.nhle.com/v1/score/2026-11-11",
+    "run_id": "43141176440",
+    "official_schedule_games": 6,
+    "experimental_predicted_games": 3,
+    "games": [
+      {
+        "game_id": "2026020293",
+        "home": "BUF",
+        "away": "TBL",
+        "start_utc": "2026-11-12T00:00:00Z",
+        "status": "not_pregame_at_capture",
+        "ml": null,
+        "rt": null,
+        "home_plus3": null,
+        "away_plus3": null,
+        "first_to_plus3": null,
+        "home_win_ml": null,
+        "away_win_ml": null,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": null,
+        "probability_status": "not_available"
+      },
+      {
+        "game_id": "2026020294",
+        "home": "CGY",
+        "away": "NYR",
+        "start_utc": "2026-11-12T00:30:00Z",
+        "status": "not_pregame_at_capture",
+        "ml": null,
+        "rt": null,
+        "home_plus3": null,
+        "away_plus3": null,
+        "first_to_plus3": null,
+        "home_win_ml": null,
+        "away_win_ml": null,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": null,
+        "probability_status": "not_available"
+      },
+      {
+        "game_id": "2026020295",
+        "home": "EDM",
+        "away": "PHI",
+        "start_utc": "2026-11-12T02:00:00Z",
+        "status": "not_pregame_at_capture",
+        "ml": null,
+        "rt": null,
+        "home_plus3": null,
+        "away_plus3": null,
+        "first_to_plus3": null,
+        "home_win_ml": null,
+        "away_win_ml": null,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": null,
+        "probability_status": "not_available"
+      },
+      {
+        "game_id": "2026020296",
+        "home": "VGK",
+        "away": "UTA",
+        "start_utc": "2026-11-12T02:30:00Z",
+        "status": "experimental_forecast",
+        "ml": {
+          "home": 0.5479146902483608,
+          "away": 0.45208530975163913
+        },
+        "rt": {
+          "home": 0.45283935352821697,
+          "draw": 0.21137970334296396,
+          "away": 0.3357809431288191
+        },
+        "home_plus3": 0.2902650067250358,
+        "away_plus3": 0.2167598869997076,
+        "first_to_plus3": {
+          "home": 0.28507517782075226,
+          "away": 0.2153848696715757,
+          "none": 0.499539952507672
+        },
+        "home_win_ml": 0.5479146902483608,
+        "away_win_ml": 0.45208530975163913,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": "outcome-only-206-frozen-params",
+        "probability_status": "research_experimental_not_official"
+      },
+      {
+        "game_id": "2026020297",
+        "home": "ANA",
+        "away": "NSH",
+        "start_utc": "2026-11-12T03:00:00Z",
+        "status": "experimental_forecast",
+        "ml": {
+          "home": 0.5771626585704083,
+          "away": 0.4228373414295917
+        },
+        "rt": {
+          "home": 0.4296087131908028,
+          "draw": 0.235574593783549,
+          "away": 0.33481669302564826
+        },
+        "home_plus3": 0.2661979434108833,
+        "away_plus3": 0.21100553094865215,
+        "first_to_plus3": {
+          "home": 0.2669936595958659,
+          "away": 0.2077837801393934,
+          "none": 0.5252225602647407
+        },
+        "home_win_ml": 0.5771626585704083,
+        "away_win_ml": 0.4228373414295917,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": "outcome-only-206-frozen-params",
+        "probability_status": "research_experimental_not_official"
+      },
+      {
+        "game_id": "2026020298",
+        "home": "SJS",
+        "away": "PIT",
+        "start_utc": "2026-11-12T03:00:00Z",
+        "status": "experimental_forecast",
+        "ml": {
+          "home": 0.5259557173252118,
+          "away": 0.47404428267478815
+        },
+        "rt": {
+          "home": 0.3882379149030965,
+          "draw": 0.22819802904454273,
+          "away": 0.38356405605236077
+        },
+        "home_plus3": 0.21629011154270655,
+        "away_plus3": 0.24855176658477962,
+        "first_to_plus3": {
+          "home": 0.22960547403040818,
+          "away": 0.25713449558928053,
+          "none": 0.5132600303803113
+        },
+        "home_win_ml": 0.5259557173252118,
+        "away_win_ml": 0.47404428267478815,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "model": "outcome-only-206-frozen-params",
+        "probability_status": "research_experimental_not_official"
+      }
+    ],
+    "official": false,
+    "odds_used": false,
+    "limitations": [
+      "Outcome-only research baseline, not validated full NHL model",
+      "No goalie-conditioned A/B probabilities",
+      "RT includes regulation draw",
+      "home_plus3 and away_plus3 are not complementary events",
+      "First-to-+3 includes neither team"
+    ]
+  },
+  "slate_sha256": "cab2bfa6af3e898b8100253bd0abe3f931037790dea64f252a9e938461711d67",
+  "official": false
+}
