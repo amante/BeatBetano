@@ -325,6 +325,7 @@ jobs:
             --labels .nhl_labels/nhl_postgame_labels.csv \
             --manifest .nhl_labels/labels_manifest.json \
             --schedule-context "results/pulso/nhl/$DAY/schedule_context.json" \
+            --lineup-exposure "results/pulso/nhl/$DAY/absence_exposure.json" \
             --out-dir "frontend/data/nhl-forecasts/run-${{ github.run_id }}"
       - name: Audit frozen experimental forecasts before publication
         run: |

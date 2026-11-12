@@ -45,7 +45,7 @@
    heading.append(identity,make("span",pending?"Por comenzar":"Captura pregame","nhl-upcoming"));card.append(heading);
    const valid=g.ml&&g.rt&&g.first_to_plus3&&typeof g.home_plus3==="number"&&typeof g.away_plus3==="number";
    if(!valid){card.append(make("p","Mercados incompletos: no se muestran probabilidades parciales."));root.append(card);continue;}
-   card.append(make("div","Probabilidad base · incluye desempate","nhl-market-label"));
+   card.append(make("div",g.module_effects?.lineup_availability?.status==="applied_experimental"?"Probabilidad Ganador publicada · ajuste experimental de disponibilidad · incluye desempate":"Probabilidad Ganador publicada · incluye desempate","nhl-market-label"));
    const probabilities=make("div",undefined,"nhl-ml-grid");
    for(const [team,value] of [[g.away,g.ml.away],[g.home,g.ml.home]]){
     const side=make("div",undefined,"nhl-probability");side.append(make("span",team),make("strong",pct(value)));probabilities.append(side);
@@ -62,6 +62,16 @@
      const delta=Number(rest.probability_delta_percentage_points);
      const signed=(delta>0?"+":"")+delta.toFixed(2).replace(".",",")+" pp";
      message="Descanso incluido en Ganador: "+g.home+" "+rest.home_rest_days+" días · "+g.away+" "+rest.away_rest_days+" días · cambio "+signed+".";
+    }
+    card.append(make("p",message,"daily-source"));
+   }
+   const lineup=g.module_effects?.lineup_availability;
+   if(lineup){
+    let message="Disponibilidad no aplicada: "+(lineup.reason||"faltan escenarios completos y previos al partido para ambos equipos")+"; se conserva el porcentaje base.";
+    if(lineup.status==="applied_experimental"){
+     const delta=Number(lineup.probability_delta_home_percentage_points);
+     const signed=(delta>0?"+":"")+delta.toFixed(2).replace(".",",")+" pp";
+     message="Disponibilidad y reparto de minutos incluidos en Ganador (experimental): "+g.home+" "+pct(lineup.baseline_probability_home)+" → "+pct(lineup.scenario_probability_home)+" · cambio "+signed+" · sin validación predictiva.";
     }
     card.append(make("p",message,"daily-source"));
    }

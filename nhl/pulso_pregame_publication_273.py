@@ -22,7 +22,7 @@ def audit(report,forecast_dir):
   if market in bygame[gid]:raise ValueError("Duplicate market")
   f=fixtures[gid]
   if any(str(r[k])!=str(f[k]) for k in ("home","away","start_utc")):raise ValueError("Fixture identity mismatch")
-  if r.get("official") is not False or r.get("odds_used_in_model") is not False or r.get("model_version") not in ("outcome-only-206-frozen-params","outcome-only-206-rest-context-v1"):raise ValueError("Wrong research provenance")
+  if r.get("official") is not False or r.get("odds_used_in_model") is not False or r.get("model_version") not in ("outcome-only-206-frozen-params","outcome-only-206-rest-context-v1","outcome-only-206-lineup-scenario-v1","outcome-only-206-rest-lineup-scenario-v1"):raise ValueError("Wrong research provenance")
   if r.get("point_in_time_sources_verified") is not True:raise ValueError("Source timestamp not verified")
   if not parse_utc(r["prediction_as_of_utc"])<parse_utc(r["start_utc"]):raise ValueError("Prediction not pregame")
   if not parse_utc(r["source_asof_utc"])<=parse_utc(r["prediction_as_of_utc"]):raise ValueError("Source later than forecast")
