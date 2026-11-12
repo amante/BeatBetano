@@ -65,6 +65,16 @@
     }
     card.append(make("p",message,"daily-source"));
    }
+   const lineup=g.module_effects?.lineup_availability;
+   if(lineup){
+    let message="Disponibilidad no aplicada: "+(lineup.reason||"faltan escenarios completos y previos al partido para ambos equipos")+"; se conserva el porcentaje base.";
+    if(lineup.status==="applied_experimental"){
+     const delta=Number(lineup.probability_delta_home_percentage_points);
+     const signed=(delta>0?"+":"")+delta.toFixed(2).replace(".",",")+" pp";
+     message="Disponibilidad y reparto de minutos incluidos en Ganador (experimental): "+g.home+" "+pct(lineup.baseline_probability_home)+" → "+pct(lineup.scenario_probability_home)+" · cambio "+signed+" · sin validación predictiva.";
+    }
+    card.append(make("p",message,"daily-source"));
+   }
    const extra=make("details",undefined,"nhl-extra-markets");extra.append(make("summary","Ver los cinco mercados y comparación +3"));
    const rows=[
      ["Ganador ML",pct(g.ml.home),pct(g.ml.away),"—"],
