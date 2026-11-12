@@ -97,11 +97,14 @@
    info.append(el("p","Pendiente","forecast-detail-label"));if(!last.unresolved_inputs.length)info.append(el("p","No se declararon pendientes en esta corrida."));for(const value of last.unresolved_inputs)info.append(el("p",textMap[value]||value));
    info.append(el("p","Versión: "+last.model_version),el("p","Campo de probabilidad: "+(last.source_probability_field||"no declarado")),el("p","Corte de datos: "+local(last.cutoff_utc)));card.append(info);
    const history=el("details");history.append(el("summary","Ver "+e.history.length+" corridas"));
-   for(const [index,r] of e.history.entries()){
-    const prior=index?e.history[index-1]:null;
-    const unchanged=prior&&Object.keys(r.probabilities).every(key=>pct(prior.probabilities[key])===pct(r.probabilities[key]));
-    const state=index===0?"Inicial":unchanged?"Sin cambio de probabilidad":"Probabilidad modificada";
-    history.append(el("p","#"+r.revision+" · "+stages[r.stage]+" · "+local(r.emitted_at_utc)+" · "+state+" · Modelo: "+r.model_version+" · "+Object.entries(r.probabilities).map(([k,v])=>(k==="draw"?"Empate":e.participants[k==="home"?0:1])+" "+pct(v)).join(" / ")));
+   for(const [index,r] of [...e.history].reverse().entries()){
+    const previous=r.revision>1?e.history.find(revision=>revision.revision===r.revision-1):null;
+    const unchanged=previous&&Object.keys(r.probabilities).every(key=>pct(previous.probabilities[key])===pct(r.probabilities[key]));
+    const state=r.revision===1?"Inicial":unchanged?"Sin cambio de probabilidad":"Probabilidad modificada";
+    const row=el("div",undefined,"forecast-run"+(r.revision===last.revision?" forecast-run-latest":""));
+    if(r.revision===last.revision)row.append(el("span","ÚLTIMA CORRIDA","forecast-run-latest-badge"));
+    row.append(el("p","#"+r.revision+" · "+stages[r.stage]+" · "+local(r.emitted_at_utc)+" · "+state+" · Modelo: "+r.model_version+" · "+Object.entries(r.probabilities).map(([k,v])=>(k==="draw"?"Empate":e.participants[k==="home"?0:1])+" "+pct(v)).join(" / ")));
+    history.append(row);
    }card.append(history);
    card.append(el("p",last.calibration_certified?"Calibración certificada.":"Estado experimental · calibración no certificada y sin evaluación de rendimiento.","forecast-footnote"));grid.append(card);
   }root.append(grid);
