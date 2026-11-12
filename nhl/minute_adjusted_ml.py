@@ -34,7 +34,7 @@ def solve_away_rate(probability,home_rate):
 
 def side_metrics(side):
  if not isinstance(side,dict) or side.get('status')!='conditional_replacement_scenario':return None
- before=side.get('before',{}).get('goals');after=side.get('after',{}).get('goals')
+ before_data=side.get('before') or {};after_data=side.get('after') or {};before=before_data.get('goals');after=after_data.get('goals')
  if any(type(v) not in (int,float) or not math.isfinite(v) or v<=0 for v in (before,after)):return None
  return {'before':before,'ratio':after/before}
 
