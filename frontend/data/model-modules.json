@@ -101,10 +101,10 @@
           "name": "Plantilla y estado de jugadores (CRS)",
           "created": true,
           "connected": true,
-          "affects_prediction": false,
-          "evidence": "nhl/pulso_sporting_core_245.py; nhl/module_validation_readiness.py",
-          "scope": "La evidencia de plantilla/ausencias se registra, pero no está conectada a la probabilidad de ganador.",
-          "note": "Falta ajuste cuantificado por jugador disponible o ausente."
+          "affects_prediction": true,
+          "evidence": "nhl/absence_exposure.py; nhl/minute_adjusted_ml.py; nhl/pulso_outcome_forecast_218.py; nhl/pulso_pregame_publication_273.py; frontend/nhl-five-market.js",
+          "scope": "El escenario condicional de cambios de plantilla estima minutos y producción de salientes/entrantes; con escenarios completos y pregame de ambos equipos ajusta experimentalmente el mercado Ganador ML que se publica en PULSO.",
+          "note": "Ajuste exploratorio, no validado: tasas históricas por minuto y Poisson independiente; el modelo ancla al ML previo. Salir de la proyección no confirma lesión. Si falta evidencia, no modifica el porcentaje y reporta el motivo."
         },
         {
           "id": "unit_ratings",
@@ -124,7 +124,7 @@
           "affects_prediction": false,
           "evidence": "nhl/goalie_daily.py; nhl/nhl_hoy.py",
           "scope": "La comparación de arqueros se adjunta al partido; no modifica statistical_p_home.",
-          "note": "Falta incorporar el arquero y su reemplazo en el cálculo del ganador."
+          "note": "Permanece fuera de la fórmula: el candidato histórico de SV% empeoró el holdout (Brier 0.245599→0.246198; log loss 0.684300→0.685515). Las señales adicionales de forma reciente, descanso y carga tampoco superaron el control; falta una señal/modelo que pase la comparación cronológica."
         },
         {
           "id": "special_teams",
