@@ -15,7 +15,7 @@
  const source=make("p","Cargando captura…","daily-source");
  const meta=make("div",undefined,"nhl-market-meta");
  meta.append(make("span","Experimental","nhl-experimental-badge"),source);root.append(meta);
- const note=make("p","Probabilidades del modelo histórico. Sin cuotas; no equivalen a certeza ni recomendación de apuesta.","nhl-probability-note");
+ const note=make("p","Base histórica experimental; el ganador incorpora descanso solo con calendario pregame verificado. Sin cuotas ni recomendación de apuesta.","nhl-probability-note");
  root.append(note);
  const date=document.getElementById("daily-date").value;
  if(!published){source.textContent=loadError?"No se pudo cargar la publicación: "+loadError:"Cargando captura…";return;}
