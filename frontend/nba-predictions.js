@@ -172,18 +172,18 @@
       statsDetails.append(el("h5",teamName(team)+(teamData.roster_verified?" · plantilla verificada":" · plantilla sin verificar"),"nba-player-stat-projections__team"));
       if(!teamData.players?.length){statsDetails.append(el("p","No hay plantilla disponible para proyectar.","nba-section-empty"));continue;}
       for(const player of teamData.players){
-       const row=el("div","","nba-player-stat-projections__player");
+       const row=el("div","");row.className="nba-player-stat-projections__player";
        const role=player.role==="starter_listed_by_provider"?"Titular listado":"Rol sin confirmar";
        const availability=player.availability_status==="out"?" · Fuera según reporte":player.availability_status==="unknown"?" · Disponibilidad sin confirmar":"";
-       row.append(el("strong",player.player,"nba-player-stat-projections__name"));
-       row.append(el("span",role+availability+" · "+(player.projected_minutes===null?"min —":"min "+player.projected_minutes.toFixed(1))+" · "+player.historical_games+" PJ","nba-player-stat-projections__meta"));
-       const metrics=el("div","","nba-player-stat-projections__metrics");
+       const name=el("strong",player.player);name.className="nba-player-stat-projections__name";row.append(name);
+       const meta=el("span",role+availability+" · "+(player.projected_minutes===null?"min —":"min "+player.projected_minutes.toFixed(1))+" · "+player.historical_games+" PJ");meta.className="nba-player-stat-projections__meta";row.append(meta);
+       const metrics=el("div","");metrics.className="nba-player-stat-projections__metrics";
        for(const [key,label] of [["points_projection","PTS"],["rebounds_projection","REB"],["assists_projection","AST"]]){
         const value=player[key],sample=player[key.replace("_projection","_sample_games")];
-        metrics.append(el("span",label+" "+(typeof value==="number"?value.toFixed(1):"—")+(sample?" · n="+sample:""),"nba-player-stat-projections__metric"));
+        const metric=el("span",label+" "+(typeof value==="number"?value.toFixed(1):"—")+(sample?" · n="+sample:""));metric.className="nba-player-stat-projections__metric";metrics.append(metric);
        }
-       if(player.projection_reason==="insufficient_historical_sample")row.append(el("span","Muestra insuficiente","nba-player-stat-projections__notice"));
-       if(player.projection_reason==="insufficient_minutes_evidence")row.append(el("span","Minutos insuficientes","nba-player-stat-projections__notice"));
+       if(player.projection_reason==="insufficient_historical_sample"){const notice=el("span","Muestra insuficiente");notice.className="nba-player-stat-projections__notice";row.append(notice);}
+       if(player.projection_reason==="insufficient_minutes_evidence"){const notice=el("span","Minutos insuficientes");notice.className="nba-player-stat-projections__notice";row.append(notice);}
        row.append(metrics);statsDetails.append(row);
       }
      }
