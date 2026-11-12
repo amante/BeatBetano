@@ -82,6 +82,7 @@
     panel.append(el("p",e.participants[1]+" (visita): "+pct(scenarioAwayBaseline)+" → "+pct(lineupScenario.scenario_ml_away)));
     const delta=Number(lineupScenario.delta_home_pp);
     panel.append(el("p","Cambio local: "+(delta>0?"+":"")+delta.toLocaleString("es-CL",{minimumFractionDigits:2,maximumFractionDigits:2})+" p.p. · corte "+local(lineupScenarioData.as_of_utc),"forecast-notice"));
+    if(Array.isArray(lineupScenario.adjusted_sides))panel.append(el("p","Ajuste aplicado a: "+lineupScenario.adjusted_sides.join(", ")+(lineupScenario.excluded_sides?.length?" · sin ajuste para: "+lineupScenario.excluded_sides.join(", "):""),"forecast-notice"));
     panel.append(el("p","Sin validación predictiva; usa tasas históricas por minuto y Poisson independiente.","forecast-meta"));
     card.append(panel);
    }else if(lineupScenario?.status==="blocked"){
