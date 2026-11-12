@@ -2,6 +2,7 @@ name: PULSO NHL — prospective pregame source capture
 on:
   schedule:
     - cron: '0 * * * *'
+    - cron: '30 * * * *'
   pull_request:
     paths:
       - 'nhl/match_context.py'
@@ -101,7 +102,10 @@ jobs:
                   ]
                   if starts:
                       first, last = min(starts), max(starts)
-                      active = first - timedelta(hours=2) <= now < last
+                      if now.minute >= 30:
+                          active = first - timedelta(minutes=40) <= now <= first - timedelta(minutes=20)
+                      else:
+                          active = first - timedelta(hours=2) <= now < last
                       print(f"NHL slate {day}: first={first.isoformat()}, last={last.isoformat()}, now={now.isoformat()}, active={active}")
                   else:
                       print(f"No NHL games found for {day}; scheduled capture skipped.")
