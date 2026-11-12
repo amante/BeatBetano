@@ -58,7 +58,7 @@
   const grid=el("div",undefined,"forecast-grid");
   for(const e of rows){
    const first=e.initial,last=e.latest,card=el("article",undefined,"forecast-card");
-   const lineupScenario=sport==="nhl"?(lineupScenarioData?.games||[]).find(g=>String(g.game_id)===String(e.event_id)&&g.start_utc===e.start_utc):null;
+   const lineupScenario=sport==="nhl"?(lineupScenarioData?.games||[]).find(g=>String(g.game_id)===String(e.event_id)&&Date.parse(g.start_utc)===Date.parse(e.start_utc)):null;
    const keys=Object.keys(last.probabilities),previous=e.history.length>1?e.history[e.history.length-2]:null;
    const noProbabilityChange=previous&&keys.every(key=>pct(previous.probabilities[key])===pct(last.probabilities[key]));
    const top=el("div",undefined,"forecast-card-top");top.append(el("span",noProbabilityChange?"Actualización · sin cambio":stages[last.stage],"forecast-badge"),el("span",Date.now()>=Date.parse(e.start_utc)?"Historial pregame · partido iniciado":last.source_classification==="illustrative"?"Ejemplo ilustrativo":last.calibration_certified?"Calibración certificada":"Sin calibración certificada","forecast-state"));card.append(top);
