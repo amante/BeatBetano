@@ -52,7 +52,7 @@ def present(slate,run_id=None):
       "home_plus3 and away_plus3 are not complementary events",
       "First-to-+3 includes neither team",
       "Rest adjusts the ML market only when both prior fixtures are confirmed completed; missing rest leaves that probability unchanged",
-      "Travel, officials, goalie, lineup and special-teams adjustments are not part of this rest candidate"]}
+      "Lineup availability can adjust ML only as an unvalidated conditional scenario when both team exposures are complete and pregame; goalie, travel, officials and special teams are not incorporated"]}
 def main():
  p=argparse.ArgumentParser();p.add_argument("--slate",required=True);p.add_argument("--out",required=True)
  p.add_argument("--run-id")
