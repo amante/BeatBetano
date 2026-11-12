@@ -174,7 +174,7 @@
       for(const player of teamData.players){
        const row=el("div","");row.className="nba-player-stat-projections__player";
        const role=player.role==="starter_listed_by_provider"?"Titular listado":"Rol sin confirmar";
-       const availability=player.availability_status==="out"?" · Fuera según reporte":player.availability_status==="unknown"?" · Disponibilidad sin confirmar":"";
+       const availability=player.availability_status==="out"?" · Fuera según reporte":["unknown","questionable","doubtful","probable"].includes(player.availability_status)?" · Disponibilidad "+player.availability_status:"";
        const name=el("strong",player.player);name.className="nba-player-stat-projections__name";row.append(name);
        const meta=el("span",role+availability+" · "+(player.projected_minutes===null?"min —":"min "+player.projected_minutes.toFixed(1))+" · "+player.historical_games+" PJ");meta.className="nba-player-stat-projections__meta";row.append(meta);
        const metrics=el("div","");metrics.className="nba-player-stat-projections__metrics";
