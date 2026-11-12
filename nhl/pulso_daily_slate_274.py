@@ -38,9 +38,13 @@ def build(schedule,report,forecast_dir):
    state="not_pregame_at_capture"
   else:
    state="pregame_forecast_unavailable"
+  ml_record=forecasts.get((gid,"ml"))
+  module_effects=ml_record.get("module_effects",{}) if ml_record else {}
   games.append({"game_id":gid,"home":f["home"],"away":f["away"],
                 "start_utc":f["scheduled_start"],"game_state_at_capture":f["game_state"],
                 "forecast_status":state,"markets":markets if markets else None,
+                "module_effects":module_effects,
+                "model_version":ml_record.get("model_version") if ml_record else None,
                 "official":False,"goalie_conditioned":False})
  return {"kind":"nhl_daily_complete_slate_274","date":report["date"],
          "schedule_source_url":schedule["source_url"],"schedule_captured_at":schedule["captured_at"],

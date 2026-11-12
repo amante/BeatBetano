@@ -20,11 +20,13 @@ def team_context(team,payload,fixture,source_at):
     if at>=start:raise ValueError('Game already started at source retrieval')
     if game is None or game['homeTeam']['abbrev']!=fixture['home'] or game['awayTeam']['abbrev']!=fixture['away'] or parse_utc(game['startTimeUTC'])!=start:raise ValueError('Official fixture identity changed')
     previous=[g for g in games.values() if team in (g.get('homeTeam',{}).get('abbrev'),g.get('awayTeam',{}).get('abbrev')) and parse_utc(g['startTimeUTC'])<start and g.get('gameScheduleState') not in ('PPD','CNCL')]
-    if not previous:return dict(status='missing_previous_fixture',previous_game_id=None,hours_between_starts=None,back_to_back=None,venue_changed=None,travel_km=None,applied_to_probability=False)
+    if not previous:return dict(status='missing_previous_fixture',game_date=game.get('gameDate'),previous_game_id=None,previous_game_date=None,rest_days_before_game=None,hours_between_starts=None,back_to_back=None,venue_changed=None,travel_km=None,applied_to_probability=False)
     prior=max(previous,key=lambda g:parse_utc(g['startTimeUTC']))
     prior_start=parse_utc(prior['startTimeUTC']);old=prior.get('venue',{}).get('default');current=game.get('venue',{}).get('default')
     completed=prior.get('gameState') in ('OFF','FINAL') and prior_start<at
-    return dict(status='observed_schedule_context' if completed else 'planned_previous_fixture_not_completed',previous_game_id=str(prior['id']),previous_start_utc=prior['startTimeUTC'],previous_game_state=prior.get('gameState'),hours_between_starts=(start-prior_start).total_seconds()/3600,back_to_back=(date.fromisoformat(game['gameDate'])-date.fromisoformat(prior['gameDate'])).days==1 if game.get('gameDate') and prior.get('gameDate') else None,previous_venue=old,venue=current,venue_changed=old!=current if old and current else None,travel_km=None,actual_rest_hours=None,applied_to_probability=False)
+    game_date=game.get('gameDate');previous_date=prior.get('gameDate')
+    rest_days=max(0,(date.fromisoformat(game_date)-date.fromisoformat(previous_date)).days-1) if completed and game_date and previous_date else None
+    return dict(status='observed_schedule_context' if completed else 'planned_previous_fixture_not_completed',game_date=game_date,previous_game_id=str(prior['id']),previous_game_date=previous_date,rest_days_before_game=rest_days,previous_start_utc=prior['startTimeUTC'],previous_game_state=prior.get('gameState'),hours_between_starts=(start-prior_start).total_seconds()/3600,back_to_back=(date.fromisoformat(game_date)-date.fromisoformat(previous_date)).days==1 if game_date and previous_date else None,previous_venue=old,venue=current,venue_changed=old!=current if old and current else None,travel_km=None,actual_rest_hours=None,applied_to_probability=False)
 
 
 def collect(report,get=fetch):
@@ -49,7 +51,7 @@ def collect(report,get=fetch):
                 payload,metadata=cache[team]
                 sides[team]=dict(team_context(team,payload,f,metadata['retrieved_at']),source=metadata)
             except (ValueError,KeyError,TypeError) as e:sides[team]=dict(status='missing_or_invalid_source',reason=errors.get(team,str(e)[:160]),applied_to_probability=False)
-        games.append(dict(game_id=str(f['game_id']),home=f['home'],away=f['away'],start_utc=f['start_utc'],teams=sides))
+        games.append(dict(game_id=str(f['game_id']),home=f['home'],away=f['away'],start_utc=f['start_utc'],game_date=next((s.get('game_date') for s in sides.values() if s.get('game_date')),None),teams=sides))
     return dict(kind='nhl_official_schedule_context_v1',source_capture_as_of=report['generated_at_utc'],as_of_utc=max([parse_utc(m['retrieved_at']) for _,_,m,_,e in responses if e is None]+[capture]).isoformat(),games=games,errors=errors,probabilities_modified=False,limitations=['Hours are between scheduled starts, not verified rest since the previous final horn.','Venue change is observed; travel distance/route is not inferred.','Planned prior fixtures do not prove actual workload.']),archive
 
 

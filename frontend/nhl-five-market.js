@@ -15,7 +15,7 @@
  const source=make("p","Cargando captura…","daily-source");
  const meta=make("div",undefined,"nhl-market-meta");
  meta.append(make("span","Experimental","nhl-experimental-badge"),source);root.append(meta);
- const note=make("p","Probabilidades del modelo histórico. Sin cuotas; no equivalen a certeza ni recomendación de apuesta.","nhl-probability-note");
+ const note=make("p","Base histórica experimental; el ganador incorpora descanso solo con calendario pregame verificado. Sin cuotas ni recomendación de apuesta.","nhl-probability-note");
  root.append(note);
  const date=document.getElementById("daily-date").value;
  if(!published){source.textContent=loadError?"No se pudo cargar la publicación: "+loadError:"Cargando captura…";return;}
@@ -55,6 +55,16 @@
    card.append(window.PulsoNhlGoalieComparison.create(data,g));
    card.append(window.PulsoNhlContext.create(g));
    card.append(window.PulsoNhlAbsenceExposure.create(g));
+   const rest=g.module_effects?.rest;
+   if(rest){
+    let message="Descanso no ajustado: falta evidencia pregame verificada; el porcentaje quedó sin este ajuste.";
+    if(rest.status==="applied"){
+     const delta=Number(rest.probability_delta_percentage_points);
+     const signed=(delta>0?"+":"")+delta.toFixed(2).replace(".",",")+" pp";
+     message="Descanso incluido en Ganador: "+g.home+" "+rest.home_rest_days+" días · "+g.away+" "+rest.away_rest_days+" días · cambio "+signed+".";
+    }
+    card.append(make("p",message,"daily-source"));
+   }
    const extra=make("details",undefined,"nhl-extra-markets");extra.append(make("summary","Ver los cinco mercados y comparación +3"));
    const rows=[
      ["Ganador ML",pct(g.ml.home),pct(g.ml.away),"—"],

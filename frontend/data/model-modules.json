@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-11",
+  "audited_at": "2026-11-12",
   "definitions": {
     "created": "Hay una implementación ejecutable del módulo; una mención en la hoja de ruta no basta.",
     "connected": "La ejecución diaria incorpora su salida al paquete del pronóstico o a uno de sus mercados publicados; recopilarla por separado no basta.",
@@ -138,13 +138,13 @@
         },
         {
           "id": "context",
-          "name": "Descanso, localía, viaje y árbitros",
+          "name": "Descanso (localía, viaje y árbitros pendientes)",
           "created": true,
-          "connected": false,
-          "affects_prediction": false,
-          "evidence": "nhl/module_validation_readiness.py; nhl/module_audit.py",
-          "scope": "Hay auditorías y requisitos; no hay módulo diario completo conectado al porcentaje.",
-          "note": "Conectar variables puntuales al modelo tras definir datos y coeficientes."
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nhl/schedule_context.py; nhl/pulso_outcome_forecast_218.py; .github/workflows/pulso-nhl-prospective.yml",
+          "scope": "Los días de descanso por calendario oficial modifican el mercado experimental de ganador (+/-0.06 en log-odds por día diferencial, limitado a cuatro días) cuando los últimos partidos de ambos equipos constan como final antes del pronóstico.",
+          "note": "En el holdout cronológico de 554 partidos, descanso solo mejoró Brier 0.245709→0.245434 y log loss 0.684515→0.683972. Sigue experimental y sin intervalo de incertidumbre; localía adicional, viaje y árbitros siguen pendientes."
         },
         {
           "id": "team_rating",
