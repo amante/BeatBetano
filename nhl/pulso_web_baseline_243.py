@@ -17,7 +17,8 @@ def build(folder):
   if parse_utc(raw["prediction_as_of_utc"])>=parse_utc(raw["start_utc"]):raise ValueError("Post-start baseline")
   games.append({"game_id":gid,"home":raw["home"],"away":raw["away"],"start_utc":raw["start_utc"],
     "prediction_as_of_utc":raw["prediction_as_of_utc"],"p_home_ml":raw["probabilities"]["home"],
-    "p_away_ml":raw["probabilities"]["away"],"model_version":raw["model_version"]})
+    "p_away_ml":raw["probabilities"]["away"],"model_version":raw["model_version"],
+    "module_effects":raw.get("module_effects",{})})
  return {"kind":"published_experimental_outcome_baseline","games":games,"official":False,
    "odds_used":False,"limitations":"Fixed outcome-only baseline; not verified full sporting CRS and lineup model"}
 def main():
