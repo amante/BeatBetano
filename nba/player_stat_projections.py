@@ -42,7 +42,7 @@ def build(snapshot, module_context, player_history, roster_feed):
     context_body = {k: v for k, v in module_context.items() if k != "content_sha256"}
     if module_context.get("content_sha256") != digest(context_body):
         raise ValueError("Module context digest mismatch")
-    if roster_feed.get("snapshot_sha256") != snapshot_sha:
+    if roster_feed.get("snapshot_sha256") not in {snapshot_sha, module_context.get("seed_snapshot_sha256")}:
         raise ValueError("Roster feed / snapshot mismatch")
     observations = player_history.get("players", [])
     if not isinstance(observations, list):
@@ -52,7 +52,9 @@ def build(snapshot, module_context, player_history, roster_feed):
     for row in observations:
         played_at = stamp(row.get("tipoff_utc"))
         minutes = row.get("minutes_played")
+        observed_at = stamp(row.get("observed_at_utc"))
         if (not row.get("player_id") or not played_at or not game_cutoff or played_at >= game_cutoff
+                or (observed_at and observed_at >= game_cutoff)
                 or row.get("did_not_play") or type(minutes) not in (int, float)
                 or not math.isfinite(minutes) or minutes <= 0):
             continue
