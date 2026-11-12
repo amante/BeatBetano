@@ -69,14 +69,17 @@
    for(const key of (sport==="soccer"?["home","draw","away"]:["home","away"])){
     const tr=el("tr");tr.append(el("th",key==="draw"?"Empate":e.participants[key==="home"?0:1]),el("td",pct(first.probabilities[key])),el("td",pct(last.probabilities[key])),el("td",change(e.delta[key])));body.append(tr);
    }table.append(body);card.append(table);
+   const scenarioAwayBaseline=Number.isFinite(lineupScenario?.baseline_ml_away)
+    ?lineupScenario.baseline_ml_away
+    :Number.isFinite(lineupScenario?.baseline_ml_home)?1-lineupScenario.baseline_ml_home:NaN;
    if(lineupScenario?.status==="experimental_minute_scenario"&&
       Number.isFinite(lineupScenario.baseline_ml_home)&&Number.isFinite(lineupScenario.scenario_ml_home)&&
-      Number.isFinite(lineupScenario.baseline_ml_away)&&Number.isFinite(lineupScenario.scenario_ml_away)){
+      Number.isFinite(scenarioAwayBaseline)&&Number.isFinite(lineupScenario.scenario_ml_away)){
     const panel=el("section",undefined,"nhl-lineup-scenario");
     panel.append(el("h4","Disponibilidad y minutos · escenario experimental"));
     panel.append(el("p","Esta simulación es independiente del historial de arriba; no lo reemplaza.","forecast-meta"));
     panel.append(el("p",e.participants[0]+" (local): "+pct(lineupScenario.baseline_ml_home)+" → "+pct(lineupScenario.scenario_ml_home)));
-    panel.append(el("p",e.participants[1]+" (visita): "+pct(lineupScenario.baseline_ml_away)+" → "+pct(lineupScenario.scenario_ml_away)));
+    panel.append(el("p",e.participants[1]+" (visita): "+pct(scenarioAwayBaseline)+" → "+pct(lineupScenario.scenario_ml_away)));
     const delta=Number(lineupScenario.delta_home_pp);
     panel.append(el("p","Cambio local: "+(delta>0?"+":"")+delta.toLocaleString("es-CL",{minimumFractionDigits:2,maximumFractionDigits:2})+" p.p. · corte "+local(lineupScenarioData.as_of_utc),"forecast-notice"));
     panel.append(el("p","Sin validación predictiva; usa tasas históricas por minuto y Poisson independiente.","forecast-meta"));
