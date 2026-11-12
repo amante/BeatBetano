@@ -55,6 +55,16 @@
    card.append(window.PulsoNhlGoalieComparison.create(data,g));
    card.append(window.PulsoNhlContext.create(g));
    card.append(window.PulsoNhlAbsenceExposure.create(g));
+   const rest=g.module_effects?.rest;
+   if(rest){
+    let message="Descanso no ajustado: falta evidencia pregame verificada; el porcentaje quedó sin este ajuste.";
+    if(rest.status==="applied"){
+     const delta=Number(rest.probability_delta_percentage_points);
+     const signed=(delta>0?"+":"")+delta.toFixed(2).replace(".",",")+" pp";
+     message="Descanso incluido en Ganador: "+g.home+" "+rest.home_rest_days+" días · "+g.away+" "+rest.away_rest_days+" días · cambio "+signed+".";
+    }
+    card.append(make("p",message,"daily-source"));
+   }
    const extra=make("details",undefined,"nhl-extra-markets");extra.append(make("summary","Ver los cinco mercados y comparación +3"));
    const rows=[
      ["Ganador ML",pct(g.ml.home),pct(g.ml.away),"—"],
