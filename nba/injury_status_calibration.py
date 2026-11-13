@@ -32,9 +32,11 @@ def seal(value, field="content_sha256"):
         raise ValueError("Evidence digest mismatch")
 
 
-def capture(snapshot, reconciliation, run_id):
-    if snapshot.get("content_sha256") != reconciliation.get("snapshot_sha256"):
-        raise ValueError("Reconciliation does not match the frozen snapshot")
+def capture(snapshot, module_context, run_id):
+    seal(snapshot)
+    seal(module_context)
+    if snapshot.get("content_sha256") != module_context.get("snapshot_sha256"):
+        raise ValueError("Module context does not match the frozen snapshot")
     frozen_at = stamp(snapshot["created_at_utc"])
     games = []
     excluded_after_freeze = 0
@@ -43,7 +45,8 @@ def capture(snapshot, reconciliation, run_id):
         tip = stamp(fixture["tipoff_utc"])
         if frozen_at >= tip:
             raise ValueError("Cannot capture a post-tipoff prediction")
-        evidence = reconciliation.get("games", {}).get(gid, {}).get("teams", {})
+        evidence = module_context.get("games", {}).get(gid, {}).get(
+            "injury_source_reconciliation", {}).get("data", {}).get("teams", {})
         claims = []
         for team in (fixture["home_team"], fixture["away_team"]):
             for player in evidence.get(team, []):
@@ -194,7 +197,7 @@ def main():
     commands = parser.add_subparsers(dest="command", required=True)
     cap = commands.add_parser("capture")
     cap.add_argument("--snapshot", required=True)
-    cap.add_argument("--reconciliation", required=True)
+    cap.add_argument("--module-context", required=True)
     cap.add_argument("--run-id", required=True)
     cap.add_argument("--output", required=True)
     post = commands.add_parser("settle")
@@ -207,7 +210,7 @@ def main():
     args = parser.parse_args()
     load = lambda path: json.loads(Path(path).read_text())
     if args.command == "capture":
-        result = capture(load(args.snapshot), load(args.reconciliation), args.run_id)
+        result = capture(load(args.snapshot), load(args.module_context), args.run_id)
     elif args.command == "settle":
         result = settle(load(args.capture), load(args.boxscores))
     else:
