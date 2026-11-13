@@ -97,7 +97,8 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
         or not 0<home<1 or not 0<away<1 or not math.isclose(home+away,1,rel_tol=0,abs_tol=1e-10)):
      raise ValueError('Invalid injury research probability')
     model_home=home;injury_applied=True
-    official_used=candidate.get('official_out_count',0)>0
+    official_used=(candidate.get('official_out_count',0)>0 or any(
+     team.get('official_out_count',0)>0 for team in candidate.get('teams',{}).values()))
     secondary_used=candidate.get('secondary_consensus_out_count',0)>0
     for key in ('official_injury_report','injury_source_reconciliation','rotation_minutes','availability_impact'):
      module=modules.get(key)
