@@ -397,7 +397,8 @@ def _multi_source_research_scenario(fixture, modules, history, player_history, e
         else:
             parsed[team] = {"net_points_per_game": impact["estimated_net_points_per_game"],
                             "official_out_count": impact["official_out_count"],
-                            "secondary_consensus_out_count": impact["secondary_consensus_out_count"]}
+                            "secondary_consensus_out_count": impact["secondary_consensus_out_count"],
+                            "secondary_provider_out_count": impact.get("secondary_provider_out_count", 0)}
     row["official_out_count"] = sum(value["official_out_count"] for value in parsed.values())
     row["secondary_consensus_out_count"] = sum(value["secondary_consensus_out_count"] for value in parsed.values())
     row["uncertain_status_probability_range"] = _uncertain_probability_range(
