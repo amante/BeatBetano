@@ -137,9 +137,10 @@ def build(report, context, changes, goalies, special, cutoff):
             cg=context_games.get(gid); lg=change_games.get(gid); gg=goalie_games.get(gid)
             if not cg or (cg["home"],cg["away"])!=(f["home"],f["away"]): raise ValueError("missing/mismatched projected fixture")
             if not gg: raise ValueError("missing goalie-history fixture")
+            change_teams=(lg or {}).get("teams",{})
             sides={};unknown=[]
             for code in (f["home"],f["away"]):
-                side=cg["teams"].get(code); diff=lg["teams"].get(code); teamrow=team_by_code.get(code); sp=special.get("teams",{}).get(code)
+                side=cg["teams"].get(code); diff=change_teams.get(code); teamrow=team_by_code.get(code); sp=special.get("teams",{}).get(code)
                 if not side or not side.get("projected") or not side["projected"].get("forwards") or not side["projected"].get("defense"):
                     raise ValueError(code+" projected lineup not captured")
                 if side.get("availability_conflict"):
@@ -177,6 +178,8 @@ def build(report, context, changes, goalies, special, cutoff):
                         raise ValueError(code+" "+field+" projections incomplete")
                     resolved_count=sum(1 for line in raw for person in line if person.get("identity_resolved") and person.get("player_id") is not None)
                     coverage_counts[unit]=dict(expected=expected,captured=sum(len(line) for line in raw),resolved=resolved_count)
+                    if coverage_counts[unit]["captured"] < expected:
+                        unknown.append(code+" "+unit+" projected slots not captured: "+str(expected-coverage_counts[unit]["captured"]))
                     for i,line in enumerate(raw,1):
                         resolved=[person for person in line if person.get("identity_resolved") and person.get("player_id") is not None]
                         lines.append({"unit":unit,"line":i,"players":[player_record(person,code) for person in resolved]})
@@ -242,7 +245,7 @@ def build(report, context, changes, goalies, special, cutoff):
                     if utc(stamp)>=start: raise ValueError("late special-team source")
                     manifest.append({"url":source.get("url"),"sha256":source.get("sha256"),"retrieved_at_utc":utc(stamp).isoformat()})
             for code in (f["home"],f["away"]):
-                ref=change_games[gid]["teams"][code].get("reference_source")
+                ref=(change_games.get(gid) or {}).get("teams",{}).get(code,{}).get("reference_source")
                 if ref and ref.get("retrieved_at"):
                     if utc(ref["retrieved_at"])>=start: raise ValueError("late prior-lineup reference")
                     manifest.append({"url":ref.get("url"),"sha256":ref.get("sha256"),"retrieved_at_utc":utc(ref["retrieved_at"]).isoformat()})
