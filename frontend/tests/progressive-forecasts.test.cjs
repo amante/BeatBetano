@@ -11,7 +11,7 @@ test('shared history supports five sports, Chile date and three-way soccer',()=>
 test('invalid percentages, deltas, chronological history and duplicate events rejected',()=>{
  for(const mutate of [p=>p.events[0].latest.probabilities.home=NaN,p=>p.events[0].delta.home=.9,p=>p.events[0].latest.emitted_at_utc=p.events[0].start_utc,p=>p.events.push(p.events[0]),p=>p.events[0].history.reverse()]){const p=packet();mutate(p);assert.equal(validate(p),false);}
 });
-async function render(p,{sport='nba',ok=true,date='2026-11-06'}={}){
+async function render(p,{sport='nfl',ok=true,date='2026-11-06'}={}){
  const fs=require('node:fs'),vm=require('node:vm');
  function element(tag){return {tag,textContent:'',children:[],setAttribute(){},append(...x){this.children.push(...x)},replaceChildren(...x){this.children=x},addEventListener(){}};}
  const root=element('section'),picker={value:date,addEventListener(){}};
@@ -20,6 +20,20 @@ async function render(p,{sport='nba',ok=true,date='2026-11-06'}={}){
  await window.PulsoProgressiveForecasts.ready;
  const text=e=>[e.textContent,...e.children.map(text)].join(' ');return text(root);
 }
+function nbaPublication(){
+ return {kind:'nba_pulso_research_publication_v1',run_id:'200',snapshot_sha256:'b'.repeat(64),created_at_utc:'2026-11-13T15:17:50Z',predictions:[{
+  game_id:'401909296',away_team:'NY',home_team:'IND',tipoff_utc:'2026-11-14T00:00:00Z',statistical_baseline_p_home:.246,model_p_home:.250,probability_adjustments_applied:['travel'],
+  travel_probability_scenario:{status:'research_scenario',applied:true},injury_probability_scenario:{status:'blocked',reason:'IND:no_official_report_row_for_team;NY:no_official_report_row_for_team'},
+  player_matchup_probability_scenario:{status:'blocked',reason:'head_to_head_matchup_source_unavailable'},
+  player_stat_projections:{teams:{IND:{players:[{player:'Example Player',projection_status:'estimated',points_projection:10.2,rebounds_projection:4.1,assists_projection:2.3}]},NY:{players:[]}}}
+ }]};
+}
+test('NBA page renders the latest automatic run and clearly reports applied or blocked modules',async()=>{
+ const text=await render(nbaPublication(),{sport:'nba',date:'2026-11-13'});
+ assert.match(text,/Corrida automática #200/);assert.match(text,/Indiana Pacers/);assert.match(text,/New York Knicks/);
+ assert.match(text,/Viajes y zona horaria · sí ajustó/);assert.match(text,/Lesiones · Sin filas oficiales/);
+ assert.match(text,/Cruces de jugadores · Sin datos históricos/);assert.match(text,/Example Player/);assert.match(text,/sin calibración certificada/);
+});
 test('renders initial, latest, delta, assumptions and complete revision history',async()=>{
  const text=await render(packet());assert.match(text,/55,0 %/);assert.match(text,/60,0 %/);assert.match(text,/\+5,0 p.p./);assert.match(text,/Starting lineup/);assert.match(text,/#1/);assert.match(text,/#2/);assert.match(text,/calibración no certificada/);
 });
