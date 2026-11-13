@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v2"
+VERSION = "nhl-joint-match-320-v1"
 
 
 def _num(value, label, *, positive=False):
@@ -61,11 +61,9 @@ def _minutes_scenario(team):
         raise ValueError("An incoming player is absent from the projected 18")
     result = {}
     group_audit = {}
-    partial = bool(team.get("lineup_coverage", {}).get("partial"))
-    for group, full_target in (("forwards", 180.0), ("defense", 120.0)):
+    for group, target in (("forwards", 180.0), ("defense", 120.0)):
         members = [p for line in team["projected_lines"] if line["unit"] == group for p in line["players"]]
-        expected_count = 12 if group == "forwards" else 6
-        target = full_target * len(members) / expected_count if partial else full_target
+        ids = {p["player_id"] for p in members}
         group_incoming = [p for p in members if p["player_id"] in incoming_ids]
         group_retained = [p for p in members if p["player_id"] not in incoming_ids]
         entry = sum(total_minutes(p) for p in group_incoming)
@@ -83,15 +81,11 @@ def _minutes_scenario(team):
                                            "PP": new * shares["PP"], "PK": new * shares["PK"]}
         group_outgoing = [p for p in outgoing if (p.get("position") == "D") == (group == "defense")]
         group_audit[group] = {"target_minutes": target,
-                              "full_target_minutes": full_target,
-                              "unresolved_reserved_minutes": full_target-target,
-                              "modeled_player_count": len(members),
                               "outgoing_minutes": sum(total_minutes(p) for p in group_outgoing),
                               "incoming_historical_minutes": entry,
                               "projected_historical_reference_minutes": historical_reference,
                               "allocated_minutes": sum(result[p["player_id"]]["total"] for p in members)}
-    baseline_budget = sum(v["target_minutes"] for v in group_audit.values())
-    full_reference_budget = 300.0
+    baseline_budget = 300.0
     historical_reference = sum(v["projected_historical_reference_minutes"] for v in group_audit.values())
     lost = sum(v["outgoing_minutes"] for v in group_audit.values())
     entry = sum(v["incoming_historical_minutes"] for v in group_audit.values())
@@ -100,9 +94,6 @@ def _minutes_scenario(team):
     return result, {"outgoing_minutes": lost, "incoming_historical_minutes": entry,
                    "historical_reference_minutes": historical_reference,
                    "reference_minutes": baseline_budget,
-                   "full_reference_minutes": full_reference_budget,
-                   "unresolved_reserved_minutes": full_reference_budget-baseline_budget,
-                   "partial_projection": partial,
                    "allocated_minutes": sum(x["total"] for x in result.values()),
                    "incoming_player_ids": sorted(incoming_ids), "by_group": group_audit}
 
@@ -120,8 +111,119 @@ def _historical_contribution(player):
     }
 
 
-def _partial_roster_ledger(team, skaters, full_totals, team_games):
-    """Keep unidentified roster production at its aggregate baseline; adjust only identified players."""
+def team_profile(team, team_code):
+    summary = team["team_summary"]
+    st = team["special_teams"]
+    roster = team["projected_lines"]
+    skaters = [p for line in roster for p in line["players"]]
+    if len(skaters) != 18 or len({p.get("player_id") for p in skaters}) != 18:
+        raise ValueError("Expected 12 forwards and 6 defensemen for " + team_code)
+
+    minute_scenario, minute_audit = _minutes_scenario(team)
+    rates = {"ev_goals": 0.0, "pp_goals": 0.0, "sh_goals": 0.0,
+             "ev_points": 0.0, "pp_points": 0.0, "sh_points": 0.0,
+             "assists": 0.0, "shots": 0.0, "ev_shots": 0.0,
+             "pim": 0.0, "ev_minutes": 0.0, "pp_minutes": 0.0,
+             "pk_minutes": 0.0}
+    player_contributions = []
+    for player in skaters:
+        if player.get("availability") != "active":
+            raise ValueError("Unavailable player present in projected lines")
+        if player.get("team_abbrevs") != team_code:
+            raise ValueError("Projected skater identity does not match " + team_code)
+        prod = player.get("production")
+        minutes = player.get("minutes_per_game")
+        total_toi = _num(player.get("total_minutes_per_game"), "total player TOI", positive=True)
+        gp = _num(player.get("games_played"), "player games", positive=True)
+        ev = _num(minutes.get("EV"), "EV minutes")
+        pp = _num(minutes.get("PP"), "PP minutes")
+        pk = _num(minutes.get("PK"), "PK minutes")
+        if ev + pp + pk > total_toi + 1.5:
+            raise ValueError("Situation TOI exceeds total TOI for " + player["name"])
+        goals = _num(prod.get("goals"), "goals")
+        pp_goals = _num(prod.get("ppGoals"), "PP goals")
+        sh_goals = _num(prod.get("shGoals"), "shorthanded goals")
+        shots = _num(prod.get("shots"), "shots")
+        scenario = minute_scenario[player["player_id"]]
+        historical_ev_total = ev * gp
+        historical_pp_total = pp * gp
+        historical_pk_total = pk * gp
+        historical_total_toi = total_toi * gp
+        ev_rate = _num(prod.get("evGoals"), "EV goals") / historical_ev_total if historical_ev_total else 0
+        pp_rate = pp_goals / historical_pp_total if historical_pp_total else 0
+        sh_rate = sh_goals / historical_pk_total if historical_pk_total else 0
+        total_shots_rate = shots / historical_total_toi if historical_total_toi else 0
+        total_assists_rate = _num(prod.get("assists"), "assists") / historical_total_toi if historical_total_toi else 0
+        total_pim_rate = _num(prod.get("penaltyMinutes"), "penalty minutes") / historical_total_toi if historical_total_toi else 0
+        rates["ev_goals"] += ev_rate * scenario["EV"]
+        rates["pp_goals"] += pp_rate * scenario["PP"]
+        rates["sh_goals"] += sh_rate * scenario["PK"]
+        rates["ev_points"] += _num(prod.get("evPoints"), "EV points") / historical_ev_total * scenario["EV"] if historical_ev_total else 0
+        rates["pp_points"] += _num(prod.get("ppPoints"), "PP points") / historical_pp_total * scenario["PP"] if historical_pp_total else 0
+        rates["sh_points"] += _num(prod.get("shPoints"), "shorthanded points") / historical_pk_total * scenario["PK"] if historical_pk_total else 0
+        rates["assists"] += total_assists_rate * scenario["total"]
+        rates["shots"] += total_shots_rate * scenario["total"]
+        rates["ev_shots"] += total_shots_rate * scenario["EV"]
+        rates["pim"] += total_pim_rate * scenario["total"]
+        rates["ev_minutes"] += scenario["EV"]
+        rates["pp_minutes"] += scenario["PP"]
+        rates["pk_minutes"] += scenario["PK"]
+        baseline = {"minutes": total_toi, "EV": ev, "PP": pp, "PK": pk,
+                    "goals": (_num(prod.get("evGoals"), "EV goals") + pp_goals + sh_goals) / gp,
+                    "assists": _num(prod.get("assists"), "assists") / gp,
+                    "shots": shots / gp,
+                    "pim": _num(prod.get("penaltyMinutes"), "penalty minutes") / gp}
+        projected = {"minutes": scenario["total"], "EV": scenario["EV"],
+                     "PP": scenario["PP"], "PK": scenario["PK"],
+                     "goals": ev_rate * scenario["EV"] + pp_rate * scenario["PP"] + sh_rate * scenario["PK"],
+                     "assists": total_assists_rate * scenario["total"],
+                     "shots": total_shots_rate * scenario["total"],
+                     "pim": total_pim_rate * scenario["total"]}
+        line = next(line for line in roster if player in line["players"])
+        player_contributions.append({"player_id": player["player_id"], "name": player["name"],
+                                     "unit": line["unit"], "line": line["line"],
+                                     "baseline": baseline, "projected": projected,
+                                     "delta": {key: projected[key] - baseline[key] for key in baseline}})
+
+    for group, count in (("forwards", 12), ("defense", 6)):
+        if sum(len(line["players"]) for line in roster if line["unit"] == group) != count:
+            raise ValueError("Invalid projected line structure for " + team_code)
+
+    gp = _num(summary.get("gamesPlayed"), "team games", positive=True)
+    pp_opp = _num(st.get("powerplay_opportunities"), "PP opportunities")
+    pp_for = _num(st.get("powerplay_goals"), "PP goals")
+    sh_opp = _num(st.get("times_shorthanded"), "times shorthanded")
+    pk_against = _num(st.get("opponent_powerplay_goals"), "PP goals allowed")
+    st_gp = _num(st.get("games_played"), "special teams games", positive=True)
+    shots_for = _num(summary.get("shotsForPerGame"), "team shots for", positive=True)
+    shots_against = _num(summary.get("shotsAgainstPerGame"), "team shots against", positive=True)
+    pim_total = _num(team["team_roster_penalty_minutes"].get("total"), "team penalty minutes")
+    pim_gp = _num(team["team_roster_penalty_minutes"].get("games_played"), "team PIM games", positive=True)
+    if team["team_roster_penalty_minutes"].get("unattributed_multi_team_players"):
+        raise ValueError("Team PIM baseline has multi-team player records")
+    goalie_candidates = team.get("goalie_candidates", [])
+    if not goalie_candidates:
+        raise ValueError("No goalie scenarios for " + team_code)
+
+    team_pim_per_game = pim_total / pim_gp
+    if team_pim_per_game <= 0:
+        raise ValueError("No team penalty-minute reference for " + team_code)
+    full_roster = team.get("team_roster_production", {})
+    if full_roster.get("unattributed_multi_team_players"):
+        raise ValueError("Cannot attribute current team production after player trades")
+    full_totals = full_roster.get("totals", {})
+    credit_ratios = {}
+    for strength, goals_key, points_key in (("EV", "evGoals", "evPoints"),
+                                             ("PP", "ppGoals", "ppPoints"),
+                                             ("PK", "shGoals", "shPoints")):
+        goals = _num(full_totals.get(goals_key), "roster " + strength + " goals")
+        points = _num(full_totals.get(points_key), "roster " + strength + " points")
+        credit_ratios[strength] = points / goals if goals else None
+    event_rates = {
+        "EV": rates["ev_points"] / credit_ratios["EV"] if credit_ratios["EV"] else rates["ev_goals"],
+        "PP": rates["pp_points"] / credit_ratios["PP"] if credit_ratios["PP"] else rates["pp_goals"],
+        "PK": rates["sh_points"] / credit_ratios["PK"] if credit_ratios["PK"] else rates["sh_goals"],
+    }
     active_ids = {p["player_id"] for p in skaters}
     change_data = team.get("lineup_changes", {})
     incoming = list(change_data.get("new_in_projection", []))
@@ -133,52 +235,34 @@ def _partial_roster_ledger(team, skaters, full_totals, team_games):
         if pid is not None and pid not in active_ids and pid not in outgoing_by_id and player.get("production"):
             outgoing.append(player)
             outgoing_by_id[pid] = player
-
-    if partial_lineup:
-        team_games = _num(summary.get("gamesPlayed"), "team games", positive=True)
-        aggregate, residual = partial_ledger["base"], partial_ledger["residual"]
-        baseline_totals = {"minutes":300.0, "goals":aggregate["goals"],
-                           "assists":aggregate["assists"], "shots":aggregate["shots"],
-                           "pim":aggregate["penaltyMinutes"]}
-        known_projected = {key:sum(item["projected"][key] for item in player_contributions)
-                           for key in ("minutes","goals","assists","shots","pim")}
-        projected_totals = {
-            "minutes":300.0,
-            "goals":residual["goals"]+known_projected["goals"],
-            "assists":residual["assists"]+known_projected["assists"],
-            "shots":residual["shots"]+known_projected["shots"],
-            "pim":residual["penaltyMinutes"]+known_projected["pim"],
-        }
-    else:
-        prior_ids = {p["player_id"] for p in skaters if p["player_id"] not in incoming_ids}
-        baseline_totals = {key: 0.0 for key in ("minutes", "goals", "assists", "shots", "pim")}
-        baseline_group_totals = {group: {key: 0.0 for key in baseline_totals}
-                                 for group in ("forwards", "defense")}
-        for player in outgoing:
-            contribution = _historical_contribution(player)
-            group = "defense" if player.get("position") == "D" else "forwards"
+    prior_ids = {p["player_id"] for p in skaters if p["player_id"] not in incoming_ids}
+    baseline_totals = {key: 0.0 for key in ("minutes", "goals", "assists", "shots", "pim")}
+    baseline_group_totals = {group: {key: 0.0 for key in baseline_totals}
+                             for group in ("forwards", "defense")}
+    for player in outgoing:
+        contribution = _historical_contribution(player)
+        group = "defense" if player.get("position") == "D" else "forwards"
+        for key in baseline_totals:
+            baseline_totals[key] += contribution[key]
+            baseline_group_totals[group][key] += contribution[key]
+    for player in skaters:
+        if player["player_id"] in prior_ids:
+            item = next(item for item in player_contributions if item["player_id"] == player["player_id"])
+            contribution = item["baseline"]
+            group = item["unit"]
             for key in baseline_totals:
                 baseline_totals[key] += contribution[key]
                 baseline_group_totals[group][key] += contribution[key]
-        for player in skaters:
-            if player["player_id"] in prior_ids:
-                item = next(item for item in player_contributions if item["player_id"] == player["player_id"])
-                contribution = item["baseline"]
-                group = item["unit"]
-                for key in baseline_totals:
-                    baseline_totals[key] += contribution[key]
-                    baseline_group_totals[group][key] += contribution[key]
-        for group, target in (("forwards", 180.0), ("defense", 120.0)):
-            reference = baseline_group_totals[group]["minutes"]
-            scale = target / reference if reference > 0 else 0.0
-            for key in ("goals", "assists", "shots", "pim"):
-                baseline_group_totals[group][key] *= scale
-            baseline_group_totals[group]["minutes"] = target
-        for key in baseline_totals:
-            baseline_totals[key] = sum(baseline_group_totals[group][key] for group in baseline_group_totals)
-        projected_totals = {key: sum(item["projected"][key] for item in player_contributions)
-                            for key in baseline_totals}
-
+    for group, target in (("forwards", 180.0), ("defense", 120.0)):
+        reference = baseline_group_totals[group]["minutes"]
+        scale = target / reference if reference > 0 else 0.0
+        for key in ("goals", "assists", "shots", "pim"):
+            baseline_group_totals[group][key] *= scale
+        baseline_group_totals[group]["minutes"] = target
+    for key in baseline_totals:
+        baseline_totals[key] = sum(baseline_group_totals[group][key] for group in baseline_group_totals)
+    projected_totals = {key: sum(item["projected"][key] for item in player_contributions)
+                         for key in baseline_totals}
     outgoing_totals = {key: 0.0 for key in ("minutes", "goals", "assists", "shots", "pim")}
     for player in outgoing:
         if player.get("production") and player.get("games_played"):
@@ -209,9 +293,6 @@ def _partial_roster_ledger(team, skaters, full_totals, team_games):
         },
         "projected_lineup_totals_per_game": projected_totals,
         "reference_lineup_totals_per_game": baseline_totals,
-        "partial_projection": partial_lineup,
-        "identity_coverage": coverage if partial_lineup else None,
-        "unresolved_roster_residual_per_game": residual if partial_lineup else None,
     }
     pp_minutes = rates["pp_minutes"]
     projected_pp_goals = rates["pp_goals"]
@@ -224,7 +305,6 @@ def _partial_roster_ledger(team, skaters, full_totals, team_games):
         "team": team_code,
         "summary": summary,
         "players": skaters,
-        "lineup_coverage": coverage,
         "rates": rates,
         "credit_ratios": credit_ratios,
         "goal_event_rates_from_player_points": event_rates,
@@ -422,8 +502,6 @@ def run(inputs):
         "scenarios": scenarios,
         "minute_distribution": {home_code: home["minute_distribution"],
                                 away_code: away["minute_distribution"]},
-        "lineup_coverage": {home_code: home["lineup_coverage"],
-                            away_code: away["lineup_coverage"]},
         "lineup_impact": {home_code: home["lineup_impact"], away_code: away["lineup_impact"]},
         "player_contributions": {home_code: home["player_contributions"],
                                  away_code: away["player_contributions"]},
@@ -440,7 +518,6 @@ def run(inputs):
         "limitations": [
             "Poisson rates use observed per-game player production and shot rates, not fitted coefficients.",
             "Individual defender on-ice suppression and line-pair effects are unavailable; team shots-against is used.",
-            "For partial projected lineups, only identified skaters are minute-adjusted; unresolved roster contribution stays at its aggregate team baseline.",
             "Assists describe lineup contribution but are not added as independent goals.",
             "PIM affects opportunity volume through an observed roster-to-team exposure ratio, not a fixed minutes-to-power-play conversion.",
             "Schedule, travel and back-to-back context are retained in source inputs but have no estimated coefficient.",
