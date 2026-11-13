@@ -19,10 +19,18 @@
  function nbaForDay(x,d){return x.predictions.filter(g=>day(g.tipoff_utc)===d).sort((a,b)=>a.tipoff_utc.localeCompare(b.tipoff_utc));}
  function nbaReason(s,type){
   if(!s)return "No se publicó escenario; sin ajuste.";
+  const multi=type==="injury"?s.multi_source_scenario:null;
+  const teamRows=Object.values(multi?.teams||{});
+  const unresolvedCount=teamRows.reduce((n,team)=>n+(Array.isArray(team.unresolved_out_claims)?team.unresolved_out_claims.length:0),0)+(Array.isArray(multi?.unresolved_out_claims)?multi.unresolved_out_claims.length:0);
+  if(type==="injury"&&s.status==="research_scenario"){
+   const appliedOuts=Number(multi?.secondary_provider_out_count||multi?.secondary_consensus_out_count||0)+Number(multi?.official_out_count||0);
+   return "Ajuste experimental aplicado con "+appliedOuts+" baja(s) identificada(s)"+(unresolvedCount?"; "+unresolvedCount+" reclamo(s) conflictivo(s) quedaron fuera":"")+"; no está calibrado.";
+  }
   if(s.status==="blocked"){
-   if(s.type==="injury"||type==="injury"){
-    if(String(s.reason||"").includes("no_official_report_row_for_team"))return "Sin filas oficiales de lesiones para ambos equipos.";
-    if(String(s.reason||"").includes("unresolved_source_claims"))return "Fuentes complementarias sin consenso en bajas.";
+   if(type==="injury"){
+    if(unresolvedCount)return "Sin filas oficiales; "+unresolvedCount+" reclamo(s) de baja de CBS/ESPN sin resolución quedaron fuera del cálculo.";
+    if(String(s.reason||"").includes("no_official_report_row_for_team"))return "Sin filas oficiales de lesiones para ambos equipos; este módulo no ajustó el porcentaje.";
+    if(String(s.reason||"").includes("unresolved_source_claims"))return "Fuentes complementarias con reclamos sin consenso; no se ajustó el porcentaje.";
    }
    return type==="matchup"?"Sin datos históricos utilizables para estos cruces.":"Datos insuficientes para el ajuste.";
   }
@@ -37,7 +45,7 @@
   for(const g of rows){
    const card=el("article",undefined,"forecast-card"),home=nbaTeamNames[g.home_team]||g.home_team,away=nbaTeamNames[g.away_team]||g.away_team;
    const travel=g.travel_probability_scenario,injury=g.injury_probability_scenario,matchup=g.player_matchup_probability_scenario;
-   const t=Boolean(travel?.applied||g.probability_adjustments_applied.includes("travel")),i=Boolean(injury?.applied||injury?.base_prediction_changed),m=Boolean(matchup?.applied||matchup?.base_prediction_changed);
+   const t=Boolean(travel?.applied||g.probability_adjustments_applied.includes("travel")),i=Boolean(injury?.applied||injury?.base_prediction_changed||g.probability_adjustments_applied.includes("injury")),m=Boolean(matchup?.applied||matchup?.base_prediction_changed||g.probability_adjustments_applied.includes("matchup"));
    travelCount+=Number(t);injuryCount+=Number(i);matchupCount+=Number(m);
    const top=el("div",undefined,"forecast-card-top");top.append(el("span","Candidato · #"+x.run_id,"forecast-badge"),el("span","Sin calibración certificada","forecast-state"));card.append(top);
    card.append(el("h3",away+" — "+home),el("p",local(g.tipoff_utc)+" · Ganador","forecast-meta"));
