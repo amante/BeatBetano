@@ -71,7 +71,6 @@ def capture(snapshot, reconciliation, run_id):
                         "observed_at_utc": observed.isoformat(),
                         "officially_verified": claim.get("officially_verified") is True,
                         "editorial_claim": claim.get("editorial_claim") is True,
-                        "source_conflict_at_capture": player.get("conflict") is True,
                     })
         games.append({
             "game_id": gid, "home_team": fixture["home_team"],
@@ -113,7 +112,7 @@ def settle(capture_doc, boxscores):
                 continue
             minutes = row.get("minutes_played")
             if type(minutes) not in (int, float) or not math.isfinite(minutes) or minutes < 0:
-                actual = None
+                actual = False if row.get("did_not_play") is True else None
             else:
                 actual = minutes > 0
             settled.append({
