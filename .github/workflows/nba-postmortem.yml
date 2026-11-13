@@ -73,7 +73,7 @@ jobs:
         if: ${{ hashFiles('results/nba/settlement/input/prospective/injury_status_observations.json') != '' }}
         run: |
           python - <<'PY'
-          import json
+          import json,os
           from pathlib import Path
           snapshot=json.loads(Path("results/nba/settlement/input/prospective/snapshot_module_freeze.json").read_text())
           settled=json.loads(Path("results/nba/settlement/postmortem.json").read_text())
