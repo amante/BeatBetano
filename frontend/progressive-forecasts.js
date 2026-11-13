@@ -11,6 +11,60 @@
    r.probabilities&&Object.keys(r.probabilities).length===keys.length&&keys.every(k=>typeof r.probabilities[k]==="number"&&Number.isFinite(r.probabilities[k])&&r.probabilities[k]>0&&r.probabilities[k]<1)&&
    Math.abs(keys.reduce((n,k)=>n+r.probabilities[k],0)-1)<1e-6;
  }
+ const nbaTeamNames={ATL:"Atlanta Hawks",BOS:"Boston Celtics",BKN:"Brooklyn Nets",CHA:"Charlotte Hornets",CHI:"Chicago Bulls",CLE:"Cleveland Cavaliers",DAL:"Dallas Mavericks",DEN:"Denver Nuggets",DET:"Detroit Pistons",GS:"Golden State Warriors",GSW:"Golden State Warriors",HOU:"Houston Rockets",IND:"Indiana Pacers",LAC:"LA Clippers",LAL:"Los Angeles Lakers",MEM:"Memphis Grizzlies",MIA:"Miami Heat",MIL:"Milwaukee Bucks",MIN:"Minnesota Timberwolves",NO:"New Orleans Pelicans",NOP:"New Orleans Pelicans",NY:"New York Knicks",NYK:"New York Knicks",OKC:"Oklahoma City Thunder",ORL:"Orlando Magic",PHI:"Philadelphia 76ers",PHX:"Phoenix Suns",POR:"Portland Trail Blazers",SAC:"Sacramento Kings",SA:"San Antonio Spurs",SAS:"San Antonio Spurs",TOR:"Toronto Raptors",UTA:"Utah Jazz",UTAH:"Utah Jazz",WAS:"Washington Wizards"};
+ function validateNbaPublication(x){
+  if(!x||x.kind!=="nba_pulso_research_publication_v1"||!/^[0-9]+$/.test(String(x.run_id||""))||!date(x.created_at_utc)||!Array.isArray(x.predictions)||!/^([a-f0-9]{64})$/.test(x.snapshot_sha256||""))return false;
+  const seen=new Set();for(const g of x.predictions){if(!g||!String(g.game_id||"")||seen.has(String(g.game_id))||!g.home_team||!g.away_team||g.home_team===g.away_team||!date(g.tipoff_utc)||!Number.isFinite(g.statistical_baseline_p_home)||g.statistical_baseline_p_home<=0||g.statistical_baseline_p_home>=1||!Number.isFinite(g.model_p_home)||g.model_p_home<=0||g.model_p_home>=1||!Array.isArray(g.probability_adjustments_applied))return false;seen.add(String(g.game_id));}return true;
+ }
+ function nbaForDay(x,d){return x.predictions.filter(g=>day(g.tipoff_utc)===d).sort((a,b)=>a.tipoff_utc.localeCompare(b.tipoff_utc));}
+ function nbaReason(s,type){
+  if(!s)return "No se publicó escenario; sin ajuste.";
+  if(s.status==="blocked"){
+   if(s.type==="injury"||type==="injury"){
+    if(String(s.reason||"").includes("no_official_report_row_for_team"))return "Sin filas oficiales de lesiones para ambos equipos.";
+    if(String(s.reason||"").includes("unresolved_source_claims"))return "Fuentes complementarias sin consenso en bajas.";
+   }
+   return type==="matchup"?"Sin datos históricos utilizables para estos cruces.":"Datos insuficientes para el ajuste.";
+  }
+  return s.applied||s.base_prediction_changed?"Ajuste experimental aplicado.":"Escenario disponible, sin cambio en el porcentaje.";
+ }
+ function renderNbaPublication(x,selected,root,el,local,pct){
+  const rows=nbaForDay(x,selected);
+  root.append(el("p","Corrida automática #"+x.run_id+" · captura "+local(x.created_at_utc)+" · hora de Chile","forecast-meta"));
+  root.append(el("p","Porcentajes experimentales; sin calibración certificada.","forecast-intro"));
+  if(!rows.length){root.append(el("p","No hay captura NBA archivada para esta fecha.","forecast-empty"));return;}
+  const grid=el("div",undefined,"forecast-grid");let travelCount=0,injuryCount=0,matchupCount=0;
+  for(const g of rows){
+   const card=el("article",undefined,"forecast-card"),home=nbaTeamNames[g.home_team]||g.home_team,away=nbaTeamNames[g.away_team]||g.away_team;
+   const travel=g.travel_probability_scenario,injury=g.injury_probability_scenario,matchup=g.player_matchup_probability_scenario;
+   const t=Boolean(travel?.applied||g.probability_adjustments_applied.includes("travel")),i=Boolean(injury?.applied||injury?.base_prediction_changed),m=Boolean(matchup?.applied||matchup?.base_prediction_changed);
+   travelCount+=Number(t);injuryCount+=Number(i);matchupCount+=Number(m);
+   const top=el("div",undefined,"forecast-card-top");top.append(el("span","Candidato · #"+x.run_id,"forecast-badge"),el("span","Sin calibración certificada","forecast-state"));card.append(top);
+   card.append(el("h3",away+" — "+home),el("p",local(g.tipoff_utc)+" · Ganador","forecast-meta"));
+   const base=g.statistical_baseline_p_home,candidate=g.model_p_home,delta=(candidate-base)*100;
+   const table=el("table",undefined,"forecast-table"),thead=el("thead"),hr=el("tr");for(const v of ["Resultado","Base","Candidato"])hr.append(el("th",v));thead.append(hr);table.append(thead);
+   const body=el("tbody");for(const [name,b,c] of [[away,1-base,1-candidate],[home,base,candidate]]){const row=el("tr");row.append(el("th",name),el("td",pct(b)),el("td",pct(c)));body.append(row);}table.append(body);card.append(table);
+   card.append(el("p","Cambio neto local: "+(delta>0?"+":"")+delta.toLocaleString("es-CL",{minimumFractionDigits:2,maximumFractionDigits:2})+" p.p.","forecast-meta"));
+   const details=el("details");details.append(el("summary","Qué módulos entraron al porcentaje"));
+   details.append(el("p",(t?"✓":"○")+" Viajes y zona horaria · "+(t?"sí ajustó":"sin ajuste")));
+   details.append(el("p",(i?"✓":"○")+" Lesiones · "+nbaReason(injury,"injury")));
+   details.append(el("p",(m?"✓":"○")+" Cruces de jugadores · "+nbaReason(matchup,"matchup")));
+   details.append(el("p","La alineación y disponibilidad se capturaron como evidencia, pero no figuran entre los ajustes aplicados a esta predicción."));
+   card.append(details);
+   const teams=g.player_stat_projections?.teams;
+   if(teams&&typeof teams==="object"){
+    const playersDetails=el("details");playersDetails.append(el("summary","Proyecciones individuales · PTS / REB / AST"));
+    for(const [team,info] of Object.entries(teams)){
+     const players=Array.isArray(info?.players)?info.players:[],teamDetails=el("details");
+     teamDetails.append(el("summary",(nbaTeamNames[team]||team)+" · "+players.filter(p=>p.projection_status==="estimated").length+" estimados"));
+     const pt=el("table",undefined,"forecast-table"),ph=el("thead"),pr=el("tr");for(const v of ["Jugador","PTS","REB","AST"])pr.append(el("th",v));ph.append(pr);pt.append(ph);
+     const pb=el("tbody");for(const p of players){const row=el("tr");row.append(el("th",p.player||"Sin identificar"),el("td",Number.isFinite(p.points_projection)?String(p.points_projection):"—"),el("td",Number.isFinite(p.rebounds_projection)?String(p.rebounds_projection):"—"),el("td",Number.isFinite(p.assists_projection)?String(p.assists_projection):"—"));pb.append(row);}pt.append(pb);teamDetails.append(pt);playersDetails.append(teamDetails);
+    }card.append(playersDetails);
+   }
+   card.append(el("p","Candidato de investigación; requiere seguimiento y calibración.","forecast-footnote"));grid.append(card);
+  }
+  root.append(el("p",rows.length+" partidos · viajes: "+travelCount+" ajustados · lesiones: "+injuryCount+" ajustados · cruces: "+matchupCount+" ajustados","forecast-meta"));root.append(grid);
+ }
  function validate(data){
   if(!data||data.kind!=="progressive_forecast_index"||!Array.isArray(data.events)||!Array.isArray(data.errors)||!date(data.generated_at_utc)||data.errors.some(e=>!e||typeof e.sport!=="string"))return false;
   const seen=new Set();
@@ -47,10 +101,12 @@
   const header=el("div",undefined,"forecast-heading"),heading=el("div");heading.append(el("div","PRONÓSTICOS · EVOLUCIÓN PREGAME","eyebrow"),el("h2","Predicciones y actualizaciones"));header.append(heading);
   const legacy=document.getElementById("daily-date"),picker=el("input"),label=el("label","Fecha de pronósticos","forecast-date");picker.type="date";picker.value=legacy?.value||day(new Date().toISOString());picker.setAttribute("aria-label","Fecha de pronósticos");
   picker.addEventListener("change",()=>{if(!/^20\d{2}-\d{2}-\d{2}$/.test(picker.value))return;if(legacy){legacy.value=picker.value;legacy.dispatchEvent(new Event("change",{bubbles:true}));}});label.append(picker);header.append(label);root.append(header);
-  root.append(el("p","La primera base y sus revisiones, sin esperar alineaciones confirmadas.","forecast-intro"));
+  if(sport!=="nba")root.append(el("p","La primera base y sus revisiones, sin esperar alineaciones confirmadas.","forecast-intro"));
   if(error){root.append(el("p","No se pudieron cargar las predicciones. Intenta actualizar la página.","forecast-empty"));return;}
   if(!data){root.append(el("p","Cargando predicciones…","forecast-empty"));return;}
-  const selected=document.getElementById("daily-date")?.value||day(new Date().toISOString()),rows=forDay(data,sport,selected);
+  const selected=document.getElementById("daily-date")?.value||day(new Date().toISOString());
+  if(sport==="nba"){renderNbaPublication(data,selected,root,el,local,pct);return;}
+  const rows=forDay(data,sport,selected);
   const relevant=data.errors.filter(e=>e.sport===sport);
   root.append(el("p",selected+" · "+rows.length+" partido"+(rows.length===1?"":"s")+" con pronóstico archivado · Hora de Chile","forecast-meta"));
   if(relevant.length)root.append(el("p",relevant.length+" registro(s) requieren revisión; sus porcentajes no se muestran.","forecast-notice"));
@@ -109,7 +165,12 @@
    card.append(el("p",last.calibration_certified?"Calibración certificada.":"Estado experimental · calibración no certificada y sin evaluación de rendimiento.","forecast-footnote"));grid.append(card);
   }root.append(grid);
  }
- const ready=(async()=>{render();try{const response=await fetch("./data/forecast-index.json",{cache:"no-store"});if(!response.ok)throw Error("Missing forecast index");const payload=await response.json();if(!validate(payload))throw Error("Invalid forecast index");data=payload;}catch(e){error=e.message;}
+ const ready=(async()=>{render();try{
+  const source=sport==="nba"?"./data/nba-predictions-latest.json":"./data/forecast-index.json";
+  const response=await fetch(source,{cache:"no-store"});if(!response.ok)throw Error("Missing forecast source");
+  const payload=await response.json(),valid=sport==="nba"?validateNbaPublication(payload):validate(payload);
+  if(!valid)throw Error("Invalid forecast source");data=payload;
+ }catch(e){error=e.message;}
   if(sport==="nhl")try{const response=await fetch("./data/nhl-minute-adjusted-ml.json",{cache:"no-store"});if(response.ok){const scenario=await response.json();if(scenario.kind==="nhl_minute_adjusted_ml_v1"&&Array.isArray(scenario.games)&&date(scenario.as_of_utc))lineupScenarioData=scenario;}}catch{}
   render();})();
  document.getElementById("daily-date")?.addEventListener("change",render);
