@@ -282,6 +282,10 @@ jobs:
         if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
         run: |
           python nba/injury_probability.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --history results/nba/history.json --player-history results/nba/player_game_history.json --output results/nba/prospective/injury_probability.json
+      - name: Freeze pregame doubtful and questionable observations for calibration
+        if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
+        run: |
+          python nba/injury_status_calibration.py capture --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --run-id "${{ github.run_id }}" --output results/nba/prospective/injury_status_observations.json
       - name: Estimate NBA travel probability with chronological holdout
         if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
         run: |
@@ -326,6 +330,7 @@ jobs:
             results/nba/prospective/pregame_module_context.json
             results/nba/prospective/pregame_module_connection_summary.json
             results/nba/prospective/injury_probability.json
+            results/nba/prospective/injury_status_observations.json
             results/nba/prospective/travel_probability.json
             results/nba/prospective/player_matchup_source.json
             results/nba/prospective/player_matchup_probability.json
@@ -397,9 +402,11 @@ jobs:
           python nba/pulso_publication.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --injury-adjustment results/nba/prospective/injury_probability.json --travel-adjustment results/nba/prospective/travel_probability.json --matchup-adjustment results/nba/prospective/player_matchup_probability.json $(test -s results/nba/prospective/player_stat_projections.json && echo "--player-stat-projections results/nba/prospective/player_stat_projections.json") --run-id "${{ github.run_id }}" --output frontend/data/nba-predictions-latest.json
           mkdir -p nba/learning/predictions
           cp results/nba/prospective/snapshot_module_freeze.json "nba/learning/predictions/run-${{ github.run_id }}.json"
+          mkdir -p nba/learning/injury_status/captures
+          cp results/nba/prospective/injury_status_observations.json "nba/learning/injury_status/captures/run-${{ github.run_id }}.json"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -f frontend/data/nba-predictions-latest.json "nba/learning/predictions/run-${{ github.run_id }}.json"
+          git add -f frontend/data/nba-predictions-latest.json "nba/learning/predictions/run-${{ github.run_id }}.json" nba/learning/injury_status/captures/
           git commit -m 'data(nba): publish frozen pregame comparison'
           git pull --rebase origin main
           git push origin HEAD:main
