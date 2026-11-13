@@ -233,17 +233,18 @@ def main():
     publication.add_argument("--publication", required=True)
     args = parser.parse_args()
     load = lambda path: json.loads(Path(path).read_text())
-    if args.command == "capture":
+    if args.command == "attach":
+        result = attach(args.summary, args.publication)
+    elif args.command == "capture":
         result = capture(load(args.snapshot), load(args.module_context), args.run_id)
     elif args.command == "settle":
         result = settle(load(args.capture), load(args.boxscores))
-    elif args.command == "summarize":
+    else:
         result = summarize(args.settlements)
+    if args.command != "attach":
         destination = Path(args.output)
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
-    else:
-        result = attach(args.summary, args.publication)
     print(json.dumps({"command": args.command, "games": len(result.get("games", [])),
                       "claims": result.get("claim_count", len(result.get("settled_claims", []))),
                       "groups": len(result.get("groups", []))}))
