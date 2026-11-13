@@ -57,7 +57,8 @@ def editorial(raw, now):
             block[key] = [] if value.casefold() == 'none' else [s.strip() for s in value.split(',') if s.strip()]
             continue
         if block['scratches'] is not None or block['injuries'] is not None: continue
-        names = re.split(r'\s+(?:--|line = re.sub(r'\\s+-\\s+-\\s+', ' -- ', line)
+        line = re.sub(r'\s+-\s+-\s+', ' -- ', line)
+        names = re.split(r'\s+(?:--|–|—|-)\s+', line)
         names = re.split(r'\\s+(?:--|–|—|-)\\s+', line)|—)\s+', line)
         if len(names) == 3 and len(block['forwards']) < 4: block['forwards'].append(names)
         elif len(names) == 2 and len(block['defense']) < 3: block['defense'].append(names)
