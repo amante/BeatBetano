@@ -102,6 +102,7 @@ jobs:
           cp results/nba/settlement/input/prospective/injury_status_observations.json "nba/learning/injury_status/captures/run-${SOURCE_RUN}.json"
           cp results/nba/settlement/injury_status_settlement.json "nba/learning/injury_status/settlements/run-${SOURCE_RUN}.json"
           python nba/injury_status_calibration.py summarize --settlements nba/learning/injury_status/settlements --output frontend/data/nba-injury-status-calibration-latest.json
+          python nba/injury_status_calibration.py attach --summary frontend/data/nba-injury-status-calibration-latest.json --publication frontend/data/nba-predictions-latest.json
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -f "nba/learning/injury_status/captures/run-${SOURCE_RUN}.json" "nba/learning/injury_status/settlements/run-${SOURCE_RUN}.json" frontend/data/nba-injury-status-calibration-latest.json
