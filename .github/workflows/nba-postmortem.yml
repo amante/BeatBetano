@@ -98,7 +98,7 @@ jobs:
           cp results/nba/settlement/injury_status_settlement.json "nba/learning/injury_status/settlements/run-${SOURCE_RUN}.json"
           python nba/injury_status_calibration.py summarize --settlements nba/learning/injury_status/settlements --output frontend/data/nba-injury-status-calibration-latest.json
           git config user.name 'github-actions[bot]'
-          git config user.email '41898282+users.noreply.github.com'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -f "nba/learning/injury_status/captures/run-${SOURCE_RUN}.json" "nba/learning/injury_status/settlements/run-${SOURCE_RUN}.json" frontend/data/nba-injury-status-calibration-latest.json
           if ! git diff --cached --quiet; then git commit -m 'data(nba): settle pregame injury status observations'; fi
           git pull --rebase origin main
