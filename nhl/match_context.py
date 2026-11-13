@@ -59,7 +59,6 @@ def editorial(raw, now):
         if block['scratches'] is not None or block['injuries'] is not None: continue
         line = re.sub(r'\s+-\s+-\s+', ' -- ', line)
         names = re.split(r'\s+(?:--|–|—|-)\s+', line)
-        names = re.split(r'\\s+(?:--|–|—|-)\\s+', line)|—)\s+', line)
         if len(names) == 3 and len(block['forwards']) < 4: block['forwards'].append(names)
         elif len(names) == 2 and len(block['defense']) < 3: block['defense'].append(names)
         elif len(names) == 1 and len(block['forwards']) == 4 and len(block['defense']) == 3 and len(block['goalies']) < 2:
