@@ -59,10 +59,11 @@ def capture(snapshot, module_context, run_id):
                         continue
                     try:
                         observed = stamp(claim["observed_at_utc"])
+                        reported = stamp(claim.get("reported_at_utc") or claim["observed_at_utc"])
                     except (KeyError, TypeError, ValueError):
                         excluded_after_freeze += 1
                         continue
-                    if observed > frozen_at or observed >= tip:
+                    if reported > observed or observed > frozen_at or reported > frozen_at or observed >= tip:
                         excluded_after_freeze += 1
                         continue
                     claims.append({
@@ -72,6 +73,7 @@ def capture(snapshot, module_context, run_id):
                         "source_type": claim.get("source_type"),
                         "source_url": claim.get("source_url"),
                         "observed_at_utc": observed.isoformat(),
+                        "reported_at_utc": reported.isoformat(),
                         "officially_verified": claim.get("officially_verified") is True,
                         "editorial_claim": claim.get("editorial_claim") is True,
                     })
