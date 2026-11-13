@@ -400,6 +400,7 @@ jobs:
         if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
         run: |
           python nba/pulso_publication.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --injury-adjustment results/nba/prospective/injury_probability.json --travel-adjustment results/nba/prospective/travel_probability.json --matchup-adjustment results/nba/prospective/player_matchup_probability.json $(test -s results/nba/prospective/player_stat_projections.json && echo "--player-stat-projections results/nba/prospective/player_stat_projections.json") --run-id "${{ github.run_id }}" --output frontend/data/nba-predictions-latest.json
+          if [ -s frontend/data/nba-injury-status-calibration-latest.json ]; then python nba/injury_status_calibration.py attach --summary frontend/data/nba-injury-status-calibration-latest.json --publication frontend/data/nba-predictions-latest.json; fi
           mkdir -p nba/learning/predictions
           cp results/nba/prospective/snapshot_module_freeze.json "nba/learning/predictions/run-${{ github.run_id }}.json"
           mkdir -p nba/learning/injury_status/captures
