@@ -101,7 +101,7 @@ def _same_probabilities(seed, issued):
                 raise ValueError("Reissued snapshot changed the baseline probability: " + key)
 
 
-def build(seed, history, scoreboard, game_date, roster, lineups, sporting, official, player_history):
+def build(seed, history, scoreboard, game_date, roster, lineups, sporting, official, player_history, injury_reconciliation=None):
     now = datetime.now(timezone.utc).isoformat()
     freeze = datetime.fromisoformat(now.replace('Z', '+00:00'))
     seed_games = {str(p["game_id"]): p for p in seed.get("predictions", [])}
@@ -139,6 +139,7 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
     availability_features = build_availability_features(issued, verified_matchups)
     travel = build_travel(issued, history)
     modules = {}
+    injury_reconciliation = injury_reconciliation or {}
     for fixture in issued["predictions"]:
         gid = str(fixture["game_id"])
         lineup_data = lineups.get("games", {}).get(gid, {})
@@ -147,6 +148,7 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
         minutes_data = minutes.get("games", {}).get(gid, {})
         impact_data = injury_impact.get("games", {}).get(gid, {})
         travel_data = travel.get("games", {}).get(gid, {})
+        injury_reconciliation_data = injury_reconciliation.get("games", {}).get(gid, {})
         injury_state = official.get("retrieval_status") or (
             "available" if official.get("official_document_retrieved") is True else "pending")
         if injury_state not in ("available", "pending", "failed"):
@@ -171,6 +173,9 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
                 "detail": official.get("retrieval_error_detail") if injury_state == "failed" else
                     "Fuente capturada, pero lesiones no cambian los porcentajes actuales." if injury_state == "available" else
                     "El informe todavía no estaba disponible al capturar."},
+            "injury_source_reconciliation": {"connected": True, "affects_prediction": False,
+                "status": "available_not_used" if injury_reconciliation_data.get("teams") else "pending",
+                "entered_prediction": False, "data": injury_reconciliation_data},
             "starting_lineups": {"connected": True, "affects_prediction": False,
                 "status": "available_not_used" if lineup_ready else "pending",
                 "entered_prediction": False, "data": lineup_data},
@@ -201,6 +206,9 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
         "issue_after_evidence_capture": True, "baseline_probabilities_unchanged": True,
         "official_injury_document_retrieved": official.get("official_document_retrieved") is True,
         "official_matched_claims": statuses.get("official_matched_claims", 0),
+        "secondary_injury_claims_matched": injury_reconciliation.get("matched_claim_count", 0),
+        "injury_source_conflicts": injury_reconciliation.get("conflict_count", 0),
+        "injury_source_unmatched_candidates": injury_reconciliation.get("unmatched_candidate_count", 0),
         "teams_with_minutes_allocations": sum(t.get("allocations") is not None for g in minutes.get("games", {}).values() for t in g.get("teams", {}).values()),
         "player_position_entries": sum(len(t.get("reported_starters", [])) for g in matchups["games"].values() for t in g["teams"].values()),
         "travel_distance_estimates": sum(t.get("travel_distance_km") is not None for g in travel["games"].values() for t in g["teams"].values()),
@@ -208,6 +216,7 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
         "modules_affecting_probabilities": [],
         "probabilities_unchanged_from_seed": True,
         "coverage_limitations": ["Projected lineup positions do not establish defensive assignments.",
+            "Player-matched injury source claims are archived for reconciliation only; they are not yet connected to probabilities.",
             "Only official injury claims are used for the official availability scenario; missing statuses stay unresolved.",
             "Travel distance is approximate and no travel coefficient is fitted."]}
     return issued, {"summary": summary, "context": body}
@@ -217,12 +226,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("seed-snapshot", "history", "fixtures", "date", "roster", "lineups", "sporting", "official", "players", "snapshot-output", "context-output", "summary-output"):
         parser.add_argument("--" + name, required=True)
+    parser.add_argument("--injury-reconciliation", required=False)
     args = parser.parse_args()
     seed = read(args.seed_snapshot); history = read(args.history, []); roster = read(args.roster)
     lineups = read(args.lineups); sporting = read(args.sporting); official = read(args.official)
     players = read(args.players, {"players": []})
     scoreboard = read(args.fixtures, {"future_fixtures": []})
-    issued, result = build(seed, history, scoreboard, args.date, roster, lineups, sporting, official, players)
+    injury_reconciliation = read(args.injury_reconciliation)
+    issued, result = build(seed, history, scoreboard, args.date, roster, lineups, sporting, official, players,
+                           injury_reconciliation)
     write_new(args.summary_output, result["summary"] if issued else result)
     if issued:
         write_new(args.snapshot_output, issued)
