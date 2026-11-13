@@ -100,7 +100,7 @@
   if(!s.official_injury_status_verified)body.append(el("p","El reporte oficial NBA de lesiones no está verificado en esta captura; los porcentajes no incorporan estas disponibilidades.","nba-source-warning"));
   details.append(body);return details;
  }
- let data=null,currentRun=null,error="";
+ let data=null,currentRun=null,error="",injuryCalibration=null;
  function render(){
   root.replaceChildren(el("h2","Resultado de la última corrida NBA"));
   if(agenda)agenda.replaceChildren();
@@ -110,6 +110,17 @@
    const section=el("section","");section.className="nba-current-run";
    section.append(el("h3","Probabilidad base y escenario por lesiones · corrida #"+currentRun.run_id));
    section.append(el("p","Generada "+local(currentRun.created_at_utc)+" · Los módulos pendientes no bloquean el cálculo base."));
+   if(injuryCalibration?.kind==="nba_injury_status_empirical_summary"){
+    const calibration=el("details","");calibration.className="nba-module-run-status";
+    calibration.append(el("summary","Evidencia histórica de estados inciertos · "+injuryCalibration.unique_settled_source_claims+" observaciones"));
+    for(const group of injuryCalibration.groups||[]){
+     const interval=group.played_rate_wilson_95;
+     const range=Array.isArray(interval)&&interval.every(Number.isFinite)?" · IC 95% "+(interval[0]*100).toFixed(1)+"–"+(interval[1]*100).toFixed(1)+"%":"";
+     calibration.append(el("p",group.source+" · "+group.status+" · jugó "+(group.played_rate*100).toFixed(1)+"% ("+group.played+"/"+group.observations+")"+range,"nba-module-run-status__item"));
+    }
+    calibration.append(el("p","Frecuencias observadas, separadas por fuente y estado. Son descriptivas; todavía no se usan como pesos de probabilidad."));
+    section.append(calibration);
+   }
    if(!currentRows.length)section.append(el("p","La última corrida no contiene partidos para la fecha seleccionada."));
    const moduleNames={statistical_baseline:"Probabilidad estadística base",official_injury_report:"Informe oficial de lesiones",starting_lineups:"Quintetos titulares",player_matchups:"Cruces de jugadores",rotation_minutes:"Rotación y minutos",availability_impact:"Impacto de disponibilidad",travel_time_zones:"Viajes y zonas horarias"};
    const statusLabels={included:"Incluido en la predicción",available_not_used:"Datos recibidos; no entran en porcentajes",pending:"Pendiente de publicación o validación",failed:"Falló la consulta",research_scenario:"Afecta el candidato experimental"};
@@ -263,14 +274,19 @@
  }
  document.getElementById("daily-date").addEventListener("change",render);render();
  window.PulsoNbaForward={ready:(async()=>{try{
-  const [response,currentResponse]=await Promise.all([
+  const [response,currentResponse,calibrationResponse]=await Promise.all([
    fetch("./data/nba-forward-latest.json",{cache:"no-store"}),
-   fetch("./data/nba-predictions-latest.json",{cache:"no-store"}).catch(()=>null)
+   fetch("./data/nba-predictions-latest.json",{cache:"no-store"}).catch(()=>null),
+   fetch("./data/nba-injury-status-calibration-latest.json",{cache:"no-store"}).catch(()=>null)
   ]);
   if(!response.ok)throw Error("source");const x=await response.json();if(!validate(x))throw Error("contract");data=x;
   if(currentResponse?.ok){
    const latest=await currentResponse.json();
    if(latest?.kind==="nba_pulso_research_publication_v1"&&stamp(latest.created_at_utc)&&Array.isArray(latest.predictions))currentRun=latest;
+  }
+  if(calibrationResponse?.ok){
+   const summary=await calibrationResponse.json().catch(()=>null);
+   if(summary?.kind==="nba_injury_status_empirical_summary"&&Array.isArray(summary.groups))injuryCalibration=summary;
   }
  }catch{error="No se pudo cargar un registro NBA válido. No se muestran porcentajes de otra emisión.";}render();})()};
 })();
