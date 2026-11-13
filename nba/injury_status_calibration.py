@@ -196,6 +196,23 @@ def summarize(settlement_paths):
         "note": "Descriptive pregame source-status versus actual participation. Rates are not causal effects or approved probability weights.",
     }
 
+def attach(summary_path, publication_path):
+    summary_file = Path(summary_path)
+    publication_file = Path(publication_path)
+    publication = json.loads(publication_file.read_text())
+    if publication.get("kind") != "nba_pulso_research_publication_v1":
+        raise ValueError("Unsupported NBA PULSO publication")
+    if summary_file.exists():
+        summary = json.loads(summary_file.read_text())
+        if summary.get("kind") != "nba_injury_status_empirical_summary":
+            raise ValueError("Unsupported injury status summary")
+        publication["injury_status_calibration"] = summary
+    else:
+        publication.pop("injury_status_calibration", None)
+    publication_file.write_text(json.dumps(publication, indent=2, allow_nan=False) + "\\n")
+    return publication
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -211,6 +228,9 @@ def main():
     report = commands.add_parser("summarize")
     report.add_argument("--settlements", required=True)
     report.add_argument("--output", required=True)
+    publication = commands.add_parser("attach")
+    publication.add_argument("--summary", required=True)
+    publication.add_argument("--publication", required=True)
     args = parser.parse_args()
     load = lambda path: json.loads(Path(path).read_text())
     if args.command == "capture":
