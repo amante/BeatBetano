@@ -33,8 +33,10 @@ def normalize_status(value):
     key = norm(value).replace("_", " ")
     if key in {"out", "inactive", "suspended", "ruled out", "injured reserve"}:
         return "out"
-    if key in {"questionable", "doubtful", "day to day", "day-to-day"}:
+    if key in {"questionable", "day to day", "day-to-day"}:
         return "questionable"
+    if key == "doubtful":
+        return "doubtful"
     if key == "probable":
         return "probable"
     if key in {"available", "active", "will play", "available to play"}:

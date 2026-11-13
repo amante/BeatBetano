@@ -128,8 +128,123 @@ def _eligible_out_claims(team_evidence):
     return accepted, unresolved
 
 
+
+def _eligible_uncertain_claims(team_evidence):
+    accepted = []
+    unresolved = []
+    for player in team_evidence if isinstance(team_evidence, list) else []:
+        claims = player.get("claims", [])
+        uncertain = [claim for claim in claims if claim.get("status") in ("questionable", "doubtful")]
+        if not uncertain:
+            continue
+        states = {claim.get("status") for claim in uncertain}
+        if player.get("conflict") or len(states) != 1:
+            unresolved.append({"player_id": player.get("player_id"), "player": player.get("player"),
+                               "reason": "source_status_conflict"})
+            continue
+        state = next(iter(states))
+        official = [claim for claim in uncertain
+                    if claim.get("officially_verified") is True]
+        if official:
+            accepted.append({**player, "scenario_status": state,
+                             "accepted_source_class": "official_nba_report",
+                             "accepted_claims": official})
+            continue
+        providers = {claim.get("source") for claim in uncertain
+                     if claim.get("source_type") == "provider_injury_report"
+                     and not claim.get("editorial_claim")}
+        if {"CBS Sports", "ESPN"}.issubset(providers) and player.get("status_agreement") == state:
+            accepted.append({**player, "scenario_status": state,
+                             "accepted_source_class": "two_provider_consensus",
+                             "accepted_claims": [claim for claim in uncertain
+                                 if claim.get("source") in ("CBS Sports", "ESPN")]})
+        else:
+            unresolved.append({"player_id": player.get("player_id"), "player": player.get("player"),
+                               "status": state, "reason": "uncertain_status_lacks_official_or_cbs_espn_agreement"})
+    return accepted, unresolved
+
+
+def _uncertain_probability_range(fixture, teams_evidence, availability_game,
+                                 rotation_game, lineup_game, player_rows,
+                                 emitted, scale, unmatched_claims):
+    import itertools
+    from official_injury_impact import _history_by_player, _allocations, STAT_FIELDS
+
+    uncertain = {}
+    unresolved = []
+    for team in (fixture["home_team"], fixture["away_team"]):
+        rows, rejected = _eligible_uncertain_claims(teams_evidence.get(team, []))
+        uncertain[team] = rows
+        unresolved.extend({"team": team, **item} for item in rejected)
+    unresolved.extend({"reason": "unmatched_uncertain_status", **claim}
+                      for claim in unmatched_claims
+                      if str(claim.get("status", "")).strip().casefold()
+                      in ("questionable", "doubtful", "day to day"))
+    count = sum(len(rows) for rows in uncertain.values())
+    base = fixture["hybrid_p_home"]
+    if not count:
+        return {"status": "no_consensus_uncertain_status", "scenario_count": 0,
+                "weights": None, "calibrated": False}
+    if unresolved:
+        return {"status": "incomplete_uncertain_evidence", "scenario_count": 0,
+                "unresolved_claims": unresolved, "weights": None, "calibrated": False}
+    if count > 4:
+        return {"status": "too_many_uncertain_players", "scenario_count": 0,
+                "uncertain_player_count": count, "maximum_supported": 4,
+                "weights": None, "calibrated": False}
+    if scale is None:
+        return {"status": "blocked", "reason": "fewer_than_100_pre_emission_historical_margins",
+                "scenario_count": 0, "weights": None, "calibrated": False}
+
+    candidates = []
+    for team, rows in uncertain.items():
+        for item in rows:
+            candidates.append({"team": team, "player_id": str(item.get("player_id")),
+                               "player": item.get("player"), "status": item["scenario_status"],
+                               "source_class": item["accepted_source_class"]})
+    branches = []
+    probabilities = []
+    for choices in itertools.product(("available", "out"), repeat=count):
+        assumed = {team: set() for team in uncertain}
+        assumptions = []
+        for item, choice in zip(candidates, choices):
+            assumptions.append({**item, "assumption": choice})
+            if choice == "out":
+                assumed[item["team"]].add(item["player_id"])
+        net = {}
+        branch_error = None
+        for team in (fixture["home_team"], fixture["away_team"]):
+            impact, reason = _multi_source_team_points(
+                team, availability_game.get(team, {}), rotation_game.get(team, {}),
+                lineup_game.get(team, {}), player_rows, teams_evidence.get(team, []),
+                emitted.isoformat(), fixture["tipoff_utc"], assumed[team])
+            if reason == "no_secondary_provider_consensus_out" and not assumed[team]:
+                net[team] = 0.0
+            elif reason:
+                branch_error = team + ":" + reason
+                break
+            else:
+                net[team] = impact["estimated_net_points_per_game"]
+        if branch_error:
+            return {"status": "blocked", "reason": "incomplete_conditional_player_history_or_minutes:" + branch_error,
+                    "scenario_count": len(branches), "weights": None, "calibrated": False}
+        points_delta = net[fixture["home_team"]] - net[fixture["away_team"]]
+        logit_delta = max(-MAX_ABS_LOG_ODDS_DELTA, min(MAX_ABS_LOG_ODDS_DELTA, points_delta / scale))
+        baseline_logit = math.log(base / (1.0 - base))
+        p_home = 1.0 / (1.0 + math.exp(-(baseline_logit + logit_delta)))
+        branches.append({"assumptions": assumptions, "home_points_delta": points_delta,
+                         "home_probability": p_home, "away_probability": 1.0 - p_home})
+        probabilities.append(p_home)
+    return {"status": "conditional_probability_range",
+            "home_probability_min": min(probabilities), "home_probability_max": max(probabilities),
+            "away_probability_min": 1.0 - max(probabilities), "away_probability_max": 1.0 - min(probabilities),
+            "scenario_count": len(branches), "uncertain_player_count": count,
+            "players": candidates, "branches": branches, "weights": None,
+            "base_probability_used": base, "calibrated": False,
+            "note": "Each branch treats every matched questionable/doubtful player as available or out. No probability weights are assigned."}
+
 def _multi_source_team_points(team, availability_team, rotation_team, lineup_record,
-                              player_rows, reconciled_players, emitted_at, tipoff):
+                              player_rows, reconciled_players, emitted_at, tipoff, assumed_uncertain_ids=None):
     from official_injury_impact import _history_by_player, _allocations, STAT_FIELDS
     from starting_lineup_minutes import estimate as estimate_starter_minutes
 
@@ -148,9 +263,21 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
         outs.append({"player_id": pid, "player": by_id[pid].get("player"),
                      "accepted_source_class": item["accepted_source_class"],
                      "source_claims": item["accepted_claims"]})
+    uncertain, _ = _eligible_uncertain_claims(reconciled_players)
+    assumed_uncertain_ids = {str(pid) for pid in (assumed_uncertain_ids or set())}
+    for item in uncertain:
+        pid = str(item.get("player_id"))
+        if pid in assumed_uncertain_ids:
+            if pid not in by_id:
+                return {"unresolved_out_claims": [{"player_id": pid, "reason": "player_missing_from_current_roster"}]}, "player_missing_from_current_roster"
+            outs.append({"player_id": pid, "player": by_id[pid].get("player"),
+                         "accepted_source_class": "conditional_uncertain_status",
+                         "source_claims": item["accepted_claims"],
+                         "reported_status": item["scenario_status"]})
+    conditional_count = sum(row["accepted_source_class"] == "conditional_uncertain_status" for row in outs)
     secondary_count = sum(row["accepted_source_class"] == "two_provider_consensus" for row in outs)
     official_count = sum(row["accepted_source_class"] == "official_nba_report" for row in outs)
-    if not secondary_count and not official_count:
+    if not secondary_count and not official_count and not conditional_count:
         return {"official_out_count": 0, "secondary_consensus_out_count": 0,
                 "accepted_out_players": [], "unresolved_out_claims": []}, "no_secondary_provider_consensus_out"
 
@@ -203,6 +330,7 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
             "estimated_net_points_per_game": added["points"] - losses["points"],
             "minute_redistribution": allocation, "players_without_historical_minutes": [],
             "replacement_history_gaps": [], "source_agreement_rule": "NBA official OUT; otherwise CBS Sports + ESPN both report OUT and no matched source conflict",
+            "conditional_uncertain_out_count": conditional_count,
             "unresolved_out_claims": []}, None
 
 
@@ -257,6 +385,9 @@ def _multi_source_research_scenario(fixture, modules, history, player_history, e
                             "secondary_consensus_out_count": impact["secondary_consensus_out_count"]}
     row["official_out_count"] = sum(value["official_out_count"] for value in parsed.values())
     row["secondary_consensus_out_count"] = sum(value["secondary_consensus_out_count"] for value in parsed.values())
+    row["uncertain_status_probability_range"] = _uncertain_probability_range(
+        fixture, teams_evidence, availability_game, rotation_game, lineup_game,
+        player_rows, emitted, scale, unmatched)
     if reasons:
         row["reason"] = ";".join(reasons)
         return row
