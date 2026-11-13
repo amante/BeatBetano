@@ -161,7 +161,7 @@ def summarize(settlement_paths):
             old = latest.get(key)
             if old is None or observed > old[0]:
                 latest[key] = (observed, row)
-            elif observed == old[0] and row.get("status") != old[1].get("status"):
+            elif observed == old[0] and old[1] is not None and row.get("status") != old[1].get("status"):
                 latest[key] = (observed, None)
     groups = {}
     for _, row in latest.values():
