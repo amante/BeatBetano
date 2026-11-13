@@ -18,7 +18,7 @@ CBS_URL = "https://www.cbssports.com/nba/injuries/"
 ESPN_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/injuries"
 ESPN_PAGE = "https://www.espn.com/nba/injuries"
 NBC_URL = "https://www.nbcsports.com/fantasy/basketball/player-news"
-STATUS = re.compile(r"\b(Out|Doubtful|Questionable|Probable|Available|Injured Reserve)\b", re.I)
+STATUS = re.compile(r"\b(Game Time Decision|Out|Doubtful|Questionable|Probable|Available|Injured Reserve)\b", re.I)
 
 
 def utcnow():
