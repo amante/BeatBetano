@@ -82,7 +82,7 @@ jobs:
                     for row in snapshot.get("predictions",[]) if str(row["game_id"]) in final_ids]
           Path("results/nba/settlement/settled_fixtures.json").write_text(json.dumps(fixtures,indent=2))
           with open(os.environ["GITHUB_OUTPUT"],"a") as output:
-              output.write("has_games="+("true" if fixtures else "false")+"\\n")
+              output.write("has_games="+("true" if fixtures else "false")+"\n")
           print("Completed fixtures with player boxscores:",len(fixtures))
           PY
       - name: Fetch ESPN player boxscores for completed fixtures
