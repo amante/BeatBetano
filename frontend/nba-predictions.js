@@ -100,7 +100,7 @@
   if(!s.official_injury_status_verified)body.append(el("p","El reporte oficial NBA de lesiones no está verificado en esta captura; los porcentajes no incorporan estas disponibilidades.","nba-source-warning"));
   details.append(body);return details;
  }
- let data=null,currentRun=null,error="",injuryCalibration=null;
+ let data=null,currentRun=null,error="";
  function render(){
   root.replaceChildren(el("h2","Resultado de la última corrida NBA"));
   if(agenda)agenda.replaceChildren();
@@ -110,6 +110,7 @@
    const section=el("section","");section.className="nba-current-run";
    section.append(el("h3","Probabilidad base y escenario por lesiones · corrida #"+currentRun.run_id));
    section.append(el("p","Generada "+local(currentRun.created_at_utc)+" · Los módulos pendientes no bloquean el cálculo base."));
+   const injuryCalibration=currentRun.injury_status_calibration;
    if(injuryCalibration?.kind==="nba_injury_status_empirical_summary"){
     const calibration=el("details","");calibration.className="nba-module-run-status";
     calibration.append(el("summary","Evidencia histórica de estados inciertos · "+injuryCalibration.unique_settled_source_claims+" observaciones"));
@@ -274,19 +275,15 @@
  }
  document.getElementById("daily-date").addEventListener("change",render);render();
  window.PulsoNbaForward={ready:(async()=>{try{
-  const [response,currentResponse,calibrationResponse]=await Promise.all([
+  const [response,currentResponse]=await Promise.all([
    fetch("./data/nba-forward-latest.json",{cache:"no-store"}),
-   fetch("./data/nba-predictions-latest.json",{cache:"no-store"}).catch(()=>null),
-   fetch("./data/nba-injury-status-calibration-latest.json",{cache:"no-store"}).catch(()=>null)
+   fetch("./data/nba-predictions-latest.json",{cache:"no-store"}).catch(()=>null)
   ]);
   if(!response.ok)throw Error("source");const x=await response.json();if(!validate(x))throw Error("contract");data=x;
   if(currentResponse?.ok){
    const latest=await currentResponse.json();
    if(latest?.kind==="nba_pulso_research_publication_v1"&&stamp(latest.created_at_utc)&&Array.isArray(latest.predictions))currentRun=latest;
   }
-  if(calibrationResponse?.ok){
-   const summary=await calibrationResponse.json().catch(()=>null);
-   if(summary?.kind==="nba_injury_status_empirical_summary"&&Array.isArray(summary.groups))injuryCalibration=summary;
-  }
+
  }catch{error="No se pudo cargar un registro NBA válido. No se muestran porcentajes de otra emisión.";}render();})()};
 })();
