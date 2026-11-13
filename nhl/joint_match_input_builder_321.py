@@ -185,7 +185,13 @@ def build(report, context, changes, goalies, special, cutoff):
                         lines.append({"unit":unit,"line":i,"players":[player_record(person,code) for person in resolved]})
                 if not any(item["players"] for item in lines):
                     raise ValueError(code+" no projected skater identities available")
-                incoming=[player_record({"player_id":x["player_id"],"name":x["name"]},code) for x in diff["new_in_projection"]]
+                captured_ids={person["player_id"] for line in lines for person in line["players"]}
+                incoming=[]
+                for x in diff.get("new_in_projection",[]):
+                    if x.get("player_id") in captured_ids:
+                        incoming.append(player_record({"player_id":x["player_id"],"name":x["name"]},code))
+                    else:
+                        unknown.append(code+" incoming skater omitted from adjustment; absent from identified projected lines: "+str(x.get("name") or x.get("player_id")))
                 outgoing=[]
                 for x in diff["out_of_projection"]:
                     p=player_record({"player_id":x["player_id"],"name":x["name"]},code);p["position"]="D" if x.get("position_group")=="defense" else "F";outgoing.append(p)
