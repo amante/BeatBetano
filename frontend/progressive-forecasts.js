@@ -101,7 +101,7 @@
   const header=el("div",undefined,"forecast-heading"),heading=el("div");heading.append(el("div","PRONÓSTICOS · EVOLUCIÓN PREGAME","eyebrow"),el("h2","Predicciones y actualizaciones"));header.append(heading);
   const legacy=document.getElementById("daily-date"),picker=el("input"),label=el("label","Fecha de pronósticos","forecast-date");picker.type="date";picker.value=legacy?.value||day(new Date().toISOString());picker.setAttribute("aria-label","Fecha de pronósticos");
   picker.addEventListener("change",()=>{if(!/^20\d{2}-\d{2}-\d{2}$/.test(picker.value))return;if(legacy){legacy.value=picker.value;legacy.dispatchEvent(new Event("change",{bubbles:true}));}});label.append(picker);header.append(label);root.append(header);
-  root.append(el("p","La primera base y sus revisiones, sin esperar alineaciones confirmadas.","forecast-intro"));
+  if(sport!=="nba")root.append(el("p","La primera base y sus revisiones, sin esperar alineaciones confirmadas.","forecast-intro"));
   if(error){root.append(el("p","No se pudieron cargar las predicciones. Intenta actualizar la página.","forecast-empty"));return;}
   if(!data){root.append(el("p","Cargando predicciones…","forecast-empty"));return;}
   const selected=document.getElementById("daily-date")?.value||day(new Date().toISOString());
