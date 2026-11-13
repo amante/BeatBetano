@@ -136,28 +136,62 @@ def build(report, context, changes, goalies, special, cutoff):
         try:
             cg=context_games.get(gid); lg=change_games.get(gid); gg=goalie_games.get(gid)
             if not cg or (cg["home"],cg["away"])!=(f["home"],f["away"]): raise ValueError("missing/mismatched projected fixture")
-            if not lg or not gg: raise ValueError("missing lineup-change/goalie history fixture")
+            if not gg: raise ValueError("missing goalie-history fixture")
+            change_teams=(lg or {}).get("teams",{})
             sides={};unknown=[]
             for code in (f["home"],f["away"]):
-                side=cg["teams"].get(code); diff=lg["teams"].get(code); teamrow=team_by_code.get(code); sp=special.get("teams",{}).get(code)
+                side=cg["teams"].get(code); diff=change_teams.get(code); teamrow=team_by_code.get(code); sp=special.get("teams",{}).get(code)
                 if not side or not side.get("projected") or not side["projected"].get("forwards") or not side["projected"].get("defense"):
                     raise ValueError(code+" projected lineup not captured")
-                if not side.get("projected_skaters_identity_complete"):
-                    coverage=side.get("projected_skaters_identity_coverage",{})
-                    names=coverage.get("unresolved_names",[])
-                    detail=", ".join(str(name) for name in names[:6])
-                    suffix=("; unresolved: "+detail) if detail else ""
-                    raise ValueError(code+" projected lines captured but player identity unresolved"+suffix)
-                if not diff or diff.get("status")!="projected_changes_observed_not_calibrated":
+                if side.get("availability_conflict"):
+                    raise ValueError(code+" projected lineup conflicts with reported absence")
+                groups=side["projected"]
+                coverage=side.get("projected_skaters_identity_coverage",{})
+                projected_partial=not bool(side.get("projected_skaters_identity_complete"))
+                unresolved_names=list(coverage.get("unresolved_names",[]))
+                if projected_partial:
+                    if not unresolved_names:
+                        unresolved_names=[
+                            person.get("name")
+                            for group_name in ("forwards","defense")
+                            for row in (groups.get(group_name) or [])
+                            for person in row
+                            if not person.get("identity_resolved")
+                        ]
+                    if unresolved_names:
+                        unknown.append(code+" projected skaters excluded (identity unresolved): "+", ".join(str(name) for name in unresolved_names[:12]))
+                    if not diff or diff.get("status")!="projected_changes_observed_not_calibrated":
+                        unknown.append(code+" prior-lineup comparison unavailable; no removals inferred")
+                        diff={"new_in_projection":[],"out_of_projection":[]}
+                elif not diff or diff.get("status")!="projected_changes_observed_not_calibrated":
                     raise ValueError(code+" lineup-change evidence incomplete")
                 if not teamrow or not sp: raise ValueError(code+" team/special-team stats unavailable")
-                groups=side["projected"]; lines=[]
+                lines=[]
+                coverage_counts={}
                 for unit,field in (("forwards","forwards"),("defense","defense")):
                     raw=groups.get(field)
-                    expected=4 if unit=="forwards" else 3
-                    if not isinstance(raw,list) or len(raw)!=expected: raise ValueError(code+" "+field+" projections incomplete")
-                    for i,line in enumerate(raw,1): lines.append({"unit":unit,"line":i,"players":[player_record(p,code) for p in line]})
-                incoming=[player_record({"player_id":x["player_id"],"name":x["name"]},code) for x in diff["new_in_projection"]]
+                    expected=12 if unit=="forwards" else 6
+                    if not isinstance(raw,list):
+                        if projected_partial: raw=[]
+                        else: raise ValueError(code+" "+field+" projections incomplete")
+                    if len(raw)!=(4 if unit=="forwards" else 3) and not projected_partial:
+                        raise ValueError(code+" "+field+" projections incomplete")
+                    resolved_count=sum(1 for line in raw for person in line if person.get("identity_resolved") and person.get("player_id") is not None)
+                    coverage_counts[unit]=dict(expected=expected,captured=sum(len(line) for line in raw),resolved=resolved_count)
+                    if coverage_counts[unit]["captured"] < expected:
+                        unknown.append(code+" "+unit+" projected slots not captured: "+str(expected-coverage_counts[unit]["captured"]))
+                    for i,line in enumerate(raw,1):
+                        resolved=[person for person in line if person.get("identity_resolved") and person.get("player_id") is not None]
+                        lines.append({"unit":unit,"line":i,"players":[player_record(person,code) for person in resolved]})
+                if not any(item["players"] for item in lines):
+                    raise ValueError(code+" no projected skater identities available")
+                captured_ids={person["player_id"] for line in lines for person in line["players"]}
+                incoming=[]
+                for x in diff.get("new_in_projection",[]):
+                    if x.get("player_id") in captured_ids:
+                        incoming.append(player_record({"player_id":x["player_id"],"name":x["name"]},code))
+                    else:
+                        unknown.append(code+" incoming skater omitted from adjustment; absent from identified projected lines: "+str(x.get("name") or x.get("player_id")))
                 outgoing=[]
                 for x in diff["out_of_projection"]:
                     p=player_record({"player_id":x["player_id"],"name":x["name"]},code);p["position"]="D" if x.get("position_group")=="defense" else "F";outgoing.append(p)
@@ -189,8 +223,18 @@ def build(report, context, changes, goalies, special, cutoff):
                 if multi: raise ValueError(code+" traded-player season attribution unresolved")
                 totals={k:sum(number(r,k) for r in exact) for k in ("goals","assists","shots","penaltyMinutes","evGoals","evPoints","ppGoals","ppPoints","shGoals","shPoints")}
                 gp=number(teamrow,"gamesPlayed",True)
-                sides[code]={"projected_lines":lines,"lineup_changes":{"new_in_projection":incoming,"out_of_projection":outgoing},"unavailable_players":absent,"goalie_candidates":glist,"goalie_start_distribution":goalie_start_distribution,"team_summary":teamrow,"special_teams":{"games_played":sp["games_played"],"powerplay_goals":sp["powerplay_goals"],"powerplay_opportunities":sp["powerplay_opportunities"],"opponent_powerplay_goals":sp["opponent_powerplay_goals"],"times_shorthanded":sp["times_shorthanded"]},"team_roster_penalty_minutes":{"total":totals["penaltyMinutes"],"games_played":gp,"unattributed_multi_team_players":0},"team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":0},"schedule":{},"_unknown":unknown}
-            if unknown: raise ValueError("unresolved real-game inputs: "+"; ".join(unknown))
+                modeled_count=sum(item["resolved"] for item in coverage_counts.values())
+                projected_slots=sum(item["expected"] for item in coverage_counts.values())
+                sides[code]={"projected_lines":lines,
+                    "lineup_coverage":{"partial":modeled_count<projected_slots,"expected_skaters":projected_slots,
+                        "captured_skaters":sum(item["captured"] for item in coverage_counts.values()),
+                        "modeled_skaters":modeled_count,"excluded_names":unresolved_names,"by_unit":coverage_counts},
+                    "lineup_changes":{"new_in_projection":incoming,"out_of_projection":outgoing},
+                    "unavailable_players":absent,"goalie_candidates":glist,"goalie_start_distribution":goalie_start_distribution,
+                    "team_summary":teamrow,"special_teams":{"games_played":sp["games_played"],"powerplay_goals":sp["powerplay_goals"],"powerplay_opportunities":sp["powerplay_opportunities"],"opponent_powerplay_goals":sp["opponent_powerplay_goals"],"times_shorthanded":sp["times_shorthanded"]},
+                    "team_roster_penalty_minutes":{"total":totals["penaltyMinutes"],"games_played":gp,"unattributed_multi_team_players":0},
+                    "team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":0},
+                    "schedule":{},"_unknown":unknown}
             cutoff_for_engine=cutoff
             if date.fromisoformat(cutoff_for_engine)>=start.date(): raise ValueError("source cutoff is not strictly before fixture UTC date")
             captured=datetime.now(timezone.utc)
@@ -207,7 +251,7 @@ def build(report, context, changes, goalies, special, cutoff):
                     if utc(stamp)>=start: raise ValueError("late special-team source")
                     manifest.append({"url":source.get("url"),"sha256":source.get("sha256"),"retrieved_at_utc":utc(stamp).isoformat()})
             for code in (f["home"],f["away"]):
-                ref=change_games[gid]["teams"][code].get("reference_source")
+                ref=(change_games.get(gid) or {}).get("teams",{}).get(code,{}).get("reference_source")
                 if ref and ref.get("retrieved_at"):
                     if utc(ref["retrieved_at"])>=start: raise ValueError("late prior-lineup reference")
                     manifest.append({"url":ref.get("url"),"sha256":ref.get("sha256"),"retrieved_at_utc":utc(ref["retrieved_at"]).isoformat()})
