@@ -192,6 +192,12 @@ jobs:
           print('Lesion sources:', x.get('retrieval_mode'), '| official:', x.get('official_source_available'))
           for attempt in x.get('attempts',[]): print(attempt.get('source'), attempt.get('status'), attempt.get('candidate_count',0))
           PY
+      - name: Match CBS, ESPN, NBC and NBA injury claims to current roster players
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
+        continue-on-error: true
+        run: |
+          python nba/injury_source_reconciliation.py --snapshot results/nba/prospective/snapshot.json --roster results/nba/prospective/current_roster_feed.json --complement results/nba/prospective/injury_source_complement.json --official results/nba/prospective/official_injury_source.json --output results/nba/prospective/injury_source_reconciliation.json --summary results/nba/prospective/injury_source_reconciliation.md
+          cat results/nba/prospective/injury_source_reconciliation.md >> "$GITHUB_STEP_SUMMARY"
       - name: Collect per-game ESPN preview observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         continue-on-error: true
@@ -260,7 +266,7 @@ jobs:
       - name: Freeze post-capture baseline and connect pregame module context
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' && hashFiles('results/nba/history.json') != '' && hashFiles('results/nba/initial_scoreboard.json') != '' }}
         run: |
-          python nba/pregame_module_bundle.py --seed-snapshot results/nba/prospective/snapshot.json --history results/nba/history.json --fixtures results/nba/initial_scoreboard.json --date "${{ inputs.game_date }}" --roster results/nba/prospective/current_roster_feed.json --lineups results/nba/prospective/lineup_cascade.json --sporting results/nba/prospective/sporting_observations.json --official results/nba/prospective/official_injury_source.json --players results/nba/player_game_history.json --snapshot-output results/nba/prospective/snapshot_module_freeze.json --context-output results/nba/prospective/pregame_module_context.json --summary-output results/nba/prospective/pregame_module_connection_summary.json
+          python nba/pregame_module_bundle.py --seed-snapshot results/nba/prospective/snapshot.json --history results/nba/history.json --fixtures results/nba/initial_scoreboard.json --date "${{ inputs.game_date }}" --roster results/nba/prospective/current_roster_feed.json --lineups results/nba/prospective/lineup_cascade.json --sporting results/nba/prospective/sporting_observations.json --official results/nba/prospective/official_injury_source.json --players results/nba/player_game_history.json --snapshot-output results/nba/prospective/snapshot_module_freeze.json --context-output results/nba/prospective/pregame_module_context.json --summary-output results/nba/prospective/pregame_module_connection_summary.json --injury-reconciliation results/nba/prospective/injury_source_reconciliation.json
           if [ -s results/nba/prospective/pregame_module_connection_summary.json ]; then
             cat results/nba/prospective/pregame_module_connection_summary.json >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -372,6 +378,8 @@ jobs:
             results/nba/prospective/game_previews.json
             results/nba/prospective/official_injury_source.json
             results/nba/prospective/injury_source_complement.json
+            results/nba/prospective/injury_source_reconciliation.json
+            results/nba/prospective/injury_source_reconciliation.md
             results/nba/prospective/injury_lineup_status.json
             results/nba/prospective/sporting_observations.json
             results/nba/prospective/multisource_evidence.json
