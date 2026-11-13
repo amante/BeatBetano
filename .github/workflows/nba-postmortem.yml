@@ -69,6 +69,7 @@ jobs:
           NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           python nba/settle_daily.py --snapshot results/nba/settlement/input/prospective/snapshot.json --as-of "$NOW" --output results/nba/settlement/postmortem.json
       - name: Fetch completed player participation for the frozen slate
+        id: settled_fixtures
         if: ${{ hashFiles('results/nba/settlement/input/prospective/injury_status_observations.json') != '' }}
         run: |
           python - <<'PY'
@@ -79,13 +80,17 @@ jobs:
           final_ids={str(row["game_id"]) for row in settled.get("games",[])}
           fixtures=[{key:row[key] for key in ("game_id","home_team","away_team","tipoff_utc")}
                     for row in snapshot.get("predictions",[]) if str(row["game_id"]) in final_ids]
-          if not fixtures: raise ValueError("No completed fixture to settle injury observations")
           Path("results/nba/settlement/settled_fixtures.json").write_text(json.dumps(fixtures,indent=2))
+          with open(os.environ["GITHUB_OUTPUT"],"a") as output:
+              output.write("has_games="+("true" if fixtures else "false")+"\\n")
           print("Completed fixtures with player boxscores:",len(fixtures))
           PY
+      - name: Fetch ESPN player boxscores for completed fixtures
+        if: ${{ steps.settled_fixtures.outputs.has_games == 'true' }}
+        run: |
           python nba/player_game_history.py --history results/nba/settlement/settled_fixtures.json --output results/nba/settlement/player_boxscores.json
       - name: Join pregame injury states to actual player participation
-        if: ${{ hashFiles('results/nba/settlement/input/prospective/injury_status_observations.json') != '' && hashFiles('results/nba/settlement/player_boxscores.json') != '' }}
+        if: ${{ steps.settled_fixtures.outputs.has_games == 'true' && hashFiles('results/nba/settlement/input/prospective/injury_status_observations.json') != '' && hashFiles('results/nba/settlement/player_boxscores.json') != '' }}
         run: |
           python nba/injury_status_calibration.py settle --capture results/nba/settlement/input/prospective/injury_status_observations.json --boxscores results/nba/settlement/player_boxscores.json --output results/nba/settlement/injury_status_settlement.json
       - name: Preserve prospective injury status evidence and publish observed rates
