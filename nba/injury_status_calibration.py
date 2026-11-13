@@ -209,7 +209,7 @@ def attach(summary_path, publication_path):
         publication["injury_status_calibration"] = summary
     else:
         publication.pop("injury_status_calibration", None)
-    publication_file.write_text(json.dumps(publication, indent=2, allow_nan=False) + "\\n")
+    publication_file.write_text(json.dumps(publication, indent=2, allow_nan=False) + "\n")
     return publication
 
 
