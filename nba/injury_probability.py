@@ -216,6 +216,18 @@ def _multi_source_research_scenario(fixture, modules, history, player_history, e
     rotation_game = rotation_module.get("historical_rotation", {}).get("teams", {})
     lineup_game = modules.get("starting_lineups", {}).get("data", {}).get("teams", {})
     player_rows = player_history if isinstance(player_history, list) else player_history.get("players", []) if isinstance(player_history, dict) else []
+    unmatched = evidence.get("unmatched_candidates", [])
+    unresolved_out = [claim for claim in unmatched
+                      if str(claim.get("status", "")).strip().casefold() in ("out", "inactive", "ruled out", "suspended")]
+    if unresolved_out:
+        return {"game_id": gid, "home_team": fixture["home_team"], "away_team": fixture["away_team"],
+                "base_home_probability": fixture["hybrid_p_home"],
+                "base_away_probability": 1.0 - fixture["hybrid_p_home"],
+                "status": "blocked", "reason": "unmatched_or_team_conflicting_out_claims",
+                "unresolved_out_claims": unresolved_out, "teams": {},
+                "margin_sample_games": len(margins), "logistic_margin_scale_points": scale,
+                "calibrated": False, "production_approved": False,
+                "secondary_consensus_out_count": 0, "official_out_count": 0}
     row = {"game_id": gid, "home_team": fixture["home_team"], "away_team": fixture["away_team"],
            "base_home_probability": fixture["hybrid_p_home"],
            "base_away_probability": 1.0 - fixture["hybrid_p_home"],
@@ -309,13 +321,13 @@ def build(snapshot, module_context, history, player_history=None):
                "home_probability_delta_pp": None, "estimated_home_points_delta": None,
                "teams": {}, "margin_sample_games": len(margins), "logistic_margin_scale_points": scale,
                "calibrated": False, "production_approved": False, "base_prediction_changed": False}
-        source_scenario = _multi_source_research_scenario(
-            fixture, source_games[gid], history, player_history or [], emitted, margins, scale)
-        row["multi_source_scenario"] = source_scenario
         if emitted >= tipoff:
             row["reason"] = "forecast_not_pregame"
             output.append(row)
             continue
+        source_scenario = _multi_source_research_scenario(
+            fixture, source_games[gid], history, player_history or [], emitted, margins, scale)
+        row["multi_source_scenario"] = source_scenario
         modules = source_games[gid].get("availability_impact", {})
         scenario = modules.get("conditional_production_scenario", {})
         if scenario.get("baseline_snapshot_sha256") != snapshot.get("content_sha256"):
