@@ -14,10 +14,12 @@ def blocker_category(reason):
     text = str(reason).lower()
     if "projected lines captured but player identity unresolved" in text:
         return "lineup_identity_partial"
-    if "projected lineup not captured" in text or "lineup evidence incomplete" in text:
+    if "projected lineup not captured" in text:
         return "lineup_source_missing"
-    if "projected" in text and ("incomplete" in text or "missing" in text):
-        return "lineup_source_missing"
+    # Keep the established category for structural/incomplete evidence while
+    # giving the user a more precise display status below.
+    if "lineup evidence incomplete" in text or "projected" in text and ("incomplete" in text or "missing" in text):
+        return "lineup_not_confirmed"
     return "other_input_unavailable"
 
 def utc(value):
@@ -230,6 +232,7 @@ def build(report, context, changes, goalies, special, cutoff):
                             "category":category,
                             "status":("Proyección capturada; faltan identidades" if category=="lineup_identity_partial" else
                                       "Fuente de alineaciones no disponible" if category=="lineup_source_missing" else
+                                      "Proyección de alineación incompleta" if category=="lineup_not_confirmed" else
                                       "Escenario integrado pendiente"),
                             "reason":reason})
     return {"kind":"nhl_joint_match_input_batch_v321","date":cutoff,"season":season,"generated_at_utc":datetime.now(timezone.utc).isoformat(),"games":output,"blocked_games":blocked,"official":False,"calibrated":False,"odds_used":False}
