@@ -114,19 +114,24 @@ def _eligible_out_claims(team_evidence):
                 unresolved.append({"player_id": player.get("player_id"), "player": player.get("player"),
                                    "reason": "source_status_conflict"})
             continue
-        providers = {claim.get("source") for claim in claims
-                     if claim.get("source_type") == "provider_injury_report"
-                     and claim.get("status") == "out" and not claim.get("editorial_claim")}
-        if {"CBS Sports", "ESPN"}.issubset(providers) and player.get("status_agreement") == "out":
-            accepted.append({**player, "accepted_source_class": "two_provider_consensus",
-                             "accepted_claims": [claim for claim in claims
-                                 if claim.get("source") in ("CBS Sports", "ESPN")
-                                 and claim.get("status") == "out"]})
+        provider_claims = [claim for claim in claims
+                           if claim.get("source_type") == "provider_injury_report"
+                           and claim.get("source") in ("CBS Sports", "ESPN")
+                           and claim.get("status") == "out" and not claim.get("editorial_claim")]
+        providers = {claim.get("source") for claim in provider_claims}
+        if player.get("status_agreement") == "out" and len(providers) >= 2:
+            source_class = "two_provider_consensus"
+        elif player.get("status_agreement") == "out" and len(providers) == 1:
+            source_class = "single_provider_research_claim"
+        else:
+            source_class = None
+        if source_class:
+            accepted.append({**player, "accepted_source_class": source_class,
+                             "accepted_claims": provider_claims})
         elif any(claim.get("status") == "out" for claim in claims):
             unresolved.append({"player_id": player.get("player_id"), "player": player.get("player"),
-                               "reason": "out_claim_lacks_official_or_cbs_espn_agreement"})
+                               "reason": "out_claim_lacks_trusted_provider_report"})
     return accepted, unresolved
-
 
 
 def _eligible_uncertain_claims(team_evidence):
@@ -143,24 +148,30 @@ def _eligible_uncertain_claims(team_evidence):
                                "reason": "source_status_conflict"})
             continue
         state = next(iter(states))
-        official = [claim for claim in uncertain
-                    if claim.get("officially_verified") is True]
+        official = [claim for claim in uncertain if claim.get("officially_verified") is True]
         if official:
             accepted.append({**player, "scenario_status": state,
                              "accepted_source_class": "official_nba_report",
                              "accepted_claims": official})
             continue
-        providers = {claim.get("source") for claim in uncertain
-                     if claim.get("source_type") == "provider_injury_report"
-                     and not claim.get("editorial_claim")}
-        if {"CBS Sports", "ESPN"}.issubset(providers) and player.get("status_agreement") == state:
+        provider_claims = [claim for claim in uncertain
+                           if claim.get("source_type") == "provider_injury_report"
+                           and claim.get("source") in ("CBS Sports", "ESPN")
+                           and not claim.get("editorial_claim")]
+        providers = {claim.get("source") for claim in provider_claims}
+        if player.get("status_agreement") == state and len(providers) >= 2:
+            source_class = "two_provider_consensus"
+        elif player.get("status_agreement") == state and len(providers) == 1:
+            source_class = "single_provider_conditional_claim"
+        else:
+            source_class = None
+        if source_class:
             accepted.append({**player, "scenario_status": state,
-                             "accepted_source_class": "two_provider_consensus",
-                             "accepted_claims": [claim for claim in uncertain
-                                 if claim.get("source") in ("CBS Sports", "ESPN")]})
+                             "accepted_source_class": source_class,
+                             "accepted_claims": provider_claims})
         else:
             unresolved.append({"player_id": player.get("player_id"), "player": player.get("player"),
-                               "status": state, "reason": "uncertain_status_lacks_official_or_cbs_espn_agreement"})
+                               "status": state, "reason": "uncertain_status_lacks_trusted_provider_report"})
     return accepted, unresolved
 
 
@@ -274,12 +285,15 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
                          "accepted_source_class": "conditional_uncertain_status",
                          "source_claims": item["accepted_claims"],
                          "reported_status": item["scenario_status"]})
-    conditional_count = sum(row["accepted_source_class"] == "conditional_uncertain_status" for row in outs)
+    conditional_count = sum(row["accepted_source_class"] in (
+        "conditional_uncertain_status", "single_provider_conditional_claim") for row in outs)
     secondary_count = sum(row["accepted_source_class"] == "two_provider_consensus" for row in outs)
+    single_provider_count = sum(row["accepted_source_class"] == "single_provider_research_claim" for row in outs)
+    provider_count = secondary_count + single_provider_count
     official_count = sum(row["accepted_source_class"] == "official_nba_report" for row in outs)
-    if not secondary_count and not official_count and not conditional_count:
+    if not provider_count and not official_count and not conditional_count:
         return {"official_out_count": 0, "secondary_consensus_out_count": 0,
-                "accepted_out_players": [], "unresolved_out_claims": []}, "no_secondary_provider_consensus_out"
+                "secondary_provider_out_count": 0, "accepted_out_players": [], "unresolved_out_claims": []}, "no_secondary_provider_consensus_out"
 
     samples = _history_by_player(player_rows, team, emitted_at, tipoff)
     out_ids = {row["player_id"] for row in outs}
@@ -325,11 +339,12 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
                 "replacement_history_gaps": sorted(set(missing_recipients))}, "incomplete_replacement_history"
     return {"status": "conditional_historical_rotation_scenario",
             "official_out_count": official_count, "secondary_consensus_out_count": secondary_count,
+            "secondary_provider_out_count": provider_count,
             "accepted_out_players": outs, "historical_output_loss_per_game": losses,
             "historical_output_from_added_minutes_per_game": added,
             "estimated_net_points_per_game": added["points"] - losses["points"],
             "minute_redistribution": allocation, "players_without_historical_minutes": [],
-            "replacement_history_gaps": [], "source_agreement_rule": "NBA official OUT; otherwise CBS Sports + ESPN both report OUT and no matched source conflict",
+            "replacement_history_gaps": [], "source_agreement_rule": "NBA official OUT; otherwise a non-conflicting CBS Sports or ESPN provider OUT claim; two-provider agreement is retained when available",
             "conditional_uncertain_out_count": conditional_count,
             "unresolved_out_claims": []}, None
 
@@ -391,9 +406,10 @@ def _multi_source_research_scenario(fixture, modules, history, player_history, e
     if reasons:
         row["reason"] = ";".join(reasons)
         return row
-    if row["secondary_consensus_out_count"] < 1:
-        row["status"] = "no_secondary_consensus_out"
-        row["reason"] = "No player had matching pre-tip OUT reports from both CBS Sports and ESPN."
+    row["secondary_provider_out_count"] = sum(value.get("secondary_provider_out_count", 0) for value in parsed.values())
+    if row["secondary_provider_out_count"] < 1:
+        row["status"] = "no_secondary_provider_out"
+        row["reason"] = "No non-conflicting, roster-matched pre-tip OUT claim from CBS Sports or ESPN was available."
         return row
     if scale is None:
         row["reason"] = "fewer_than_100_pre_emission_historical_margins"
@@ -413,10 +429,10 @@ def _multi_source_research_scenario(fixture, modules, history, player_history, e
         "home_probability_delta_pp": (adjusted - base) * 100.0,
         "method": "roster_matched_out_claims_and_historical_minute_redistribution_then_logistic_margin_scale",
         "assumptions": ["Official NBA OUT claims are accepted as official evidence.",
-            "Secondary OUT claims require exact roster identity, matching CBS and ESPN status and no matched source conflict.",
+            "Secondary OUT claims require exact roster identity and no matched source conflict; one CBS or ESPN provider is enough for an experimental candidate, with two-source agreement preserved when available.",
             "NBC editorial headlines do not count as independent provider confirmation.",
             "Player scoring rates are linear in historical redistributed minutes.",
-            "Questionable, doubtful and unknown statuses are not treated as OUT.",
+            "Questionable, doubtful and unknown statuses are not treated as OUT; single-source questionable/doubtful statuses are evaluated only as unweighted conditional branches.",
             "Logistic margin scale uses up to 1000 completed pre-emission games.",
             "Research scenario only; it is not calibrated or production-approved."]})
     return row
