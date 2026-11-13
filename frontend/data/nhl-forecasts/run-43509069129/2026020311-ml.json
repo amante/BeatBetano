@@ -1,0 +1,61 @@
+{
+  "record": {
+    "game_id": "2026020311",
+    "home": "VGK",
+    "away": "NSH",
+    "start_utc": "2026-11-14T03:00:00Z",
+    "game_date": "2026-11-13",
+    "prediction_as_of_utc": "2026-11-13T21:16:16.210672+00:00",
+    "source_asof_utc": "2026-11-13T21:16:16.210672+00:00",
+    "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+    "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+    "market": "ml",
+    "probabilities": {
+      "home": 0.59581894,
+      "away": 0.40418106
+    },
+    "module_effects": {
+      "rest": {
+        "module": "schedule_rest",
+        "status": "applied",
+        "feature": "home_rest_days_minus_away_rest_days",
+        "home_rest_days": 1,
+        "away_rest_days": 1,
+        "rest_differential_days": 0,
+        "coefficient_logit_per_day": 0.06,
+        "logit_adjustment": 0.0,
+        "source_as_of_utc": "2026-11-13T21:16:06.857504+00:00",
+        "probability_before": 0.59581894,
+        "probability_after": 0.59581894,
+        "probability_delta_percentage_points": 0.0
+      },
+      "lineup_availability": {
+        "module": "crs_lineup_availability",
+        "status": "applied_experimental",
+        "source_as_of_utc": "2026-11-13T21:16:16.076052+00:00",
+        "baseline_probability_home": 0.59581894,
+        "scenario_probability_home": 0.59581894,
+        "scenario_probability_away": 0.40418106,
+        "probability_delta_home_percentage_points": -0.0,
+        "adjusted_goal_expectations": {
+          "home": 3.795714603151553,
+          "away": 3.145321637426901
+        },
+        "validated": false,
+        "assumptions": [
+          "Historical goals/minute held constant under redistributed minutes.",
+          "Independent Poisson goals; home rate anchored to preceding model probability.",
+          "Out of projection is not treated as confirmed injury."
+        ]
+      }
+    },
+    "odds_used_in_model": false,
+    "point_in_time_sources_verified": true,
+    "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+    "historical_prior_date_games": 2811,
+    "official": false
+  },
+  "sha256": "2be59cc3e621de6835a92e2fb194ff23db86f16d20c00c8755d7b81df9c0f1a6",
+  "frozen": true,
+  "note": "Evidence signature only; immutable storage must be provided externally."
+}

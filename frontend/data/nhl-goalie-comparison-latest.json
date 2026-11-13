@@ -1,15 +1,15 @@
 {
   "kind": "nhl_goalie_ml_comparison_v1",
-  "run_id": "43378720543",
+  "run_id": "43509069129",
   "date": "2026-11-13",
-  "as_of_utc": "2026-11-13T06:26:51.253405+00:00",
+  "as_of_utc": "2026-11-13T21:16:16.449814+00:00",
   "games": [
     {
       "game_id": "2026020310",
       "home": "VAN",
       "away": "NYR",
       "start_utc": "2026-11-14T02:00:00Z",
-      "baseline_p_home": 0.5112806386621005,
+      "baseline_p_home": 0.45944307,
       "candidate_p_home": null,
       "candidate_p_away": null,
       "recalibration_p_home": null,
@@ -20,73 +20,20 @@
         "model_failed_incremental_evaluation",
         "missing_verified_same_run_inputs"
       ],
-      "computed_at_utc": "2026-11-13T06:26:51.253405+00:00",
+      "computed_at_utc": "2026-11-13T21:16:16.449814+00:00",
       "pairings": [
         {
           "home_goalie": {
             "player_id": 8482447,
             "name": "Leevi Meril\u00e4inen",
             "source": "ESPN/NHL roster",
-            "status": "unconfirmed"
+            "status": "likely"
           },
           "away_goalie": {
             "player_id": 8482193,
             "name": "Dylan Garand",
             "source": "ESPN/NHL roster",
-            "status": "unconfirmed"
-          },
-          "candidate_p_home": null,
-          "candidate_p_away": null,
-          "recalibration_p_home": null,
-          "delta_vs_baseline_pp": null,
-          "delta_vs_recalibration_pp": null,
-          "status": "goalie_model_not_executed",
-          "reasons": [
-            "model_failed_incremental_evaluation"
-          ]
-        }
-      ],
-      "scenario_count": 1,
-      "unresolved_editorial_candidates": {
-        "VAN": [],
-        "NYR": []
-      },
-      "scenario_history_sha256": "0d40daf6a9fda91323a690273e909427cf3c6a0c55ff055a45fa9a119bd8a1d1",
-      "scenario_inputs_sha256": "85ffe344d6462e2093b6312a022ce3f07c545d839b0deb5697ce96df1eb0e302",
-      "baseline_forecast_sha256": "98108c86496d6b7720316cc5c1469b9fecc57ec4eaf99ba897c2ac671e658f5d",
-      "baseline_as_of_utc": "2026-11-13T06:26:50.931097+00:00",
-      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
-    },
-    {
-      "game_id": "2026020311",
-      "home": "VGK",
-      "away": "NSH",
-      "start_utc": "2026-11-14T03:00:00Z",
-      "baseline_p_home": 0.595818944356982,
-      "candidate_p_home": null,
-      "candidate_p_away": null,
-      "recalibration_p_home": null,
-      "delta_vs_baseline_pp": null,
-      "delta_vs_recalibration_pp": null,
-      "status": "goalie_model_not_executed",
-      "reasons": [
-        "model_failed_incremental_evaluation",
-        "missing_verified_same_run_inputs"
-      ],
-      "computed_at_utc": "2026-11-13T06:26:51.253405+00:00",
-      "pairings": [
-        {
-          "home_goalie": {
-            "player_id": 8478499,
-            "name": "Adin Hill",
-            "source": "ESPN/NHL roster",
-            "status": "candidate"
-          },
-          "away_goalie": {
-            "player_id": 8477424,
-            "name": "Juuse Saros",
-            "source": "ESPN/NHL roster",
-            "status": "unconfirmed"
+            "status": "confirmed"
           },
           "candidate_p_home": null,
           "candidate_p_away": null,
@@ -100,16 +47,16 @@
         },
         {
           "home_goalie": {
-            "player_id": 8479394,
-            "name": "Carter Hart",
-            "source": "Daily Faceoff/NHL roster",
-            "status": "unconfirmed"
+            "player_id": 8482447,
+            "name": "Leevi Meril\u00e4inen",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
           },
           "away_goalie": {
-            "player_id": 8477424,
-            "name": "Juuse Saros",
-            "source": "ESPN/NHL roster",
-            "status": "unconfirmed"
+            "player_id": 8476914,
+            "name": "Joonas Korpisalo",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
           },
           "candidate_p_home": null,
           "candidate_p_away": null,
@@ -124,13 +71,68 @@
       ],
       "scenario_count": 2,
       "unresolved_editorial_candidates": {
+        "VAN": [
+          "Luke Schenn"
+        ],
+        "NYR": []
+      },
+      "scenario_history_sha256": "cf0e58416b2eb1fb2bedf6f4c29ff568c0628f792e6bd5cf57ddea1dd9c52be1",
+      "scenario_inputs_sha256": "b3f1f2e5ac689818a72363ee14df55ef16be4f9e0eba154a4fa21134a0829156",
+      "baseline_forecast_sha256": "50baf2ef30b17bcd4698ec387afbe5e1e528109007ee49544e289d4a7ec6e588",
+      "baseline_as_of_utc": "2026-11-13T21:16:16.210672+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020311",
+      "home": "VGK",
+      "away": "NSH",
+      "start_utc": "2026-11-14T03:00:00Z",
+      "baseline_p_home": 0.59581894,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_verified_same_run_inputs"
+      ],
+      "computed_at_utc": "2026-11-13T21:16:16.449814+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8478499,
+            "name": "Adin Hill",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8477424,
+            "name": "Juuse Saros",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 1,
+      "unresolved_editorial_candidates": {
         "VGK": [],
         "NSH": []
       },
-      "scenario_history_sha256": "0d40daf6a9fda91323a690273e909427cf3c6a0c55ff055a45fa9a119bd8a1d1",
-      "scenario_inputs_sha256": "85ffe344d6462e2093b6312a022ce3f07c545d839b0deb5697ce96df1eb0e302",
-      "baseline_forecast_sha256": "7e4647d2c654714c82b5c8fb930efae68049585e07e8db2e9727ee986407a2e4",
-      "baseline_as_of_utc": "2026-11-13T06:26:50.931097+00:00",
+      "scenario_history_sha256": "cf0e58416b2eb1fb2bedf6f4c29ff568c0628f792e6bd5cf57ddea1dd9c52be1",
+      "scenario_inputs_sha256": "b3f1f2e5ac689818a72363ee14df55ef16be4f9e0eba154a4fa21134a0829156",
+      "baseline_forecast_sha256": "2be59cc3e621de6835a92e2fb194ff23db86f16d20c00c8755d7b81df9c0f1a6",
+      "baseline_as_of_utc": "2026-11-13T21:16:16.210672+00:00",
       "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
     }
   ],
@@ -173,7 +175,7 @@
   ],
   "input_exclusions": [
     {
-      "run_id": "43378720543",
+      "run_id": "43509069129",
       "reason": "invalid_evidence",
       "detail": "Unexpected baseline version or market"
     }

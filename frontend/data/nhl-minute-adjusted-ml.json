@@ -1,22 +1,59 @@
 {
   "kind": "nhl_minute_adjusted_ml_v1",
-  "as_of_utc": "2026-11-13T06:26:51.191899+00:00",
+  "as_of_utc": "2026-11-13T21:16:16.402093+00:00",
   "games": [
     {
       "game_id": "2026020310",
       "home": "VAN",
       "away": "NYR",
       "start_utc": "2026-11-14T02:00:00Z",
-      "status": "blocked",
-      "reason": "No complete team exposure scenario"
+      "baseline_ml_home": 0.45944307,
+      "scenario_ml_home": 0.4112086192221703,
+      "scenario_ml_away": 0.5887913807778298,
+      "delta_home_pp": -4.8234450777829725,
+      "anchored_goals": {
+        "home": 2.6223491465026774,
+        "away": 2.8666666666666667
+      },
+      "adjusted_goals": {
+        "home": 2.341928686433625,
+        "away": 2.8666666666666667
+      },
+      "adjusted_sides": [
+        "VAN",
+        "NYR"
+      ],
+      "excluded_sides": [],
+      "partial": false,
+      "validated": false,
+      "status": "experimental_minute_scenario"
     },
     {
       "game_id": "2026020311",
       "home": "VGK",
       "away": "NSH",
       "start_utc": "2026-11-14T03:00:00Z",
-      "status": "blocked",
-      "reason": "No complete team exposure scenario"
+      "baseline_ml_home": 0.59581894,
+      "scenario_ml_home": 0.5958189399999998,
+      "scenario_ml_away": 0.4041810600000002,
+      "delta_home_pp": -2.220446049250313e-14,
+      "anchored_goals": {
+        "home": 3.7957145716312333,
+        "away": 3.145321637426901
+      },
+      "adjusted_goals": {
+        "home": 3.7957145716312333,
+        "away": 3.145321637426901
+      },
+      "adjusted_sides": [
+        "NSH"
+      ],
+      "excluded_sides": [
+        "VGK"
+      ],
+      "partial": true,
+      "validated": false,
+      "status": "experimental_minute_scenario"
     }
   ],
   "validated": false,
