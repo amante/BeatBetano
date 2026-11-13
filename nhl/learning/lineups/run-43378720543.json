@@ -1,0 +1,59 @@
+{
+  "kind": "nhl_frozen_lineup_dataset_v1",
+  "run_id": "43378720543",
+  "frozen_at_utc": "2026-11-13T06:26:50.852286+00:00",
+  "records": [
+    {
+      "game_id": "2026020310",
+      "home": "VAN",
+      "away": "NYR",
+      "start_utc": "2026-11-14T02:00:00Z",
+      "frozen_at_utc": "2026-11-13T06:26:50.852286+00:00",
+      "teams": {
+        "VAN": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        },
+        "NYR": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        }
+      },
+      "complete_observed_inputs": false,
+      "training_approved": false
+    },
+    {
+      "game_id": "2026020311",
+      "home": "VGK",
+      "away": "NSH",
+      "start_utc": "2026-11-14T03:00:00Z",
+      "frozen_at_utc": "2026-11-13T06:26:50.852286+00:00",
+      "teams": {
+        "VGK": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        },
+        "NSH": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        }
+      },
+      "complete_observed_inputs": false,
+      "training_approved": false
+    }
+  ],
+  "source_sha256": {
+    "report.json": "210da486006905d9a18f82822de0cc109b4e61416e4c3b8d812f44084836f04a",
+    "skater_history.json": "1a42bb737dc487590d10ecb39b6290a4269fb7804c237de2c42be6b0f73296c5",
+    "prior_lineup_reference.json": "136d3158a9089f8b598b951acbfa1c948c7f978c4c01fe00bfdb62f242018bf2",
+    "lineup_changes.json": "02d32153f1546240e08bb8be74db8651791650ddc8bbd4319853349dcbbadd65",
+    "lineup_features.json": "f96e651223a25c6a619e965cfcdf2c764c6ea7c0f570c471cea9f26c779e1666",
+    "skater_history.sources.json.gz": "af243fb7e2d9d32df710e6c7f694b1d6f7f810d9684a508cf362cac5fce5d940",
+    "prior_lineup_reference.sources.json.gz": "a8004b1b5cb76e725f198d0082b63848c766944349a73b22199a1c7797eb517f"
+  },
+  "probabilities_modified": false,
+  "limitations": [
+    "Complete inputs do not certify calibration or causal impact.",
+    "No labels or postgame participant lists are substituted for pregame projections."
+  ]
+}

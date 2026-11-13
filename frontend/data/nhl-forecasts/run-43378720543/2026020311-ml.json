@@ -1,0 +1,47 @@
+{
+  "record": {
+    "game_id": "2026020311",
+    "home": "VGK",
+    "away": "NSH",
+    "start_utc": "2026-11-14T03:00:00Z",
+    "game_date": "2026-11-13",
+    "prediction_as_of_utc": "2026-11-13T06:26:50.931097+00:00",
+    "source_asof_utc": "2026-11-13T06:26:50.931097+00:00",
+    "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+    "model_version": "outcome-only-206-rest-context-v1",
+    "market": "ml",
+    "probabilities": {
+      "home": 0.595818944356982,
+      "away": 0.404181055643018
+    },
+    "module_effects": {
+      "rest": {
+        "module": "schedule_rest",
+        "status": "applied",
+        "feature": "home_rest_days_minus_away_rest_days",
+        "home_rest_days": 1,
+        "away_rest_days": 1,
+        "rest_differential_days": 0,
+        "coefficient_logit_per_day": 0.06,
+        "logit_adjustment": 0.0,
+        "source_as_of_utc": "2026-11-13T06:26:45.263405+00:00",
+        "probability_before": 0.59581894,
+        "probability_after": 0.59581894,
+        "probability_delta_percentage_points": 0.0
+      },
+      "lineup_availability": {
+        "module": "crs_lineup_availability",
+        "status": "unavailable",
+        "reason": "scenario_incomplete:No complete team exposure scenario"
+      }
+    },
+    "odds_used_in_model": false,
+    "point_in_time_sources_verified": true,
+    "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+    "historical_prior_date_games": 2811,
+    "official": false
+  },
+  "sha256": "7e4647d2c654714c82b5c8fb930efae68049585e07e8db2e9727ee986407a2e4",
+  "frozen": true,
+  "note": "Evidence signature only; immutable storage must be provided externally."
+}

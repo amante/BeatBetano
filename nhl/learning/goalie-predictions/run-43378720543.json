@@ -1,0 +1,181 @@
+{
+  "kind": "nhl_goalie_ml_comparison_v1",
+  "run_id": "43378720543",
+  "date": "2026-11-13",
+  "as_of_utc": "2026-11-13T06:26:51.253405+00:00",
+  "games": [
+    {
+      "game_id": "2026020310",
+      "home": "VAN",
+      "away": "NYR",
+      "start_utc": "2026-11-14T02:00:00Z",
+      "baseline_p_home": 0.5112806386621005,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_verified_same_run_inputs"
+      ],
+      "computed_at_utc": "2026-11-13T06:26:51.253405+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8482447,
+            "name": "Leevi Meril\u00e4inen",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "away_goalie": {
+            "player_id": 8482193,
+            "name": "Dylan Garand",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 1,
+      "unresolved_editorial_candidates": {
+        "VAN": [],
+        "NYR": []
+      },
+      "scenario_history_sha256": "0d40daf6a9fda91323a690273e909427cf3c6a0c55ff055a45fa9a119bd8a1d1",
+      "scenario_inputs_sha256": "85ffe344d6462e2093b6312a022ce3f07c545d839b0deb5697ce96df1eb0e302",
+      "baseline_forecast_sha256": "98108c86496d6b7720316cc5c1469b9fecc57ec4eaf99ba897c2ac671e658f5d",
+      "baseline_as_of_utc": "2026-11-13T06:26:50.931097+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    },
+    {
+      "game_id": "2026020311",
+      "home": "VGK",
+      "away": "NSH",
+      "start_utc": "2026-11-14T03:00:00Z",
+      "baseline_p_home": 0.595818944356982,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_verified_same_run_inputs"
+      ],
+      "computed_at_utc": "2026-11-13T06:26:51.253405+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8478499,
+            "name": "Adin Hill",
+            "source": "ESPN/NHL roster",
+            "status": "candidate"
+          },
+          "away_goalie": {
+            "player_id": 8477424,
+            "name": "Juuse Saros",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8479394,
+            "name": "Carter Hart",
+            "source": "Daily Faceoff/NHL roster",
+            "status": "unconfirmed"
+          },
+          "away_goalie": {
+            "player_id": 8477424,
+            "name": "Juuse Saros",
+            "source": "ESPN/NHL roster",
+            "status": "unconfirmed"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 2,
+      "unresolved_editorial_candidates": {
+        "VGK": [],
+        "NSH": []
+      },
+      "scenario_history_sha256": "0d40daf6a9fda91323a690273e909427cf3c6a0c55ff055a45fa9a119bd8a1d1",
+      "scenario_inputs_sha256": "85ffe344d6462e2093b6312a022ce3f07c545d839b0deb5697ce96df1eb0e302",
+      "baseline_forecast_sha256": "7e4647d2c654714c82b5c8fb930efae68049585e07e8db2e9727ee986407a2e4",
+      "baseline_as_of_utc": "2026-11-13T06:26:50.931097+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    }
+  ],
+  "candidate_assessment": {
+    "kind": "nhl_goalie_ml_assessment_v1",
+    "decision": "not_approved_no_incremental_gain",
+    "metrics": {
+      "baseline": {
+        "n": 429,
+        "brier": 0.245599,
+        "log_loss": 0.6843
+      },
+      "recalibration_only": {
+        "n": 429,
+        "brier": 0.245171,
+        "log_loss": 0.683428
+      },
+      "recalibration_plus_goalie": {
+        "n": 429,
+        "brier": 0.246198,
+        "log_loss": 0.685515
+      }
+    },
+    "fit_n": 1342,
+    "validation_n": 550,
+    "test_n": 429,
+    "report_path": "reports/nhl/goalie-candidate-2026-11-02/evaluation.json",
+    "report_sha256": "0d308c26e03f95a58783d4f34db9e20d2b82ecff0e9a91efdd5222bdba7b449f",
+    "parameters_deployed": false,
+    "reason": "Candidate failed to improve both baseline and recalibration control on the same retrospective test cohort."
+  },
+  "published_baseline_replaced": false,
+  "market": "ml",
+  "official": false,
+  "automatic_promotion": false,
+  "limitations": [
+    "ML-only candidate: RT and +3 retain their original model.",
+    "Differences between fitted models are not causal goalie effects.",
+    "Provider confirmation is not independent starter verification."
+  ],
+  "input_exclusions": [
+    {
+      "run_id": "43378720543",
+      "reason": "invalid_evidence",
+      "detail": "Unexpected baseline version or market"
+    }
+  ]
+}
