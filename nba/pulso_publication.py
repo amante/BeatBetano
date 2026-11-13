@@ -71,6 +71,14 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
   baseline=row['hybrid_p_home']
   modules=json.loads(json.dumps(module_games.get(gid,{}))) if module_context else {}
   candidate=adjustment_games.get(gid)
+  official_candidate=candidate
+  selected_secondary=False
+  if candidate:
+   secondary=candidate.get('multi_source_scenario')
+   if (isinstance(secondary,dict) and secondary.get('status')=='research_scenario'
+       and secondary.get('secondary_consensus_out_count',0)>0):
+    candidate=secondary
+    selected_secondary=True
   model_home=baseline
   injury_applied=False;travel_applied=False;matchup_applied=False
   travel=travel_games.get(gid)
@@ -79,6 +87,7 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
    if not math.isclose(candidate.get('base_home_probability',-1),baseline,rel_tol=0,abs_tol=1e-12):
     raise ValueError('Injury scenario baseline differs from frozen forecast')
    copy['injury_probability_scenario']=candidate
+   if selected_secondary:copy['official_only_injury_scenario']=official_candidate
    copy['statistical_baseline_p_home']=baseline
    copy['statistical_baseline_p_away']=1.0-baseline
    if candidate.get('status')=='research_scenario':
@@ -88,11 +97,25 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
         or not 0<home<1 or not 0<away<1 or not math.isclose(home+away,1,rel_tol=0,abs_tol=1e-10)):
      raise ValueError('Invalid injury research probability')
     model_home=home;injury_applied=True
-    for key in ('official_injury_report','rotation_minutes','availability_impact'):
+    official_used=(candidate.get('official_out_count',0)>0 or any(
+     team.get('official_out_count',0)>0 for team in candidate.get('teams',{}).values()))
+    secondary_used=candidate.get('secondary_consensus_out_count',0)>0
+    for key in ('official_injury_report','injury_source_reconciliation','rotation_minutes','availability_impact'):
      module=modules.get(key)
-     if isinstance(module,dict):
+     if not isinstance(module,dict):continue
+     if key=='official_injury_report':
+      module['affects_prediction']=official_used;module['entered_prediction']=official_used
+      if official_used:
+       module['status']='research_scenario'
+       module['detail']='Bajas OUT del informe oficial entran en el escenario experimental de minutos y producción.'
+     elif key=='injury_source_reconciliation':
+      module['affects_prediction']=secondary_used;module['entered_prediction']=secondary_used
+      if secondary_used:
+       module['status']='research_scenario'
+       module['detail']='Bajas OUT con identidad validada y acuerdo entre CBS Sports y ESPN entran en el escenario experimental.'
+     else:
       module['status']='research_scenario';module['affects_prediction']=True;module['entered_prediction']=True
-      module['detail']='Cambia el porcentaje del candidato NBA mediante bajas oficiales, minutos redistribuidos y producción histórica; escenario experimental no calibrado.'
+      module['detail']='La disponibilidad, minutos redistribuidos y producción histórica modifican este candidato; escenario experimental no calibrado.'
     lineup_used=any(type(team.get('lineup_role_weights_applied')) is int and team.get('lineup_role_weights_applied')>0 for team in candidate.get('teams',{}).values())
     if lineup_used:
      module=modules.get('starting_lineups')

@@ -98,7 +98,200 @@ def _team_points(team_data):
             "out_players": out_players}, None
 
 
-def build(snapshot, module_context, history):
+def _eligible_out_claims(team_evidence):
+    accepted = []
+    unresolved = []
+    for player in team_evidence if isinstance(team_evidence, list) else []:
+        claims = player.get("claims", [])
+        official_out = [claim for claim in claims
+                        if claim.get("officially_verified") is True and claim.get("status") == "out"]
+        if official_out:
+            accepted.append({**player, "accepted_source_class": "official_nba_report",
+                             "accepted_claims": official_out})
+            continue
+        if player.get("conflict"):
+            if any(claim.get("status") == "out" for claim in claims):
+                unresolved.append({"player_id": player.get("player_id"), "player": player.get("player"),
+                                   "reason": "source_status_conflict"})
+            continue
+        providers = {claim.get("source") for claim in claims
+                     if claim.get("source_type") == "provider_injury_report"
+                     and claim.get("status") == "out" and not claim.get("editorial_claim")}
+        if {"CBS Sports", "ESPN"}.issubset(providers) and player.get("status_agreement") == "out":
+            accepted.append({**player, "accepted_source_class": "two_provider_consensus",
+                             "accepted_claims": [claim for claim in claims
+                                 if claim.get("source") in ("CBS Sports", "ESPN")
+                                 and claim.get("status") == "out"]})
+        elif any(claim.get("status") == "out" for claim in claims):
+            unresolved.append({"player_id": player.get("player_id"), "player": player.get("player"),
+                               "reason": "out_claim_lacks_official_or_cbs_espn_agreement"})
+    return accepted, unresolved
+
+
+def _multi_source_team_points(team, availability_team, rotation_team, lineup_record,
+                              player_rows, reconciled_players, emitted_at, tipoff):
+    from official_injury_impact import _history_by_player, _allocations, STAT_FIELDS
+    from starting_lineup_minutes import estimate as estimate_starter_minutes
+
+    if availability_team.get("roster_complete") is not True:
+        return None, "incomplete_current_roster"
+    players = availability_team.get("players", [])
+    by_id = {str(row.get("player_id")): row for row in players if row.get("player_id")}
+    accepted, unresolved = _eligible_out_claims(reconciled_players)
+    if unresolved:
+        return {"unresolved_out_claims": unresolved}, "unresolved_source_claims"
+    outs = []
+    for item in accepted:
+        pid = str(item.get("player_id"))
+        if pid not in by_id:
+            return {"unresolved_out_claims": [{"player_id": pid, "reason": "player_missing_from_current_roster"}]}, "player_missing_from_current_roster"
+        outs.append({"player_id": pid, "player": by_id[pid].get("player"),
+                     "accepted_source_class": item["accepted_source_class"],
+                     "source_claims": item["accepted_claims"]})
+    secondary_count = sum(row["accepted_source_class"] == "two_provider_consensus" for row in outs)
+    official_count = sum(row["accepted_source_class"] == "official_nba_report" for row in outs)
+    if not secondary_count and not official_count:
+        return {"official_out_count": 0, "secondary_consensus_out_count": 0,
+                "accepted_out_players": [], "unresolved_out_claims": []}, "no_secondary_provider_consensus_out"
+
+    samples = _history_by_player(player_rows, team, emitted_at, tipoff)
+    out_ids = {row["player_id"] for row in outs}
+    losses = {field: 0.0 for field in STAT_FIELDS}
+    missing = []
+    for row in outs:
+        historical = samples.get(row["player_id"])
+        if not historical or historical.get("average_minutes") is None:
+            missing.append(row["player_id"] + ":minutes")
+            continue
+        for field in STAT_FIELDS:
+            value = historical.get("per_game", {}).get(field)
+            if value is None:
+                missing.append(row["player_id"] + ":" + field)
+            else:
+                losses[field] += float(value)
+    if missing:
+        return {"accepted_out_players": outs, "players_without_historical_minutes": sorted(set(missing))}, "missing_out_player_history"
+
+    starter_evidence = estimate_starter_minutes(team, availability_team, lineup_record or {},
+                                                player_rows, emitted_at, tipoff)
+    allocation = _allocations(team, rotation_team, out_ids, samples, outs, starter_evidence)
+    if allocation.get("status") != "conditional_historical_rotation_scenario":
+        return {"accepted_out_players": outs, "minute_redistribution": allocation}, "minute_redistribution_unavailable"
+    added = {field: 0.0 for field in STAT_FIELDS}
+    missing_recipients = []
+    for change in allocation.get("changes", []):
+        delta = change.get("minute_delta", 0)
+        if delta <= 0:
+            continue
+        historical = samples.get(str(change.get("player_id")))
+        if not historical or not historical.get("average_minutes"):
+            missing_recipients.append(str(change.get("player_id")) + ":minutes")
+            continue
+        for field in STAT_FIELDS:
+            value = historical.get("per_game", {}).get(field)
+            if value is None:
+                missing_recipients.append(str(change.get("player_id")) + ":" + field)
+            else:
+                added[field] += delta * float(value) / float(historical["average_minutes"])
+    if missing_recipients:
+        return {"accepted_out_players": outs, "minute_redistribution": allocation,
+                "replacement_history_gaps": sorted(set(missing_recipients))}, "incomplete_replacement_history"
+    return {"status": "conditional_historical_rotation_scenario",
+            "official_out_count": official_count, "secondary_consensus_out_count": secondary_count,
+            "accepted_out_players": outs, "historical_output_loss_per_game": losses,
+            "historical_output_from_added_minutes_per_game": added,
+            "estimated_net_points_per_game": added["points"] - losses["points"],
+            "minute_redistribution": allocation, "players_without_historical_minutes": [],
+            "replacement_history_gaps": [], "source_agreement_rule": "NBA official OUT; otherwise CBS Sports + ESPN both report OUT and no matched source conflict",
+            "unresolved_out_claims": []}, None
+
+
+def _multi_source_research_scenario(fixture, modules, history, player_history, emitted, margins, scale):
+    from official_injury_impact import STAT_FIELDS
+    gid = str(fixture["game_id"])
+    evidence = modules.get("injury_source_reconciliation", {}).get("data", {})
+    teams_evidence = evidence.get("teams", {})
+    rotation_module = modules.get("rotation_minutes", {})
+    availability_game = rotation_module.get("availability_status", {}).get("teams", {})
+    rotation_game = rotation_module.get("historical_rotation", {}).get("teams", {})
+    lineup_game = modules.get("starting_lineups", {}).get("data", {}).get("teams", {})
+    player_rows = player_history if isinstance(player_history, list) else player_history.get("players", []) if isinstance(player_history, dict) else []
+    unmatched = evidence.get("unmatched_candidates", [])
+    unresolved_out = [claim for claim in unmatched
+                      if str(claim.get("status", "")).strip().casefold() in ("out", "inactive", "ruled out", "suspended")]
+    if unresolved_out:
+        return {"game_id": gid, "home_team": fixture["home_team"], "away_team": fixture["away_team"],
+                "base_home_probability": fixture["hybrid_p_home"],
+                "base_away_probability": 1.0 - fixture["hybrid_p_home"],
+                "status": "blocked", "reason": "unmatched_or_team_conflicting_out_claims",
+                "unresolved_out_claims": unresolved_out, "teams": {},
+                "margin_sample_games": len(margins), "logistic_margin_scale_points": scale,
+                "calibrated": False, "production_approved": False,
+                "secondary_consensus_out_count": 0, "official_out_count": 0}
+    row = {"game_id": gid, "home_team": fixture["home_team"], "away_team": fixture["away_team"],
+           "base_home_probability": fixture["hybrid_p_home"],
+           "base_away_probability": 1.0 - fixture["hybrid_p_home"],
+           "status": "blocked", "reason": None, "source_rule": "official OUT; otherwise matching CBS Sports + ESPN OUT claims",
+           "teams": {}, "margin_sample_games": len(margins), "logistic_margin_scale_points": scale,
+           "calibrated": False, "production_approved": False, "base_prediction_changed": False,
+           "secondary_consensus_out_count": 0, "official_out_count": 0}
+    parsed = {}
+    reasons = []
+    for team in (fixture["home_team"], fixture["away_team"]):
+        impact, reason = _multi_source_team_points(team, availability_game.get(team, {}),
+            rotation_game.get(team, {}), lineup_game.get(team, {}), player_rows,
+            teams_evidence.get(team, []), emitted.isoformat(), fixture["tipoff_utc"])
+        row["teams"][team] = impact or {"status": "unavailable"}
+        if reason == "no_secondary_provider_consensus_out":
+            # Official-only effects are already computed by the primary model.
+            if impact and impact.get("secondary_consensus_out_count", 0) == 0:
+                parsed[team] = {"net_points_per_game": 0.0,
+                                "official_out_count": impact.get("official_out_count", 0),
+                                "secondary_consensus_out_count": 0}
+            continue
+        if reason:
+            reasons.append(team + ":" + reason)
+        else:
+            parsed[team] = {"net_points_per_game": impact["estimated_net_points_per_game"],
+                            "official_out_count": impact["official_out_count"],
+                            "secondary_consensus_out_count": impact["secondary_consensus_out_count"]}
+    row["official_out_count"] = sum(value["official_out_count"] for value in parsed.values())
+    row["secondary_consensus_out_count"] = sum(value["secondary_consensus_out_count"] for value in parsed.values())
+    if reasons:
+        row["reason"] = ";".join(reasons)
+        return row
+    if row["secondary_consensus_out_count"] < 1:
+        row["status"] = "no_secondary_consensus_out"
+        row["reason"] = "No player had matching pre-tip OUT reports from both CBS Sports and ESPN."
+        return row
+    if scale is None:
+        row["reason"] = "fewer_than_100_pre_emission_historical_margins"
+        return row
+    points_delta = parsed[fixture["home_team"]]["net_points_per_game"] - parsed[fixture["away_team"]]["net_points_per_game"]
+    raw_delta = points_delta / scale
+    applied_delta = max(-MAX_ABS_LOG_ODDS_DELTA, min(MAX_ABS_LOG_ODDS_DELTA, raw_delta))
+    base = fixture["hybrid_p_home"]
+    base_logit = math.log(base / (1.0 - base))
+    adjusted = 1.0 / (1.0 + math.exp(-(base_logit + applied_delta)))
+    row.update({"status": "research_scenario", "reason": None,
+        "estimated_home_points_delta": points_delta, "raw_log_odds_delta": raw_delta,
+        "applied_log_odds_delta": applied_delta,
+        "log_odds_delta_capped": not math.isclose(raw_delta, applied_delta, rel_tol=0, abs_tol=1e-12),
+        "injury_adjusted_home_probability": adjusted,
+        "injury_adjusted_away_probability": 1.0 - adjusted,
+        "home_probability_delta_pp": (adjusted - base) * 100.0,
+        "method": "roster_matched_out_claims_and_historical_minute_redistribution_then_logistic_margin_scale",
+        "assumptions": ["Official NBA OUT claims are accepted as official evidence.",
+            "Secondary OUT claims require exact roster identity, matching CBS and ESPN status and no matched source conflict.",
+            "NBC editorial headlines do not count as independent provider confirmation.",
+            "Player scoring rates are linear in historical redistributed minutes.",
+            "Questionable, doubtful and unknown statuses are not treated as OUT.",
+            "Logistic margin scale uses up to 1000 completed pre-emission games.",
+            "Research scenario only; it is not calibrated or production-approved."]})
+    return row
+
+
+def build(snapshot, module_context, history, player_history=None):
     _verify_seal(snapshot)
     _verify_seal(module_context)
     if module_context.get("snapshot_sha256") != snapshot.get("content_sha256"):
@@ -132,6 +325,9 @@ def build(snapshot, module_context, history):
             row["reason"] = "forecast_not_pregame"
             output.append(row)
             continue
+        source_scenario = _multi_source_research_scenario(
+            fixture, source_games[gid], history, player_history or [], emitted, margins, scale)
+        row["multi_source_scenario"] = source_scenario
         modules = source_games[gid].get("availability_impact", {})
         scenario = modules.get("conditional_production_scenario", {})
         if scenario.get("baseline_snapshot_sha256") != snapshot.get("content_sha256"):
@@ -194,7 +390,7 @@ def build(snapshot, module_context, history):
                 "Logistic margin scale is estimated from up to 1000 pre-emission completed games.",
                 "Research sensitivity only; it is not independently calibrated or production-approved."]})
         output.append(row)
-    body = {"schema_version": 1, "model_version": "NBA_CONFIRMED_INJURY_PROBABILITY_RESEARCH_V1",
+    body = {"schema_version": 1, "model_version": "NBA_MULTI_SOURCE_INJURY_PROBABILITY_RESEARCH_V2",
             "snapshot_sha256": snapshot["content_sha256"], "created_at_utc": snapshot["created_at_utc"],
             "games": output, "calibrated": False, "production_approved": False,
             "changes_statistical_baseline": False, "no_odds_input": True}
@@ -206,14 +402,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("snapshot", "module-context", "history", "output"):
         parser.add_argument("--" + name, required=True)
+    parser.add_argument("--player-history")
     args = parser.parse_args()
     load = lambda path: json.loads(Path(path).read_text())
-    report = build(load(args.snapshot), load(args.module_context), load(args.history))
+    player_history = load(args.player_history) if args.player_history else []
+    report = build(load(args.snapshot), load(args.module_context), load(args.history), player_history)
     target = Path(args.output)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(report, indent=2, allow_nan=False))
     print(json.dumps({"games": len(report["games"]),
                       "research_scenarios": sum(row["status"] == "research_scenario" for row in report["games"]),
+                      "multi_source_scenarios": sum(row.get("multi_source_scenario", {}).get("status") == "research_scenario" for row in report["games"]),
                       "production_approved": False}))
 
 

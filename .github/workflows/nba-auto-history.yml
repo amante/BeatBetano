@@ -281,7 +281,7 @@ jobs:
       - name: Calculate experimental probabilities from confirmed NBA injuries
         if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
         run: |
-          python nba/injury_probability.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --history results/nba/history.json --output results/nba/prospective/injury_probability.json
+          python nba/injury_probability.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --history results/nba/history.json --player-history results/nba/player_game_history.json --output results/nba/prospective/injury_probability.json
       - name: Estimate NBA travel probability with chronological holdout
         if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
         run: |
