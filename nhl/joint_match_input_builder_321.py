@@ -10,8 +10,14 @@ from nhl.pulso_goalie_multisource_257 import TEAM_NAMES, norm
 API = "https://api.nhle.com/stats/rest/en"
 
 def blocker_category(reason):
-    """Separate expected pregame lineup timing from source/data failures."""
+    """Report captured projections separately from unavailable lineup sources."""
     text = str(reason).lower()
+    if "projected lines captured but player identity unresolved" in text:
+        return "lineup_identity_partial"
+    if "projected lineup not captured" in text:
+        return "lineup_source_missing"
+    # Keep the established category for structural/incomplete evidence while
+    # giving the user a more precise display status below.
     if "lineup evidence incomplete" in text or "projected" in text and ("incomplete" in text or "missing" in text):
         return "lineup_not_confirmed"
     return "other_input_unavailable"
@@ -134,7 +140,16 @@ def build(report, context, changes, goalies, special, cutoff):
             sides={};unknown=[]
             for code in (f["home"],f["away"]):
                 side=cg["teams"].get(code); diff=lg["teams"].get(code); teamrow=team_by_code.get(code); sp=special.get("teams",{}).get(code)
-                if not side or not side.get("projected_skaters_identity_complete") or not diff or diff.get("status")!="projected_changes_observed_not_calibrated": raise ValueError(code+" lineup evidence incomplete")
+                if not side or not side.get("projected") or not side["projected"].get("forwards") or not side["projected"].get("defense"):
+                    raise ValueError(code+" projected lineup not captured")
+                if not side.get("projected_skaters_identity_complete"):
+                    coverage=side.get("projected_skaters_identity_coverage",{})
+                    names=coverage.get("unresolved_names",[])
+                    detail=", ".join(str(name) for name in names[:6])
+                    suffix=("; unresolved: "+detail) if detail else ""
+                    raise ValueError(code+" projected lines captured but player identity unresolved"+suffix)
+                if not diff or diff.get("status")!="projected_changes_observed_not_calibrated":
+                    raise ValueError(code+" lineup-change evidence incomplete")
                 if not teamrow or not sp: raise ValueError(code+" team/special-team stats unavailable")
                 groups=side["projected"]; lines=[]
                 for unit,field in (("forwards","forwards"),("defense","defense")):
@@ -215,7 +230,10 @@ def build(report, context, changes, goalies, special, cutoff):
             category=blocker_category(reason)
             blocked.append({"game_id":gid,"home":f["home"],"away":f["away"],
                             "category":category,
-                            "status":"Alineación aún no confirmada" if category=="lineup_not_confirmed" else "Escenario integrado pendiente",
+                            "status":("Proyección capturada; faltan identidades" if category=="lineup_identity_partial" else
+                                      "Fuente de alineaciones no disponible" if category=="lineup_source_missing" else
+                                      "Proyección de alineación incompleta" if category=="lineup_not_confirmed" else
+                                      "Escenario integrado pendiente"),
                             "reason":reason})
     return {"kind":"nhl_joint_match_input_batch_v321","date":cutoff,"season":season,"generated_at_utc":datetime.now(timezone.utc).isoformat(),"games":output,"blocked_games":blocked,"official":False,"calibrated":False,"odds_used":False}
 
