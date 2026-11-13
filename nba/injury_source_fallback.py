@@ -29,18 +29,29 @@ def parse_cbs(html, snapshot, observed):
     soup = BeautifulSoup(html, "html.parser")
     rows = []
     for table in soup.find_all("table"):
-        headers = " ".join(cell.get_text(" ", strip=True).lower() for cell in table.find_all("th"))
-        if not any(k in headers for k in ("player", "injury", "status")):
+        headers = [re.sub(r"\\s+", " ", cell.get_text(" ", strip=True).lower()).strip()
+                   for cell in table.find_all("th")]
+        if not any("player" in h or "name" in h or "injury" in h or "status" in h for h in headers):
             continue
+        player_index = next((i for i, h in enumerate(headers) if "player" in h or h == "name"), None)
+        team_index = next((i for i, h in enumerate(headers) if "team" in h), None)
+        status_index = next((i for i, h in enumerate(headers) if "status" in h or "injury" in h), None)
         for tr in table.find_all("tr"):
             cells = [c.get_text(" ", strip=True) for c in tr.find_all(["td", "th"])]
+            if not cells:
+                continue
             text = " | ".join(cells)
-            match = STATUS.search(text)
-            if len(cells) >= 2 and match:
-                rows.append({"raw_cells": cells, "raw_text": text,
-                             "status_candidate": match.group(1).title(),
-                             "source_url": CBS_URL, "observed_at_utc": observed,
-                             "officially_verified": False})
+            status_text = cells[status_index] if status_index is not None and status_index < len(cells) else text
+            match = STATUS.search(status_text)
+            if not match:
+                continue
+            player = cells[player_index] if player_index is not None and player_index < len(cells) else None
+            team = cells[team_index] if team_index is not None and team_index < len(cells) else None
+            rows.append({"player_candidate": player, "team_candidate": team,
+                         "raw_cells": cells, "raw_text": text,
+                         "status_candidate": match.group(1).title(),
+                         "source_url": CBS_URL, "observed_at_utc": observed,
+                         "officially_verified": False})
     return rows
 
 
