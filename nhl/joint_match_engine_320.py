@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v1"
+VERSION = "nhl-joint-match-320-v2"
 
 
 def _num(value, label, *, positive=False):
@@ -224,6 +224,7 @@ def _partial_roster_ledger(team, skaters, full_totals, team_games):
         "team": team_code,
         "summary": summary,
         "players": skaters,
+        "lineup_coverage": coverage,
         "rates": rates,
         "credit_ratios": credit_ratios,
         "goal_event_rates_from_player_points": event_rates,
@@ -421,6 +422,8 @@ def run(inputs):
         "scenarios": scenarios,
         "minute_distribution": {home_code: home["minute_distribution"],
                                 away_code: away["minute_distribution"]},
+        "lineup_coverage": {home_code: home["lineup_coverage"],
+                            away_code: away["lineup_coverage"]},
         "lineup_impact": {home_code: home["lineup_impact"], away_code: away["lineup_impact"]},
         "player_contributions": {home_code: home["player_contributions"],
                                  away_code: away["player_contributions"]},
@@ -437,6 +440,7 @@ def run(inputs):
         "limitations": [
             "Poisson rates use observed per-game player production and shot rates, not fitted coefficients.",
             "Individual defender on-ice suppression and line-pair effects are unavailable; team shots-against is used.",
+            "For partial projected lineups, only identified skaters are minute-adjusted; unresolved roster contribution stays at its aggregate team baseline.",
             "Assists describe lineup contribution but are not added as independent goals.",
             "PIM affects opportunity volume through an observed roster-to-team exposure ratio, not a fixed minutes-to-power-play conversion.",
             "Schedule, travel and back-to-back context are retained in source inputs but have no estimated coefficient.",
