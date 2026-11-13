@@ -72,15 +72,12 @@ def fetch(session, url):
 
 def collect(snapshot, official, session=None):
     now = utcnow()
-    if official.get("official_document_retrieved") is True:
-        return {"retrieval_mode": "official_source_available_no_fallback_needed",
-                "official_source": official.get("report_url"), "observed_at_utc": now,
-                "sources": [], "note": "Official PDF was retrieved; no secondary fallback requested."}
     s = session or requests.Session()
     results = []
     attempts = []
-    # Try provider injury tables in order; NBC is editorial context and is
-    # collected only if both structured providers fail to return candidates.
+    # Sources are complementary: collect all structured provider reports on
+    # every run, even when the official PDF is available, then capture NBC
+    # editorial context separately. Never let one source erase another.
     for source, url, parser in (("CBS Sports", CBS_URL, "cbs"), ("ESPN", ESPN_URL, "espn")):
         observed = utcnow()
         try:
@@ -101,33 +98,32 @@ def collect(snapshot, official, session=None):
             results.append({"source": source, "url": url, "source_type": "provider_injury_report",
                             "observed_at_utc": observed, "officially_verified": False,
                             "candidates": candidates})
-            if candidates:
-                break
         except Exception as exc:
             attempts.append({"source": source, "url": url, "status": "unavailable",
                              "error_type": type(exc).__name__, "detail": str(exc)[:500],
                              "observed_at_utc": observed})
-    if not any(x.get("candidates") for x in results):
-        observed = utcnow()
-        try:
-            response = fetch(s, NBC_URL)
-            candidates = parse_nbc(response.text, observed)
-            attempts.append({"source": "NBC Sports Rotoworld", "url": NBC_URL, "status": "ok",
-                             "candidate_count": len(candidates), "observed_at_utc": observed,
-                             "source_type": "editorial_player_news"})
-            results.append({"source": "NBC Sports Rotoworld", "url": NBC_URL,
-                            "source_type": "editorial_player_news", "observed_at_utc": observed,
-                            "officially_verified": False, "candidates": candidates})
-        except Exception as exc:
-            attempts.append({"source": "NBC Sports Rotoworld", "url": NBC_URL, "status": "unavailable",
-                             "error_type": type(exc).__name__, "detail": str(exc)[:500],
-                             "observed_at_utc": observed, "source_type": "editorial_player_news"})
-    return {"retrieval_mode": "secondary_source_fallback_after_official_failure",
+    observed = utcnow()
+    try:
+        response = fetch(s, NBC_URL)
+        candidates = parse_nbc(response.text, observed)
+        attempts.append({"source": "NBC Sports Rotoworld", "url": NBC_URL, "status": "ok",
+                         "candidate_count": len(candidates), "observed_at_utc": observed,
+                         "source_type": "editorial_player_news"})
+        results.append({"source": "NBC Sports Rotoworld", "url": NBC_URL,
+                        "source_type": "editorial_player_news", "observed_at_utc": observed,
+                        "officially_verified": False, "candidates": candidates})
+    except Exception as exc:
+        attempts.append({"source": "NBC Sports Rotoworld", "url": NBC_URL, "status": "unavailable",
+                         "error_type": type(exc).__name__, "detail": str(exc)[:500],
+                         "observed_at_utc": observed, "source_type": "editorial_player_news"})
+    return {"retrieval_mode": "multi_source_complement",
+            "official_source": official.get("report_url"),
+            "official_source_available": official.get("official_document_retrieved") is True,
             "official_source_error": official.get("retrieval_error_detail") or official.get("retrieval_http_status"),
             "observed_at_utc": now, "attempts": attempts, "sources": results,
             "officially_verified": False,
             "probability_adjustment_authorized": False,
-            "note": "Secondary reports and headlines are candidate evidence only; verify player identity, team and pre-tip time before model use."}
+            "note": "The NBA PDF has official provenance. CBS and ESPN are separate provider observations; NBC is editorial context. Identity, team, time and conflicts must be reconciled before modeling."}
 
 
 def main():
