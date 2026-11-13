@@ -237,11 +237,13 @@ def main():
         result = capture(load(args.snapshot), load(args.module_context), args.run_id)
     elif args.command == "settle":
         result = settle(load(args.capture), load(args.boxscores))
-    else:
+    elif args.command == "summarize":
         result = summarize(args.settlements)
-    destination = Path(args.output)
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
+        destination = Path(args.output)
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(json.dumps(result, indent=2, allow_nan=False) + "\n")
+    else:
+        result = attach(args.summary, args.publication)
     print(json.dumps({"command": args.command, "games": len(result.get("games", [])),
                       "claims": result.get("claim_count", len(result.get("settled_claims", []))),
                       "groups": len(result.get("groups", []))}))
