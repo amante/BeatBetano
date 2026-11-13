@@ -1,6 +1,6 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const {validate,forDay}=require('../progressive-forecasts.js');
-function packet(sport='nba'){
+function packet(sport='nfl'){
  const revision=(i,home)=>({revision:i,snapshot_sha256:'a'.repeat(64),cutoff_utc:`2026-11-06T${i===1?'10':'11'}:00:00Z`,emitted_at_utc:`2026-11-06T${i===1?'10':'11'}:01:00Z`,start_utc:'2026-11-07T00:00:00Z',stage:i===1?'initial':'update',model_version:'baseline-v1',probabilities:sport==='soccer'?{home,draw:.2,away:.8-home}:{home,away:1-home},assumptions:['Expected rotation'],unresolved_inputs:['Starting lineup'],selection_status:'PASS',calibration_certified:false});
  const first=revision(1,.55),last=revision(2,.6);
  return {kind:'progressive_forecast_index',generated_at_utc:'2026-11-06T12:00:00Z',errors:[],events:[{sport,event_id:'1',participants:['BOS','MIL'],start_utc:last.start_utc,initial:first,latest:last,history:[first,last],delta:Object.fromEntries(Object.keys(first.probabilities).map(k=>[k,last.probabilities[k]-first.probabilities[k]])),selection_status:'PASS',calibration_certified:false}]};
