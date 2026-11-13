@@ -77,7 +77,7 @@ const localDay=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",
 const previousDay=d=>{const x=new Date(d+"T12:00:00Z");x.setUTCDate(x.getUTCDate()-1);return x.toISOString().slice(0,10);};
 const dayOf=utc=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(utc));
 const make=(tag,content,cls)=>{const el=document.createElement(tag);if(content!==undefined)el.textContent=content;if(cls)el.className=cls;return el;};
-let snapshot=null,history=[],predictions=[],runtime={},feedFailure="",nhlCalendar=null;
+let snapshot=null,history=[],predictions=[],runtime={},feedFailure="",nhlCalendar=null,nbaPublication=null;
 function isGame(g){return g&&g.sport===sport&&g.id!=null&&g.start_utc&&g.home&&g.away;}
 function result(g){if(!g.completed)return null;const a=Number(g.away_score),h=Number(g.home_score);if(g.home_score==null||g.away_score==null||!Number.isFinite(a)||!Number.isFinite(h))return null;return h>a?"home":h<a?"away":"draw";}
 function checkPick(p,g){
@@ -111,6 +111,14 @@ function stats(){
 function selectedSnapshot(){
  const date=$("daily-date").value;
  if(sport==="nhl"&&nhlCalendar?.included_dates?.includes(date))return nhlCalendar;
+ if(sport==="nba"&&Array.isArray(nbaPublication?.predictions)){
+  const games=new Map((snapshot?.games||[]).filter(isGame).map(g=>[String(g.id),g]));
+  for(const p of nbaPublication.predictions){
+   const id=String(p.game_id),current=games.get(id),home=teamInfo(p.home_team,"nba"),away=teamInfo(p.away_team,"nba");
+   games.set(id,{...(current||{}),id,sport:"nba",home:home.name||p.home_team,away:away.name||p.away_team,start_utc:p.tipoff_utc,status:current?.completed?current.status:current?.status||"STATUS_SCHEDULED",completed:Boolean(current?.completed),source:current?.source||"Captura automática NBA",source_event_id:id});
+  }
+  return {...(snapshot||{}),games:[...games.values()]};
+ }
  return snapshot;
 }
 function selectedDateKnown(){const source=selectedSnapshot();return Boolean(source?.included_dates?.includes($("daily-date").value)||(source?.games||[]).some(g=>isGame(g)&&dayOf(g.start_utc)===$("daily-date").value));}
@@ -257,12 +265,13 @@ async function load(){
  snapshot=got(0)||nhlScheduleSnapshot(got(4));history=Array.isArray(got(1))?got(1):[];const p=got(2);
  predictions=Array.isArray(p)?p:Array.isArray(p?.predictions)?p.predictions:[];runtime=got(3)||{};
  renderCertificationReadiness(readiness);
+ nbaPublication=sport==="nba"?got(7):null;
  renderGames();
 }
 function changeDate(){
  const date=$("daily-date").value;
  if(!/^20\d{2}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+"T12:00:00Z")))return;
- $("simulation-status").textContent="";if(sport!=="nba")renderGames();
+ $("simulation-status").textContent="";renderGames();
 }
 $("daily-date").addEventListener("change",changeDate);
 document.querySelectorAll('input[name="simulation-scope"]').forEach(r=>r.addEventListener("change",()=>renderSelection(activeGames())));
