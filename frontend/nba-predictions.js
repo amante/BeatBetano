@@ -143,6 +143,26 @@
     }else if(injury?.status==="no_confirmed_out_claims"){
      card.append(el("p","Sin bajas OUT oficiales asociadas; se conserva la probabilidad base."));
     }
+    const statusRange=injury?.uncertain_status_probability_range||injury?.multi_source_scenario?.uncertain_status_probability_range;
+    if(statusRange?.status==="conditional_probability_range"){
+     const low=Number(statusRange.home_probability_min),high=Number(statusRange.home_probability_max);
+     if(Number.isFinite(low)&&Number.isFinite(high)){
+      card.append(el("p","Dudas y dudosos · escenario condicional para "+teamName(prediction.home_team)+": "+(low*100).toFixed(1)+"–"+(high*100).toFixed(1)+"%. "+statusRange.scenario_count+" combinaciones; sin ponderar ni reemplazar el porcentaje central.","nba-injury-range"));
+      const rangeDetails=el("details","");rangeDetails.className="nba-module-run-status";
+      rangeDetails.append(el("summary","Ver estados inciertos y escenarios"));
+      for(const player of statusRange.players||[]){
+       rangeDetails.append(el("p",teamName(player.team)+": "+player.player+" · "+(player.status==="doubtful"?"dudoso":"cuestionable")+" · "+(player.source_class==="official_nba_report"?"informe oficial":"coincidencia CBS + ESPN"),"nba-module-run-status__item"));
+      }
+      for(const [index,branch] of (statusRange.branches||[]).entries()){
+       const assumed=(branch.assumptions||[]).map(item=>item.player+" "+(item.assumption==="out"?"fuera":"disponible")).join("; ")||"sin dudas";
+       rangeDetails.append(el("p","#"+(index+1)+" · "+assumed+" · "+(Number(branch.home_probability)*100).toFixed(1)+"% "+teamName(prediction.home_team),"nba-module-run-status__item"));
+      }
+      rangeDetails.append(el("p","Cada combinación estima el impacto de minutos y puntos históricos si esas personas juegan o quedan fuera. No se asignan probabilidades de disponibilidad hasta contar con una muestra para calibrarlas."));
+      card.append(rangeDetails);
+     }
+    }else if(["incomplete_uncertain_evidence","too_many_uncertain_players","blocked"].includes(statusRange?.status)){
+     card.append(el("p","Sin rango para las dudas: "+(statusRange.reason||statusRange.status)+". Se conserva el escenario disponible.","nba-module-run-status__item nba-module-run-status__item--pending"));
+    }
     const matchup=prediction.player_matchup_probability_scenario;
     if(matchup){
      const evidence=el("details","");evidence.className="nba-module-run-status";
