@@ -1,7 +1,7 @@
 """Public display context and frozen player identity observations; no fitted model effects."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import hashlib
 from html import unescape
 import json
@@ -21,6 +21,12 @@ def fetch(url):
 
 def label(value):
     return value.get('default', '') if isinstance(value, dict) else value if isinstance(value, str) else ''
+
+
+def article_matches_fixture(published, start, max_age_hours=24):
+    """Accept the current editorial slate by time, including Chile midnight rollovers."""
+    age = start - published
+    return timedelta(0) <= age <= timedelta(hours=max_age_hours)
 
 
 def editorial(raw, now):
@@ -51,7 +57,8 @@ def editorial(raw, now):
             block[key] = [] if value.casefold() == 'none' else [s.strip() for s in value.split(',') if s.strip()]
             continue
         if block['scratches'] is not None or block['injuries'] is not None: continue
-        names = re.split(r'\s+(?:--|–|—)\s+', line)
+        names = re.split(r'\s+(?:--|line = re.sub(r'\\s+-\\s+-\\s+', ' -- ', line)
+        names = re.split(r'\\s+(?:--|–|—|-)\\s+', line)|—)\s+', line)
         if len(names) == 3 and len(block['forwards']) < 4: block['forwards'].append(names)
         elif len(names) == 2 and len(block['defense']) < 3: block['defense'].append(names)
         elif len(names) == 1 and len(block['forwards']) == 4 and len(block['defense']) == 3 and len(block['goalies']) < 2:
@@ -89,7 +96,7 @@ def build(schedule, raw_article, get=fetch, now=None):
         # Exact source common-name match, both fixture teams, and Chile game-date gate.
         day = start.astimezone(ZoneInfo('America/Santiago')).date()
         names = {code: g.get(side + '_name', '').casefold() for side, code in [('home', g['home']), ('away', g['away'])]}
-        eligible = published and published.astimezone(ZoneInfo('America/Santiago')).date() == day and all(n and n in blocks for n in names.values())
+        eligible = published and article_matches_fixture(published, start) and all(n and n in blocks for n in names.values())
         if eligible:
             for code, name in names.items():
                 b = blocks[name]
@@ -137,7 +144,7 @@ def player_evidence(report, rosters, crosswalk, goalie_history, raw_article, as_
             skipped.append(gid); continue
         codes = (fixture['home'], fixture['away'])
         day = start.astimezone(ZoneInfo('America/Santiago')).date()
-        mapped = published and published.astimezone(ZoneInfo('America/Santiago')).date() == day and all(team_block(t) for t in codes)
+        mapped = published and article_matches_fixture(published, start) and all(team_block(t) for t in codes)
         sides = {}
         for team in codes:
             roster = roster_by_team.get(team)
@@ -147,8 +154,39 @@ def player_evidence(report, rosters, crosswalk, goalie_history, raw_article, as_
                 identities.setdefault(normalized(p['full_name']), []).append(p)
             def resolve_name(name, role=None):
                 name_only = re.sub(r'\s*\([^)]*\)', '', name).strip()
-                matches = [p for p in identities.get(normalized(name_only), []) if role is None or p['position_group'] == role]
-                return dict(name=name, player_id=matches[0]['player_id'] if len(matches)==1 else None, identity_resolved=len(matches)==1)
+                requested = normalized(name_only)
+                eligible = [p for p in players if role is None or p['position_group'] == role]
+                exact = [p for p in identities.get(requested, []) if p in eligible]
+                match, method = (exact[0], 'exact') if len(exact) == 1 else (None, None)
+                if not exact and not match:
+                    parts = requested.split()
+                    aliases = {'mikey': {'michael'}, 'philip': {'filip'}, 'filip': {'philip'}}
+                    nick = []
+                    if len(parts) >= 2:
+                        for p in eligible:
+                            candidate = normalized(p['full_name']).split()
+                            if len(candidate) == len(parts) and candidate[-1] == parts[-1] and candidate[0] in aliases.get(parts[0], set()) and candidate[1:-1] == parts[1:-1]:
+                                nick.append(p)
+                    if len(nick) == 1:
+                        match, method = nick[0], 'recognized_first_name_variant'
+                def one_edit(a, b):
+                    if abs(len(a) - len(b)) > 1: return False
+                    i = j = edits = 0
+                    while i < len(a) and j < len(b):
+                        if a[i] == b[j]: i += 1; j += 1; continue
+                        edits += 1
+                        if edits > 1: return False
+                        if len(a) == len(b): i += 1; j += 1
+                        elif len(a) > len(b): i += 1
+                        else: j += 1
+                    edits += (len(a) - i) + (len(b) - j)
+                    return edits <= 1
+                if not match and not exact and role is not None:
+                    near = [p for p in eligible if one_edit(requested, normalized(p['full_name']))]
+                    if len(near) == 1:
+                        match, method = near[0], 'unique_single_character_correction'
+                return dict(name=name, player_id=match['player_id'] if match else None,
+                    identity_resolved=match is not None, identity_match_method=method)
             block = team_block(team) if mapped else None
             groups = {}
             for field, role in [('forwards', 'forward'), ('defense', 'defense'), ('goalies', 'goalie')]:
@@ -165,6 +203,12 @@ def player_evidence(report, rosters, crosswalk, goalie_history, raw_article, as_
             absent_ids = {p['player_id'] for field in ('injuries','scratches') for p in groups[field] or [] if p['identity_resolved']}
             conflict = bool(set(ids) & absent_ids)
             complete = complete and not conflict
+            unresolved_skaters = [p['name'] for p in skaters if not p['identity_resolved']]
+            line_shape_complete = bool(block and len(groups['forwards']) == 4 and len(groups['defense']) == 3 and len(skaters) == 18)
+            if not block: lineup_capture_status = 'source_unavailable'
+            elif not line_shape_complete: lineup_capture_status = 'projected_lines_incomplete'
+            elif complete: lineup_capture_status = 'projected_identity_complete'
+            else: lineup_capture_status = 'projected_identity_partial'
             candidates = [g for g in crosswalk.get('observations', []) if str(g.get('nhl_game_id'))==gid and g.get('team')==team and g.get('usable_pregame_identity') is True and not g.get('validation_errors') and g.get('matchup_verified') is True]
             usable = []
             for g in candidates:
@@ -198,7 +242,10 @@ def player_evidence(report, rosters, crosswalk, goalie_history, raw_article, as_
             if not goalie: blockers.append('no_unique_fixture_goalie_identity')
             if statistics is None: blockers.append('goalie_prior_statistics_missing')
             blockers += ['projected_not_confirmed_availability', 'incremental_effect_not_fitted_or_validated']
-            sides[team] = dict(projected=groups, projected_skaters_identity_complete=complete, duplicate_player_ids=duplicates, availability_conflict=conflict,
+            sides[team] = dict(projected=groups, projected_skaters_identity_complete=complete,
+                lineup_capture_status=lineup_capture_status,
+                projected_skaters_identity_coverage=dict(captured=len(skaters), resolved=len(ids), unresolved_names=unresolved_skaters),
+                duplicate_player_ids=duplicates, availability_conflict=conflict,
                 roster_source={k:roster[k] for k in ('source_url','source_sha256','as_of')} if roster else None,
                 goalie_player_id=goalie['nhl_player_id'] if goalie else None,
                 goalie_provider_status=goalie.get('goalie_status') if goalie else None,
