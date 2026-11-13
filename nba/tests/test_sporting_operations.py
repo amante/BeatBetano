@@ -72,6 +72,15 @@ class SportingOperationsTests(unittest.TestCase):
         self.assertIsNone(r['performance_metrics'])
         self.assertFalse(r['sporting_adjustment_applied'])
         self.assertFalse(r['calendar_date_coverage_chile']['2026-11-08'])
-        self.assertEqual(errors,[])
+        unexpected = [
+            error for error in errors
+            if not (
+                error.get("scope") == "official_injury_report"
+                and error.get("error_type") == "HTTPError"
+                and "403" in error.get("detail", "")
+                and "https://official.nba.com/nba-injury-report-2026-27-season/" in error.get("detail", "")
+            )
+        ]
+        self.assertEqual(unexpected,[])
 
 if __name__=='__main__':unittest.main()

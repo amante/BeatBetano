@@ -47,7 +47,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - run: python -m pip install requests pypdf
+      - run: python -m pip install requests beautifulsoup4 pypdf
       - name: Validate scoreboard date and capture timestamp
         env:
           GAME_DATE: ${{ inputs.game_date }}
@@ -180,6 +180,18 @@ jobs:
           else
             python nba/official_injury_pdf.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/official_injury_source.json
           fi
+      - name: Collect complementary CBS, ESPN and NBC injury evidence
+        if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
+        continue-on-error: true
+        run: |
+          python nba/injury_source_fallback.py --snapshot results/nba/prospective/snapshot.json --official results/nba/prospective/official_injury_source.json --output results/nba/prospective/injury_source_complement.json
+          python - <<'PY'
+          import json
+          p='results/nba/prospective/injury_source_complement.json'
+          x=json.load(open(p))
+          print('Lesion sources:', x.get('retrieval_mode'), '| official:', x.get('official_source_available'))
+          for attempt in x.get('attempts',[]): print(attempt.get('source'), attempt.get('status'), attempt.get('candidate_count',0))
+          PY
       - name: Collect per-game ESPN preview observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         continue-on-error: true
@@ -359,6 +371,7 @@ jobs:
             results/nba/prospective/source_gap_diagnostics.json
             results/nba/prospective/game_previews.json
             results/nba/prospective/official_injury_source.json
+            results/nba/prospective/injury_source_complement.json
             results/nba/prospective/injury_lineup_status.json
             results/nba/prospective/sporting_observations.json
             results/nba/prospective/multisource_evidence.json
