@@ -155,13 +155,18 @@ def summarize(settlement_paths):
         for row in data.get("settled_claims", []):
             if row.get("actual_played") not in (True, False):
                 continue
-            key = (str(row["game_id"]), str(row["player_id"]), str(row.get("source")))
+            key = (str(row["game_id"]), str(row["player_id"]),
+                   str(row.get("source")), str(row.get("source_type")))
+            observed = stamp(row.get("observed_at_utc") or row["prediction_as_of_utc"])
             old = latest.get(key)
-            stamp_now = stamp(row["prediction_as_of_utc"])
-            if old is None or stamp_now > stamp(old["prediction_as_of_utc"]):
-                latest[key] = row
+            if old is None or observed > old[0]:
+                latest[key] = (observed, row)
+            elif observed == old[0] and row.get("status") != old[1].get("status"):
+                latest[key] = (observed, None)
     groups = {}
-    for row in latest.values():
+    for _, row in latest.values():
+        if row is None:
+            continue
         key = (str(row.get("source") or "fuente desconocida"),
                str(row.get("status") or "sin estado"),
                str(row.get("source_type") or "tipo desconocido"))
@@ -186,11 +191,10 @@ def summarize(settlement_paths):
     results.sort(key=lambda row: (row["source"], row["status"], row["source_type"]))
     return {
         "schema_version": 1, "kind": "nba_injury_status_empirical_summary",
-        "groups": results, "unique_settled_source_claims": len(latest),
+        "groups": results, "unique_settled_source_claims": sum(group["observations"] for group in results),
         "fit_for_prediction_weights": False,
         "note": "Descriptive pregame source-status versus actual participation. Rates are not causal effects or approved probability weights.",
     }
-
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
