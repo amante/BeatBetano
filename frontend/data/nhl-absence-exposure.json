@@ -2,279 +2,295 @@
   "kind": "nhl_absence_exposure_v1",
   "games": [
     {
-      "game_id": "2026020310",
+      "game_id": "2026020313",
       "teams": {
-        "VAN": {
+        "BOS": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        },
+        "MIN": {
+          "status": "blocked",
+          "reason": "missing_individual_exposure"
+        }
+      },
+      "home": "BOS",
+      "away": "MIN",
+      "start_utc": "2026-11-15T00:00:00Z"
+    },
+    {
+      "game_id": "2026020314",
+      "teams": {
+        "TOR": {
           "status": "conditional_replacement_scenario",
-          "lost_minutes": 23.310277777777777,
+          "lost_minutes": 14.7,
           "lost_historical_contribution": {
-            "goals": 0.13333333333333333,
-            "assists": 0.30000000000000004,
-            "shots": 1.0333333333333332,
-            "penalty_minutes": 2.316666666666667
+            "goals": 0.0,
+            "assists": 0.0,
+            "shots": 0.5,
+            "penalty_minutes": 0.0
           },
-          "incoming_historical_minutes": 40.29985119047619,
+          "incoming_historical_minutes": 17.863333333333333,
           "incoming_historical_contribution": {
             "goals": 0.0,
-            "assists": 0.4732142857142857,
-            "shots": 2.6071428571428568,
-            "penalty_minutes": 1.1071428571428572
+            "assists": 0.09999999999999999,
+            "shots": 0.39999999999999997,
+            "penalty_minutes": 0.0
           },
-          "reference_minutes": 291.5072950349731,
-          "allocated_minutes": 291.507295034973,
+          "reference_minutes": 289.33039321789323,
+          "allocated_minutes": 289.3303932178932,
           "players": [
             {
-              "player_id": 8475848,
-              "name": "Brendan Gallagher",
-              "historical_minutes": 10.677450980392157,
-              "scenario_minutes": 10.00106263294869,
-              "minutes_delta": -0.6763883474434671,
+              "player_id": 8475166,
+              "name": "John Tavares",
+              "historical_minutes": 16.924242424242422,
+              "scenario_minutes": 16.729300343816735,
+              "minutes_delta": -0.19494208042568673,
+              "contribution": {
+                "goals": 0.17972390700608848,
+                "assists": 0.4493097675152212,
+                "shots": 2.246548837576106,
+                "penalty_minutes": 0.35944781401217696
+              }
+            },
+            {
+              "player_id": 8475171,
+              "name": "Oliver Ekman-Larsson",
+              "historical_minutes": 18.345238095238095,
+              "scenario_minutes": 18.13392825988218,
+              "minutes_delta": -0.21130983535591596,
               "contribution": {
                 "goals": 0.0,
-                "assists": 0.11019442805562783,
-                "shots": 1.1570414945840923,
-                "penalty_minutes": 0.5509721402781392
+                "assists": 0.047070547073023175,
+                "shots": 0.9884814885334867,
+                "penalty_minutes": 0.7531287531683708
               }
             },
             {
-              "player_id": 8476467,
-              "name": "Jamie Oleksiak",
-              "historical_minutes": 17.519444444444446,
-              "scenario_minutes": 16.40963386346717,
-              "minutes_delta": -1.1098105809772747,
-              "contribution": {
-                "goals": 0.10407251538587074,
-                "assists": 0.26018128846467686,
-                "shots": 0.6244350923152244,
-                "penalty_minutes": 0.6764713500081599
-              }
-            },
-            {
-              "player_id": 8478444,
-              "name": "Brock Boeser",
-              "historical_minutes": 19.070833333333333,
-              "scenario_minutes": 17.86274635954239,
-              "minutes_delta": -1.2080869737909445,
-              "contribution": {
-                "goals": 0.3278284234654928,
-                "assists": 0.4683263192364183,
-                "shots": 1.5454768534801804,
-                "penalty_minutes": 0.37466105538913463
-              }
-            },
-            {
-              "player_id": 8478465,
-              "name": "Guillaume Brisebois",
-              "historical_minutes": 15.416666666666666,
-              "scenario_minutes": 14.440061509789565,
-              "minutes_delta": -0.9766051568771008,
+              "player_id": 8475690,
+              "name": "Chris Tanev",
+              "historical_minutes": 17.863333333333333,
+              "scenario_minutes": 17.863333333333333,
+              "minutes_delta": 0.0,
               "contribution": {
                 "goals": 0.0,
-                "assists": 0.1561087730788061,
-                "shots": 1.0927614115516429,
-                "penalty_minutes": 0.3122175461576122
-              }
-            },
-            {
-              "player_id": 8478498,
-              "name": "Jake DeBrusk",
-              "historical_minutes": 16.93425925925926,
-              "scenario_minutes": 15.86151861576825,
-              "minutes_delta": -1.0727406434910094,
-              "contribution": {
-                "goals": 0.26018128846467686,
-                "assists": 0.26018128846467686,
-                "shots": 2.1334865654103505,
-                "penalty_minutes": 0.10407251538587074
-              }
-            },
-            {
-              "player_id": 8479425,
-              "name": "Filip Hronek",
-              "historical_minutes": 26.346666666666664,
-              "scenario_minutes": 24.67767484829767,
-              "minutes_delta": -1.668991818368994,
-              "contribution": {
-                "goals": 0.046832631923641836,
-                "assists": 0.5619915830837021,
-                "shots": 1.0303179023201205,
+                "assists": 0.09999999999999999,
+                "shots": 0.39999999999999997,
                 "penalty_minutes": 0.0
               }
             },
             {
-              "player_id": 8480012,
-              "name": "Elias Pettersson",
-              "historical_minutes": 20.541666666666664,
-              "scenario_minutes": 19.24040628196285,
-              "minutes_delta": -1.301260384703813,
+              "player_id": 8476927,
+              "name": "Teddy Blueger",
+              "historical_minutes": 13.27857142857143,
+              "scenario_minutes": 13.125622051312513,
+              "minutes_delta": -0.152949377258917,
               "contribution": {
-                "goals": 0.18733052769456732,
-                "assists": 0.7493221107782693,
-                "shots": 1.1708157980910459,
-                "penalty_minutes": 0.18733052769456732
+                "goals": 0.09414109414604635,
+                "assists": 0.14121164121906954,
+                "shots": 1.082622582679533,
+                "penalty_minutes": 0.09414109414604635
               }
             },
             {
-              "player_id": 8480078,
-              "name": "Filip Chytil",
-              "historical_minutes": 19.89047619047619,
-              "scenario_minutes": 19.89047619047619,
-              "minutes_delta": 0.0,
+              "player_id": 8476931,
+              "name": "Jake McCabe",
+              "historical_minutes": 20.054761904761904,
+              "scenario_minutes": 19.823760899803712,
+              "minutes_delta": -0.2310010049581912,
               "contribution": {
                 "goals": 0.0,
-                "assists": 0.2857142857142857,
-                "shots": 1.857142857142857,
-                "penalty_minutes": 0.8571428571428572
+                "assists": 0.14121164121906954,
+                "shots": 1.03555203560651,
+                "penalty_minutes": 0.2824232824381391
               }
             },
             {
-              "player_id": 8481024,
-              "name": "Linus Karlsson",
-              "historical_minutes": 14.37,
-              "scenario_minutes": 13.459698414854662,
-              "minutes_delta": -0.9103015851453371,
+              "player_id": 8477426,
+              "name": "Nick Paul",
+              "historical_minutes": 16.192063492063493,
+              "scenario_minutes": 16.00555502306365,
+              "minutes_delta": -0.1865084689998433,
               "contribution": {
-                "goals": 0.18733052769456732,
-                "assists": 0.280995791541851,
-                "shots": 1.5454768534801806,
-                "penalty_minutes": 0.4683263192364183
+                "goals": 0.09414109414604636,
+                "assists": 0.23535273536511592,
+                "shots": 0.9884814885334867,
+                "penalty_minutes": 0.5648465648762782
               }
             },
             {
-              "player_id": 8481032,
-              "name": "Paul Cotter",
-              "historical_minutes": 14.120175438596492,
-              "scenario_minutes": 13.225699580260748,
-              "minutes_delta": -0.8944758583357437,
-              "contribution": {
-                "goals": 0.19719002915217612,
-                "assists": 0.19719002915217612,
-                "shots": 0.6408675947445724,
-                "penalty_minutes": 1.3310326967771888
-              }
-            },
-            {
-              "player_id": 8482055,
-              "name": "Drew O'Connor",
-              "historical_minutes": 15.6525,
-              "scenario_minutes": 14.660955423696077,
-              "minutes_delta": -0.991544576303923,
-              "contribution": {
-                "goals": 0.09366526384728366,
-                "assists": 0.1404978957709255,
-                "shots": 1.2644810619383295,
-                "penalty_minutes": 0.842987374625553
-              }
-            },
-            {
-              "player_id": 8482079,
-              "name": "Marco Rossi",
-              "historical_minutes": 15.405555555555557,
-              "scenario_minutes": 14.42965425825098,
-              "minutes_delta": -0.975901297304576,
-              "contribution": {
-                "goals": 0.15610877307880613,
-                "assists": 0.2081450307717415,
-                "shots": 1.665160246173932,
-                "penalty_minutes": 0.31221754615761227
-              }
-            },
-            {
-              "player_id": 8483476,
-              "name": "Jonathan Lekkerimaki",
-              "historical_minutes": 15.338333333333333,
-              "scenario_minutes": 14.366690386442526,
-              "minutes_delta": -0.9716429468908068,
-              "contribution": {
-                "goals": 0.32782842346549285,
-                "assists": 0.37466105538913463,
-                "shots": 1.6859747492511061,
-                "penalty_minutes": 0.37466105538913463
-              }
-            },
-            {
-              "player_id": 8483499,
-              "name": "Liam Ohgren",
-              "historical_minutes": 14.185964912280703,
-              "scenario_minutes": 13.287321464370804,
-              "minutes_delta": -0.8986434479098993,
-              "contribution": {
-                "goals": 0.2957850437282642,
-                "assists": 0.1478925218641321,
-                "shots": 1.2817351894891449,
-                "penalty_minutes": 0.3943800583043523
-              }
-            },
-            {
-              "player_id": 8483678,
-              "name": "Elias Pettersson",
-              "historical_minutes": 18.559166666666666,
-              "scenario_minutes": 17.383492426190454,
-              "minutes_delta": -1.1756742404762122,
-              "contribution": {
-                "goals": 0.1404978957709255,
-                "assists": 0.04683263192364183,
-                "shots": 0.8429873746255531,
-                "penalty_minutes": 0.4683263192364183
-              }
-            },
-            {
-              "player_id": 8484136,
-              "name": "Max Sasson",
-              "historical_minutes": 12.695,
-              "scenario_minutes": 11.890805245412661,
-              "minutes_delta": -0.8041947545873391,
-              "contribution": {
-                "goals": 0.23416315961820916,
-                "assists": 0.09366526384728367,
-                "shots": 1.0771505342437622,
-                "penalty_minutes": 0.7961547427019111
-              }
-            },
-            {
-              "player_id": 8484240,
-              "name": "Tom Willander",
-              "historical_minutes": 20.409375,
-              "scenario_minutes": 20.409375,
-              "minutes_delta": 0.0,
+              "player_id": 8477541,
+              "name": "Dakota Mermis",
+              "historical_minutes": 13.480555555555556,
+              "scenario_minutes": 13.32527962181392,
+              "minutes_delta": -0.1552759337416365,
               "contribution": {
                 "goals": 0.0,
-                "assists": 0.1875,
-                "shots": 0.75,
-                "penalty_minutes": 0.25
+                "assists": 0.0,
+                "shots": 0.9884814885334867,
+                "penalty_minutes": 0.6589876590223245
               }
             },
             {
-              "player_id": 8484798,
-              "name": "Zeev Buium",
-              "historical_minutes": 21.363333333333333,
-              "scenario_minutes": 20.01002253324137,
-              "minutes_delta": -1.3533108000919647,
+              "player_id": 8477939,
+              "name": "William Nylander",
+              "historical_minutes": 20.03333333333333,
+              "scenario_minutes": 19.802579153620847,
+              "minutes_delta": -0.23075417971248413,
+              "contribution": {
+                "goals": 0.5177760178032549,
+                "assists": 0.5177760178032549,
+                "shots": 2.6830211831623205,
+                "penalty_minutes": 0.1882821882920927
+              }
+            },
+            {
+              "player_id": 8478057,
+              "name": "Dakota Joshua",
+              "historical_minutes": 10.658333333333333,
+              "scenario_minutes": 10.535565198619413,
+              "minutes_delta": -0.12276813471392067,
               "contribution": {
                 "goals": 0.0,
-                "assists": 0.18733052769456734,
-                "shots": 0.8429873746255531,
-                "penalty_minutes": 0.280995791541851
+                "assists": 0.16474691475558112,
+                "shots": 1.1532284032890676,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8478178,
+              "name": "Darren Raddysh",
+              "historical_minutes": 23.988888888888887,
+              "scenario_minutes": 23.712572597153308,
+              "minutes_delta": -0.27631629173557926,
+              "contribution": {
+                "goals": 0.047070547073023175,
+                "assists": 0.5648465648762782,
+                "shots": 2.2593862595051126,
+                "penalty_minutes": 0.5648465648762782
+              }
+            },
+            {
+              "player_id": 8478458,
+              "name": "Jack Roslovic",
+              "historical_minutes": 17.29083333333333,
+              "scenario_minutes": 17.091668671317763,
+              "minutes_delta": -0.19916466201556915,
+              "contribution": {
+                "goals": 0.444816669840069,
+                "assists": 0.5436648186934177,
+                "shots": 2.668900019040414,
+                "penalty_minutes": 0.4942407442667433
+              }
+            },
+            {
+              "player_id": 8479318,
+              "name": "Auston Matthews",
+              "historical_minutes": 20.543650793650794,
+              "scenario_minutes": 20.307018516420083,
+              "minutes_delta": -0.23663227723071145,
+              "contribution": {
+                "goals": 0.5648465648762782,
+                "assists": 0.800199300241394,
+                "shots": 3.012515012673483,
+                "penalty_minutes": 0.2824232824381391
+              }
+            },
+            {
+              "player_id": 8479442,
+              "name": "Troy Stecher",
+              "historical_minutes": 19.204761904761906,
+              "scenario_minutes": 18.98355163455025,
+              "minutes_delta": -0.22121027021165673,
+              "contribution": {
+                "goals": 0.09414109414604636,
+                "assists": 0.18828218829209273,
+                "shots": 1.270904770971626,
+                "penalty_minutes": 0.800199300241394
+              }
+            },
+            {
+              "player_id": 8479520,
+              "name": "Brandon Duhaime",
+              "historical_minutes": 11.944444444444445,
+              "scenario_minutes": 11.806862224149981,
+              "minutes_delta": -0.13758222029446365,
+              "contribution": {
+                "goals": 0.047070547073023175,
+                "assists": 0.14121164121906954,
+                "shots": 0.8001993002413941,
+                "penalty_minutes": 0.5648465648762782
+              }
+            },
+            {
+              "player_id": 8479772,
+              "name": "Zack MacEwen",
+              "historical_minutes": 8.413333333333334,
+              "scenario_minutes": 8.316424256861735,
+              "minutes_delta": -0.09690907647159896,
+              "contribution": {
+                "goals": 0.19769629770669736,
+                "assists": 0.19769629770669736,
+                "shots": 1.0543802544357193,
+                "penalty_minutes": 1.7133679134580437
+              }
+            },
+            {
+              "player_id": 8482525,
+              "name": "Ryan Tverberg",
+              "historical_minutes": 14.391666666666667,
+              "scenario_minutes": 14.225896089144431,
+              "minutes_delta": -0.16577057752223645,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 0.9884814885334867,
+                "penalty_minutes": 0.9884814885334867
+              }
+            },
+            {
+              "player_id": 8484158,
+              "name": "Easton Cowan",
+              "historical_minutes": 15.953174603174602,
+              "scenario_minutes": 15.769417778580648,
+              "minutes_delta": -0.1837568245939547,
+              "contribution": {
+                "goals": 0.32949382951116224,
+                "assists": 0.4236349236572086,
+                "shots": 1.9769629770669732,
+                "penalty_minutes": 0.8472698473144172
+              }
+            },
+            {
+              "player_id": 8486067,
+              "name": "Gavin McKenna",
+              "historical_minutes": 13.932539682539682,
+              "scenario_minutes": 13.772057564448696,
+              "minutes_delta": -0.1604821180909859,
+              "contribution": {
+                "goals": 0.2824232824381391,
+                "assists": 0.3294938295111622,
+                "shots": 1.6945396946288342,
+                "penalty_minutes": 0.3765643765841854
               }
             }
           ],
           "before": {
-            "goals": 2.865204678362573,
-            "assists": 4.830512555899553,
-            "shots": 21.96014791881665,
-            "penalty_minutes": 10.29700722394221
+            "goals": 2.927056277056277,
+            "assists": 4.942640692640692,
+            "shots": 27.706060606060603,
+            "penalty_minutes": 9.644588744588743
           },
           "after": {
-            "goals": 2.5588145032899745,
-            "assists": 4.716730824831916,
-            "shots": 22.20829895346765,
-            "penalty_minutes": 8.581949896026781
+            "goals": 2.8933409457658743,
+            "assists": 4.985708829147655,
+            "shots": 27.29268728501104,
+            "penalty_minutes": 9.533497438544394
           },
           "delta": {
-            "goals": -0.3063901750725986,
-            "assists": -0.113781731067637,
-            "shots": 0.24815103465100208,
-            "penalty_minutes": -1.715057327915428
+            "goals": -0.033715331290402606,
+            "assists": 0.04306813650696295,
+            "shots": -0.41337332104956204,
+            "penalty_minutes": -0.11109130604434903
           },
           "probability_delta": null,
           "assumptions": [
@@ -284,7 +300,7 @@
             "Out of projection does not confirm injury."
           ]
         },
-        "NYR": {
+        "EDM": {
           "status": "conditional_replacement_scenario",
           "lost_minutes": 0,
           "lost_historical_contribution": {
@@ -300,553 +316,3457 @@
             "shots": 0,
             "penalty_minutes": 0
           },
-          "reference_minutes": 286.9419444444444,
-          "allocated_minutes": 286.9419444444444,
+          "reference_minutes": 310.01547369705463,
+          "allocated_minutes": 310.01547369705463,
           "players": [
             {
-              "player_id": 8476459,
-              "name": "Mika Zibanejad",
-              "historical_minutes": 20.53666666666667,
-              "scenario_minutes": 20.53666666666667,
+              "player_id": 8475218,
+              "name": "Mattias Ekholm",
+              "historical_minutes": 21.15648148148148,
+              "scenario_minutes": 21.15648148148148,
               "minutes_delta": 0.0,
               "contribution": {
-                "goals": 0.25000000000000006,
-                "assists": 0.65,
-                "shots": 1.85,
-                "penalty_minutes": 0.20000000000000004
+                "goals": 0.16666666666666666,
+                "assists": 0.3888888888888889,
+                "shots": 1.2222222222222223,
+                "penalty_minutes": 1.4444444444444444
               }
             },
             {
-              "player_id": 8476468,
-              "name": "J.T. Miller",
-              "historical_minutes": 18.985833333333332,
-              "scenario_minutes": 18.985833333333332,
+              "player_id": 8475786,
+              "name": "Zach Hyman",
+              "historical_minutes": 18.085185185185185,
+              "scenario_minutes": 18.085185185185185,
               "minutes_delta": 0.0,
               "contribution": {
-                "goals": 0.2,
-                "assists": 0.5,
-                "shots": 1.9000000000000001,
+                "goals": 0.3333333333333333,
+                "assists": 0.1111111111111111,
+                "shots": 2.1111111111111107,
+                "penalty_minutes": 0.2222222222222222
+              }
+            },
+            {
+              "player_id": 8476454,
+              "name": "Ryan Nugent-Hopkins",
+              "historical_minutes": 18.215151515151515,
+              "scenario_minutes": 18.215151515151515,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.36363636363636365,
+                "assists": 0.6363636363636364,
+                "shots": 1.7272727272727273,
+                "penalty_minutes": 0.7272727272727273
+              }
+            },
+            {
+              "player_id": 8476473,
+              "name": "Connor Murphy",
+              "historical_minutes": 20.982499999999998,
+              "scenario_minutes": 20.982499999999998,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.05,
+                "shots": 1.1,
                 "penalty_minutes": 1.5499999999999998
               }
             },
             {
-              "player_id": 8477416,
-              "name": "Oliver Bjorkstrand",
-              "historical_minutes": 11.575833333333334,
-              "scenario_minutes": 11.575833333333334,
+              "player_id": 8477450,
+              "name": "Jason Dickinson",
+              "historical_minutes": 12.621212121212123,
+              "scenario_minutes": 12.621212121212123,
               "minutes_delta": 0.0,
               "contribution": {
-                "goals": 0.3,
-                "assists": 0.2,
-                "shots": 1.45,
-                "penalty_minutes": 0.24999999999999997
+                "goals": 0.18181818181818185,
+                "assists": 0.18181818181818185,
+                "shots": 0.9090909090909092,
+                "penalty_minutes": 0.0
               }
             },
             {
-              "player_id": 8477969,
-              "name": "Marcus Pettersson",
-              "historical_minutes": 20.918333333333333,
-              "scenario_minutes": 20.918333333333333,
+              "player_id": 8477934,
+              "name": "Leon Draisaitl",
+              "historical_minutes": 21.91,
+              "scenario_minutes": 21.91,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.9000000000000001,
+                "assists": 0.9500000000000001,
+                "shots": 3.9,
+                "penalty_minutes": 0.2
+              }
+            },
+            {
+              "player_id": 8477953,
+              "name": "Kasperi Kapanen",
+              "historical_minutes": 18.18,
+              "scenario_minutes": 18.18,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.24999999999999997,
+                "assists": 0.24999999999999997,
+                "shots": 1.4499999999999997,
+                "penalty_minutes": 0.65
+              }
+            },
+            {
+              "player_id": 8478402,
+              "name": "Connor McDavid",
+              "historical_minutes": 23.729166666666664,
+              "scenario_minutes": 23.729166666666664,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.55,
+                "assists": 1.9,
+                "shots": 2.7499999999999996,
+                "penalty_minutes": 0.19999999999999998
+              }
+            },
+            {
+              "player_id": 8478472,
+              "name": "Mathieu Joseph",
+              "historical_minutes": 13.123333333333331,
+              "scenario_minutes": 13.123333333333331,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.15,
+                "assists": 0.25,
+                "shots": 0.7999999999999999,
+                "penalty_minutes": 0.3
+              }
+            },
+            {
+              "player_id": 8478854,
+              "name": "Ryan Shea",
+              "historical_minutes": 23.115833333333335,
+              "scenario_minutes": 23.115833333333335,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.049999999999999996,
+                "assists": 0.19999999999999998,
+                "shots": 0.7000000000000001,
+                "penalty_minutes": 0.19999999999999998
+              }
+            },
+            {
+              "player_id": 8479365,
+              "name": "Trent Frederic",
+              "historical_minutes": 9.187254901960785,
+              "scenario_minutes": 9.187254901960785,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.058823529411764705,
+                "assists": 0.0,
+                "shots": 0.9411764705882353,
+                "penalty_minutes": 1.0588235294117647
+              }
+            },
+            {
+              "player_id": 8480029,
+              "name": "Alex Formenton",
+              "historical_minutes": 12.904166666666665,
+              "scenario_minutes": 12.904166666666665,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.09999999999999999,
+                "assists": 0.15,
+                "shots": 1.0499999999999998,
+                "penalty_minutes": 0.09999999999999999
+              }
+            },
+            {
+              "player_id": 8480803,
+              "name": "Evan Bouchard",
+              "historical_minutes": 25.642500000000002,
+              "scenario_minutes": 25.642500000000002,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.55,
+                "assists": 1.1,
+                "shots": 2.6,
+                "penalty_minutes": 0.2
+              }
+            },
+            {
+              "player_id": 8480834,
+              "name": "Ty Emberson",
+              "historical_minutes": 12.319791666666667,
+              "scenario_minutes": 12.319791666666667,
               "minutes_delta": 0.0,
               "contribution": {
                 "goals": 0.0,
-                "assists": 0.2,
-                "shots": 0.6,
-                "penalty_minutes": 0.5
+                "assists": 0.125,
+                "shots": 0.6875,
+                "penalty_minutes": 0.5625
               }
             },
             {
-              "player_id": 8478446,
-              "name": "Glenn Gawdin",
-              "historical_minutes": 6.45,
-              "scenario_minutes": 6.45,
+              "player_id": 8481617,
+              "name": "Vasily Podkolzin",
+              "historical_minutes": 17.494166666666665,
+              "scenario_minutes": 17.494166666666665,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.44999999999999996,
+                "assists": 0.3,
+                "shots": 1.9999999999999998,
+                "penalty_minutes": 1.65
+              }
+            },
+            {
+              "player_id": 8482166,
+              "name": "Shakir Mukhamadullin",
+              "historical_minutes": 14.747777777777777,
+              "scenario_minutes": 14.747777777777777,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.06666666666666667,
+                "assists": 0.0,
+                "shots": 0.5333333333333333,
+                "penalty_minutes": 0.26666666666666666
+              }
+            },
+            {
+              "player_id": 8482703,
+              "name": "Colton Dach",
+              "historical_minutes": 14.472619047619048,
+              "scenario_minutes": 14.472619047619046,
+              "minutes_delta": -1.7763568394002505e-15,
+              "contribution": {
+                "goals": 0.21428571428571425,
+                "assists": 0.14285714285714285,
+                "shots": 2.071428571428571,
+                "penalty_minutes": 0.7142857142857142
+              }
+            },
+            {
+              "player_id": 8486161,
+              "name": "Owen Michaels",
+              "historical_minutes": 12.128333333333334,
+              "scenario_minutes": 12.128333333333334,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.10000000000000002,
+                "assists": 0.10000000000000002,
+                "shots": 0.65,
+                "penalty_minutes": 0.20000000000000004
+              }
+            }
+          ],
+          "before": {
+            "goals": 4.48523045581869,
+            "assists": 6.8360389610389625,
+            "shots": 27.203135345047112,
+            "penalty_minutes": 10.246215304303538
+          },
+          "after": {
+            "goals": 4.48523045581869,
+            "assists": 6.8360389610389625,
+            "shots": 27.20313534504711,
+            "penalty_minutes": 10.246215304303538
+          },
+          "delta": {
+            "goals": 0.0,
+            "assists": 0.0,
+            "shots": -3.552713678800501e-15,
+            "penalty_minutes": 0.0
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        }
+      },
+      "home": "TOR",
+      "away": "EDM",
+      "start_utc": "2026-11-15T00:00:00Z"
+    },
+    {
+      "game_id": "2026020315",
+      "teams": {
+        "MTL": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        },
+        "COL": {
+          "status": "blocked",
+          "reason": "missing_individual_exposure"
+        }
+      },
+      "home": "MTL",
+      "away": "COL",
+      "start_utc": "2026-11-15T00:00:00Z"
+    },
+    {
+      "game_id": "2026020316",
+      "teams": {
+        "TBL": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 27.45580357142857,
+          "lost_historical_contribution": {
+            "goals": 0.0,
+            "assists": 0.1875,
+            "shots": 1.1607142857142856,
+            "penalty_minutes": 1.5714285714285716
+          },
+          "incoming_historical_minutes": 32.355555555555554,
+          "incoming_historical_contribution": {
+            "goals": 0.7777777777777778,
+            "assists": 0.5,
+            "shots": 3.055555555555556,
+            "penalty_minutes": 1.2222222222222223
+          },
+          "reference_minutes": 281.79758708640287,
+          "allocated_minutes": 281.7975870864029,
+          "players": [
+            {
+              "player_id": 8474151,
+              "name": "Ryan McDonagh",
+              "historical_minutes": 16.998245614035085,
+              "scenario_minutes": 16.67078393423153,
+              "minutes_delta": -0.32746167980355523,
+              "contribution": {
+                "goals": 0.1032353221234278,
+                "assists": 0.1032353221234278,
+                "shots": 0.7226472548639946,
+                "penalty_minutes": 0.2064706442468556
+              }
+            },
+            {
+              "player_id": 8474590,
+              "name": "John Carlson",
+              "historical_minutes": 19.296491228070174,
+              "scenario_minutes": 18.92475513392637,
+              "minutes_delta": -0.3717360941438024,
+              "contribution": {
+                "goals": 0.30970596637028336,
+                "assists": 0.516176610617139,
+                "shots": 2.2711770867154115,
+                "penalty_minutes": 0.1032353221234278
+              }
+            },
+            {
+              "player_id": 8475167,
+              "name": "Victor Hedman",
+              "historical_minutes": 15.39722222222222,
+              "scenario_minutes": 15.100603361212562,
+              "minutes_delta": -0.29661886100965873,
+              "contribution": {
+                "goals": 0.21794123559390313,
+                "assists": 0.10897061779695157,
+                "shots": 1.0897061779695156,
+                "penalty_minutes": 0.10897061779695157
+              }
+            },
+            {
+              "player_id": 8476453,
+              "name": "Nikita Kucherov",
+              "historical_minutes": 21.068421052631578,
+              "scenario_minutes": 20.66254972300407,
+              "minutes_delta": -0.4058713296275087,
+              "contribution": {
+                "goals": 0.41294128849371114,
+                "assists": 1.0323532212342776,
+                "shots": 2.9938243415794052,
+                "penalty_minutes": 0.3097059663702833
+              }
+            },
+            {
+              "player_id": 8476826,
+              "name": "Yanni Gourde",
+              "historical_minutes": 15.308333333333334,
+              "scenario_minutes": 15.308333333333334,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.5,
+                "assists": 0.0,
+                "shots": 1.5,
+                "penalty_minutes": 1.0
+              }
+            },
+            {
+              "player_id": 8476878,
+              "name": "Zemgus Girgensons",
+              "historical_minutes": 14.776041666666666,
+              "scenario_minutes": 14.49138950109148,
+              "minutes_delta": -0.2846521655751868,
+              "contribution": {
+                "goals": 0.06129597251078526,
+                "assists": 0.18388791753235575,
+                "shots": 1.409807367748061,
+                "penalty_minutes": 0.12259194502157052
+              }
+            },
+            {
+              "player_id": 8477149,
+              "name": "Scott Sabourin",
+              "historical_minutes": 8.958333333333334,
+              "scenario_minutes": 8.78575605987922,
+              "minutes_delta": -0.1725772734541131,
+              "contribution": {
+                "goals": 0.16345592669542736,
+                "assists": 0.16345592669542736,
+                "shots": 0.49036778008628207,
+                "penalty_minutes": 2.778750753822265
+              }
+            },
+            {
+              "player_id": 8477404,
+              "name": "Jake Guentzel",
+              "historical_minutes": 20.939473684210526,
+              "scenario_minutes": 20.536086453402874,
+              "minutes_delta": -0.4033872308076525,
+              "contribution": {
+                "goals": 0.5677942716788528,
+                "assists": 0.6710295938022806,
+                "shots": 2.6325007141474086,
+                "penalty_minutes": 0.20647064424685557
+              }
+            },
+            {
+              "player_id": 8478519,
+              "name": "Anthony Cirelli",
+              "historical_minutes": 17.047222222222224,
+              "scenario_minutes": 17.047222222222224,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.2777777777777778,
+                "assists": 0.5,
+                "shots": 1.5555555555555558,
+                "penalty_minutes": 0.2222222222222222
+              }
+            },
+            {
+              "player_id": 8479542,
+              "name": "Brandon Hagel",
+              "historical_minutes": 20.582456140350878,
+              "scenario_minutes": 20.18594665253425,
+              "minutes_delta": -0.39650948781662976,
+              "contribution": {
+                "goals": 0.6710295938022807,
+                "assists": 0.5677942716788529,
+                "shots": 3.922942240690256,
+                "penalty_minutes": 0.3097059663702834
+              }
+            },
+            {
+              "player_id": 8479705,
+              "name": "Jeffrey Viel",
+              "historical_minutes": 9.635416666666666,
+              "scenario_minutes": 9.449795762079393,
+              "minutes_delta": -0.18562090458727276,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.12259194502157052,
+                "shots": 0.6129597251078526,
+                "penalty_minutes": 1.8388791753235578
+              }
+            },
+            {
+              "player_id": 8480426,
+              "name": "Charle-Edouard D'Astous",
+              "historical_minutes": 17.650925925925925,
+              "scenario_minutes": 17.310890725527397,
+              "minutes_delta": -0.3400352003985283,
+              "contribution": {
+                "goals": 0.16345592669542736,
+                "assists": 0.5448530889847578,
+                "shots": 1.525588649157322,
+                "penalty_minutes": 0.6538237067817094
+              }
+            },
+            {
+              "player_id": 8480995,
+              "name": "Pontus Holmberg",
+              "historical_minutes": 14.652631578947368,
+              "scenario_minutes": 14.370356839581149,
+              "minutes_delta": -0.28227473936621905,
+              "contribution": {
+                "goals": 0.3097059663702834,
+                "assists": 0.3613236274319973,
+                "shots": 1.6517651539748448,
+                "penalty_minutes": 0.9291178991108502
+              }
+            },
+            {
+              "player_id": 8481624,
+              "name": "Ilya Mikheyev",
+              "historical_minutes": 14.933333333333334,
+              "scenario_minutes": 14.64565103191029,
+              "minutes_delta": -0.2876823014230432,
+              "contribution": {
+                "goals": 0.20647064424685557,
+                "assists": 0.15485298318514168,
+                "shots": 1.3420591876045613,
+                "penalty_minutes": 0.30970596637028336
+              }
+            },
+            {
+              "player_id": 8481719,
+              "name": "Max Crozier",
+              "historical_minutes": 16.98787878787879,
+              "scenario_minutes": 16.660616819173924,
+              "minutes_delta": -0.3272619687048639,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.2674733345925175,
+                "shots": 1.693997785752611,
+                "penalty_minutes": 0.534946669185035
+              }
+            },
+            {
+              "player_id": 8482655,
+              "name": "J.J. Moser",
+              "historical_minutes": 18.399122807017545,
+              "scenario_minutes": 18.04467401282415,
+              "minutes_delta": -0.35444879419339514,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.05161766106171389,
+                "shots": 0.9807355601725641,
+                "penalty_minutes": 0.516176610617139
+              }
+            },
+            {
+              "player_id": 8483447,
+              "name": "Conor Geekie",
+              "historical_minutes": 11.599122807017544,
+              "scenario_minutes": 11.375672203650714,
+              "minutes_delta": -0.22345060336682998,
+              "contribution": {
+                "goals": 0.2064706442468556,
+                "assists": 0.0516176610617139,
+                "shots": 1.2904415265428475,
+                "penalty_minutes": 0.1032353221234278
+              }
+            },
+            {
+              "player_id": 8484770,
+              "name": "Sam O'Reilly",
+              "historical_minutes": 12.466666666666667,
+              "scenario_minutes": 12.226503316817965,
+              "minutes_delta": -0.2401633498487019,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.490367780086282,
+                "shots": 0.0,
+                "penalty_minutes": 0.0
+              }
+            }
+          ],
+          "before": {
+            "goals": 3.4601608187134505,
+            "assists": 5.685007974481658,
+            "shots": 26.275048416495785,
+            "penalty_minutes": 10.780625806941597
+          },
+          "after": {
+            "goals": 4.171280536605871,
+            "assists": 5.891601562906407,
+            "shots": 27.686076107668494,
+            "penalty_minutes": 10.254009431732715
+          },
+          "delta": {
+            "goals": 0.7111197178924207,
+            "assists": 0.20659358842474962,
+            "shots": 1.411027691172709,
+            "penalty_minutes": -0.5266163752088815
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        },
+        "DET": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 9.733333333333333,
+          "lost_historical_contribution": {
+            "goals": 0.0,
+            "assists": 0.0,
+            "shots": 0.75,
+            "penalty_minutes": 0.0
+          },
+          "incoming_historical_minutes": 15.853508771929823,
+          "incoming_historical_contribution": {
+            "goals": 0.05263157894736842,
+            "assists": 0.15789473684210525,
+            "shots": 1.4736842105263157,
+            "penalty_minutes": 0.10526315789473684
+          },
+          "reference_minutes": 289.63806776556777,
+          "allocated_minutes": 289.6380677655678,
+          "players": [
+            {
+              "player_id": 8475279,
+              "name": "Ben Chiarot",
+              "historical_minutes": 20.263333333333332,
+              "scenario_minutes": 19.820271320744247,
+              "minutes_delta": -0.44306201258908473,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.09781347912852895,
+                "shots": 0.9781347912852895,
+                "penalty_minutes": 1.1248550099780827
+              }
+            },
+            {
+              "player_id": 8475753,
+              "name": "Justin Faulk",
+              "historical_minutes": 20.465,
+              "scenario_minutes": 20.01752850365345,
+              "minutes_delta": -0.4474714963465516,
+              "contribution": {
+                "goals": 0.14672021869279342,
+                "assists": 0.29344043738558684,
+                "shots": 1.3693887077994051,
+                "penalty_minutes": 0.5868808747711737
+              }
+            },
+            {
+              "player_id": 8477429,
+              "name": "Andrew Copp",
+              "historical_minutes": 18.694166666666668,
+              "scenario_minutes": 18.285414810752417,
+              "minutes_delta": -0.40875185591425023,
+              "contribution": {
+                "goals": 0.14672021869279345,
+                "assists": 0.2934404373855869,
+                "shots": 1.5650156660564631,
+                "penalty_minutes": 0.2934404373855869
+              }
+            },
+            {
+              "player_id": 8477456,
+              "name": "J.T. Compher",
+              "historical_minutes": 15.302564102564103,
+              "scenario_minutes": 14.967970344591302,
+              "minutes_delta": -0.3345937579728009,
+              "contribution": {
+                "goals": 0.22572341337352836,
+                "assists": 0.30096455116470444,
+                "shots": 1.3543404802411703,
+                "penalty_minutes": 0.15048227558235222
+              }
+            },
+            {
+              "player_id": 8477971,
+              "name": "Andreas Englund",
+              "historical_minutes": 13.408888888888889,
+              "scenario_minutes": 13.115700734700969,
+              "minutes_delta": -0.29318815418792,
+              "contribution": {
+                "goals": 0.06520898608568595,
+                "assists": 0.0,
+                "shots": 0.3912539165141158,
+                "penalty_minutes": 0.45646290259980166
+              }
+            },
+            {
+              "player_id": 8478042,
+              "name": "Viktor Arvidsson",
+              "historical_minutes": 18.55,
+              "scenario_minutes": 18.14440037834212,
+              "minutes_delta": -0.4055996216578812,
+              "contribution": {
+                "goals": 0.3912539165141158,
+                "assists": 0.3423471769498513,
+                "shots": 2.7387774155988103,
+                "penalty_minutes": 0.29344043738558684
+              }
+            },
+            {
+              "player_id": 8478434,
+              "name": "Keegan Kolesar",
+              "historical_minutes": 10.208333333333332,
+              "scenario_minutes": 9.985125994370662,
+              "minutes_delta": -0.22320733896266987,
+              "contribution": {
+                "goals": 0.04890673956426447,
+                "assists": 0.0,
+                "shots": 0.29344043738558684,
+                "penalty_minutes": 1.0759482704138184
+              }
+            },
+            {
+              "player_id": 8479337,
+              "name": "Alex DeBrincat",
+              "historical_minutes": 19.695,
+              "scenario_minutes": 19.264364714363776,
+              "minutes_delta": -0.43063528563622455,
+              "contribution": {
+                "goals": 0.34234717694985134,
+                "assists": 0.4401606560783803,
+                "shots": 3.374565029934249,
+                "penalty_minutes": 0.7336010934639672
+              }
+            },
+            {
+              "player_id": 8479992,
+              "name": "Michael Rasmussen",
+              "historical_minutes": 15.853508771929823,
+              "scenario_minutes": 15.853508771929823,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.05263157894736842,
+                "assists": 0.15789473684210525,
+                "shots": 1.4736842105263157,
+                "penalty_minutes": 0.10526315789473684
+              }
+            },
+            {
+              "player_id": 8480326,
+              "name": "Sheldon Dries",
+              "historical_minutes": 10.33095238095238,
+              "scenario_minutes": 10.10506395092112,
+              "minutes_delta": -0.2258884300312598,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0698667708060921,
+                "shots": 0.8384012496731054,
+                "penalty_minutes": 0.1397335416121842
+              }
+            },
+            {
+              "player_id": 8481542,
+              "name": "Moritz Seider",
+              "historical_minutes": 25.955000000000002,
+              "scenario_minutes": 25.38748850780969,
+              "minutes_delta": -0.567511492190313,
+              "contribution": {
+                "goals": 0.04890673956426447,
+                "assists": 0.5868808747711737,
+                "shots": 1.956269582570579,
+                "penalty_minutes": 0.7336010934639671
+              }
+            },
+            {
+              "player_id": 8482078,
+              "name": "Lucas Raymond",
+              "historical_minutes": 20.121666666666666,
+              "scenario_minutes": 19.68170222531216,
+              "minutes_delta": -0.43996444135450474,
+              "contribution": {
+                "goals": 0.3423471769498513,
+                "assists": 0.5868808747711736,
+                "shots": 2.934404373855868,
+                "penalty_minutes": 0.3912539165141157
+              }
+            },
+            {
+              "player_id": 8482171,
+              "name": "William Wallinder",
+              "historical_minutes": 16.833333333333332,
+              "scenario_minutes": 16.465268986635706,
+              "minutes_delta": -0.36806434669762567,
+              "contribution": {
+                "goals": 0.13041797217137194,
+                "assists": 0.1956269582570579,
+                "shots": 0.9129258051996035,
+                "penalty_minutes": 0.13041797217137194
+              }
+            },
+            {
+              "player_id": 8482802,
+              "name": "Carter Mazur",
+              "historical_minutes": 9.015384615384615,
+              "scenario_minutes": 8.818261349125839,
+              "minutes_delta": -0.1971232662587763,
+              "contribution": {
+                "goals": 0.07524113779117611,
+                "assists": 0.30096455116470444,
+                "shots": 0.9028936534941132,
+                "penalty_minutes": 0.15048227558235222
+              }
+            },
+            {
+              "player_id": 8483464,
+              "name": "Marco Kasper",
+              "historical_minutes": 13.377777777777778,
+              "scenario_minutes": 13.08526987452765,
+              "minutes_delta": -0.29250790325012765,
+              "contribution": {
+                "goals": 0.32604493042842986,
+                "assists": 0.0,
+                "shots": 2.282314512999009,
+                "penalty_minutes": 1.630224652142149
+              }
+            },
+            {
+              "player_id": 8483679,
+              "name": "Anton Johansson",
+              "historical_minutes": 13.499166666666667,
+              "scenario_minutes": 13.204004570025337,
+              "minutes_delta": -0.29516209664133086,
+              "contribution": {
+                "goals": 0.09781347912852893,
+                "assists": 0.14672021869279342,
+                "shots": 1.0759482704138184,
+                "penalty_minutes": 0.7825078330282315
+              }
+            },
+            {
+              "player_id": 8484471,
+              "name": "Emmitt Finnie",
+              "historical_minutes": 18.6275,
+              "scenario_minutes": 18.22020582466673,
+              "minutes_delta": -0.40729417533326995,
+              "contribution": {
+                "goals": 0.34234717694985134,
+                "assists": 0.19562695825705792,
+                "shots": 2.1029898012633725,
+                "penalty_minutes": 0.19562695825705792
+              }
+            },
+            {
+              "player_id": 8484794,
+              "name": "Michael Brandsegg-Nygard",
+              "historical_minutes": 15.556666666666667,
+              "scenario_minutes": 15.216516903094817,
+              "minutes_delta": -0.34014976357184956,
+              "contribution": {
+                "goals": 0.1467202186927934,
+                "assists": 0.3423471769498513,
+                "shots": 1.7117358847492563,
+                "penalty_minutes": 0.6846943538997026
+              }
+            }
+          ],
+          "before": {
+            "goals": 2.9410256410256417,
+            "assists": 4.286813186813188,
+            "shots": 28.131501831501836,
+            "penalty_minutes": 9.767216117216117
+          },
+          "after": {
+            "goals": 2.929351080496668,
+            "assists": 4.350975858604648,
+            "shots": 28.25648378956013,
+            "penalty_minutes": 9.65891705614624
+          },
+          "delta": {
+            "goals": -0.011674560528973643,
+            "assists": 0.06416267179146029,
+            "shots": 0.12498195805829226,
+            "penalty_minutes": -0.10829906106987686
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        }
+      },
+      "home": "TBL",
+      "away": "DET",
+      "start_utc": "2026-11-15T00:00:00Z"
+    },
+    {
+      "game_id": "2026020317",
+      "teams": {
+        "PIT": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 13.76875,
+          "lost_historical_contribution": {
+            "goals": 0.12499999999999999,
+            "assists": 0.24999999999999997,
+            "shots": 0.8125,
+            "penalty_minutes": 0.49999999999999994
+          },
+          "incoming_historical_minutes": 12.048809523809524,
+          "incoming_historical_contribution": {
+            "goals": 0.14285714285714288,
+            "assists": 0.35714285714285715,
+            "shots": 0.8571428571428572,
+            "penalty_minutes": 0.28571428571428575
+          },
+          "reference_minutes": 299.27533346233224,
+          "allocated_minutes": 299.27533346233236,
+          "players": [
+            {
+              "player_id": 8471215,
+              "name": "Evgeni Malkin",
+              "historical_minutes": 17.450980392156865,
+              "scenario_minutes": 17.556108081899392,
+              "minutes_delta": 0.10512768974252751,
+              "contribution": {
+                "goals": 0.35506735446538096,
+                "assists": 0.650956816519865,
+                "shots": 2.1895820192031823,
+                "penalty_minutes": 0.47342313928717455
+              }
+            },
+            {
+              "player_id": 8471675,
+              "name": "Sidney Crosby",
+              "historical_minutes": 19.529824561403508,
+              "scenario_minutes": 19.64747556387326,
+              "minutes_delta": 0.1176510024697528,
+              "contribution": {
+                "goals": 0.31769184346902507,
+                "assists": 0.3706404840471959,
+                "shots": 2.117945623126834,
+                "penalty_minutes": 0.7412809680943918
+              }
+            },
+            {
+              "player_id": 8471724,
+              "name": "Kris Letang",
+              "historical_minutes": 20.145614035087718,
+              "scenario_minutes": 20.26697465863786,
+              "minutes_delta": 0.12136062355014232,
+              "contribution": {
+                "goals": 0.05294864057817085,
+                "assists": 0.47653776520353763,
+                "shots": 1.9061510608141505,
+                "penalty_minutes": 0.5294864057817085
+              }
+            },
+            {
+              "player_id": 8474578,
+              "name": "Erik Karlsson",
+              "historical_minutes": 23.640350877192983,
+              "scenario_minutes": 23.782764393028405,
+              "minutes_delta": 0.14241351583542183,
+              "contribution": {
+                "goals": 0.15884592173451254,
+                "assists": 0.8471782492507336,
+                "shots": 2.117945623126834,
+                "penalty_minutes": 0.2117945623126834
+              }
+            },
+            {
+              "player_id": 8476483,
+              "name": "Rickard Rakell",
+              "historical_minutes": 19.749122807017546,
+              "scenario_minutes": 19.86809489961564,
+              "minutes_delta": 0.11897209259809571,
+              "contribution": {
+                "goals": 0.31769184346902507,
+                "assists": 0.26474320289085423,
+                "shots": 2.435637466595859,
+                "penalty_minutes": 0.2117945623126834
+              }
+            },
+            {
+              "player_id": 8478438,
+              "name": "Tommy Novak",
+              "historical_minutes": 15.633333333333335,
+              "scenario_minutes": 15.72751120640268,
+              "minutes_delta": 0.094177873069345,
+              "contribution": {
+                "goals": 0.3706404840471959,
+                "assists": 0.3706404840471959,
+                "shots": 1.8002537796578084,
+                "penalty_minutes": 0.317691843469025
+              }
+            },
+            {
+              "player_id": 8479398,
+              "name": "Samuel Girard",
+              "historical_minutes": 19.070833333333333,
+              "scenario_minutes": 19.185719294164464,
+              "minutes_delta": 0.11488596083113123,
+              "contribution": {
+                "goals": 0.12575302137315575,
+                "assists": 0.3772590641194673,
+                "shots": 1.4461597457912914,
+                "penalty_minutes": 0.3772590641194673
+              }
+            },
+            {
+              "player_id": 8479638,
+              "name": "Justin Brazeau",
+              "historical_minutes": 10.66,
+              "scenario_minutes": 10.724217662702724,
+              "minutes_delta": 0.064217662702724,
+              "contribution": {
+                "goals": 0.20120483419704926,
+                "assists": 0.0,
+                "shots": 1.4084338393793447,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8480980,
+              "name": "Connor Dewar",
+              "historical_minutes": 13.716666666666667,
+              "scenario_minutes": 13.799298212014293,
+              "minutes_delta": 0.08263154534762585,
+              "contribution": {
+                "goals": 0.10589728115634169,
+                "assists": 0.15884592173451254,
+                "shots": 1.2178187332979293,
+                "penalty_minutes": 0.21179456231268337
+              }
+            },
+            {
+              "player_id": 8481056,
+              "name": "Spencer Stastney",
+              "historical_minutes": 17.341666666666665,
+              "scenario_minutes": 17.446135831835807,
+              "minutes_delta": 0.10446916516914229,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.215576608068267,
+                "shots": 1.0778830403413349,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8481481,
+              "name": "Blake Lizotte",
+              "historical_minutes": 13.682456140350876,
+              "scenario_minutes": 13.76488159563848,
+              "minutes_delta": 0.08242545528760381,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.26474320289085423,
+                "shots": 1.1648700927197586,
+                "penalty_minutes": 0.688332327516221
+              }
+            },
+            {
+              "player_id": 8481527,
+              "name": "Kaedan Korczak",
+              "historical_minutes": 18.166666666666668,
+              "scenario_minutes": 18.27610577289864,
+              "minutes_delta": 0.10943910623197084,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.5294864057817085,
+                "shots": 0.9530755304070753,
+                "penalty_minutes": 0.5294864057817085
+              }
+            },
+            {
+              "player_id": 8481582,
+              "name": "Nick Robertson",
+              "historical_minutes": 13.14298245614035,
+              "scenario_minutes": 13.222158029712228,
+              "minutes_delta": 0.07917557357187732,
+              "contribution": {
+                "goals": 0.37064048404719585,
+                "assists": 0.0,
+                "shots": 1.8002537796578084,
+                "penalty_minutes": 0.317691843469025
+              }
+            },
+            {
+              "player_id": 8482148,
+              "name": "Hendrix Lapierre",
+              "historical_minutes": 12.048809523809524,
+              "scenario_minutes": 12.048809523809524,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.14285714285714288,
+                "assists": 0.35714285714285715,
+                "shots": 0.8571428571428572,
+                "penalty_minutes": 0.28571428571428575
+              }
+            },
+            {
+              "player_id": 8482475,
+              "name": "Egor Chinakhov",
+              "historical_minutes": 15.075555555555555,
+              "scenario_minutes": 15.1663732799198,
+              "minutes_delta": 0.09081772436424451,
+              "contribution": {
+                "goals": 0.20120483419704924,
+                "assists": 0.13413655613136616,
+                "shots": 1.810843507773443,
+                "penalty_minutes": 0.2682731122627323
+              }
+            },
+            {
+              "player_id": 8483398,
+              "name": "Declan Carlile",
+              "historical_minutes": 18.500877192982454,
+              "scenario_minutes": 18.61232964057002,
+              "minutes_delta": 0.1114524475875669,
+              "contribution": {
+                "goals": 0.15884592173451254,
+                "assists": 0.15884592173451254,
+                "shots": 1.3237160144542712,
+                "penalty_minutes": 0.5824350463598793
+              }
+            },
+            {
+              "player_id": 8483487,
+              "name": "Rutger McGroarty",
+              "historical_minutes": 12.511111111111111,
+              "scenario_minutes": 12.586480183659857,
+              "minutes_delta": 0.07536907254874592,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 1.3413655613136617,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8485414,
+              "name": "Ben Kindel",
+              "historical_minutes": 17.488541666666666,
+              "scenario_minutes": 17.593895631949266,
+              "minutes_delta": 0.10535396528259966,
+              "contribution": {
+                "goals": 0.2515060427463115,
+                "assists": 0.2515060427463115,
+                "shots": 2.07492485265707,
+                "penalty_minutes": 0.2515060427463115
+              }
+            }
+          ],
+          "before": {
+            "goals": 3.095046439628483,
+            "assists": 5.290730502727407,
+            "shots": 28.83057459826036,
+            "penalty_minutes": 6.178044375644994
+          },
+          "after": {
+            "goals": 3.1307956500720695,
+            "assists": 5.428239582309239,
+            "shots": 29.044003127460517,
+            "penalty_minutes": 5.997964171539979
+          },
+          "delta": {
+            "goals": 0.03574921044358659,
+            "assists": 0.13750907958183145,
+            "shots": 0.21342852920015787,
+            "penalty_minutes": -0.1800802041050149
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        },
+        "OTT": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        }
+      },
+      "home": "PIT",
+      "away": "OTT",
+      "start_utc": "2026-11-15T00:00:00Z"
+    },
+    {
+      "game_id": "2026020318",
+      "teams": {
+        "WSH": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        },
+        "NJD": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        }
+      },
+      "home": "WSH",
+      "away": "NJD",
+      "start_utc": "2026-11-15T00:00:00Z"
+    },
+    {
+      "game_id": "2026020319",
+      "teams": {
+        "CBJ": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 15.926470588235293,
+          "lost_historical_contribution": {
+            "goals": 0.0588235294117647,
+            "assists": 0.3529411764705882,
+            "shots": 1.0588235294117647,
+            "penalty_minutes": 0.2352941176470588
+          },
+          "incoming_historical_minutes": 7.660416666666666,
+          "incoming_historical_contribution": {
+            "goals": 0.0,
+            "assists": 0.0,
+            "shots": 0.25,
+            "penalty_minutes": 0.0
+          },
+          "reference_minutes": 300.5770751633987,
+          "allocated_minutes": 300.5770751633987,
+          "players": [
+            {
+              "player_id": 8475745,
+              "name": "Charlie Coyle",
+              "historical_minutes": 19.758823529411764,
+              "scenario_minutes": 20.332605907160936,
+              "minutes_delta": 0.573782377749172,
+              "contribution": {
+                "goals": 0.1815951703527324,
+                "assists": 0.605317234509108,
+                "shots": 1.9975468738800566,
+                "penalty_minutes": 0.605317234509108
+              }
+            },
+            {
+              "player_id": 8476923,
+              "name": "Damon Severson",
+              "historical_minutes": 22.32777777777778,
+              "scenario_minutes": 22.976160785203216,
+              "minutes_delta": 0.6483830074254371,
+              "contribution": {
+                "goals": 0.13720523982206448,
+                "assists": 0.27441047964412896,
+                "shots": 0.6174235791992903,
+                "penalty_minutes": 0.6860261991103224
+              }
+            },
+            {
+              "player_id": 8477501,
+              "name": "Valeri Nichushkin",
+              "historical_minutes": 17.050980392156863,
+              "scenario_minutes": 17.54612890430401,
+              "minutes_delta": 0.4951485121471464,
+              "contribution": {
+                "goals": 0.1210634469018216,
+                "assists": 0.42372206415637553,
+                "shots": 1.3922296393709481,
+                "penalty_minutes": 0.1210634469018216
+              }
+            },
+            {
+              "player_id": 8478460,
+              "name": "Zach Werenski",
+              "historical_minutes": 28.16470588235294,
+              "scenario_minutes": 28.982589188296092,
+              "minutes_delta": 0.8178833059431518,
+              "contribution": {
+                "goals": 0.1210634469018216,
+                "assists": 0.7263806814109296,
+                "shots": 3.329244789800094,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8478500,
+              "name": "Ivan Provorov",
+              "historical_minutes": 21.294444444444444,
+              "scenario_minutes": 21.912820176582215,
+              "minutes_delta": 0.6183757321377712,
+              "contribution": {
+                "goals": 0.34301309955516124,
+                "assists": 0.0,
+                "shots": 2.9156113462188706,
+                "penalty_minutes": 0.34301309955516124
+              }
+            },
+            {
+              "player_id": 8478904,
+              "name": "Steven Lorentz",
+              "historical_minutes": 8.63888888888889,
+              "scenario_minutes": 8.889756163471262,
+              "minutes_delta": 0.25086727458237235,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 0.3430130995551612,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8479066,
+              "name": "Ryan Lomberg",
+              "historical_minutes": 8.34375,
+              "scenario_minutes": 8.586046648240128,
+              "minutes_delta": 0.24229664824012787,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 1.2862991233318544,
+                "penalty_minutes": 0.45020469316614903
+              }
+            },
+            {
+              "player_id": 8479371,
+              "name": "Dante Fabbro",
+              "historical_minutes": 14.385416666666666,
+              "scenario_minutes": 14.803159077677424,
+              "minutes_delta": 0.4177424110107584,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 1.0290392986654835,
+                "penalty_minutes": 0.2572598246663709
+              }
+            },
+            {
+              "player_id": 8479671,
+              "name": "Mathieu Olivier",
+              "historical_minutes": 15.496078431372549,
+              "scenario_minutes": 15.946073681084934,
+              "minutes_delta": 0.44999524971238536,
+              "contribution": {
+                "goals": 0.1815951703527324,
+                "assists": 0.1815951703527324,
+                "shots": 1.9370151504291455,
+                "penalty_minutes": 1.9370151504291455
+              }
+            },
+            {
+              "player_id": 8481161,
+              "name": "Jake Christiansen",
+              "historical_minutes": 14.065555555555555,
+              "scenario_minutes": 14.474009424229283,
+              "minutes_delta": 0.40845386867372824,
+              "contribution": {
+                "goals": 0.13720523982206448,
+                "assists": 0.13720523982206448,
+                "shots": 0.9604366787544513,
+                "penalty_minutes": 0.4116157194661934
+              }
+            },
+            {
+              "player_id": 8481716,
+              "name": "Dmitri Voronkov",
+              "historical_minutes": 10.572222222222221,
+              "scenario_minutes": 10.879232140891196,
+              "minutes_delta": 0.30700991866897454,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.25725982466637093,
+                "shots": 0.7717794739991126,
+                "penalty_minutes": 0.5145196493327419
+              }
+            },
+            {
+              "player_id": 8482660,
+              "name": "Kent Johnson",
+              "historical_minutes": 17.942156862745097,
+              "scenario_minutes": 18.463184514585308,
+              "minutes_delta": 0.5210276518402104,
+              "contribution": {
+                "goals": 0.4842537876072864,
+                "assists": 0.5447855110581972,
+                "shots": 2.3002054911346104,
+                "penalty_minutes": 0.36319034070546474
+              }
+            },
+            {
+              "player_id": 8482705,
+              "name": "Cole Sillinger",
+              "historical_minutes": 15.70392156862745,
+              "scenario_minutes": 16.159952437278154,
+              "minutes_delta": 0.4560308686507035,
+              "contribution": {
+                "goals": 0.24212689380364322,
+                "assists": 0.24212689380364322,
+                "shots": 1.6948882566255026,
+                "penalty_minutes": 0.48425378760728643
+              }
+            },
+            {
+              "player_id": 8482720,
+              "name": "Matthew Knies",
+              "historical_minutes": 18.25588235294118,
+              "scenario_minutes": 18.78602037299017,
+              "minutes_delta": 0.5301380200489909,
+              "contribution": {
+                "goals": 0.18159517035273243,
+                "assists": 0.302658617254554,
+                "shots": 1.5738248097236809,
+                "penalty_minutes": 0.24212689380364322
+              }
+            },
+            {
+              "player_id": 8483432,
+              "name": "Luca Del Bel Belluz",
+              "historical_minutes": 7.660416666666666,
+              "scenario_minutes": 7.660416666666666,
               "minutes_delta": 0.0,
               "contribution": {
                 "goals": 0.0,
                 "assists": 0.0,
+                "shots": 0.25,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8483485,
+              "name": "Denton Mateychuk",
+              "historical_minutes": 22.237254901960785,
+              "scenario_minutes": 22.883009188559313,
+              "minutes_delta": 0.6457542865985282,
+              "contribution": {
+                "goals": 0.24212689380364316,
+                "assists": 0.1815951703527324,
+                "shots": 1.8764834269782347,
+                "penalty_minutes": 0.3631903407054648
+              }
+            },
+            {
+              "player_id": 8484166,
+              "name": "Adam Fantilli",
+              "historical_minutes": 20.79607843137255,
+              "scenario_minutes": 21.399981964012,
+              "minutes_delta": 0.6039035326394497,
+              "contribution": {
+                "goals": 0.2421268938036432,
+                "assists": 0.1210634469018216,
+                "shots": 3.02658617254554,
+                "penalty_minutes": 0.3631903407054648
+              }
+            },
+            {
+              "player_id": 8485469,
+              "name": "Jack Williams",
+              "historical_minutes": 9.616666666666667,
+              "scenario_minutes": 9.895927922166402,
+              "minutes_delta": 0.27926125549973513,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 0.34301309955516124,
+                "penalty_minutes": 0.0
+              }
+            }
+          ],
+          "before": {
+            "goals": 2.5999999999999996,
+            "assists": 4.238235294117646,
+            "shots": 27.680392156862748,
+            "penalty_minutes": 7.175735294117646
+          },
+          "after": {
+            "goals": 2.614970453079347,
+            "assists": 3.9981203339326594,
+            "shots": 27.6446403097672,
+            "penalty_minutes": 7.14198672066434
+          },
+          "delta": {
+            "goals": 0.014970453079347301,
+            "assists": -0.2401149601849868,
+            "shots": -0.03575184709554691,
+            "penalty_minutes": -0.033748573453306285
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        },
+        "PHI": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 0,
+          "lost_historical_contribution": {
+            "goals": 0,
+            "assists": 0,
+            "shots": 0,
+            "penalty_minutes": 0
+          },
+          "incoming_historical_minutes": 0,
+          "incoming_historical_contribution": {
+            "goals": 0,
+            "assists": 0,
+            "shots": 0,
+            "penalty_minutes": 0
+          },
+          "reference_minutes": 307.95071437821434,
+          "allocated_minutes": 307.95071437821434,
+          "players": [
+            {
+              "player_id": 8476372,
+              "name": "Nick Seeler",
+              "historical_minutes": 18.646031746031746,
+              "scenario_minutes": 18.646031746031746,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.2857142857142857,
+                "shots": 0.7619047619047619,
+                "penalty_minutes": 0.6666666666666666
+              }
+            },
+            {
+              "player_id": 8476461,
+              "name": "Sean Couturier",
+              "historical_minutes": 16.28015873015873,
+              "scenario_minutes": 16.28015873015873,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.047619047619047616,
+                "assists": 0.2857142857142857,
+                "shots": 1.0476190476190474,
+                "penalty_minutes": 0.38095238095238093
+              }
+            },
+            {
+              "player_id": 8477499,
+              "name": "Rasmus Ristolainen",
+              "historical_minutes": 17.56,
+              "scenario_minutes": 17.56,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.2,
+                "assists": 0.2,
+                "shots": 1.2,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8477948,
+              "name": "Travis Sanheim",
+              "historical_minutes": 24.992857142857144,
+              "scenario_minutes": 24.992857142857144,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.14285714285714285,
+                "assists": 0.2857142857142857,
+                "shots": 1.8095238095238095,
+                "penalty_minutes": 0.5714285714285714
+              }
+            },
+            {
+              "player_id": 8477989,
+              "name": "Christian Dvorak",
+              "historical_minutes": 17.965079365079365,
+              "scenario_minutes": 17.965079365079365,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.14285714285714285,
+                "assists": 0.380952380952381,
+                "shots": 1.476190476190476,
+                "penalty_minutes": 0.1904761904761905
+              }
+            },
+            {
+              "player_id": 8478047,
+              "name": "Michael Bunting",
+              "historical_minutes": 11.088333333333335,
+              "scenario_minutes": 11.088333333333335,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.1,
+                "assists": 0.1,
+                "shots": 1.4000000000000001,
+                "penalty_minutes": 0.6
+              }
+            },
+            {
+              "player_id": 8478439,
+              "name": "Travis Konecny",
+              "historical_minutes": 17.018181818181816,
+              "scenario_minutes": 17.018181818181816,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.1818181818181818,
+                "assists": 0.3636363636363636,
+                "shots": 1.8181818181818181,
+                "penalty_minutes": 0.7272727272727272
+              }
+            },
+            {
+              "player_id": 8478569,
+              "name": "Noel Acciari",
+              "historical_minutes": 13.324603174603174,
+              "scenario_minutes": 13.324603174603174,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.14285714285714285,
+                "assists": 0.047619047619047616,
+                "shots": 1.0476190476190477,
+                "penalty_minutes": 0.2857142857142857
+              }
+            },
+            {
+              "player_id": 8480015,
+              "name": "Owen Tippett",
+              "historical_minutes": 15.368888888888888,
+              "scenario_minutes": 15.368888888888886,
+              "minutes_delta": -1.7763568394002505e-15,
+              "contribution": {
+                "goals": 0.13333333333333333,
+                "assists": 0.13333333333333333,
+                "shots": 2.3333333333333326,
+                "penalty_minutes": 0.39999999999999997
+              }
+            },
+            {
+              "player_id": 8480220,
+              "name": "Noah Cates",
+              "historical_minutes": 13.27936507936508,
+              "scenario_minutes": 13.27936507936508,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.09523809523809525,
+                "assists": 0.14285714285714285,
+                "shots": 0.9523809523809523,
+                "penalty_minutes": 0.2857142857142857
+              }
+            },
+            {
+              "player_id": 8481533,
+              "name": "Trevor Zegras",
+              "historical_minutes": 18.43015873015873,
+              "scenario_minutes": 18.43015873015873,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.19047619047619047,
+                "assists": 0.47619047619047616,
+                "shots": 2.142857142857143,
+                "penalty_minutes": 1.238095238095238
+              }
+            },
+            {
+              "player_id": 8481546,
+              "name": "Cam York",
+              "historical_minutes": 20.342307692307692,
+              "scenario_minutes": 20.342307692307692,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.07692307692307693,
+                "shots": 1.0769230769230769,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8482142,
+              "name": "Jamie Drysdale",
+              "historical_minutes": 23.085714285714285,
+              "scenario_minutes": 23.085714285714285,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.047619047619047616,
+                "assists": 0.38095238095238093,
+                "shots": 1.2857142857142858,
+                "penalty_minutes": 0.2857142857142857
+              }
+            },
+            {
+              "player_id": 8482159,
+              "name": "Tyson Foerster",
+              "historical_minutes": 17.105833333333333,
+              "scenario_minutes": 17.105833333333333,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.2,
+                "assists": 0.1,
+                "shots": 2.0999999999999996,
+                "penalty_minutes": 0.5
+              }
+            },
+            {
+              "player_id": 8484142,
+              "name": "Denver Barkey",
+              "historical_minutes": 14.665740740740741,
+              "scenario_minutes": 14.665740740740741,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.11111111111111112,
+                "assists": 0.33333333333333337,
+                "shots": 0.888888888888889,
+                "penalty_minutes": 0.33333333333333337
+              }
+            },
+            {
+              "player_id": 8484148,
+              "name": "Oliver Bonk",
+              "historical_minutes": 18.46333333333333,
+              "scenario_minutes": 18.46333333333333,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.06666666666666667,
+                "assists": 0.39999999999999997,
+                "shots": 1.0666666666666667,
+                "penalty_minutes": 0.39999999999999997
+              }
+            },
+            {
+              "player_id": 8484387,
+              "name": "Matvei Michkov",
+              "historical_minutes": 16.128571428571426,
+              "scenario_minutes": 16.128571428571426,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.4761904761904761,
+                "assists": 0.23809523809523805,
+                "shots": 1.3809523809523807,
+                "penalty_minutes": 0.38095238095238093
+              }
+            },
+            {
+              "player_id": 8485406,
+              "name": "Porter Martone",
+              "historical_minutes": 14.205555555555556,
+              "scenario_minutes": 14.205555555555556,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.14285714285714288,
+                "assists": 0.2380952380952381,
+                "shots": 1.4285714285714286,
+                "penalty_minutes": 0.9523809523809524
+              }
+            }
+          ],
+          "before": {
+            "goals": 2.4215007215007214,
+            "assists": 4.469130869130869,
+            "shots": 25.217327117327113,
+            "penalty_minutes": 8.198701298701298
+          },
+          "after": {
+            "goals": 2.4215007215007214,
+            "assists": 4.469130869130869,
+            "shots": 25.217327117327113,
+            "penalty_minutes": 8.198701298701298
+          },
+          "delta": {
+            "goals": 0.0,
+            "assists": 0.0,
+            "shots": 0.0,
+            "penalty_minutes": 0.0
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        }
+      },
+      "home": "CBJ",
+      "away": "PHI",
+      "start_utc": "2026-11-15T00:00:00Z"
+    },
+    {
+      "game_id": "2026020320",
+      "teams": {
+        "STL": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 14.145098039215686,
+          "lost_historical_contribution": {
+            "goals": 0.11764705882352941,
+            "assists": 0.1764705882352941,
+            "shots": 1.6470588235294117,
+            "penalty_minutes": 0.23529411764705882
+          },
+          "incoming_historical_minutes": 12.120833333333334,
+          "incoming_historical_contribution": {
+            "goals": 0.12499999999999999,
+            "assists": 0.12499999999999999,
+            "shots": 1.125,
+            "penalty_minutes": 0.0
+          },
+          "reference_minutes": 299.7702203927823,
+          "allocated_minutes": 299.7702203927822,
+          "players": [
+            {
+              "player_id": 8475764,
+              "name": "Cam Fowler",
+              "historical_minutes": 21.003508771929823,
+              "scenario_minutes": 21.152363540573308,
+              "minutes_delta": 0.1488547686434849,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.21201834487711302,
+                "shots": 1.1130963106048435,
+                "penalty_minutes": 0.5300458621927825
+              }
+            },
+            {
+              "player_id": 8476892,
+              "name": "Colton Parayko",
+              "historical_minutes": 20.730392156862745,
+              "scenario_minutes": 20.87731131031974,
+              "minutes_delta": 0.14691915345699513,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.2962020994606726,
+                "shots": 1.362529657519094,
+                "penalty_minutes": 0.23696167956853809
+              }
+            },
+            {
+              "player_id": 8477402,
+              "name": "Pavel Buchnevich",
+              "historical_minutes": 17.605555555555554,
+              "scenario_minutes": 17.730328560272017,
+              "minutes_delta": 0.12477300471646302,
+              "contribution": {
+                "goals": 0.16784785636104782,
+                "assists": 0.22379714181473043,
+                "shots": 1.7903771345178434,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8477527,
+              "name": "Ross Johnston",
+              "historical_minutes": 8.472727272727273,
+              "scenario_minutes": 8.532774661554358,
+              "minutes_delta": 0.06004738882708516,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.09155337619693517,
+                "shots": 0.7324270095754813,
+                "penalty_minutes": 1.5564073953478978
+              }
+            },
+            {
+              "player_id": 8478443,
+              "name": "Brandon Carlo",
+              "historical_minutes": 17.53684210526316,
+              "scenario_minutes": 17.661128128263517,
+              "minutes_delta": 0.12428602300035863,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.10600917243855652,
+                "shots": 0.795068793289174,
+                "penalty_minutes": 1.1130963106048435
+              }
+            },
+            {
+              "player_id": 8480023,
+              "name": "Robert Thomas",
+              "historical_minutes": 20.54122807017544,
+              "scenario_minutes": 20.686806591613983,
+              "minutes_delta": 0.14557852143854433,
+              "contribution": {
+                "goals": 0.15901375865783476,
+                "assists": 0.5830504484120608,
+                "shots": 1.2721100692626781,
+                "penalty_minutes": 0.5300458621927825
+              }
+            },
+            {
+              "player_id": 8480281,
+              "name": "Alexey Toropchenko",
+              "historical_minutes": 11.083333333333334,
+              "scenario_minutes": 11.161882448009681,
+              "minutes_delta": 0.07854911467634729,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.33569571272209564,
+                "shots": 0.8951885672589217,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8480459,
+              "name": "Pius Suter",
+              "historical_minutes": 13.604385964912282,
+              "scenario_minutes": 13.700802127913109,
+              "minutes_delta": 0.09641616300082667,
+              "contribution": {
+                "goals": 0.2650229310963913,
+                "assists": 0.21201834487711302,
+                "shots": 1.1661008968241218,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8481580,
+              "name": "Connor McMichael",
+              "historical_minutes": 15.537719298245612,
+              "scenario_minutes": 15.64783726170126,
+              "minutes_delta": 0.1101179634556484,
+              "contribution": {
+                "goals": 0.10600917243855651,
+                "assists": 0.3710321035349478,
+                "shots": 1.431123827920513,
+                "penalty_minutes": 0.10600917243855651
+              }
+            },
+            {
+              "player_id": 8481598,
+              "name": "Philip Broberg",
+              "historical_minutes": 24.86842105263158,
+              "scenario_minutes": 25.044666988608977,
+              "minutes_delta": 0.17624593597739846,
+              "contribution": {
+                "goals": 0.21201834487711305,
+                "assists": 0.4770412759735044,
+                "shots": 2.173188034990409,
+                "penalty_minutes": 0.21201834487711305
+              }
+            },
+            {
+              "player_id": 8482077,
+              "name": "Dylan Holloway",
+              "historical_minutes": 17.80438596491228,
+              "scenario_minutes": 17.930568108211514,
+              "minutes_delta": 0.12618214329923205,
+              "contribution": {
+                "goals": 0.15901375865783476,
+                "assists": 0.5300458621927825,
+                "shots": 2.4912155523060777,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8482089,
+              "name": "Jake Neighbours",
+              "historical_minutes": 15.623684210526317,
+              "scenario_minutes": 15.734411419192753,
+              "minutes_delta": 0.11072720866643593,
+              "contribution": {
+                "goals": 0.21201834487711305,
+                "assists": 0.2650229310963913,
+                "shots": 1.5901375865783478,
+                "penalty_minutes": 1.0600917243855652
+              }
+            },
+            {
+              "player_id": 8482111,
+              "name": "Justin Barron",
+              "historical_minutes": 16.645833333333332,
+              "scenario_minutes": 16.763804654059648,
+              "minutes_delta": 0.11797132072631555,
+              "contribution": {
+                "goals": 0.18882883840617878,
+                "assists": 0.4406006229477505,
+                "shots": 1.5735736533848232,
+                "penalty_minutes": 0.2517717845415717
+              }
+            },
+            {
+              "player_id": 8482733,
+              "name": "Logan Mailloux",
+              "historical_minutes": 18.508333333333333,
+              "scenario_minutes": 18.63950444889436,
+              "minutes_delta": 0.13117111556102756,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 0.5035435690831435,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8482745,
+              "name": "Mason McTavish",
+              "historical_minutes": 16.20175438596491,
+              "scenario_minutes": 16.31657845783449,
+              "minutes_delta": 0.11482407186957744,
+              "contribution": {
+                "goals": 0.3710321035349478,
+                "assists": 0.2650229310963913,
+                "shots": 2.7562384834024694,
+                "penalty_minutes": 0.42403668975422604
+              }
+            },
+            {
+              "player_id": 8483463,
+              "name": "Aleksanteri Kaskimaki",
+              "historical_minutes": 12.120833333333334,
+              "scenario_minutes": 12.120833333333334,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.12499999999999999,
+                "assists": 0.12499999999999999,
+                "shots": 1.125,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8483516,
+              "name": "Jimmy Snuggerud",
+              "historical_minutes": 18.030701754385962,
+              "scenario_minutes": 18.158487828954406,
+              "minutes_delta": 0.12778607456844426,
+              "contribution": {
+                "goals": 0.5300458621927825,
+                "assists": 0.212018344877113,
+                "shots": 2.2261926212096865,
+                "penalty_minutes": 0.212018344877113
+              }
+            },
+            {
+              "player_id": 8484164,
+              "name": "Dalibor Dvorsky",
+              "historical_minutes": 11.826315789473684,
+              "scenario_minutes": 11.910130523471825,
+              "minutes_delta": 0.08381473399814077,
+              "contribution": {
+                "goals": 0.21201834487711302,
+                "assists": 0.053004586219278255,
+                "shots": 1.4311238279205132,
+                "penalty_minutes": 0.21201834487711302
+              }
+            }
+          ],
+          "before": {
+            "goals": 2.68234004127967,
+            "assists": 4.8177107764956055,
+            "shots": 26.772228867623603,
+            "penalty_minutes": 6.634463833380241
+          },
+          "after": {
+            "goals": 2.707869315976913,
+            "assists": 4.799133298737435,
+            "shots": 26.42823559564814,
+            "penalty_minutes": 6.444521515658104
+          },
+          "delta": {
+            "goals": 0.02552927469724331,
+            "assists": -0.018577477758170424,
+            "shots": -0.3439932719754637,
+            "penalty_minutes": -0.18994231772213688
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        },
+        "FLA": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 0,
+          "lost_historical_contribution": {
+            "goals": 0,
+            "assists": 0,
+            "shots": 0,
+            "penalty_minutes": 0
+          },
+          "incoming_historical_minutes": 0,
+          "incoming_historical_contribution": {
+            "goals": 0,
+            "assists": 0,
+            "shots": 0,
+            "penalty_minutes": 0
+          },
+          "reference_minutes": 294.9971863370547,
+          "allocated_minutes": 294.9971863370547,
+          "players": [
+            {
+              "player_id": 8474189,
+              "name": "Lars Eller",
+              "historical_minutes": 16.050833333333333,
+              "scenario_minutes": 16.050833333333333,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.15000000000000002,
+                "assists": 0.35,
+                "shots": 1.15,
+                "penalty_minutes": 0.2
+              }
+            },
+            {
+              "player_id": 8475179,
+              "name": "Dmitry Kulikov",
+              "historical_minutes": 15.017543859649122,
+              "scenario_minutes": 15.017543859649122,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.10526315789473685,
+                "shots": 0.4736842105263158,
+                "penalty_minutes": 0.8421052631578948
+              }
+            },
+            {
+              "player_id": 8475462,
+              "name": "Radko Gudas",
+              "historical_minutes": 13.833333333333332,
+              "scenario_minutes": 13.833333333333332,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 0.7857142857142857,
+                "penalty_minutes": 0.5714285714285714
+              }
+            },
+            {
+              "player_id": 8477409,
+              "name": "Carter Verhaeghe",
+              "historical_minutes": 18.415,
+              "scenario_minutes": 18.415,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.49999999999999994,
+                "assists": 0.49999999999999994,
+                "shots": 2.25,
+                "penalty_minutes": 0.6
+              }
+            },
+            {
+              "player_id": 8477495,
+              "name": "Seth Jones",
+              "historical_minutes": 24.669999999999998,
+              "scenario_minutes": 24.669999999999998,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.15,
+                "assists": 0.9500000000000001,
+                "shots": 2.35,
+                "penalty_minutes": 0.1
+              }
+            },
+            {
+              "player_id": 8477903,
+              "name": "Garnet Hathaway",
+              "historical_minutes": 10.006666666666666,
+              "scenario_minutes": 10.006666666666666,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.049999999999999996,
+                "shots": 0.3,
+                "penalty_minutes": 1.7000000000000002
+              }
+            },
+            {
+              "player_id": 8477932,
+              "name": "Aaron Ekblad",
+              "historical_minutes": 21.23888888888889,
+              "scenario_minutes": 21.23888888888889,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.05555555555555556,
+                "assists": 0.3888888888888889,
+                "shots": 1.5000000000000002,
+                "penalty_minutes": 0.6666666666666667
+              }
+            },
+            {
+              "player_id": 8477933,
+              "name": "Sam Reinhart",
+              "historical_minutes": 20.20916666666667,
+              "scenario_minutes": 20.20916666666667,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.55,
+                "assists": 0.4,
+                "shots": 3.2,
+                "penalty_minutes": 0.30000000000000004
+              }
+            },
+            {
+              "player_id": 8477935,
+              "name": "Sam Bennett",
+              "historical_minutes": 17.38583333333333,
+              "scenario_minutes": 17.38583333333333,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.35,
+                "assists": 0.15,
+                "shots": 2.55,
+                "penalty_minutes": 1.2
+              }
+            },
+            {
+              "player_id": 8478055,
+              "name": "Gustav Forsling",
+              "historical_minutes": 21.257894736842104,
+              "scenario_minutes": 21.257894736842104,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.10526315789473684,
+                "assists": 0.05263157894736842,
+                "shots": 1.368421052631579,
+                "penalty_minutes": 0.42105263157894735
+              }
+            },
+            {
+              "player_id": 8478147,
+              "name": "Bokondji Imama",
+              "historical_minutes": 7.685833333333333,
+              "scenario_minutes": 7.685833333333333,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 0.5499999999999999,
+                "penalty_minutes": 1.8
+              }
+            },
+            {
+              "player_id": 8478859,
+              "name": "Niko Mikkola",
+              "historical_minutes": 19.4925,
+              "scenario_minutes": 19.4925,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.09999999999999999,
+                "assists": 0.15,
+                "shots": 1.2999999999999998,
+                "penalty_minutes": 0.7999999999999999
+              }
+            },
+            {
+              "player_id": 8479314,
+              "name": "Matthew Tkachuk",
+              "historical_minutes": 18.761666666666667,
+              "scenario_minutes": 18.761666666666667,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.2,
+                "assists": 1.2,
+                "shots": 2.05,
+                "penalty_minutes": 1.6
+              }
+            },
+            {
+              "player_id": 8480185,
+              "name": "Eetu Luostarinen",
+              "historical_minutes": 15.935833333333331,
+              "scenario_minutes": 15.935833333333333,
+              "minutes_delta": 1.7763568394002505e-15,
+              "contribution": {
+                "goals": 0.1,
+                "assists": 0.15000000000000002,
+                "shots": 1.1,
+                "penalty_minutes": 1.0000000000000002
+              }
+            },
+            {
+              "player_id": 8480801,
+              "name": "Brady Tkachuk",
+              "historical_minutes": 16.677500000000002,
+              "scenario_minutes": 16.677500000000002,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.5,
+                "assists": 0.55,
+                "shots": 3.6,
+                "penalty_minutes": 2.8000000000000003
+              }
+            },
+            {
+              "player_id": 8481655,
+              "name": "Cole Schwindt",
+              "historical_minutes": 8.322727272727272,
+              "scenario_minutes": 8.322727272727272,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 0.5454545454545455,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8482113,
+              "name": "Anton Lundell",
+              "historical_minutes": 17.469298245614038,
+              "scenario_minutes": 17.469298245614038,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.3157894736842105,
+                "assists": 0.21052631578947373,
+                "shots": 2.7894736842105265,
+                "penalty_minutes": 0.3157894736842105
+              }
+            },
+            {
+              "player_id": 8483771,
+              "name": "Sandis Vilmanis",
+              "historical_minutes": 12.566666666666666,
+              "scenario_minutes": 12.566666666666666,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.1764705882352941,
+                "assists": 0.23529411764705882,
+                "shots": 1.2941176470588236,
+                "penalty_minutes": 0.0
+              }
+            }
+          ],
+          "before": {
+            "goals": 3.253078775369797,
+            "assists": 5.442604059167527,
+            "shots": 29.156865425596084,
+            "penalty_minutes": 14.917042606516294
+          },
+          "after": {
+            "goals": 3.253078775369797,
+            "assists": 5.442604059167527,
+            "shots": 29.156865425596084,
+            "penalty_minutes": 14.917042606516294
+          },
+          "delta": {
+            "goals": 0.0,
+            "assists": 0.0,
+            "shots": 0.0,
+            "penalty_minutes": 0.0
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        }
+      },
+      "home": "STL",
+      "away": "FLA",
+      "start_utc": "2026-11-15T00:00:00Z"
+    },
+    {
+      "game_id": "2026020322",
+      "teams": {
+        "DAL": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        },
+        "BUF": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 12.729166666666666,
+          "lost_historical_contribution": {
+            "goals": 0.0,
+            "assists": 0.0625,
+            "shots": 1.0,
+            "penalty_minutes": 0.5
+          },
+          "incoming_historical_minutes": 12.242708333333333,
+          "incoming_historical_contribution": {
+            "goals": 0.0,
+            "assists": 0.125,
+            "shots": 0.6875,
+            "penalty_minutes": 0.3125
+          },
+          "reference_minutes": 306.2476019547904,
+          "allocated_minutes": 306.24760195479047,
+          "players": [
+            {
+              "player_id": 8475722,
+              "name": "Jason Zucker",
+              "historical_minutes": 12.733333333333333,
+              "scenario_minutes": 12.754436730484626,
+              "minutes_delta": 0.02110339715129328,
+              "contribution": {
+                "goals": 0.20033146697096268,
+                "assists": 0.0,
+                "shots": 1.702817469253183,
+                "penalty_minutes": 0.20033146697096268
+              }
+            },
+            {
+              "player_id": 8479359,
+              "name": "Beck Malenstyn",
+              "historical_minutes": 11.316666666666668,
+              "scenario_minutes": 11.335422172773642,
+              "minutes_delta": 0.01875550610697374,
+              "contribution": {
+                "goals": 0.05271880709762177,
+                "assists": 0.10543761419524354,
+                "shots": 0.47446926387859595,
+                "penalty_minutes": 0.21087522839048709
+              }
+            },
+            {
+              "player_id": 8479420,
+              "name": "Tage Thompson",
+              "historical_minutes": 19.51842105263158,
+              "scenario_minutes": 19.550769612153037,
+              "minutes_delta": 0.032348559521455655,
+              "contribution": {
+                "goals": 0.6326256851714613,
+                "assists": 0.47446926387859595,
+                "shots": 3.9539105323216335,
+                "penalty_minutes": 0.31631284258573067
+              }
+            },
+            {
+              "player_id": 8479982,
+              "name": "Conor Timmins",
+              "historical_minutes": 16.083333333333332,
+              "scenario_minutes": 16.10998880224825,
+              "minutes_delta": 0.026655468914917435,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.25041433371370336,
+                "shots": 1.0016573348548135,
+                "penalty_minutes": 0.5008286674274067
+              }
+            },
+            {
+              "player_id": 8480064,
+              "name": "Josh Norris",
+              "historical_minutes": 14.124561403508773,
+              "scenario_minutes": 14.147970531431765,
+              "minutes_delta": 0.023409127922992212,
+              "contribution": {
+                "goals": 0.2108752283904871,
+                "assists": 0.15815642129286533,
+                "shots": 1.2652513703429227,
+                "penalty_minutes": 0.4217504567809742
+              }
+            },
+            {
+              "player_id": 8480802,
+              "name": "Ryan McLeod",
+              "historical_minutes": 14.868627450980393,
+              "scenario_minutes": 14.893269745498142,
+              "minutes_delta": 0.02464229451774891,
+              "contribution": {
+                "goals": 0.05892101969734199,
+                "assists": 0.17676305909202591,
+                "shots": 0.9427363151574718,
+                "penalty_minutes": 0.35352611818405183
+              }
+            },
+            {
+              "player_id": 8480807,
+              "name": "Mattias Samuelsson",
+              "historical_minutes": 23.646491228070175,
+              "scenario_minutes": 23.6856813821765,
+              "minutes_delta": 0.03919015410632554,
+              "contribution": {
+                "goals": 0.10543761419524353,
+                "assists": 0.4744692638785959,
+                "shots": 1.370688984538166,
+                "penalty_minutes": 1.3179701774405441
+              }
+            },
+            {
+              "player_id": 8480839,
+              "name": "Rasmus Dahlin",
+              "historical_minutes": 24.605208333333334,
+              "scenario_minutes": 24.645987402714116,
+              "minutes_delta": 0.04077906938078257,
+              "contribution": {
+                "goals": 0.18781075028527755,
+                "assists": 0.5008286674274067,
+                "shots": 2.9423684211360146,
+                "penalty_minutes": 0.8764501679979618
+              }
+            },
+            {
+              "player_id": 8481522,
+              "name": "Peyton Krebs",
+              "historical_minutes": 14.309649122807016,
+              "scenario_minutes": 14.333365003058399,
+              "minutes_delta": 0.02371588025138216,
+              "contribution": {
+                "goals": 0.05271880709762177,
+                "assists": 0.47446926387859595,
+                "shots": 0.685344492269083,
+                "penalty_minutes": 0.5799068780738394
+              }
+            },
+            {
+              "player_id": 8482097,
+              "name": "Jack Quinn",
+              "historical_minutes": 19.075438596491228,
+              "scenario_minutes": 19.107052985748048,
+              "minutes_delta": 0.03161438925681992,
+              "contribution": {
+                "goals": 0.4744692638785959,
+                "assists": 0.5271880709762177,
+                "shots": 2.7413779690763316,
+                "penalty_minutes": 0.6853444922690829
+              }
+            },
+            {
+              "player_id": 8482659,
+              "name": "Josh Doan",
+              "historical_minutes": 15.029824561403508,
+              "scenario_minutes": 15.054734013510856,
+              "minutes_delta": 0.024909452107348073,
+              "contribution": {
+                "goals": 0.21087522839048709,
+                "assists": 0.05271880709762177,
+                "shots": 1.79243944131914,
+                "penalty_minutes": 0.3163128425857306
+              }
+            },
+            {
+              "player_id": 8482671,
+              "name": "Owen Power",
+              "historical_minutes": 25.70964912280702,
+              "scenario_minutes": 25.752258620403275,
+              "minutes_delta": 0.04260949759625632,
+              "contribution": {
+                "goals": 0.1581564212928653,
+                "assists": 0.6326256851714612,
+                "shots": 1.3179701774405441,
+                "penalty_minutes": 0.42175045678097417
+              }
+            },
+            {
+              "player_id": 8482803,
+              "name": "Olen Zellweger",
+              "historical_minutes": 19.373148148148147,
+              "scenario_minutes": 19.40525594182154,
+              "minutes_delta": 0.03210779367339356,
+              "contribution": {
+                "goals": 0.16694288914246894,
+                "assists": 0.16694288914246894,
+                "shots": 1.780724150853002,
+                "penalty_minutes": 0.6677715565698757
+              }
+            },
+            {
+              "player_id": 8482896,
+              "name": "Tyson Kozak",
+              "historical_minutes": 11.122727272727273,
+              "scenario_minutes": 11.14116135631695,
+              "minutes_delta": 0.018434083589676575,
+              "contribution": {
+                "goals": 0.09105975771407397,
+                "assists": 0.09105975771407397,
+                "shots": 0.5463585462844438,
+                "penalty_minutes": 0.3642390308562959
+              }
+            },
+            {
+              "player_id": 8483468,
+              "name": "Jiri Kulich",
+              "historical_minutes": 13.013636363636364,
+              "scenario_minutes": 13.035204316769688,
+              "minutes_delta": 0.02156795313332438,
+              "contribution": {
+                "goals": 0.09105975771407397,
+                "assists": 0.18211951542814794,
+                "shots": 1.3658963657111094,
+                "penalty_minutes": 0.18211951542814794
+              }
+            },
+            {
+              "player_id": 8483500,
+              "name": "Noah Ostlund",
+              "historical_minutes": 18.870175438596494,
+              "scenario_minutes": 18.90144963806733,
+              "minutes_delta": 0.031274199470836095,
+              "contribution": {
+                "goals": 0.21087522839048714,
+                "assists": 0.36903164968335245,
+                "shots": 2.2669087051977366,
+                "penalty_minutes": 0.4217504567809743
+              }
+            },
+            {
+              "player_id": 8484145,
+              "name": "Zach Benson",
+              "historical_minutes": 20.117543859649125,
+              "scenario_minutes": 20.150885366280963,
+              "minutes_delta": 0.03334150663183877,
+              "contribution": {
+                "goals": 0.10543761419524354,
+                "assists": 0.6853444922690831,
+                "shots": 2.530502740685845,
+                "penalty_minutes": 0.8435009135619483
+              }
+            },
+            {
+              "player_id": 8484305,
+              "name": "Zach Metsa",
+              "historical_minutes": 12.242708333333333,
+              "scenario_minutes": 12.242708333333333,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.125,
+                "shots": 0.6875,
+                "penalty_minutes": 0.3125
+              }
+            }
+          ],
+          "before": {
+            "goals": 3.0053346936860863,
+            "assists": 5.375732948681865,
+            "shots": 29.633966210088502,
+            "penalty_minutes": 9.166378178065486
+          },
+          "after": {
+            "goals": 3.010315539624314,
+            "assists": 5.447038754839459,
+            "shots": 29.36892228032003,
+            "penalty_minutes": 8.993241268684988
+          },
+          "delta": {
+            "goals": 0.004980845938227674,
+            "assists": 0.07130580615759463,
+            "shots": -0.2650439297684706,
+            "penalty_minutes": -0.17313690938049753
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        }
+      },
+      "home": "DAL",
+      "away": "BUF",
+      "start_utc": "2026-11-15T01:00:00Z"
+    },
+    {
+      "game_id": "2026020323",
+      "teams": {
+        "UTA": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        },
+        "SJS": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 20.462121212121215,
+          "lost_historical_contribution": {
+            "goals": 0.0,
+            "assists": 0.27272727272727276,
+            "shots": 1.4545454545454548,
+            "penalty_minutes": 0.18181818181818185
+          },
+          "incoming_historical_minutes": 9.363888888888889,
+          "incoming_historical_contribution": {
+            "goals": 0.0,
+            "assists": 0.0,
+            "shots": 0.8333333333333334,
+            "penalty_minutes": 0.3333333333333333
+          },
+          "reference_minutes": 304.4707712024818,
+          "allocated_minutes": 304.4707712024817,
+          "players": [
+            {
+              "player_id": 8475200,
+              "name": "Dmitry Orlov",
+              "historical_minutes": 17.176190476190477,
+              "scenario_minutes": 17.84738606244928,
+              "minutes_delta": 0.6711955862588042,
+              "contribution": {
+                "goals": 0.09895972310756464,
+                "assists": 0.39583889243025855,
+                "shots": 0.9895972310756463,
+                "penalty_minutes": 0.39583889243025855
+              }
+            },
+            {
+              "player_id": 8475726,
+              "name": "Tyler Toffoli",
+              "historical_minutes": 13.273015873015874,
+              "scenario_minutes": 13.791686743757593,
+              "minutes_delta": 0.5186708707417189,
+              "contribution": {
+                "goals": 0.2473993077689116,
+                "assists": 0.2968791693226939,
+                "shots": 2.2265937699202043,
+                "penalty_minutes": 0.19791944621512927
+              }
+            },
+            {
+              "player_id": 8476624,
+              "name": "Barclay Goodrow",
+              "historical_minutes": 11.084126984126986,
+              "scenario_minutes": 11.517262441002066,
+              "minutes_delta": 0.43313545687508004,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.04947986155378232,
+                "shots": 0.7916777848605171,
+                "penalty_minutes": 0.9895972310756465
+              }
+            },
+            {
+              "player_id": 8476885,
+              "name": "Jacob Trouba",
+              "historical_minutes": 22.265873015873016,
+              "scenario_minutes": 23.135958598189383,
+              "minutes_delta": 0.8700855823163671,
+              "contribution": {
+                "goals": 0.09895972310756464,
+                "assists": 0.39583889243025855,
+                "shots": 1.6823152928285987,
+                "penalty_minutes": 1.1380368157369933
+              }
+            },
+            {
+              "player_id": 8477498,
+              "name": "Darnell Nurse",
+              "historical_minutes": 21.379166666666666,
+              "scenario_minutes": 22.214602342839996,
+              "minutes_delta": 0.8354356761733293,
+              "contribution": {
+                "goals": 0.05195385463147144,
+                "assists": 0.05195385463147144,
+                "shots": 1.662523348207086,
+                "penalty_minutes": 0.5714924009461858
+              }
+            },
+            {
+              "player_id": 8478874,
+              "name": "Adam Gaudette",
+              "historical_minutes": 9.363888888888889,
+              "scenario_minutes": 9.363888888888889,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.0,
+                "shots": 0.8333333333333334,
+                "penalty_minutes": 0.3333333333333333
+              }
+            },
+            {
+              "player_id": 8478975,
+              "name": "Mason Marchment",
+              "historical_minutes": 16.56984126984127,
+              "scenario_minutes": 17.217342491997787,
+              "minutes_delta": 0.6475012221565173,
+              "contribution": {
+                "goals": 0.2473993077689116,
+                "assists": 0.14843958466134696,
+                "shots": 1.9297146005975103,
+                "penalty_minutes": 0.9895972310756465
+              }
+            },
+            {
+              "player_id": 8480748,
+              "name": "Kiefer Sherwood",
+              "historical_minutes": 15.819841269841268,
+              "scenario_minutes": 16.438034672525713,
+              "minutes_delta": 0.6181934026844456,
+              "contribution": {
+                "goals": 0.09895972310756464,
+                "assists": 0.29687916932269387,
+                "shots": 1.880234739043728,
+                "penalty_minutes": 0.8906375079680816
+              }
+            },
+            {
+              "player_id": 8480848,
+              "name": "Ty Dellandrea",
+              "historical_minutes": 12.61153846153846,
+              "scenario_minutes": 13.104360718199601,
+              "minutes_delta": 0.49282225666114066,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.15985801425068133,
+                "shots": 0.9591480855040879,
+                "penalty_minutes": 1.19893510688011
+              }
+            },
+            {
+              "player_id": 8480891,
+              "name": "Michael Kesselring",
+              "historical_minutes": 19.023809523809526,
+              "scenario_minutes": 19.767204690736037,
+              "minutes_delta": 0.7433951669265113,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.19791944621512927,
+                "shots": 1.434915985059687,
+                "penalty_minutes": 0.6432382001991702
+              }
+            },
+            {
+              "player_id": 8482859,
+              "name": "Zack Ostapchuk",
+              "historical_minutes": 10.333333333333334,
+              "scenario_minutes": 10.737129957170763,
+              "minutes_delta": 0.40379662383742954,
+              "contribution": {
+                "goals": 0.054688268033127825,
+                "assists": 0.0,
+                "shots": 1.0390770926294286,
+                "penalty_minutes": 1.0937653606625564
+              }
+            },
+            {
+              "player_id": 8484227,
+              "name": "Will Smith",
+              "historical_minutes": 19.929365079365077,
+              "scenario_minutes": 20.70814672461713,
+              "minutes_delta": 0.7787816452520531,
+              "contribution": {
+                "goals": 0.34635903087647624,
+                "assists": 0.34635903087647624,
+                "shots": 2.6719125239042456,
+                "penalty_minutes": 0.2968791693226939
+              }
+            },
+            {
+              "player_id": 8484421,
+              "name": "Eric Pohlkamp",
+              "historical_minutes": 15.973333333333333,
+              "scenario_minutes": 16.59752475960074,
+              "minutes_delta": 0.6241914262674086,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.4156308370517715,
+                "shots": 1.2468925111553146,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8484801,
+              "name": "Macklin Celebrini",
+              "historical_minutes": 23.376315789473683,
+              "scenario_minutes": 24.289794246913722,
+              "minutes_delta": 0.9134784574400392,
+              "contribution": {
+                "goals": 0.4375061442650226,
+                "assists": 0.8203240204969174,
+                "shots": 4.320373174617098,
+                "penalty_minutes": 0.7656357524637896
+              }
+            },
+            {
+              "player_id": 8484806,
+              "name": "Sam Dickinson",
+              "historical_minutes": 18.742105263157896,
+              "scenario_minutes": 19.47449224659682,
+              "minutes_delta": 0.7323869834389249,
+              "contribution": {
+                "goals": 0.05468826803312783,
+                "assists": 0.16406480409938348,
+                "shots": 0.9297005565631731,
+                "penalty_minutes": 0.43750614426502266
+              }
+            },
+            {
+              "player_id": 8484911,
+              "name": "Collin Graf",
+              "historical_minutes": 15.23968253968254,
+              "scenario_minutes": 15.835205025928802,
+              "minutes_delta": 0.5955224862462618,
+              "contribution": {
+                "goals": 0.09895972310756464,
+                "assists": 0.04947986155378232,
+                "shots": 1.1380368157369933,
+                "penalty_minutes": 0.44531875398404086
+              }
+            },
+            {
+              "player_id": 8485402,
+              "name": "Michael Misa",
+              "historical_minutes": 14.838095238095239,
+              "scenario_minutes": 15.41792486015857,
+              "minutes_delta": 0.5798296220633308,
+              "contribution": {
+                "goals": 0.19791944621512925,
+                "assists": 0.3463590308764762,
+                "shots": 1.434915985059687,
+                "penalty_minutes": 0.29687916932269387
+              }
+            },
+            {
+              "player_id": 8486103,
+              "name": "Ivar Stenberg",
+              "historical_minutes": 16.373015873015873,
+              "scenario_minutes": 17.012825730908823,
+              "minutes_delta": 0.6398098578929492,
+              "contribution": {
+                "goals": 0.296879169322694,
+                "assists": 0.296879169322694,
+                "shots": 1.7812750159361637,
+                "penalty_minutes": 0.296879169322694
+              }
+            }
+          ],
+          "before": {
+            "goals": 2.242982456140351,
+            "assists": 4.538227561911772,
+            "shots": 28.515968242284032,
+            "penalty_minutes": 10.429523984787144
+          },
+          "after": {
+            "goals": 2.3306316893451315,
+            "assists": 4.432183639095817,
+            "shots": 28.952237846032503,
+            "penalty_minutes": 10.981489685204043
+          },
+          "delta": {
+            "goals": 0.08764923320478069,
+            "assists": -0.10604392281595487,
+            "shots": 0.436269603748471,
+            "penalty_minutes": 0.5519657004168987
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        }
+      },
+      "home": "UTA",
+      "away": "SJS",
+      "start_utc": "2026-11-15T02:00:00Z"
+    },
+    {
+      "game_id": "2026020324",
+      "teams": {
+        "ANA": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        },
+        "NYI": {
+          "status": "blocked",
+          "reason": "missing_complete_projected_lines_or_reference"
+        }
+      },
+      "home": "ANA",
+      "away": "NYI",
+      "start_utc": "2026-11-15T03:00:00Z"
+    },
+    {
+      "game_id": "2026020325",
+      "teams": {
+        "LAK": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 21.444117647058825,
+          "lost_historical_contribution": {
+            "goals": 0.47058823529411764,
+            "assists": 0.6470588235294118,
+            "shots": 3.2941176470588234,
+            "penalty_minutes": 0.8235294117647058
+          },
+          "incoming_historical_minutes": 13.308333333333334,
+          "incoming_historical_contribution": {
+            "goals": 0.0,
+            "assists": 0.25,
+            "shots": 0.5,
+            "penalty_minutes": 1.0
+          },
+          "reference_minutes": 304.35604575163404,
+          "allocated_minutes": 304.35604575163404,
+          "players": [
+            {
+              "player_id": 8470621,
+              "name": "Corey Perry",
+              "historical_minutes": 12.786666666666667,
+              "scenario_minutes": 13.154376726784916,
+              "minutes_delta": 0.3677100601182488,
+              "contribution": {
+                "goals": 0.13716764052956115,
+                "assists": 0.06858382026478058,
+                "shots": 1.7145955066195142,
+                "penalty_minutes": 0.7544220229125864
+              }
+            },
+            {
+              "player_id": 8474563,
+              "name": "Drew Doughty",
+              "historical_minutes": 21.353125,
+              "scenario_minutes": 21.96718330637089,
+              "minutes_delta": 0.6140583063708931,
+              "contribution": {
+                "goals": 0.0642973314982318,
+                "assists": 0.45008132048762256,
+                "shots": 1.0287573039717088,
+                "penalty_minutes": 1.0287573039717088
+              }
+            },
+            {
+              "player_id": 8475208,
+              "name": "Brian Dumoulin",
+              "historical_minutes": 16.980392156862745,
+              "scenario_minutes": 17.468702455676468,
+              "minutes_delta": 0.48831029881372245,
+              "contribution": {
+                "goals": 0.06051513552774757,
+                "assists": 0.12103027105549514,
+                "shots": 0.7866967618607185,
+                "penalty_minutes": 0.6051513552774758
+              }
+            },
+            {
+              "player_id": 8475287,
+              "name": "Erik Haula",
+              "historical_minutes": 15.630392156862744,
+              "scenario_minutes": 16.079880095314657,
+              "minutes_delta": 0.44948793845191304,
+              "contribution": {
+                "goals": 0.1815454065832427,
+                "assists": 0.2420605421109903,
+                "shots": 1.6339086592491845,
+                "penalty_minutes": 0.7261816263329708
+              }
+            },
+            {
+              "player_id": 8475692,
+              "name": "Mats Zuccarello",
+              "historical_minutes": 15.339583333333334,
+              "scenario_minutes": 15.780708394049359,
+              "minutes_delta": 0.44112506071602553,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.1285946629964636,
+                "shots": 0.7715679779787816,
+                "penalty_minutes": 0.2571893259929272
+              }
+            },
+            {
+              "player_id": 8476441,
+              "name": "Joel Edmundson",
+              "historical_minutes": 17.076470588235296,
+              "scenario_minutes": 17.567543843705124,
+              "minutes_delta": 0.4910732554698285,
+              "contribution": {
+                "goals": 0.060515135527747586,
+                "assists": 0.060515135527747586,
+                "shots": 0.9682421684439614,
+                "penalty_minutes": 0.5446362197497283
+              }
+            },
+            {
+              "player_id": 8476469,
+              "name": "Joel Armia",
+              "historical_minutes": 13.358823529411765,
+              "scenario_minutes": 13.742987278351475,
+              "minutes_delta": 0.3841637489397094,
+              "contribution": {
+                "goals": 0.18154540658324272,
+                "assists": 0.24206054211099032,
+                "shots": 1.3313329816104467,
+                "penalty_minutes": 0.6051513552774758
+              }
+            },
+            {
+              "player_id": 8476872,
+              "name": "Scott Laughton",
+              "historical_minutes": 13.870588235294118,
+              "scenario_minutes": 14.269468957442877,
+              "minutes_delta": 0.3988807221487587,
+              "contribution": {
+                "goals": 0.12103027105549513,
+                "assists": 0.1815454065832427,
+                "shots": 1.2103027105549513,
+                "penalty_minutes": 0.9077270329162135
+              }
+            },
+            {
+              "player_id": 8476879,
+              "name": "Cody Ceci",
+              "historical_minutes": 16.316666666666666,
+              "scenario_minutes": 16.785890009805048,
+              "minutes_delta": 0.4692233431383812,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.11430636710796764,
+                "shots": 1.0287573039717088,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8477942,
+              "name": "Kevin Fiala",
+              "historical_minutes": 16.616666666666667,
+              "scenario_minutes": 17.094517200996563,
+              "minutes_delta": 0.477850534329896,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 1.0287573039717088,
                 "shots": 0.0,
                 "penalty_minutes": 0.0
               }
             },
             {
-              "player_id": 8478882,
-              "name": "Vladislav Gavrikov",
-              "historical_minutes": 21.555,
-              "scenario_minutes": 21.555,
-              "minutes_delta": 0.0,
+              "player_id": 8477960,
+              "name": "Adrian Kempe",
+              "historical_minutes": 20.098958333333332,
+              "scenario_minutes": 20.676950187639704,
+              "minutes_delta": 0.5779918543063722,
               "contribution": {
-                "goals": 0.05,
-                "assists": 0.24999999999999997,
-                "shots": 1.4999999999999998,
-                "penalty_minutes": 0.49999999999999994
+                "goals": 0.38578398898939076,
+                "assists": 0.45008132048762256,
+                "shots": 3.4077585694062846,
+                "penalty_minutes": 0.6429733149823179
               }
             },
             {
-              "player_id": 8479323,
-              "name": "Adam Fox",
-              "historical_minutes": 22.89,
-              "scenario_minutes": 22.89,
-              "minutes_delta": 0.0,
+              "player_id": 8479675,
+              "name": "Trevor Moore",
+              "historical_minutes": 16.38823529411765,
+              "scenario_minutes": 16.859516758030477,
+              "minutes_delta": 0.47128146391282755,
               "contribution": {
-                "goals": 0.1,
-                "assists": 1.0,
-                "shots": 1.5,
-                "penalty_minutes": 0.3
-              }
-            },
-            {
-              "player_id": 8480009,
-              "name": "Eeli Tolvanen",
-              "historical_minutes": 12.16,
-              "scenario_minutes": 12.16,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.19999999999999998,
-                "assists": 0.09999999999999999,
-                "shots": 1.1500000000000001,
-                "penalty_minutes": 0.19999999999999998
-              }
-            },
-            {
-              "player_id": 8481525,
-              "name": "Matthew Roberson",
-              "historical_minutes": 12.033333333333333,
-              "scenario_minutes": 12.033333333333333,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.0,
-                "assists": 0.0,
-                "shots": 0.3333333333333333,
+                "goals": 0.18154540658324272,
+                "assists": 0.18154540658324272,
+                "shots": 2.118029743471165,
                 "penalty_minutes": 0.0
               }
             },
             {
-              "player_id": 8481604,
-              "name": "Pavel Dorofeyev",
-              "historical_minutes": 16.913333333333334,
-              "scenario_minutes": 16.913333333333334,
-              "minutes_delta": 0.0,
+              "player_id": 8479998,
+              "name": "Mikey Anderson",
+              "historical_minutes": 18.314705882352943,
+              "scenario_minutes": 18.84138744656421,
+              "minutes_delta": 0.5266815642112661,
               "contribution": {
-                "goals": 0.30000000000000004,
-                "assists": 0.30000000000000004,
-                "shots": 3.0000000000000004,
-                "penalty_minutes": 0.1
+                "goals": 0.12103027105549516,
+                "assists": 0.12103027105549516,
+                "shots": 0.5446362197497282,
+                "penalty_minutes": 0.24206054211099032
               }
             },
             {
-              "player_id": 8481789,
-              "name": "Tye Kartye",
-              "historical_minutes": 16.785,
-              "scenario_minutes": 16.785,
+              "player_id": 8481532,
+              "name": "Alex Turcotte",
+              "historical_minutes": 13.308333333333334,
+              "scenario_minutes": 13.308333333333334,
               "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.35000000000000003,
-                "assists": 0.35000000000000003,
-                "shots": 1.8,
-                "penalty_minutes": 0.8
-              }
-            },
-            {
-              "player_id": 8482073,
-              "name": "Braden Schneider",
-              "historical_minutes": 18.494166666666665,
-              "scenario_minutes": 18.494166666666665,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.0,
-                "assists": 0.09999999999999999,
-                "shots": 1.5,
-                "penalty_minutes": 0.6
-              }
-            },
-            {
-              "player_id": 8482109,
-              "name": "Alexis Lafreniere",
-              "historical_minutes": 18.761666666666667,
-              "scenario_minutes": 18.761666666666667,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.45,
-                "assists": 0.5499999999999999,
-                "shots": 2.15,
-                "penalty_minutes": 0.7
-              }
-            },
-            {
-              "player_id": 8482157,
-              "name": "Will Cuylle",
-              "historical_minutes": 16.315,
-              "scenario_minutes": 16.315,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.2,
-                "assists": 0.25,
-                "shots": 1.95,
-                "penalty_minutes": 1.3
-              }
-            },
-            {
-              "player_id": 8482666,
-              "name": "Scott Morrow",
-              "historical_minutes": 13.005555555555555,
-              "scenario_minutes": 13.005555555555555,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.0,
-                "assists": 0.16666666666666666,
-                "shots": 1.9999999999999998,
-                "penalty_minutes": 0.3333333333333333
-              }
-            },
-            {
-              "player_id": 8482877,
-              "name": "Jaroslav Chmelar",
-              "historical_minutes": 8.347222222222223,
-              "scenario_minutes": 8.347222222222223,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.16666666666666669,
-                "assists": 0.0,
-                "shots": 0.6666666666666667,
-                "penalty_minutes": 0.16666666666666669
-              }
-            },
-            {
-              "player_id": 8483690,
-              "name": "Noah Laba",
-              "historical_minutes": 14.559166666666666,
-              "scenario_minutes": 14.559166666666668,
-              "minutes_delta": 1.7763568394002505e-15,
               "contribution": {
                 "goals": 0.0,
                 "assists": 0.25,
-                "shots": 0.8,
-                "penalty_minutes": 0.6000000000000001
-              }
-            },
-            {
-              "player_id": 8484210,
-              "name": "Gabe Perreault",
-              "historical_minutes": 16.655833333333334,
-              "scenario_minutes": 16.655833333333334,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.3,
-                "assists": 0.15,
-                "shots": 1.95,
-                "penalty_minutes": 0.1
-              }
-            }
-          ],
-          "before": {
-            "goals": 2.8666666666666667,
-            "assists": 5.0166666666666675,
-            "shots": 26.1,
-            "penalty_minutes": 8.2
-          },
-          "after": {
-            "goals": 2.8666666666666667,
-            "assists": 5.0166666666666675,
-            "shots": 26.1,
-            "penalty_minutes": 8.2
-          },
-          "delta": {
-            "goals": 0.0,
-            "assists": 0.0,
-            "shots": 0.0,
-            "penalty_minutes": 0.0
-          },
-          "probability_delta": null,
-          "assumptions": [
-            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
-            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
-            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
-            "Out of projection does not confirm injury."
-          ]
-        }
-      },
-      "home": "VAN",
-      "away": "NYR",
-      "start_utc": "2026-11-14T02:00:00Z"
-    },
-    {
-      "game_id": "2026020311",
-      "teams": {
-        "VGK": {
-          "status": "blocked",
-          "reason": "missing_complete_projected_lines_or_reference"
-        },
-        "NSH": {
-          "status": "conditional_replacement_scenario",
-          "lost_minutes": 0,
-          "lost_historical_contribution": {
-            "goals": 0,
-            "assists": 0,
-            "shots": 0,
-            "penalty_minutes": 0
-          },
-          "incoming_historical_minutes": 0,
-          "incoming_historical_contribution": {
-            "goals": 0,
-            "assists": 0,
-            "shots": 0,
-            "penalty_minutes": 0
-          },
-          "reference_minutes": 294.738343079922,
-          "allocated_minutes": 294.738343079922,
-          "players": [
-            {
-              "player_id": 8474564,
-              "name": "Steven Stamkos",
-              "historical_minutes": 18.58157894736842,
-              "scenario_minutes": 18.58157894736842,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.5789473684210525,
-                "assists": 0.47368421052631576,
-                "shots": 2.4736842105263155,
-                "penalty_minutes": 0.42105263157894735
-              }
-            },
-            {
-              "player_id": 8474600,
-              "name": "Roman Josi",
-              "historical_minutes": 25.441228070175438,
-              "scenario_minutes": 25.441228070175438,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.10526315789473684,
-                "assists": 1.0526315789473684,
-                "shots": 2.6842105263157894,
-                "penalty_minutes": 0.631578947368421
-              }
-            },
-            {
-              "player_id": 8475158,
-              "name": "Ryan O'Reilly",
-              "historical_minutes": 20.867543859649125,
-              "scenario_minutes": 20.867543859649125,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.3684210526315789,
-                "assists": 0.5263157894736843,
-                "shots": 1.631578947368421,
-                "penalty_minutes": 0.5263157894736843
-              }
-            },
-            {
-              "player_id": 8476869,
-              "name": "Brady Skjei",
-              "historical_minutes": 20.064035087719297,
-              "scenario_minutes": 20.064035087719297,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.0,
-                "assists": 0.3157894736842105,
-                "shots": 0.9473684210526316,
-                "penalty_minutes": 0.10526315789473685
-              }
-            },
-            {
-              "player_id": 8476887,
-              "name": "Filip Forsberg",
-              "historical_minutes": 20.3359649122807,
-              "scenario_minutes": 20.3359649122807,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.3684210526315789,
-                "assists": 0.7894736842105263,
-                "shots": 2.526315789473684,
-                "penalty_minutes": 0.4210526315789474
-              }
-            },
-            {
-              "player_id": 8477021,
-              "name": "Alexander Kerfoot",
-              "historical_minutes": 16.167543859649122,
-              "scenario_minutes": 16.167543859649122,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.10526315789473684,
-                "assists": 0.21052631578947367,
-                "shots": 0.7368421052631579,
-                "penalty_minutes": 0.3157894736842105
-              }
-            },
-            {
-              "player_id": 8479525,
-              "name": "Ross Colton",
-              "historical_minutes": 13.209649122807017,
-              "scenario_minutes": 13.209649122807017,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.26315789473684215,
-                "assists": 0.15789473684210525,
-                "shots": 1.631578947368421,
-                "penalty_minutes": 0.2105263157894737
-              }
-            },
-            {
-              "player_id": 8480246,
-              "name": "Nick Perbix",
-              "historical_minutes": 18.480555555555554,
-              "scenario_minutes": 18.480555555555554,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.1111111111111111,
-                "assists": 0.1111111111111111,
-                "shots": 0.8888888888888888,
-                "penalty_minutes": 0.4444444444444444
-              }
-            },
-            {
-              "player_id": 8480835,
-              "name": "Jack Drury",
-              "historical_minutes": 17.15438596491228,
-              "scenario_minutes": 17.15438596491228,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.10526315789473682,
-                "assists": 0.15789473684210525,
-                "shots": 0.9473684210526314,
-                "penalty_minutes": 0.3157894736842105
-              }
-            },
-            {
-              "player_id": 8481535,
-              "name": "Nils Hoglander",
-              "historical_minutes": 10.871929824561404,
-              "scenario_minutes": 10.871929824561404,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.2105263157894737,
-                "assists": 0.26315789473684215,
-                "shots": 1.2631578947368423,
-                "penalty_minutes": 0.31578947368421056
-              }
-            },
-            {
-              "player_id": 8481593,
-              "name": "Jayden Struble",
-              "historical_minutes": 15.07685185185185,
-              "scenario_minutes": 15.07685185185185,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.16666666666666666,
-                "assists": 0.05555555555555555,
-                "shots": 0.3333333333333333,
-                "penalty_minutes": 0.3888888888888889
-              }
-            },
-            {
-              "player_id": 8481726,
-              "name": "Adam Edstrom",
-              "historical_minutes": 14.845614035087719,
-              "scenario_minutes": 14.845614035087719,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.3157894736842105,
-                "assists": 0.052631578947368425,
-                "shots": 1.631578947368421,
+                "shots": 0.5,
                 "penalty_minutes": 1.0
               }
             },
             {
-              "player_id": 8482094,
-              "name": "Daemon Hunt",
-              "historical_minutes": 13.7375,
-              "scenario_minutes": 13.7375,
-              "minutes_delta": 0.0,
+              "player_id": 8481732,
+              "name": "Andre Lee",
+              "historical_minutes": 10.72888888888889,
+              "scenario_minutes": 11.037422807945354,
+              "minutes_delta": 0.3085339190564653,
               "contribution": {
-                "goals": 0.0,
-                "assists": 0.05,
-                "shots": 0.8,
-                "penalty_minutes": 0.2
+                "goals": 0.06858382026478058,
+                "assists": 0.13716764052956115,
+                "shots": 1.0287573039717086,
+                "penalty_minutes": 0.48008674185346406
               }
             },
             {
-              "player_id": 8482145,
-              "name": "Mavrik Bourque",
-              "historical_minutes": 16.16111111111111,
-              "scenario_minutes": 16.16111111111111,
-              "minutes_delta": 0.0,
+              "player_id": 8482124,
+              "name": "Quinton Byfield",
+              "historical_minutes": 19.273333333333333,
+              "scenario_minutes": 19.827582438548067,
+              "minutes_delta": 0.5542491052147334,
               "contribution": {
-                "goals": 0.0,
-                "assists": 0.26666666666666666,
-                "shots": 2.066666666666667,
-                "penalty_minutes": 0.13333333333333333
+                "goals": 0.3429191013239029,
+                "assists": 0.13716764052956115,
+                "shots": 2.6747689903264424,
+                "penalty_minutes": 0.13716764052956115
               }
             },
             {
-              "player_id": 8482482,
-              "name": "Adam Wilsby",
-              "historical_minutes": 19.90175438596491,
-              "scenario_minutes": 19.90175438596491,
-              "minutes_delta": 0.0,
+              "player_id": 8482155,
+              "name": "Alex Laferriere",
+              "historical_minutes": 19.305882352941175,
+              "scenario_minutes": 19.861067480206753,
+              "minutes_delta": 0.5551851272655774,
               "contribution": {
-                "goals": 0.05263157894736842,
-                "assists": 0.3157894736842105,
-                "shots": 1.263157894736842,
-                "penalty_minutes": 0.42105263157894735
+                "goals": 0.18154540658324272,
+                "assists": 0.4841210842219806,
+                "shots": 3.0257567763873783,
+                "penalty_minutes": 0.36309081316648545
               }
             },
             {
-              "player_id": 8483513,
-              "name": "Reid Schaefer",
-              "historical_minutes": 10.654166666666667,
-              "scenario_minutes": 10.654166666666667,
-              "minutes_delta": 0.0,
+              "player_id": 8482730,
+              "name": "Brandt Clarke",
+              "historical_minutes": 19.472549019607843,
+              "scenario_minutes": 20.032527030868707,
+              "minutes_delta": 0.5599780112608634,
               "contribution": {
-                "goals": 0.08333333333333334,
-                "assists": 0.08333333333333334,
-                "shots": 0.9166666666666666,
-                "penalty_minutes": 0.33333333333333337
-              }
-            },
-            {
-              "player_id": 8483524,
-              "name": "Shane Wright",
-              "historical_minutes": 14.171929824561403,
-              "scenario_minutes": 14.171929824561403,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.21052631578947367,
-                "assists": 0.15789473684210525,
-                "shots": 1.526315789473684,
-                "penalty_minutes": 0.21052631578947367
-              }
-            },
-            {
-              "player_id": 8486189,
-              "name": "Vitali Pinchuk",
-              "historical_minutes": 9.015,
-              "scenario_minutes": 9.015,
-              "minutes_delta": 0.0,
-              "contribution": {
-                "goals": 0.09999999999999999,
-                "assists": 0.09999999999999999,
-                "shots": 1.0999999999999999,
-                "penalty_minutes": 0.39999999999999997
+                "goals": 0.18154540658324272,
+                "assists": 0.5446362197497282,
+                "shots": 1.694423794776932,
+                "penalty_minutes": 1.2708178460826989
               }
             }
           ],
           "before": {
-            "goals": 3.145321637426901,
-            "assists": 5.140350877192981,
-            "shots": 25.368713450292404,
-            "penalty_minutes": 6.794736842105264
+            "goals": 2.67671568627451,
+            "assists": 5.209150326797386,
+            "shots": 27.564460784313724,
+            "penalty_minutes": 9.14950980392157
           },
           "after": {
-            "goals": 3.145321637426901,
-            "assists": 5.140350877192981,
-            "shots": 25.368713450292404,
-            "penalty_minutes": 6.794736842105264
+            "goals": 2.2695697286885665,
+            "assists": 4.943284955374201,
+            "shots": 25.468292772350615,
+            "penalty_minutes": 9.565413141156602
           },
           "delta": {
+            "goals": -0.4071459575859433,
+            "assists": -0.26586537142318445,
+            "shots": -2.0961680119631083,
+            "penalty_minutes": 0.4159033372350329
+          },
+          "probability_delta": null,
+          "assumptions": [
+            "Incoming usage starts at its historical average; remaining budget is allocated proportionally to retained historical TOI.",
+            "Rates per minute are held constant; no line chemistry, opponent, special-team role or coach adjustment.",
+            "Reference budget is a sum of player historical averages, not verified regulation ice time.",
+            "Out of projection does not confirm injury."
+          ]
+        },
+        "CGY": {
+          "status": "conditional_replacement_scenario",
+          "lost_minutes": 9.30952380952381,
+          "lost_historical_contribution": {
             "goals": 0.0,
             "assists": 0.0,
-            "shots": 0.0,
+            "shots": 0.7142857142857142,
+            "penalty_minutes": 1.0
+          },
+          "incoming_historical_minutes": 9.325,
+          "incoming_historical_contribution": {
+            "goals": 0.49999999999999994,
+            "assists": 0.0,
+            "shots": 0.9999999999999999,
             "penalty_minutes": 0.0
+          },
+          "reference_minutes": 289.42365098817305,
+          "allocated_minutes": 289.423650988173,
+          "players": [
+            {
+              "player_id": 8474150,
+              "name": "Mikael Backlund",
+              "historical_minutes": 18.348039215686274,
+              "scenario_minutes": 18.347025494055643,
+              "minutes_delta": -0.0010137216306311814,
+              "contribution": {
+                "goals": 0.11764055887185024,
+                "assists": 0.17646083830777534,
+                "shots": 2.64691257461663,
+                "penalty_minutes": 0.3529216766155507
+              }
+            },
+            {
+              "player_id": 8476458,
+              "name": "Ryan Strome",
+              "historical_minutes": 14.209649122807019,
+              "scenario_minutes": 14.20886404552927,
+              "minutes_delta": -0.0007850772777491244,
+              "contribution": {
+                "goals": 0.15788601322274637,
+                "assists": 0.21051468429699513,
+                "shots": 2.1577755140442005,
+                "penalty_minutes": 0.5262867107424879
+              }
+            },
+            {
+              "player_id": 8477810,
+              "name": "Joel Hanley",
+              "historical_minutes": 16.329166666666666,
+              "scenario_minutes": 16.328264486915163,
+              "minutes_delta": -0.0009021797515025298,
+              "contribution": {
+                "goals": 0.24998618760268176,
+                "assists": 0.0,
+                "shots": 0.7499585628080453,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8478136,
+              "name": "Jake Middleton",
+              "historical_minutes": 18.42719298245614,
+              "scenario_minutes": 18.426174887612405,
+              "minutes_delta": -0.0010180948437366055,
+              "contribution": {
+                "goals": 0.05262867107424878,
+                "assists": 0.05262867107424878,
+                "shots": 1.0525734214849758,
+                "penalty_minutes": 1.3683454479304686
+              }
+            },
+            {
+              "player_id": 8480028,
+              "name": "Morgan Frost",
+              "historical_minutes": 15.271052631578947,
+              "scenario_minutes": 15.270208912193286,
+              "minutes_delta": -0.00084371938566008,
+              "contribution": {
+                "goals": 0.21051468429699519,
+                "assists": 0.42102936859399037,
+                "shots": 1.6314888033017125,
+                "penalty_minutes": 0.31577202644549274
+              }
+            },
+            {
+              "player_id": 8480727,
+              "name": "Zach Whitecloud",
+              "historical_minutes": 20.56578947368421,
+              "scenario_minutes": 20.564653222262713,
+              "minutes_delta": -0.0011362514214958708,
+              "contribution": {
+                "goals": 0.05262867107424878,
+                "assists": 0.10525734214849757,
+                "shots": 0.9473160793364782,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8480797,
+              "name": "Joel Farabee",
+              "historical_minutes": 19.100877192982455,
+              "scenario_minutes": 19.09982187736279,
+              "minutes_delta": -0.0010553156196664304,
+              "contribution": {
+                "goals": 0.36840069751974147,
+                "assists": 0.5262867107424879,
+                "shots": 2.684062224786688,
+                "penalty_minutes": 0.42102936859399026
+              }
+            },
+            {
+              "player_id": 8481028,
+              "name": "Martin Pospisil",
+              "historical_minutes": 13.538596491228072,
+              "scenario_minutes": 13.537848489332598,
+              "minutes_delta": -0.0007480018954737488,
+              "contribution": {
+                "goals": 0.15788601322274637,
+                "assists": 0.21051468429699516,
+                "shots": 1.473602790078966,
+                "penalty_minutes": 0.9473160793364781
+              }
+            },
+            {
+              "player_id": 8481068,
+              "name": "Yegor Sharangovich",
+              "historical_minutes": 16.144736842105264,
+              "scenario_minutes": 16.143844852025815,
+              "minutes_delta": -0.0008919900794488456,
+              "contribution": {
+                "goals": 0.15788601322274637,
+                "assists": 0.2631433553712439,
+                "shots": 1.3683454479304684,
+                "penalty_minutes": 0.10525734214849757
+              }
+            },
+            {
+              "player_id": 8482165,
+              "name": "Yan Kuznetsov",
+              "historical_minutes": 17.3462962962963,
+              "scenario_minutes": 17.34533792055052,
+              "minutes_delta": -0.0009583757457782838,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.22220994453571713,
+                "shots": 1.1666022088125148,
+                "penalty_minutes": 0.44441988907143426
+              }
+            },
+            {
+              "player_id": 8482679,
+              "name": "Matt Coronato",
+              "historical_minutes": 17.54736842105263,
+              "scenario_minutes": 17.546398936154546,
+              "minutes_delta": -0.0009694848980856818,
+              "contribution": {
+                "goals": 0.21051468429699516,
+                "assists": 0.5789153818167367,
+                "shots": 2.1051468429699516,
+                "penalty_minutes": 0.6841727239652343
+              }
+            },
+            {
+              "player_id": 8482766,
+              "name": "William Stromgren",
+              "historical_minutes": 9.325,
+              "scenario_minutes": 9.325,
+              "minutes_delta": 0.0,
+              "contribution": {
+                "goals": 0.49999999999999994,
+                "assists": 0.0,
+                "shots": 0.9999999999999999,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8483495,
+              "name": "Simon Nemec",
+              "historical_minutes": 21.412280701754383,
+              "scenario_minutes": 21.411097682040214,
+              "minutes_delta": -0.00118301971416912,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.3684006975197415,
+                "shots": 1.6314888033017125,
+                "penalty_minutes": 0.0
+              }
+            },
+            {
+              "player_id": 8483609,
+              "name": "Adam Klapka",
+              "historical_minutes": 11.860526315789473,
+              "scenario_minutes": 11.859871026581963,
+              "minutes_delta": -0.0006552892075095684,
+              "contribution": {
+                "goals": 0.21051468429699516,
+                "assists": 0.15788601322274634,
+                "shots": 1.5788601322274636,
+                "penalty_minutes": 2.2630328561926976
+              }
+            },
+            {
+              "player_id": 8484154,
+              "name": "Jonathan Castagna",
+              "historical_minutes": 12.472916666666666,
+              "scenario_minutes": 12.472227543143797,
+              "minutes_delta": -0.0006891235228696502,
+              "contribution": {
+                "goals": 0.0,
+                "assists": 0.18748964070201132,
+                "shots": 0.6249654690067044,
+                "penalty_minutes": 0.7499585628080453
+              }
+            },
+            {
+              "player_id": 8484234,
+              "name": "Aydar Suniev",
+              "historical_minutes": 13.101041666666667,
+              "scenario_minutes": 13.100317839495537,
+              "minutes_delta": -0.0007238271711305089,
+              "contribution": {
+                "goals": 0.2499861876026818,
+                "assists": 0.1249930938013409,
+                "shots": 1.3749240318147498,
+                "penalty_minutes": 0.37497928140402265
+              }
+            },
+            {
+              "player_id": 8484768,
+              "name": "Zayne Parekh",
+              "historical_minutes": 18.379824561403506,
+              "scenario_minutes": 18.378809083645578,
+              "minutes_delta": -0.001015477757928096,
+              "contribution": {
+                "goals": 0.10525734214849757,
+                "assists": 0.3157720264454927,
+                "shots": 1.7893748165244587,
+                "penalty_minutes": 0.8420587371879805
+              }
+            },
+            {
+              "player_id": 8484860,
+              "name": "Matvei Gridin",
+              "historical_minutes": 16.058771929824562,
+              "scenario_minutes": 16.05788468927121,
+              "minutes_delta": -0.0008872405533537631,
+              "contribution": {
+                "goals": 0.2631433553712439,
+                "assists": 0.3157720264454927,
+                "shots": 2.210404185118449,
+                "penalty_minutes": 0.10525734214849758
+              }
+            }
+          ],
+          "before": {
+            "goals": 2.565015479876161,
+            "assists": 4.2375085999312,
+            "shots": 27.909590151850214,
+            "penalty_minutes": 10.501332989336085
+          },
+          "after": {
+            "goals": 3.064873763824419,
+            "assists": 4.237274479321513,
+            "shots": 28.19380190816417,
+            "penalty_minutes": 9.500808044590878
+          },
+          "delta": {
+            "goals": 0.49985828394825793,
+            "assists": -0.00023412060968652781,
+            "shots": 0.28421175631395457,
+            "penalty_minutes": -1.000524944745207
           },
           "probability_delta": null,
           "assumptions": [
@@ -857,11 +3777,11 @@
           ]
         }
       },
-      "home": "VGK",
-      "away": "NSH",
-      "start_utc": "2026-11-14T03:00:00Z"
+      "home": "LAK",
+      "away": "CGY",
+      "start_utc": "2026-11-15T03:00:00Z"
     }
   ],
   "probabilities_modified": false,
-  "as_of_utc": "2026-11-13T21:16:16.076052+00:00"
+  "as_of_utc": "2026-11-14T20:30:41.704182+00:00"
 }
