@@ -1,6 +1,6 @@
 {
   "kind": "nhl_minute_adjusted_ml_v1",
-  "as_of_utc": "2026-11-14T20:30:42.175669+00:00",
+  "as_of_utc": "2026-11-14T23:12:08.616649+00:00",
   "games": [
     {
       "game_id": "2026020313",
@@ -216,8 +216,27 @@
       "home": "ANA",
       "away": "NYI",
       "start_utc": "2026-11-15T03:00:00Z",
-      "status": "blocked",
-      "reason": "No complete team exposure scenario"
+      "baseline_ml_home": 0.55788807,
+      "scenario_ml_home": 0.5538170695820941,
+      "scenario_ml_away": 0.4461829304179059,
+      "delta_home_pp": -0.4071000417905868,
+      "anchored_goals": {
+        "home": 3.516693695021868,
+        "away": 3.133891304057882
+      },
+      "adjusted_goals": {
+        "home": 3.4889067087107883,
+        "away": 3.133891304057882
+      },
+      "adjusted_sides": [
+        "ANA"
+      ],
+      "excluded_sides": [
+        "NYI"
+      ],
+      "partial": true,
+      "validated": false,
+      "status": "experimental_minute_scenario"
     },
     {
       "game_id": "2026020325",
