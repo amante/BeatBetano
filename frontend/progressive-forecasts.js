@@ -19,11 +19,11 @@
  function nbaForDay(x,d){return x.predictions.filter(g=>day(g.tipoff_utc)===d).sort((a,b)=>a.tipoff_utc.localeCompare(b.tipoff_utc));}
  function nbaReason(s,type){
   if(!s)return "No se publicó escenario; sin ajuste.";
-  const multi=type==="injury"?s.multi_source_scenario:null;
+  const multi=type==="injury"?(s.multi_source_scenario||s):null;
   const teamRows=Object.values(multi?.teams||{});
   const unresolvedCount=teamRows.reduce((n,team)=>n+(Array.isArray(team.unresolved_out_claims)?team.unresolved_out_claims.length:0),0)+(Array.isArray(multi?.unresolved_out_claims)?multi.unresolved_out_claims.length:0);
   if(type==="injury"&&s.status==="research_scenario"){
-   const appliedOuts=Number(multi?.secondary_provider_out_count||multi?.secondary_consensus_out_count||0)+Number(multi?.official_out_count||0);
+   const appliedOuts=Number(s.secondary_provider_out_count||multi?.secondary_provider_out_count||s.secondary_consensus_out_count||multi?.secondary_consensus_out_count||0)+Number(s.official_out_count||multi?.official_out_count||0);
    return "Ajuste experimental aplicado con "+appliedOuts+" baja(s) identificada(s)"+(unresolvedCount?"; "+unresolvedCount+" reclamo(s) conflictivo(s) quedaron fuera":"")+"; no está calibrado.";
   }
   if(s.status==="blocked"){
