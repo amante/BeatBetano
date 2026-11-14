@@ -264,8 +264,7 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
     players = availability_team.get("players", [])
     by_id = {str(row.get("player_id")): row for row in players if row.get("player_id")}
     accepted, unresolved = _eligible_out_claims(reconciled_players)
-    if unresolved:
-        return {"unresolved_out_claims": unresolved}, "unresolved_source_claims"
+    # Keep conflicting claims visible without suppressing other matched provider OUT rows.
     outs = []
     for item in accepted:
         pid = str(item.get("player_id"))
@@ -293,7 +292,8 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
     official_count = sum(row["accepted_source_class"] == "official_nba_report" for row in outs)
     if not provider_count and not official_count and not conditional_count:
         return {"official_out_count": 0, "secondary_consensus_out_count": 0,
-                "secondary_provider_out_count": 0, "accepted_out_players": [], "unresolved_out_claims": []}, "no_secondary_provider_consensus_out"
+                "secondary_provider_out_count": 0, "accepted_out_players": [],
+                "unresolved_out_claims": unresolved}, "no_secondary_provider_consensus_out"
 
     samples = _history_by_player(player_rows, team, emitted_at, tipoff)
     out_ids = {row["player_id"] for row in outs}
@@ -346,7 +346,7 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
             "minute_redistribution": allocation, "players_without_historical_minutes": [],
             "replacement_history_gaps": [], "source_agreement_rule": "NBA official OUT; otherwise a non-conflicting CBS Sports or ESPN provider OUT claim; two-provider agreement is retained when available",
             "conditional_uncertain_out_count": conditional_count,
-            "unresolved_out_claims": []}, None
+            "unresolved_out_claims": unresolved}, None
 
 
 def _multi_source_research_scenario(fixture, modules, history, player_history, emitted, margins, scale):
