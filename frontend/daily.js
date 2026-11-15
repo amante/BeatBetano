@@ -271,7 +271,7 @@ async function load(){
 function changeDate(){
  const date=$("daily-date").value;
  if(!/^20\d{2}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+"T12:00:00Z")))return;
- $("simulation-status").textContent="";renderGames();
+ $("simulation-status").textContent="";if(sport==="nba")return;renderGames();
 }
 $("daily-date").addEventListener("change",changeDate);
 document.querySelectorAll('input[name="simulation-scope"]').forEach(r=>r.addEventListener("change",()=>renderSelection(activeGames())));
