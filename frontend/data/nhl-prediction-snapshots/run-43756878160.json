@@ -1,0 +1,348 @@
+{
+  "kind": "nhl_prospective_snapshot_276",
+  "run_id": "43756878160",
+  "date": "2026-11-15",
+  "slate": {
+    "kind": "nhl_research_daily_presentation_275",
+    "date": "2026-11-15",
+    "source_schedule": "https://api-web.nhle.com/v1/score/2026-11-15",
+    "run_id": "43756878160",
+    "official_schedule_games": 5,
+    "experimental_predicted_games": 5,
+    "games": [
+      {
+        "game_id": "2026020326",
+        "home": "PHI",
+        "away": "EDM",
+        "start_utc": "2026-11-16T00:30:00Z",
+        "status": "experimental_forecast",
+        "ml": {
+          "home": 0.50355704,
+          "away": 0.49644296
+        },
+        "rt": {
+          "home": 0.38410625444207536,
+          "draw": 0.23049505872000542,
+          "away": 0.3853986868379192
+        },
+        "home_plus3": 0.2203719338784216,
+        "away_plus3": 0.2537644101366106,
+        "first_to_plus3": {
+          "home": 0.2326148276474769,
+          "away": 0.2639425639658849,
+          "none": 0.5034426083866382
+        },
+        "home_win_ml": 0.50355704,
+        "away_win_ml": 0.49644296,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 0,
+            "away_rest_days": 0,
+            "rest_differential_days": 0,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.0,
+            "source_as_of_utc": "2026-11-15T20:14:14.570447+00:00",
+            "probability_before": 0.50355704,
+            "probability_after": 0.50355704,
+            "probability_delta_percentage_points": 0.0
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-15T20:14:25.582513+00:00",
+            "baseline_probability_home": 0.50355704,
+            "scenario_probability_home": 0.50355704,
+            "scenario_probability_away": 0.49644296,
+            "probability_delta_home_percentage_points": 0.0,
+            "adjusted_goal_expectations": {
+              "home": 4.302460579313811,
+              "away": 4.275950292397661
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "model": "outcome-only-206-rest-lineup-scenario-v1",
+        "probability_status": "research_experimental_not_official"
+      },
+      {
+        "game_id": "2026020327",
+        "home": "DAL",
+        "away": "FLA",
+        "start_utc": "2026-11-16T01:00:00Z",
+        "status": "experimental_forecast",
+        "ml": {
+          "home": 0.57579695,
+          "away": 0.42420305
+        },
+        "rt": {
+          "home": 0.46035310174789773,
+          "draw": 0.20485645938030034,
+          "away": 0.334790438871802
+        },
+        "home_plus3": 0.3246739041264459,
+        "away_plus3": 0.19547150975192085,
+        "first_to_plus3": {
+          "home": 0.31100152848553697,
+          "away": 0.18366523697014103,
+          "none": 0.505333234544322
+        },
+        "home_win_ml": 0.57579695,
+        "away_win_ml": 0.42420305,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 0,
+            "away_rest_days": 0,
+            "rest_differential_days": 0,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.0,
+            "source_as_of_utc": "2026-11-15T20:14:14.570447+00:00",
+            "probability_before": 0.57579695,
+            "probability_after": 0.57579695,
+            "probability_delta_percentage_points": 0.0
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-15T20:14:25.582513+00:00",
+            "baseline_probability_home": 0.57579695,
+            "scenario_probability_home": 0.57579695,
+            "scenario_probability_away": 0.42420305,
+            "probability_delta_home_percentage_points": -0.0,
+            "adjusted_goal_expectations": {
+              "home": 3.8091368385830044,
+              "away": 3.2907268170426067
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "model": "outcome-only-206-rest-lineup-scenario-v1",
+        "probability_status": "research_experimental_not_official"
+      },
+      {
+        "game_id": "2026020328",
+        "home": "ANA",
+        "away": "CGY",
+        "start_utc": "2026-11-16T01:00:00Z",
+        "status": "experimental_forecast",
+        "ml": {
+          "home": 0.56986496,
+          "away": 0.43013504
+        },
+        "rt": {
+          "home": 0.43090271533896785,
+          "draw": 0.23026005942747535,
+          "away": 0.3388372252335568
+        },
+        "home_plus3": 0.2888904856630689,
+        "away_plus3": 0.2026049451984975,
+        "first_to_plus3": {
+          "home": 0.28392617411807175,
+          "away": 0.19670355704470843,
+          "none": 0.5193702688372198
+        },
+        "home_win_ml": 0.56986496,
+        "away_win_ml": 0.43013504,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 0,
+            "away_rest_days": 0,
+            "rest_differential_days": 0,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.0,
+            "source_as_of_utc": "2026-11-15T20:14:14.570447+00:00",
+            "probability_before": 0.56986496,
+            "probability_after": 0.56986496,
+            "probability_delta_percentage_points": 0.0
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-15T20:14:25.582513+00:00",
+            "baseline_probability_home": 0.56986496,
+            "scenario_probability_home": 0.56986496,
+            "scenario_probability_away": 0.43013504,
+            "probability_delta_home_percentage_points": -0.0,
+            "adjusted_goal_expectations": {
+              "home": 3.3987621354958986,
+              "away": 2.94640522875817
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "model": "outcome-only-206-rest-lineup-scenario-v1",
+        "probability_status": "research_experimental_not_official"
+      },
+      {
+        "game_id": "2026020329",
+        "home": "VGK",
+        "away": "VAN",
+        "start_utc": "2026-11-16T02:00:00Z",
+        "status": "experimental_forecast",
+        "ml": {
+          "home": 0.56862475,
+          "away": 0.43137525
+        },
+        "rt": {
+          "home": 0.46763225293650096,
+          "draw": 0.2380069222778752,
+          "away": 0.29436082478562386
+        },
+        "home_plus3": 0.32634748095183996,
+        "away_plus3": 0.19900840770976677,
+        "first_to_plus3": {
+          "home": 0.3122069607664887,
+          "away": 0.1921290557180873,
+          "none": 0.495663983515424
+        },
+        "home_win_ml": 0.56862475,
+        "away_win_ml": 0.43137525,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 1,
+            "away_rest_days": 1,
+            "rest_differential_days": 0,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.0,
+            "source_as_of_utc": "2026-11-15T20:14:14.570447+00:00",
+            "probability_before": 0.56862475,
+            "probability_after": 0.56862475,
+            "probability_delta_percentage_points": 0.0
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-15T20:14:25.582513+00:00",
+            "baseline_probability_home": 0.56862475,
+            "scenario_probability_home": 0.56862475,
+            "scenario_probability_away": 0.43137525,
+            "probability_delta_home_percentage_points": -0.0,
+            "adjusted_goal_expectations": {
+              "home": 3.0679027675680013,
+              "away": 2.645363408521303
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "model": "outcome-only-206-rest-lineup-scenario-v1",
+        "probability_status": "research_experimental_not_official"
+      },
+      {
+        "game_id": "2026020330",
+        "home": "SJS",
+        "away": "NSH",
+        "start_utc": "2026-11-16T02:00:00Z",
+        "status": "experimental_forecast",
+        "ml": {
+          "home": 0.52921145,
+          "away": 0.47078855
+        },
+        "rt": {
+          "home": 0.40858769216978175,
+          "draw": 0.229568587777543,
+          "away": 0.3618437200526753
+        },
+        "home_plus3": 0.24503392224686216,
+        "away_plus3": 0.22301754296066417,
+        "first_to_plus3": {
+          "home": 0.25118338291602404,
+          "away": 0.22359405681923528,
+          "none": 0.5252225602647407
+        },
+        "home_win_ml": 0.52921145,
+        "away_win_ml": 0.47078855,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 0,
+            "away_rest_days": 1,
+            "rest_differential_days": -1,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": -0.06,
+            "source_as_of_utc": "2026-11-15T20:14:14.570447+00:00",
+            "probability_before": 0.54412963,
+            "probability_after": 0.52921145,
+            "probability_delta_percentage_points": -1.4918
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-15T20:14:25.582513+00:00",
+            "baseline_probability_home": 0.52921145,
+            "scenario_probability_home": 0.52921145,
+            "scenario_probability_away": 0.47078855,
+            "probability_delta_home_percentage_points": -0.0,
+            "adjusted_goal_expectations": {
+              "home": 3.2694907391977024,
+              "away": 3.0809900625690108
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "model": "outcome-only-206-rest-lineup-scenario-v1",
+        "probability_status": "research_experimental_not_official"
+      }
+    ],
+    "official": false,
+    "odds_used": false,
+    "limitations": [
+      "Outcome-only research baseline, not validated full NHL model",
+      "No goalie-conditioned A/B probabilities",
+      "RT includes regulation draw",
+      "home_plus3 and away_plus3 are not complementary events",
+      "First-to-+3 includes neither team",
+      "Rest adjusts the ML market only when both prior fixtures are confirmed completed; missing rest leaves that probability unchanged",
+      "Lineup availability can adjust ML only as an unvalidated conditional scenario when both team exposures are complete and pregame; goalie, travel, officials and special teams are not incorporated"
+    ]
+  },
+  "slate_sha256": "773bc807a5ec6d6e990ca5bc610f946e20d06508b5a70551d9697f045719d3d1",
+  "official": false
+}
