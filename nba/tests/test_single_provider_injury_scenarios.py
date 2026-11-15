@@ -2,7 +2,7 @@ import unittest
 
 from nba.injury_probability import _eligible_out_claims, _eligible_uncertain_claims
 from nba.injury_source_reconciliation import normalize_status
-from nba.injury_source_fallback import parse_cbs
+from nba.injury_status_text import extract_status_candidate
 
 
 class TrustedProviderInjuryScenarioTests(unittest.TestCase):
@@ -37,17 +37,12 @@ class TrustedProviderInjuryScenarioTests(unittest.TestCase):
         self.assertEqual(accepted[0]["scenario_status"], "questionable")
         self.assertEqual(accepted[0]["accepted_source_class"], "single_provider_conditional_claim")
 
-    def test_game_time_decision_is_questionable_and_cbs_out_text_is_parsed(self):
-        html = """<table><thead><tr><th>Player</th><th>Position</th><th>Updated</th>
-        <th>Injury</th><th>Injury Status</th></tr></thead><tbody>
-        <tr><td>Jamal Cain</td><td>SF</td><td>Thu, Nov 12</td><td>Shoulder</td>
-        <td>Game Time Decision</td></tr>
-        <tr><td>Paolo Banchero</td><td>PF</td><td>Sat, Oct 24</td><td>Ankle</td>
-        <td>Expected to be out until at least Nov 22</td></tr></tbody></table>"""
-        rows = parse_cbs(html, {}, "2026-11-13T15:00:00+00:00")
-        by_player = {row["player_candidate"]: row["status_candidate"] for row in rows}
-        self.assertEqual(normalize_status(by_player["Jamal Cain"]), "questionable")
-        self.assertEqual(normalize_status(by_player["Paolo Banchero"]), "out")
+    def test_game_time_decision_and_expected_out_text_are_parsed(self):
+        game_time = extract_status_candidate("Game Time Decision")
+        expected_out = extract_status_candidate("Expected to be out until at least Nov 22")
+        self.assertEqual(normalize_status(game_time), "questionable")
+        self.assertEqual(normalize_status(expected_out), "out")
+        self.assertIsNone(extract_status_candidate("No injury update"))
 
 
 if __name__ == "__main__":
