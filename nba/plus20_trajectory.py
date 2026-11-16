@@ -48,12 +48,12 @@ def _period_clock(play):
 def _clock_seconds(value):
     if not isinstance(value, str):
         return None
-    match = re.fullmatch(r"\\s*(\\d{1,2}):(\\d{2})\\s*", value)
+    match = re.fullmatch(r"\s*(\d{1,2}):(\d{2})\s*", value)
     if match:
         minutes, seconds = int(match.group(1)), int(match.group(2))
         if seconds < 60:
             return minutes * 60 + seconds
-    match = re.fullmatch(r"PT(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?", value)
+    match = re.fullmatch(r"PT(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?", value)
     if match:
         return float(match.group(1) or 0) * 60 + float(match.group(2) or 0)
     return None
