@@ -11,6 +11,41 @@ from team_identity import canonical
 from lineup_source_cascade import cascade,markdown
 URL="https://www.rotowire.com/basketball/nba-lineups.php"
 UA="BeatBetano/1.0 (pregame lineup evidence; contact via repository)"
+def parse_market_contexts(html,snapshot,observed):
+ """Extract attributed market/referee information for display only."""
+ try:
+  from bs4 import BeautifulSoup
+ except ImportError:
+  return {}
+ soup=BeautifulSoup(html,"html.parser")
+ fixtures={frozenset((canonical(g["home_team"]),canonical(g["away_team"]))):g for g in snapshot["predictions"]}
+ output={}
+ for box in soup.select(".lineup"):
+  codes=[x.get_text(" ",strip=True).upper() for x in box.select(".lineup__abbr")]
+  codes=[x for x in codes if re.fullmatch("[A-Z]{2,4}",x)]
+  if len(codes)!=2 or codes[0]==codes[1]:continue
+  game=fixtures.get(frozenset(canonical(x) for x in codes))
+  if not game:continue
+  team_by_code={canonical(t):t for t in (game["home_team"],game["away_team"])}
+  text=re.sub(r"\s+"," ",box.get_text(" ",strip=True))
+  moneyline=re.search(r"\bLINE\s+([A-Z]{2,4})\s+([+-]\d{2,5})\b",text,re.I)
+  spread=re.search(r"\bSPREAD\s+([A-Z]{2,4})\s+([+-]\d+(?:\.\d+)?)\b",text,re.I)
+  total=re.search(r"\bO/U\s+(\d+(?:\.\d+)?)\s*Pts\b",text,re.I)
+  refs=re.search(r"\bReferees:\s*(.+?)\s+LINE\b",text,re.I)
+  referees=[]
+  if refs:
+   referees=[re.sub(r"\s+"," ",name).strip() for name in re.split(r"\s*,\s*",refs.group(1)) if name.strip()][:3]
+  def team_for(match):
+   return team_by_code.get(canonical(match.group(1))) if match else None
+  ml_team=team_for(moneyline);spread_team=team_for(spread)
+  output[str(game["game_id"])]={
+   "source_provider":"rotowire","source_url":URL,"observed_at_utc":observed,
+   "display_only":True,"model_input":False,
+   "moneyline":{"team":ml_team,"american_odds":int(moneyline.group(2))} if ml_team else None,
+   "spread":{"team":spread_team,"points":float(spread.group(2))} if spread_team else None,
+   "total_points":float(total.group(1)) if total else None,"referees":referees}
+ return output
+
 def parse_rotowire(html,snapshot,observed):
  try:
   from bs4 import BeautifulSoup
@@ -89,15 +124,17 @@ def parse_rotowire(html,snapshot,observed):
  return candidates,errors
 def collect(snapshot,session=None,observed=None):
  observed=observed or datetime.now(timezone.utc).isoformat()
- candidates=[];errors=[]
+ candidates=[];errors=[];market_contexts={}
  try:
   res=(session or requests.Session()).get(URL,headers={"User-Agent":UA},timeout=12)
   res.raise_for_status()
   candidates,errors=parse_rotowire(res.text,snapshot,observed)
+  market_contexts=parse_market_contexts(res.text,snapshot,observed)
  except requests.RequestException as e:
   errors.append({"provider":"rotowire","error":type(e).__name__})
  sources={"candidates":candidates}
  result=cascade(snapshot,sources,observed_at_utc=observed)
+ result["market_contexts"]=market_contexts
  result["fetch_url"]=URL;result["fetch_errors"]=errors
  result["fetched_candidates"]=len(candidates)
  result["notes"]="RotoWire is third-party evidence, not league-confirmed; selectors are validated fail-closed, may yield no data."
