@@ -64,7 +64,7 @@ def parse_boxscore(payload,game,observed_at):
                     col=next((columns[name] for name in names if name in columns),None)
                     raw=stats[col] if col is not None and col<len(stats) else None
                     if isinstance(raw,int) and raw>=0:numeric[key]=raw
-                    elif isinstance(raw,str) and re.fullmatch(r"\\d+",raw.strip()):numeric[key]=int(raw)
+                    elif isinstance(raw,str) and re.fullmatch(r"\d+",raw.strip()):numeric[key]=int(raw)
                     else:numeric[key]=None
                 pair_columns={"field_goals":("FG","FGM-A","FIELD GOALS"),
                               "three_points":("3PT","3P","3PT FG"),
@@ -72,14 +72,14 @@ def parse_boxscore(payload,game,observed_at):
                 for prefix,names in pair_columns.items():
                     col=next((columns[name] for name in names if name in columns),None)
                     raw=stats[col] if col is not None and col<len(stats) else None
-                    match=re.fullmatch(r"\\s*(\\d+)\\s*[-–]\\s*(\\d+)\\s*",str(raw)) if raw is not None else None
+                    match=re.fullmatch(r"\s*(\d+)\s*[-–]\s*(\d+)\s*",str(raw)) if raw is not None else None
                     numeric[prefix+"_made"]=int(match.group(1)) if match else None
                     numeric[prefix+"_attempted"]=int(match.group(2)) if match else None
                 plus_col=next((columns[name] for name in ("+/-","PLUS/MINUS","PLUS MINUS") if name in columns),None)
                 plus_raw=stats[plus_col] if plus_col is not None and plus_col<len(stats) else None
                 if type(plus_raw) is int:
                     numeric["plus_minus"]=plus_raw
-                elif isinstance(plus_raw,str) and re.fullmatch(r"[+-]?\\d+",plus_raw.strip()):
+                elif isinstance(plus_raw,str) and re.fullmatch(r"[+-]?\d+",plus_raw.strip()):
                     numeric["plus_minus"]=int(plus_raw)
                 else:
                     numeric["plus_minus"]=None
