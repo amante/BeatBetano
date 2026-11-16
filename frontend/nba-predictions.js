@@ -297,7 +297,7 @@
    const state=g.outcome?"Final":g.source_state==="in"?"En juego al último corte":g.source_status==="STATUS_FINAL"?"Final · cierre emparejado pendiente":g.source_status==="STATUS_POSTPONED"?"Aplazado":g.source_status==="STATUS_CANCELED"?"Cancelado":g.status.includes("review")?"Requiere revisión":Date.now()>=Date.parse(g.tipoff_utc)?"Sin actualización posterior al inicio":"Por comenzar";
    const matchData={sport:"nba",id:g.game_id,away:g.away_team,home:g.home_team,start_utc:g.tipoff_utc,status:g.source_status||g.status,completed:Boolean(g.outcome),away_score:g.outcome?.away_points,home_score:g.outcome?.home_points};
    const calendarRow=window.PulsoCalendar?.makeMatchRow(matchData,{sport:"nba",stateText:state});
-   if(calendarRow)calendarRow.dataset.gameId=String(g.game_id);
+   if(calendarRow?.dataset)calendarRow.dataset.gameId=String(g.game_id);
    if(agenda)agenda.append(calendarRow||el("p",teamName(g.away_team)+" — "+teamName(g.home_team)+" · "+local(g.tipoff_utc)+" · "+state));
    card.dataset.gameId=String(g.game_id);
    card.append(el("h3",teamName(g.away_team)+" — "+teamName(g.home_team)));
