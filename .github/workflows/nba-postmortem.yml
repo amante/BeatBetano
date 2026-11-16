@@ -89,6 +89,23 @@ jobs:
         if: ${{ steps.settled_fixtures.outputs.has_games == 'true' }}
         run: |
           python nba/player_game_history.py --history results/nba/settlement/settled_fixtures.json --output results/nba/settlement/player_boxscores.json
+      - name: Compare frozen injury and replacement scenarios with the full slate
+        if: ${{ steps.settled_fixtures.outputs.has_games == 'true' && hashFiles('results/nba/settlement/input/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/settlement/input/prospective/injury_probability.json') != '' && hashFiles('results/nba/settlement/input/prospective/pregame_module_context.json') != '' && hashFiles('results/nba/settlement/player_boxscores.json') != '' }}
+        env:
+          SOURCE_RUN: ${{ env.PREGAME_RUN }}
+        run: |
+          python nba/injury_replacement_postmortem.py --snapshot results/nba/settlement/input/prospective/snapshot_module_freeze.json --injury results/nba/settlement/input/prospective/injury_probability.json --module-context results/nba/settlement/input/prospective/pregame_module_context.json --boxscores results/nba/settlement/player_boxscores.json --settled results/nba/settlement/postmortem.json --output results/nba/settlement/injury_replacement_audit.json
+          mkdir -p nba/learning/injury_replacement/audits
+          cp results/nba/settlement/injury_replacement_audit.json "nba/learning/injury_replacement/audits/run-${SOURCE_RUN}.json"
+      - name: Preserve full-slate injury and replacement audit
+        if: ${{ hashFiles('results/nba/settlement/injury_replacement_audit.json') != '' }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f "nba/learning/injury_replacement/audits/run-${PREGAME_RUN}.json"
+          if ! git diff --cached --quiet; then git commit -m 'data(nba): archive full-slate injury replacement audit'; fi
+          git pull --rebase origin main
+          git push origin HEAD:main
       - name: Join pregame injury states to actual player participation
         if: ${{ steps.settled_fixtures.outputs.has_games == 'true' && hashFiles('results/nba/settlement/input/prospective/injury_status_observations.json') != '' && hashFiles('results/nba/settlement/player_boxscores.json') != '' }}
         run: |
@@ -114,5 +131,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nba-postmortem-${{ github.run_id }}
-          path: results/nba/settlement/postmortem.json
+          path: |
+            results/nba/settlement/postmortem.json
+            results/nba/settlement/injury_replacement_audit.json
           retention-days: 90
