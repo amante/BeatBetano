@@ -104,6 +104,22 @@ jobs:
         if: ${{ steps.settled_fixtures.outputs.has_games == 'true' }}
         run: |
           python nba/player_game_history.py --history results/nba/settlement/settled_fixtures.json --output results/nba/settlement/player_boxscores.json
+      - name: Measure supporting-cast creation, shooting and defense proxies
+        if: ${{ steps.settled_fixtures.outputs.has_games == 'true' && hashFiles('results/nba/settlement/input/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/settlement/input/prospective/pregame_module_context.json') != '' && hashFiles('results/nba/settlement/player_boxscores.json') != '' }}
+        env:
+          AUDIT_RUN_ID: ${{ github.run_id }}
+        run: |
+          python nba/supporting_cast_postmortem.py --snapshot results/nba/settlement/input/prospective/snapshot_module_freeze.json --module-context results/nba/settlement/input/prospective/pregame_module_context.json --settled results/nba/settlement/postmortem.json --boxscores results/nba/settlement/player_boxscores.json --output results/nba/settlement/supporting_cast_audit.json
+          mkdir -p nba/learning/supporting_cast
+          cp results/nba/settlement/supporting_cast_audit.json "nba/learning/supporting_cast/run-${AUDIT_RUN_ID}.json"
+          cp results/nba/settlement/supporting_cast_audit.json nba/learning/supporting_cast/latest.json
+          cat results/nba/settlement/supporting_cast_audit.json | python -c 'import json,sys; d=json.load(sys.stdin); print("Supporting-cast games:",d["settled_games"],"with both boxscores:",d["games_with_both_boxscores"],"probabilities changed:",d["model_probabilities_modified"])' >> "$GITHUB_STEP_SUMMARY"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f "nba/learning/supporting_cast/run-${AUDIT_RUN_ID}.json" nba/learning/supporting_cast/latest.json
+          if ! git diff --cached --quiet; then git commit -m 'data(nba): archive supporting cast postmortem'; fi
+          git pull --rebase origin main
+          git push origin HEAD:main
       - name: Compare frozen injury and replacement scenarios with the full slate
         if: ${{ steps.settled_fixtures.outputs.has_games == 'true' && hashFiles('results/nba/settlement/input/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/settlement/input/prospective/injury_probability.json') != '' && hashFiles('results/nba/settlement/input/prospective/pregame_module_context.json') != '' && hashFiles('results/nba/settlement/player_boxscores.json') != '' }}
         env:
@@ -150,4 +166,5 @@ jobs:
             results/nba/settlement/postmortem.json
             results/nba/settlement/injury_replacement_audit.json
             results/nba/settlement/team_confidence_diagnostic.json
+            results/nba/settlement/supporting_cast_audit.json
           retention-days: 90
