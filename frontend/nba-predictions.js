@@ -115,7 +115,19 @@
    for(const child of [...row.childNodes])summary.append(child);
    details.append(summary);
    const content=el("div",undefined,"nba-game-disclosure__content");
-   content.append(el("p",runTitle+(runMeta?" · "+runMeta:""),"nba-game-disclosure__run-meta"));
+   const columns=el("div",undefined,"nba-game-disclosure__columns");
+   const lineupPanel=el("section",undefined,"nba-game-disclosure__panel nba-game-disclosure__lineup-panel");
+   lineupPanel.append(el("h4","Alineaciones y bajas"));
+   const evidence=root.querySelector('.nba-forward-game[data-game-id="'+gameId+'"]');
+   if(evidence){
+    evidence.querySelector("h3")?.remove();
+    evidence.className="nba-game-disclosure__section nba-game-disclosure__evidence";
+    evidence.querySelectorAll("details").forEach(item=>item.open=true);
+    lineupPanel.append(evidence);
+   }else lineupPanel.append(el("p","Sin información de alineaciones o disponibilidad para este partido.","nba-game-disclosure__empty"));
+   const runPanel=el("section",undefined,"nba-game-disclosure__panel nba-game-disclosure__run-panel");
+   runPanel.append(el("h4","Corrida y probabilidades"));
+   if(runTitle||runMeta)runPanel.append(el("p",runTitle+(runMeta?" · "+runMeta:""),"nba-game-disclosure__run-meta"));
    const simulation=root.querySelector('.nba-current-run__game[data-game-id="'+gameId+'"]');
    if(simulation){
     if(simulation.dataset&&typeof summary.querySelector==="function"){
@@ -131,16 +143,10 @@
     simulation.querySelector("h4")?.remove();
     simulation.className="nba-game-disclosure__section nba-game-disclosure__simulation";
     simulation.querySelectorAll("details").forEach(item=>item.open=true);
-    content.append(el("h4","Simulación y probabilidades"),simulation);
-   }
-   const evidence=root.querySelector('.nba-forward-game[data-game-id="'+gameId+'"]');
-   if(evidence){
-    evidence.querySelector("h3")?.remove();
-    evidence.className="nba-game-disclosure__section nba-game-disclosure__evidence";
-    evidence.querySelectorAll("details").forEach(item=>item.open=true);
-    content.append(el("h4","Alineaciones, disponibilidad y evidencia"),evidence);
-   }
-   if(!simulation&&!evidence)content.append(el("p","No hay detalle de simulación publicado para este partido."));
+    runPanel.append(simulation);
+   }else runPanel.append(el("p","No hay una corrida publicada para este partido.","nba-game-disclosure__empty"));
+   columns.append(lineupPanel,runPanel);
+   content.append(columns);
    details.append(content);
    row.replaceWith(details);
   }
