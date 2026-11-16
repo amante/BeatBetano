@@ -91,6 +91,16 @@ def _team_scenario(scenario, team):
         return row
     return (scenario.get("teams") or {}).get(team, {})
 
+def _published_injury_candidate(scenario):
+    """Mirror publication selection while retaining both evidence paths."""
+    multi = scenario.get("multi_source_scenario")
+    if (isinstance(multi, dict) and multi.get("status") == "research_scenario"
+            and (multi.get("secondary_provider_out_count", 0) > 0
+                 or multi.get("secondary_consensus_out_count", 0) > 0)):
+        return multi, "secondary_provider_out"
+    return scenario, "official_only_or_base"
+
+
 
 def _player_audit(player_id, name, claim, out_item, change, actual):
     claims = claim.get("claims", []) if claim else []
@@ -171,12 +181,14 @@ def build(snapshot, injury_adjustment, module_context, boxscores, settled=None):
         if settled_ids is not None and gid not in settled_ids:
             continue
         scenario = scenarios[gid]
+        multi_source = scenario.get("multi_source_scenario")
+        selected_scenario, selected_source = _published_injury_candidate(scenario)
         context = module_context.get("games", {}).get(gid, {})
         claims = claims_by_team(context)
         starters = lineup_starters(context)
         teams = {}
         for team in (fixture["home_team"], fixture["away_team"]):
-            team_scenario = _team_scenario(scenario, team)
+            team_scenario = _team_scenario(selected_scenario, team)
             accepted = team_scenario.get("accepted_out_players", [])
             predicted_out = {str(row.get("player_id")): row for row in accepted if row.get("player_id")}
             allocation = team_scenario.get("minute_redistribution") or {}
@@ -221,12 +233,23 @@ def build(snapshot, injury_adjustment, module_context, boxscores, settled=None):
             "tipoff_utc": fixture["tipoff_utc"],
             "pregame_prediction_as_of_utc": snapshot["created_at_utc"],
             "baseline_home_probability": fixture.get("hybrid_p_home"),
-            "injury_scenario_status": scenario.get("status"),
-            "injury_scenario_reason": scenario.get("reason"),
+            "injury_scenario_status": selected_scenario.get("status"),
+            "injury_scenario_reason": selected_scenario.get("reason"),
+            "injury_scenario_source": selected_source,
+            "official_only_scenario_status": scenario.get("status"),
+            "official_only_scenario_reason": scenario.get("reason"),
+            "official_only_home_probability": scenario.get("injury_adjusted_home_probability"),
+            "multi_source_scenario_status": multi_source.get("status") if isinstance(multi_source, dict) else "unavailable",
+            "multi_source_scenario_reason": multi_source.get("reason") if isinstance(multi_source, dict) else None,
+            "multi_source_home_probability": multi_source.get("injury_adjusted_home_probability") if isinstance(multi_source, dict) else None,
+            "multi_source_probability_delta_pp": multi_source.get("home_probability_delta_pp") if isinstance(multi_source, dict) else None,
+            "secondary_provider_out_count": multi_source.get("secondary_provider_out_count", 0) if isinstance(multi_source, dict) else 0,
+            "secondary_consensus_out_count": multi_source.get("secondary_consensus_out_count", 0) if isinstance(multi_source, dict) else 0,
+            "uncertain_status_probability_range": multi_source.get("uncertain_status_probability_range") if isinstance(multi_source, dict) else None,
             "player_boxscore_status": "available" if actual_for_game else "unavailable_for_settled_game",
             "actual_player_rows": len(actual_for_game),
-            "injury_adjusted_home_probability": scenario.get("injury_adjusted_home_probability"),
-            "home_probability_delta_pp": scenario.get("home_probability_delta_pp"),
+            "injury_adjusted_home_probability": selected_scenario.get("injury_adjusted_home_probability"),
+            "home_probability_delta_pp": selected_scenario.get("home_probability_delta_pp"),
             "calibrated": False,
             "production_approved": False,
             "teams": teams,
@@ -272,6 +295,13 @@ def main():
         "completed_games_audited": len(report["games"]),
         "games_with_experimental_injury_probability": sum(
             row.get("injury_scenario_status") == "research_scenario" for row in report["games"]
+        ),
+        "games_using_secondary_provider_out": sum(
+            row.get("injury_scenario_source") == "secondary_provider_out" for row in report["games"]
+        ),
+        "games_with_uncertain_status_range": sum(
+            (row.get("uncertain_status_probability_range") or {}).get("status") == "conditional_probability_range"
+            for row in report["games"]
         ),
         "model_probabilities_modified": False,
     }
