@@ -68,3 +68,11 @@
 .nba-game-disclosure .nba-match-probability.is-experimental{border-color:#d8ad55;background:linear-gradient(135deg,rgba(160,111,38,.25),rgba(93,79,48,.28));color:#ffe2a1}
 @media(max-width:700px){.nba-game-disclosure .nba-match-probability{min-width:42px;padding:5px 7px;font-size:12px}}
 @media(max-width:420px){.nba-game-disclosure .nba-match-probability{min-width:38px;padding:4px 5px;font-size:11px}}
+
+/* Two-column NBA match detail: lineup evidence beside run output. */
+.nba-game-disclosure__columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.nba-game-disclosure__panel{min-width:0;padding:14px;border:1px solid #294b63;border-radius:12px;background:linear-gradient(160deg,#102d43,#0d2639)}
+.nba-game-disclosure__panel>h4{margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid #294b63;color:#71e1f2;font-size:14px}
+.nba-game-disclosure__run-meta{margin:0 0 12px;color:#9db8c8;font-size:11px;line-height:1.5}
+.nba-game-disclosure__empty{margin:0;color:#b8cfdb;font-size:12px;line-height:1.5}
+@media(max-width:760px){.nba-game-disclosure__columns{grid-template-columns:minmax(0,1fr)}.nba-game-disclosure__panel{padding:12px}}
