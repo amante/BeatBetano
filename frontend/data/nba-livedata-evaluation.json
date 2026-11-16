@@ -1,10 +1,10 @@
 {
-  "as_of_utc": "2026-11-15T16:20:56.026113+00:00",
+  "as_of_utc": "2026-11-16T01:00:23.389613+00:00",
   "model_version": "NBA_LIVEDATA_TEAM_ML_RESEARCH_V1",
   "selection": "first_pregame_candidate_per_game",
   "observed_fixtures": 51,
   "candidate_fixtures": 37,
-  "pending_results": 8,
+  "pending_results": 4,
   "result_errors": [],
   "scored_games": [
     {
@@ -238,18 +238,50 @@
       "livedata_home": 0.669879,
       "emitted_at_utc": "2026-11-14T15:48:21.382091+00:00",
       "research_sha256": "9e54051ea8ba51e61565911c6ef917483f2429673ed3fbb95b2e2401abd67606"
+    },
+    {
+      "game_id": "401909985",
+      "outcome_home": 1,
+      "hybrid_home": 0.8256605876633487,
+      "livedata_home": 0.72652,
+      "emitted_at_utc": "2026-11-15T16:20:55.011001+00:00",
+      "research_sha256": "fe036e21f56fc8ae34368c39242fe0e512c991bbca6c950c8c8bf7045e211b0a"
+    },
+    {
+      "game_id": "401909986",
+      "outcome_home": 0,
+      "hybrid_home": 0.35522966436045267,
+      "livedata_home": 0.391898,
+      "emitted_at_utc": "2026-11-15T16:20:55.011001+00:00",
+      "research_sha256": "fe036e21f56fc8ae34368c39242fe0e512c991bbca6c950c8c8bf7045e211b0a"
+    },
+    {
+      "game_id": "401909987",
+      "outcome_home": 1,
+      "hybrid_home": 0.5775515711826176,
+      "livedata_home": 0.569488,
+      "emitted_at_utc": "2026-11-15T16:20:55.011001+00:00",
+      "research_sha256": "fe036e21f56fc8ae34368c39242fe0e512c991bbca6c950c8c8bf7045e211b0a"
+    },
+    {
+      "game_id": "401909988",
+      "outcome_home": 0,
+      "hybrid_home": 0.1318448349295089,
+      "livedata_home": 0.1447,
+      "emitted_at_utc": "2026-11-15T16:20:55.011001+00:00",
+      "research_sha256": "fe036e21f56fc8ae34368c39242fe0e512c991bbca6c950c8c8bf7045e211b0a"
     }
   ],
   "metrics": {
     "hybrid": {
-      "n": 29,
-      "brier": 0.20767796793473484,
-      "log_loss": 0.5964254430866621,
+      "n": 33,
+      "brier": 0.1931845197197183,
+      "log_loss": 0.5641549334281899,
       "calibration": [
         {
           "bin": 1,
-          "n": 2,
-          "mean_probability": 0.17491708374238985,
+          "n": 3,
+          "mean_probability": 0.16055966747142955,
           "observed_rate": 0.0
         },
         {
@@ -260,9 +292,9 @@
         },
         {
           "bin": 3,
-          "n": 5,
-          "mean_probability": 0.351315023631894,
-          "observed_rate": 0.2
+          "n": 6,
+          "mean_probability": 0.3519674637533205,
+          "observed_rate": 0.16666666666666666
         },
         {
           "bin": 4,
@@ -272,9 +304,9 @@
         },
         {
           "bin": 5,
-          "n": 1,
-          "mean_probability": 0.5036656194014959,
-          "observed_rate": 0.0
+          "n": 2,
+          "mean_probability": 0.5406085952920567,
+          "observed_rate": 0.5
         },
         {
           "bin": 6,
@@ -290,8 +322,8 @@
         },
         {
           "bin": 8,
-          "n": 2,
-          "mean_probability": 0.8513324155864246,
+          "n": 3,
+          "mean_probability": 0.842775139612066,
           "observed_rate": 1.0
         },
         {
@@ -303,14 +335,14 @@
       ]
     },
     "livedata": {
-      "n": 29,
-      "brier": 0.20935060239396555,
-      "log_loss": 0.6018732205899431,
+      "n": 33,
+      "brier": 0.19714610589009093,
+      "log_loss": 0.5754710870898575,
       "calibration": [
         {
           "bin": 1,
-          "n": 2,
-          "mean_probability": 0.174376,
+          "n": 3,
+          "mean_probability": 0.164484,
           "observed_rate": 0.0
         },
         {
@@ -321,15 +353,21 @@
         },
         {
           "bin": 3,
-          "n": 8,
-          "mean_probability": 0.3385395,
-          "observed_rate": 0.5
+          "n": 9,
+          "mean_probability": 0.3444682222222222,
+          "observed_rate": 0.4444444444444444
         },
         {
           "bin": 4,
           "n": 4,
           "mean_probability": 0.42584025000000003,
           "observed_rate": 0.0
+        },
+        {
+          "bin": 5,
+          "n": 1,
+          "mean_probability": 0.569488,
+          "observed_rate": 1.0
         },
         {
           "bin": 6,
@@ -339,8 +377,8 @@
         },
         {
           "bin": 7,
-          "n": 4,
-          "mean_probability": 0.74157925,
+          "n": 5,
+          "mean_probability": 0.7385674,
           "observed_rate": 1.0
         },
         {
@@ -353,7 +391,7 @@
     }
   },
   "delta_livedata_minus_hybrid": {
-    "brier": 0.0016726344592307152,
-    "log_loss": 0.0054477775032809594
+    "brier": 0.003961586170372622,
+    "log_loss": 0.011316153661667605
   }
 }
