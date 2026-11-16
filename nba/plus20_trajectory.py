@@ -7,13 +7,14 @@ import argparse
 import hashlib
 import json
 import math
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
 
 
-PBP_URL = "https://cdn.nba.com/static/json/liveData/playbyplay/playbyplay_{game_id}.json"
+PBP_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event={game_id}"
 
 
 def number_score(value):
@@ -28,35 +29,81 @@ def _lead_side(margin):
     return 1 if margin > 0 else -1 if margin < 0 else 0
 
 
+def _period_clock(play):
+    period = play.get("period")
+    if isinstance(period, dict):
+        period = period.get("number")
+    try:
+        period = int(period)
+    except (TypeError, ValueError):
+        period = None
+    clock = play.get("clock")
+    if isinstance(clock, dict):
+        clock = clock.get("displayValue")
+    if not isinstance(clock, str):
+        clock = None
+    return period, clock
+
+
+def _clock_seconds(value):
+    if not isinstance(value, str):
+        return None
+    match = re.fullmatch(r"\\s*(\\d{1,2}):(\\d{2})\\s*", value)
+    if match:
+        minutes, seconds = int(match.group(1)), int(match.group(2))
+        if seconds < 60:
+            return minutes * 60 + seconds
+    match = re.fullmatch(r"PT(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?", value)
+    if match:
+        return float(match.group(1) or 0) * 60 + float(match.group(2) or 0)
+    return None
+
+
 def parse_game(payload, fixture, outcome_home, content_sha256, fetched_at_utc):
-    game = payload.get("game") if isinstance(payload, dict) else None
-    game_id = str(game.get("gameId", "")) if isinstance(game, dict) else ""
-    actions = game.get("actions") if isinstance(game, dict) else None
-    if game_id != str(fixture["game_id"]):
+    header = payload.get("header", {}) if isinstance(payload, dict) else {}
+    competitions = header.get("competitions", []) if isinstance(header, dict) else []
+    if not competitions or str(competitions[0].get("id")) != str(fixture["game_id"]):
         raise ValueError("play_by_play_game_id_mismatch")
-    if not isinstance(actions, list) or len(actions) < 2:
-        raise ValueError("play_by_play_actions_missing")
+    competitors = competitions[0].get("competitors", [])
+    final_scores = {}
+    for competitor in competitors:
+        side = competitor.get("homeAway")
+        score = number_score(competitor.get("score"))
+        if side in ("home", "away") and score is not None:
+            final_scores[side] = score
+    if set(final_scores) != {"home", "away"}:
+        raise ValueError("official_final_scores_missing")
+
+    plays = payload.get("plays")
+    if not isinstance(plays, list):
+        nested = payload.get("playByPlay") or {}
+        plays = nested.get("plays") if isinstance(nested, dict) else None
+    if not isinstance(plays, list) or len(plays) < 2:
+        raise ValueError("play_by_play_plays_missing")
+
+    indexed = list(enumerate(plays))
+    parsed_clocks = [_period_clock(play) for play in plays if isinstance(play, dict)]
+    if len(parsed_clocks) == len(plays) and all(period is not None and _clock_seconds(clock) is not None for period, clock in parsed_clocks):
+        indexed.sort(key=lambda pair: (
+            _period_clock(pair[1])[0],
+            -_clock_seconds(_period_clock(pair[1])[1]),
+            pair[0],
+        ))
 
     home_score = away_score = 0
-    max_home = {"points": 0, "period": None, "clock": None, "action_number": None}
-    max_away = {"points": 0, "period": None, "clock": None, "action_number": None}
+    max_home = {"points": 0, "period": None, "clock": None, "play_id": None}
+    max_away = {"points": 0, "period": None, "clock": None, "play_id": None}
     first_home_20 = None
     first_away_20 = None
     previous_nonzero_sign = 0
     lead_changes = 0
     score_observations = 0
-    previous_action_number = -1
 
-    for index, action in enumerate(actions):
+    for index, action in indexed:
         if not isinstance(action, dict):
             continue
-        number = action.get("actionNumber")
-        if type(number) is int:
-            if number < previous_action_number:
-                raise ValueError("play_by_play_actions_not_chronological")
-            previous_action_number = number
-        next_home = number_score(action.get("scoreHome"))
-        next_away = number_score(action.get("scoreAway"))
+        next_home = number_score(action.get("homeScore", action.get("scoreHome")))
+        next_away = number_score(action.get("awayScore", action.get("scoreAway")))
         if next_home is not None:
             home_score = next_home
         if next_away is not None:
@@ -66,9 +113,9 @@ def parse_game(payload, fixture, outcome_home, content_sha256, fetched_at_utc):
         score_observations += 1
         margin = home_score - away_score
         sign = _lead_side(margin)
-        period = action.get("period") if type(action.get("period")) is int else None
-        clock = action.get("clock") if isinstance(action.get("clock"), str) else None
-        point = {"period": period, "clock": clock, "action_number": number if type(number) is int else index}
+        period, clock = _period_clock(action)
+        point = {"period": period, "clock": clock,
+                 "play_id": str(action.get("id", action.get("sequenceNumber", index)))}
         if margin > max_home["points"]:
             max_home = {"points": margin, **point}
         if -margin > max_away["points"]:
@@ -84,6 +131,8 @@ def parse_game(payload, fixture, outcome_home, content_sha256, fetched_at_utc):
 
     if score_observations < 2:
         raise ValueError("play_by_play_score_path_incomplete")
+    if (home_score, away_score) != (final_scores["home"], final_scores["away"]):
+        raise ValueError("play_by_play_score_path_does_not_match_final_box")
     if home_score == away_score:
         raise ValueError("play_by_play_final_tie_unresolved")
     actual_home = int(home_score > away_score)
@@ -94,7 +143,7 @@ def parse_game(payload, fixture, outcome_home, content_sha256, fetched_at_utc):
         "home_team": fixture["home_team"],
         "away_team": fixture["away_team"],
         "tipoff_utc": fixture["tipoff_utc"],
-        "play_by_play_status": "verified_against_settled_winner",
+        "play_by_play_status": "verified_against_settled_score",
         "final_score": {"home": home_score, "away": away_score},
         "max_home_lead": max_home,
         "max_away_lead": max_away,
@@ -103,12 +152,11 @@ def parse_game(payload, fixture, outcome_home, content_sha256, fetched_at_utc):
         "first_away_plus20": first_away_20,
         "lead_changes": lead_changes,
         "score_observations": score_observations,
-        "play_actions": len(actions),
+        "play_events": len(plays),
         "source_url": PBP_URL.format(game_id=fixture["game_id"]),
         "source_sha256": content_sha256,
         "fetched_at_utc": fetched_at_utc,
     }
-
 
 def collect(snapshot, settled, session=None):
     fixtures = {str(row["game_id"]): row for row in snapshot.get("predictions", [])}
