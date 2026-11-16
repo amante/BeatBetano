@@ -102,7 +102,7 @@
   details.append(body);return details;
  }
  function consolidateGamePanels(){
-  if(!agenda)return;
+  if(!agenda||typeof root.querySelector!=="function"||typeof agenda.querySelectorAll!=="function")return;
   const runSection=root.querySelector(".nba-current-run");
   const runTitle=runSection?.querySelector(":scope > h3")?.textContent||"Simulación NBA";
   const runMeta=runSection?.querySelector(":scope > p")?.textContent||"";
