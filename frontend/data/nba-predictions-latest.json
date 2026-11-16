@@ -19862,5 +19862,28 @@
   "availability_and_lineups_included": true,
   "modules_change_probabilities": true,
   "research_scenarios_affect_probabilities": 9,
-  "source": "frozen_nba_prospective_snapshot"
+  "source": "frozen_nba_prospective_snapshot",
+  "injury_status_calibration": {
+    "schema_version": 1,
+    "kind": "nba_injury_status_empirical_summary",
+    "groups": [
+      {
+        "source": "ESPN",
+        "status": "questionable",
+        "source_type": "provider_injury_report",
+        "observations": 12,
+        "played": 11,
+        "did_not_play": 1,
+        "played_rate": 0.9166666666666666,
+        "played_rate_wilson_95": [
+          0.646120088858883,
+          0.9851349055950829
+        ],
+        "median_lead_time_hours": 9.702695563055556
+      }
+    ],
+    "unique_settled_source_claims": 12,
+    "fit_for_prediction_weights": false,
+    "note": "Descriptive pregame source-status versus actual participation. Rates are not causal effects or approved probability weights."
+  }
 }
