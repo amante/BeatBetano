@@ -6,7 +6,7 @@ from datetime import datetime
 def digest(value):
  return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
 
-def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adjustment=None,matchup_adjustment=None,player_stat_projections=None):
+def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adjustment=None,matchup_adjustment=None,player_stat_projections=None,score_audit=None):
  body={k:v for k,v in snapshot.items() if k!='content_sha256'}
  snapshot_digest=digest(body)
  if snapshot.get('content_sha256')!=snapshot_digest:raise ValueError('Snapshot digest mismatch')
@@ -48,6 +48,14 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
   matchup_games={str(row['game_id']):row for row in matchup_adjustment.get('games',[])}
   if len(matchup_games)!=len(matchup_adjustment.get('games',[])) or set(matchup_games)!={str(row['game_id']) for row in snapshot['predictions']}:
    raise ValueError('Matchup adjustment must cover the full slate exactly')
+ score_games={}
+ if score_audit:
+  score_body={k:v for k,v in score_audit.items() if k!='content_sha256'}
+  if score_audit.get('snapshot_sha256')!=snapshot_digest:raise ValueError('Score audit / snapshot mismatch')
+  score_games={str(item['game_id']):item for item in score_audit.get('games',[])}
+  if len(score_games)!=len(score_audit.get('games',[])) or set(score_games)!={str(row['game_id']) for row in snapshot['predictions']}:
+   raise ValueError('Score audit must cover the full slate exactly')
+  if score_audit.get('probability_adjustment_authorized') is not False:raise ValueError('Point projections cannot authorize probability changes')
  player_stat_games={}
  if player_stat_projections:
   projection_body={k:v for k,v in player_stat_projections.items() if k!='content_sha256'}
@@ -163,10 +171,14 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
    copy['probability_adjustments_applied']=applied
    copy['model_probability_calibrated']=False
   if player_stat_projections:copy['player_stat_projections']=player_stat_games[gid]
+  if score_audit:
+   score=score_games[gid];home_points=score.get('projected_home_points');away_points=score.get('projected_away_points')
+   if type(home_points) in (int,float) and type(away_points) in (int,float) and math.isfinite(home_points) and math.isfinite(away_points):
+    copy['point_projection']={'home_points':home_points,'away_points':away_points,'source':'probability_score_audit_exploratory_matchup_heuristic','created_at_utc':snapshot['created_at_utc'],'experimental':True,'calibrated':False,'model_probability_input':False}
   if module_context:copy['supporting_modules']=modules
   predictions.append(copy)
  research_count=sum(row.get('model_probability_status') in ('injury_adjusted_research_candidate','matchup_adjusted_research_candidate','travel_adjusted_research_candidate','combined_research_candidate') for row in predictions)
  return dict(kind='nba_pulso_research_publication_v1',run_id=str(run_id),snapshot_sha256=snapshot_digest,created_at_utc=snapshot['created_at_utc'],predictions=predictions,calibrated=False,availability_and_lineups_included=bool(module_context),modules_change_probabilities=research_count>0,research_scenarios_affect_probabilities=research_count,source='frozen_nba_prospective_snapshot')
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--snapshot',required=True);p.add_argument('--run-id',required=True);p.add_argument('--output',required=True);p.add_argument('--module-context');p.add_argument('--injury-adjustment');p.add_argument('--travel-adjustment');p.add_argument('--matchup-adjustment');p.add_argument('--player-stat-projections');a=p.parse_args();out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);context=json.loads(Path(a.module_context).read_text()) if a.module_context else None;adjustment=json.loads(Path(a.injury_adjustment).read_text()) if a.injury_adjustment else None;travel=json.loads(Path(a.travel_adjustment).read_text()) if a.travel_adjustment else None;matchup=json.loads(Path(a.matchup_adjustment).read_text()) if a.matchup_adjustment else None;stats=json.loads(Path(a.player_stat_projections).read_text()) if a.player_stat_projections else None;out.write_text(json.dumps(build(json.loads(Path(a.snapshot).read_text()),a.run_id,context,adjustment,travel,matchup,stats),indent=2,allow_nan=False))
+ p=argparse.ArgumentParser();p.add_argument('--snapshot',required=True);p.add_argument('--run-id',required=True);p.add_argument('--output',required=True);p.add_argument('--module-context');p.add_argument('--injury-adjustment');p.add_argument('--travel-adjustment');p.add_argument('--matchup-adjustment');p.add_argument('--player-stat-projections');p.add_argument('--score-audit');a=p.parse_args();out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);context=json.loads(Path(a.module_context).read_text()) if a.module_context else None;adjustment=json.loads(Path(a.injury_adjustment).read_text()) if a.injury_adjustment else None;travel=json.loads(Path(a.travel_adjustment).read_text()) if a.travel_adjustment else None;matchup=json.loads(Path(a.matchup_adjustment).read_text()) if a.matchup_adjustment else None;stats=json.loads(Path(a.player_stat_projections).read_text()) if a.player_stat_projections else None;score=json.loads(Path(a.score_audit).read_text()) if a.score_audit and Path(a.score_audit).is_file() else None;out.write_text(json.dumps(build(json.loads(Path(a.snapshot).read_text()),a.run_id,context,adjustment,travel,matchup,stats,score),indent=2,allow_nan=False))
