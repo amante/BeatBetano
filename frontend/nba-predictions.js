@@ -19,6 +19,7 @@
  if(typeof module!=="undefined")module.exports={validate,forDay,stale};
  if(typeof window==="undefined"||typeof document==="undefined")return;
  if(new URLSearchParams(location.search).get("sport")!=="nba")return;
+ window.PulsoNbaMatchExpansion=true;
  const root=document.getElementById("nba-results")||document.createElement("section");root.className="panel nba-results-panel";root.hidden=false;
  const agenda=document.getElementById("daily-results");
  if(!root.isConnected){const runner=document.getElementById("nba-runner");if(runner)runner.after(root);else document.querySelector("main").prepend(root);}
