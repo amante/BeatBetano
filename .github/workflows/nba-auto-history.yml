@@ -211,6 +211,7 @@ jobs:
         if: ${{ hashFiles('results/nba/prospective/injury_source_reconciliation.json') != '' && hashFiles('results/nba/player_game_history.json') != '' }}
         continue-on-error: true
         run: |
+          cp results/nba/player_game_history.json results/nba/player_game_history_injury_enriched.json
           python nba/injury_history_fallback.py --snapshot results/nba/prospective/snapshot.json --reconciliation results/nba/prospective/injury_source_reconciliation.json --player-history results/nba/player_game_history.json --output results/nba/player_game_history_injury_enriched.json
           python - <<'PY'
           import json
@@ -345,6 +346,7 @@ jobs:
             results/nba/hybrid_gate_audit.json
             results/nba/hybrid_gate_audit.md
             results/nba/player_game_history.json
+            results/nba/player_game_history_injury_enriched.json
             results/nba/player_history_coverage.json
             results/nba/prospective/snapshot.json
             results/nba/prospective/snapshot_module_freeze.json
