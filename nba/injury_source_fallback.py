@@ -18,7 +18,7 @@ CBS_URL = "https://www.cbssports.com/nba/injuries/"
 ESPN_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/injuries"
 ESPN_PAGE = "https://www.espn.com/nba/injuries"
 NBC_URL = "https://www.nbcsports.com/fantasy/basketball/player-news"
-STATUS = re.compile(r"\b(Out|Doubtful|Questionable|Probable|Available|Injured Reserve)\b", re.I)
+from injury_status_text import extract_status_candidate
 
 
 def utcnow():
@@ -42,14 +42,14 @@ def parse_cbs(html, snapshot, observed):
                 continue
             text = " | ".join(cells)
             status_text = cells[status_index] if status_index is not None and status_index < len(cells) else text
-            match = STATUS.search(status_text)
-            if not match:
+            status_candidate = extract_status_candidate(status_text)
+            if not status_candidate:
                 continue
             player = cells[player_index] if player_index is not None and player_index < len(cells) else None
             team = cells[team_index] if team_index is not None and team_index < len(cells) else None
             rows.append({"player_candidate": player, "team_candidate": team,
                          "raw_cells": cells, "raw_text": text,
-                         "status_candidate": match.group(1).title(),
+                         "status_candidate": status_candidate,
                          "source_url": CBS_URL, "observed_at_utc": observed,
                          "officially_verified": False})
     return rows
@@ -62,7 +62,8 @@ def parse_nbc(html, observed):
     for node in soup.find_all(["a", "article"]):
         title = node.get("aria-label") or node.get_text(" ", strip=True)
         title = re.sub(r"\s+", " ", title).strip()
-        if not title or len(title) < 12 or len(title) > 500 or not STATUS.search(title):
+        status_candidate = extract_status_candidate(title)
+        if not title or len(title) < 12 or len(title) > 500 or not status_candidate:
             continue
         href = node.get("href") if node.name == "a" else None
         link = urljoin(NBC_URL, href) if href else NBC_URL
@@ -70,7 +71,7 @@ def parse_nbc(html, observed):
             continue
         seen.add(title)
         items.append({"headline": title, "article_url": link, "source_url": NBC_URL,
-                      "observed_at_utc": observed, "status_candidate": STATUS.search(title).group(1).title(),
+                      "observed_at_utc": observed, "status_candidate": status_candidate,
                       "officially_verified": False, "editorial_claim": True})
     return items
 

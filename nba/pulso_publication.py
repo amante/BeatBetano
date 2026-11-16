@@ -76,7 +76,8 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
   if candidate:
    secondary=candidate.get('multi_source_scenario')
    if (isinstance(secondary,dict) and secondary.get('status')=='research_scenario'
-       and secondary.get('secondary_consensus_out_count',0)>0):
+       and (secondary.get('secondary_provider_out_count',0)>0
+            or secondary.get('secondary_consensus_out_count',0)>0)):
     candidate=secondary
     selected_secondary=True
   model_home=baseline
@@ -99,7 +100,7 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
     model_home=home;injury_applied=True
     official_used=(candidate.get('official_out_count',0)>0 or any(
      team.get('official_out_count',0)>0 for team in candidate.get('teams',{}).values()))
-    secondary_used=candidate.get('secondary_consensus_out_count',0)>0
+    secondary_used=(candidate.get('secondary_provider_out_count',0)>0 or candidate.get('secondary_consensus_out_count',0)>0)
     for key in ('official_injury_report','injury_source_reconciliation','rotation_minutes','availability_impact'):
      module=modules.get(key)
      if not isinstance(module,dict):continue
@@ -112,7 +113,7 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
       module['affects_prediction']=secondary_used;module['entered_prediction']=secondary_used
       if secondary_used:
        module['status']='research_scenario'
-       module['detail']='Bajas OUT con identidad validada y acuerdo entre CBS Sports y ESPN entran en el escenario experimental.'
+       module['detail']='Bajas OUT con identidad validada de CBS Sports o ESPN, sin desacuerdo entre fuentes, entran en el escenario experimental; se conserva si la evidencia vino de una o ambas fuentes.'
      else:
       module['status']='research_scenario';module['affects_prediction']=True;module['entered_prediction']=True
       module['detail']='La disponibilidad, minutos redistribuidos y producción histórica modifican este candidato; escenario experimental no calibrado.'
