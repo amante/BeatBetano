@@ -80,6 +80,22 @@ def team_observation(records,gid,team,tip,as_of):
             'lineup_status':lineup.get('lineup_status','unavailable') if lineup_ok else 'unavailable',
             'official_injury_status_verified':False,'probabilities_adjusted':False}
 
+def market_observation(records,gid,tip,as_of):
+    """Select the latest timestamped RotoWire market context for display only."""
+    selected=[]
+    for bundle in records:
+        context=bundle['lineups'].get('market_contexts',{}).get(str(gid))
+        if not isinstance(context,dict) or context.get('display_only') is not True or context.get('model_input') is not False:
+            continue
+        when=context.get('observed_at_utc')
+        try:timely=bool(when and utc(when)<utc(tip) and utc(when)<=utc(as_of))
+        except (ValueError,TypeError):timely=False
+        if timely and context.get('source_url') and context.get('source_provider'):
+            selected.append((utc(when),bundle,context))
+    if not selected:return None
+    _,bundle,context=max(selected,key=lambda item:(item[0],item[1]['ref']))
+    return {**context,'source_ref':bundle['ref']}
+
 
 def player_ledger(records,observed_games,as_of):
     rows=[];seen_games=set()
