@@ -66,7 +66,7 @@ def lineup_starters(module_game):
     teams = lineup.get("teams") or {}
     result = {}
     for team, row in teams.items():
-        starters = row.get("reported_starters", [])
+        starters = row.get("reported_starters", row.get("starters", []))
         result[team] = {
             "status": row.get("lineup_status") or row.get("status"),
             "source": row.get("lineup_source"),
@@ -198,7 +198,7 @@ def build(snapshot, injury_adjustment, module_context, boxscores, settled=None):
                 "accepted_out_players": accepted,
                 "unresolved_out_claims": team_scenario.get("unresolved_out_claims", []),
                 "minute_redistribution_status": allocation.get("status"),
-                "projected_lineup_status": team_starters.get("status"),
+                "projected_lineup_status": team_starters.get("status") or team_starters.get("lineup_status"),
                 "projected_starters": projected_starters,
                 "actual_starters": actual_starters,
                 "player_audits": audits,
