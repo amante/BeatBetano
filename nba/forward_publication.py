@@ -6,7 +6,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 from forward_ledger import load_observations,reconstruct
 from forward_capture import DEFAULT_PROTOCOL,verify_sources
-from sporting_archive import bundles,team_observation
+from sporting_archive import bundles,team_observation,market_observation
 from prospective import utc
 
 
@@ -15,7 +15,8 @@ def build(protocol,observations,records,as_of,evidence_errors=None):
     rows=[]
     for g in ledger['games']:
         teams={t:team_observation(records,g['game_id'],t,g['tipoff_utc'],as_of) for t in (g['home_team'],g['away_team'])}
-        rows.append({**g,'sporting':teams,'sporting_adjustment_applied':False,'plus20_home':None,'plus20_away':None})
+        market=market_observation(records,g['game_id'],g['tipoff_utc'],as_of)
+        rows.append({**g,'sporting':teams,'market_context':market,'sporting_adjustment_applied':False,'plus20_home':None,'plus20_away':None})
     coverage={}
     for obs in sorted(observations,key=lambda o:utc(o['created_at_utc'])):
         if utc(obs['created_at_utc'])>utc(as_of):continue

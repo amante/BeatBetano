@@ -19,6 +19,7 @@
  if(typeof module!=="undefined")module.exports={validate,forDay,stale};
  if(typeof window==="undefined"||typeof document==="undefined")return;
  if(new URLSearchParams(location.search).get("sport")!=="nba")return;
+ const marketPill=document.querySelector(".top-actions .pill");if(marketPill)marketPill.textContent="MERCADO SOLO INFO";
  window.PulsoNbaMatchExpansion=true;
  const root=document.getElementById("nba-results")||document.createElement("section");root.className="panel nba-results-panel";root.hidden=false;
  const agenda=document.getElementById("daily-results");
@@ -30,6 +31,45 @@
  const local=x=>new Date(x).toLocaleString("es-CL",{timeZone:"America/Santiago"});
  const teamNames={ATL:"Atlanta Hawks",BOS:"Boston Celtics",BKN:"Brooklyn Nets",CHA:"Charlotte Hornets",CHI:"Chicago Bulls",CLE:"Cleveland Cavaliers",DAL:"Dallas Mavericks",DEN:"Denver Nuggets",DET:"Detroit Pistons",GS:"Golden State Warriors",GSW:"Golden State Warriors",HOU:"Houston Rockets",IND:"Indiana Pacers",LAC:"LA Clippers",LAL:"Los Angeles Lakers",MEM:"Memphis Grizzlies",MIA:"Miami Heat",MIL:"Milwaukee Bucks",MIN:"Minnesota Timberwolves",NO:"New Orleans Pelicans",NOP:"New Orleans Pelicans",NY:"New York Knicks",NYK:"New York Knicks",OKC:"Oklahoma City Thunder",ORL:"Orlando Magic",PHI:"Philadelphia 76ers",PHX:"Phoenix Suns",POR:"Portland Trail Blazers",SA:"San Antonio Spurs",SAS:"San Antonio Spurs",SAC:"Sacramento Kings",TOR:"Toronto Raptors",UTA:"Utah Jazz",UTAH:"Utah Jazz",WAS:"Washington Wizards",WSH:"Washington Wizards"};
  const teamName=code=>teamNames[code]||code;
+ const validMarket=(m,tip)=>m&&m.source_provider==="rotowire"&&m.display_only===true&&m.model_input===false&&stamp(m.observed_at_utc)&&Date.parse(m.observed_at_utc)<Date.parse(tip);
+ const marketPanel=(game,modelHome=null,score=game.point_projection)=>{
+  const m=game.market_context;if(!validMarket(m,game.tipoff_utc))return null;
+  const lines=[],tags=[];
+  const probabilities=game.first_prediction||game;
+  const modelSide=modelHome!==null&&Number.isFinite(modelHome)?modelHome>.5?"home":modelHome<.5?"away":null:
+   probabilities.elo_p_home>.5&&probabilities.challenger_p_home>.5?"home":probabilities.elo_p_home<.5&&probabilities.challenger_p_home<.5?"away":null;
+  const ml=m.moneyline;
+  if(ml&&[game.home_team,game.away_team].includes(ml.team)&&Number.isFinite(ml.american_odds)&&ml.american_odds!==0){
+   const favorite=ml.american_odds<0?ml.team:(ml.team===game.home_team?game.away_team:game.home_team);
+   lines.push("ML: mercado favorece a "+teamName(favorite)+" · "+teamName(ml.team)+" "+(ml.american_odds>0?"+":"")+ml.american_odds);
+   const favoriteSide=favorite===game.home_team?"home":"away";
+   if(modelSide&&modelSide!==favoriteSide)tags.push("GOLDEN TICKET · ML");
+  }else lines.push("ML: sin dato");
+  if(m.spread&&[game.home_team,game.away_team].includes(m.spread.team)&&Number.isFinite(m.spread.points)){
+   lines.push("Spread: "+teamName(m.spread.team)+" "+(m.spread.points>0?"+":"")+m.spread.points.toFixed(1));
+   if(score&&Number.isFinite(score.home_points)&&Number.isFinite(score.away_points)){
+    const margin=m.spread.team===game.home_team?score.home_points-score.away_points:score.away_points-score.home_points;
+    if(margin+m.spread.points<0)tags.push("GOLDEN TICKET · SPREAD");
+   }
+  }else lines.push("Spread: sin dato");
+  if(Number.isFinite(m.total_points)){
+   lines.push("Total O/U: "+m.total_points.toFixed(1));
+   if(score&&Number.isFinite(score.home_points)&&Number.isFinite(score.away_points)){
+    const projected=score.home_points+score.away_points,diff=projected-m.total_points;
+    lines.push("Puntos proyectados: "+projected.toFixed(1)+" · "+(diff>0?"sobre":"bajo")+" la línea por "+Math.abs(diff).toFixed(1));
+    if(diff!==0)tags.push("GOLDEN TICKET · "+(diff>0?"OVER":"UNDER"));
+   }
+  }else lines.push("Total O/U: sin dato");
+  if(!score)lines.push("La proyección exploratoria de puntos aún no está disponible; no se genera señal de Spread ni Total.");
+  else lines.push("Proyección exploratoria, no calibrada y separada de los porcentajes del modelo.");
+  lines.push((Array.isArray(m.referees)&&m.referees.length?"Árbitros: "+m.referees.join(", "):"Árbitros: sin informar"),"RotoWire · captura "+local(m.observed_at_utc));
+  const details=el("details","");details.className="nba-market-context";
+  details.append(el("summary",tags.length?"Mercado informativo · "+tags.join(" · "):"Mercado informativo · ML / Spread / Total"));
+  if(tags.length)details.append(el("p",tags.join(" · "),"nba-golden-tags"));
+  for(const line of lines)details.append(el("p",line));
+  details.append(el("p","GOLDEN TICKET es solo una etiqueta informativa; no es una predicción ni recomendación y no altera las probabilidades."));
+  return details;
+ };
  const normalize=value=>Array.from(String(value||"").normalize("NFD")).filter(ch=>ch.codePointAt(0)<768||ch.codePointAt(0)>879).join("").toLowerCase().replaceAll(".","").trim().split(" ").filter(Boolean).join(" ");
  const rosterPlayer=(raw,players)=>{
   const key=normalize(raw),exact=players.find(p=>normalize(p.player)===key);if(exact)return exact;
@@ -194,6 +234,7 @@
      if(card.dataset&&Number.isFinite(modelHome)&&modelHome>0&&modelHome<1){card.dataset.awayProbability=String(1-modelHome);card.dataset.homeProbability=String(modelHome);card.dataset.probabilityLabel=adjustedStatus?"Candidato experimental no calibrado":"Modelo base";}
      card.append(el("p",(adjustedStatus?"Candidato experimental (no calibrado): ":"Modelo base: ")+teamName(prediction.away_team)+" "+((1-modelHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(modelHome*100).toFixed(1)+"%","nba-model-probability"));
     }
+    const market=marketPanel(prediction,modelHome,prediction.point_projection);if(market)card.append(market);
     if(adjustedStatus&&typeof baseline==="number")card.append(el("p","Referencia estadística sin ajustes: "+teamName(prediction.away_team)+" "+((1-baseline)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(baseline*100).toFixed(1)+"%"));
     if(injury?.status==="research_scenario"){
      const delta=Number(injury.home_probability_delta_pp||0);
@@ -332,6 +373,8 @@
    if(p&&!g.issues.length){
     card.append(el("p","Emisión pregame original: "+local(p.prediction_as_of_utc)));
     for(const [name,key] of [["Elo","elo_p_home"],["Challenger","challenger_p_home"]])card.append(el("p",name+": "+teamName(g.away_team)+" "+((1-p[key])*100).toFixed(1)+"% · "+teamName(g.home_team)+" "+(p[key]*100).toFixed(1)+"%"));
+    const latest=currentRun?.predictions.find(row=>String(row.game_id)===String(g.game_id));
+    if(!latest){const market=marketPanel(g,null);if(market)card.append(market);}
    }else card.append(el("p",g.issues.length?"PASS · La emisión original requiere revisión por cambios de la ficha.":"PASS · No hay una pareja de pronósticos pregame válida."));
    if(g.issues.length)card.append(el("p","El partido presenta cambios o conflictos de fuente; requiere revisión."));
    for(const team of [g.away_team,g.home_team]){
@@ -354,6 +397,7 @@
    const latest=await currentResponse.json();
    if(latest?.kind==="nba_pulso_research_publication_v1"&&stamp(latest.created_at_utc)&&Array.isArray(latest.predictions))currentRun=latest;
   }
+  if(currentRun){const marketById=new Map(x.games.map(game=>[String(game.game_id),game]));for(const prediction of currentRun.predictions){const game=marketById.get(String(prediction.game_id));if(game&&game.tipoff_utc===prediction.tipoff_utc&&validMarket(game.market_context,game.tipoff_utc))prediction.market_context=game.market_context;}}
 
  }catch{error="No se pudo cargar un registro NBA válido. No se muestran porcentajes de otra emisión.";}render();})()};
 })();
