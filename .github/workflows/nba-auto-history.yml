@@ -207,6 +207,18 @@ jobs:
         run: |
           python nba/injury_source_reconciliation.py --snapshot results/nba/prospective/snapshot.json --roster results/nba/prospective/current_roster_feed.json --complement results/nba/prospective/injury_source_complement.json --official results/nba/prospective/official_injury_source.json --output results/nba/prospective/injury_source_reconciliation.json --summary results/nba/prospective/injury_source_reconciliation.md
           cat results/nba/prospective/injury_source_reconciliation.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Fill NBA injured-player history from ESPN athlete gamelogs
+        if: ${{ hashFiles('results/nba/prospective/injury_source_reconciliation.json') != '' && hashFiles('results/nba/player_game_history.json') != '' }}
+        continue-on-error: true
+        run: |
+          python nba/injury_history_fallback.py --snapshot results/nba/prospective/snapshot.json --reconciliation results/nba/prospective/injury_source_reconciliation.json --player-history results/nba/player_game_history.json --output results/nba/player_game_history_injury_enriched.json
+          python - <<'PY'
+          import json
+          p='results/nba/player_game_history_injury_enriched.json'
+          x=json.load(open(p))
+          d=x.get('historical_fallback',{})
+          print('Injury history fallback:', d.get('claims_checked'), 'players checked;', d.get('rows_added'), 'prior box-score rows added')
+          PY
       - name: Collect per-game ESPN preview observations
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         continue-on-error: true
@@ -290,7 +302,7 @@ jobs:
       - name: Calculate experimental probabilities from confirmed NBA injuries
         if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
         run: |
-          python nba/injury_probability.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --history results/nba/history.json --player-history results/nba/player_game_history.json --output results/nba/prospective/injury_probability.json
+          python nba/injury_probability.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --history results/nba/history.json --player-history results/nba/player_game_history_injury_enriched.json --output results/nba/prospective/injury_probability.json
       - name: Freeze pregame doubtful and questionable observations for calibration
         if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
         run: |
