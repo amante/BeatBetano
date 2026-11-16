@@ -82,3 +82,11 @@
 .nba-player-stat-projections__badge{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px solid;border-radius:999px;font-size:10px;font-weight:850;line-height:1.2;letter-spacing:.035em;white-space:nowrap}
 .nba-player-stat-projections__badge--starter{border-color:#3ea88d;background:linear-gradient(135deg,rgba(33,151,121,.28),rgba(36,103,125,.28));color:#a9f2d8}
 .nba-player-stat-projections__badge--out{border-color:#b85960;background:linear-gradient(135deg,rgba(166,54,67,.27),rgba(111,47,59,.3));color:#ffb1b5}
+
+/* Keep NBA status badges beside player names with high contrast. */
+.nba-player-stat-projections__identity{display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:8px!important;min-width:0;margin:0 auto 4px 0}
+.nba-player-stat-projections__identity .nba-player-stat-projections__name{margin:0!important}
+.nba-player-stat-projections__identity .nba-player-stat-projections__badges{display:inline-flex!important;align-items:center!important;gap:6px!important;flex:0 0 auto!important;margin:0!important;vertical-align:middle}
+.nba-player-stat-projections__identity .nba-player-stat-projections__badge{display:inline-flex!important;align-items:center!important;gap:4px!important;padding:4px 9px!important;border:1px solid!important;border-radius:999px!important;font-size:10px!important;font-weight:900!important;line-height:1.2!important;letter-spacing:.04em!important;white-space:nowrap!important}
+.nba-player-stat-projections__identity .nba-player-stat-projections__badge--starter{border-color:#42d6a6!important;background:linear-gradient(135deg,#155842,#123e4b)!important;color:#9dffd4!important;box-shadow:0 0 0 1px rgba(66,214,166,.18),0 2px 8px rgba(19,178,125,.16)!important}
+.nba-player-stat-projections__identity .nba-player-stat-projections__badge--out{border-color:#ff6876!important;background:linear-gradient(135deg,#642633,#44212e)!important;color:#ffc0c4!important;box-shadow:0 0 0 1px rgba(255,104,118,.2),0 2px 8px rgba(193,45,69,.18)!important}
