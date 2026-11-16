@@ -23,7 +23,7 @@ def cycle(protocol,ledger_root,root,run_id,session=None):
         return {'status':'collection_window_closed','errors':[]}
     prefix=now.strftime('%Y%m%dT%H%M%S%fZ')+'-'+run_id
     report=reconstruct(load_observations(ledger_root),protocol,now.isoformat())
-    root=Path(root);errors=[];captured=None
+    root=Path(root);errors=[];source_gaps=[];captured=None
     future=[]
     for g in report['games']:
         if utc(g['tipoff_utc'])>now and g['source_state']=='pre':
@@ -37,7 +37,18 @@ def cycle(protocol,ledger_root,root,run_id,session=None):
         directory=root/'captures'/prefix
         try:
             captured=availability_capture(cohort,directory)
-            errors.extend({'scope':name,**error} for name,error in captured.get('errors',{}).items())
+            for name,error in captured.get('errors',{}).items():
+                entry={'scope':name,**error}
+                if name=='official_injury_report' and error.get('error_type') in (
+                    'HTTPError','ConnectionError','Timeout','RequestException','SSLError'
+                ):
+                    # The official index is frequently inaccessible to automated
+                    # runners. Preserve the gap, but let the independently
+                    # sourced observations and the rest of the cycle continue.
+                    entry.update({'status':'unavailable','severity':'warning'})
+                    source_gaps.append(entry)
+                else:
+                    errors.append(entry)
             for filename,key in (('roster.json','errors'),('lineups.json','fetch_errors')):
                 provider=json.loads((directory/filename).read_text())
                 errors.extend({'scope':filename,**e} for e in provider.get(key,[]))
@@ -81,6 +92,7 @@ def cycle(protocol,ledger_root,root,run_id,session=None):
     summary={'created_at_utc':finished,'run_id':run_id,'future_games_requested':len(future),
              'sporting_capture':captured,'actual_games_archived':len(actual),
              'player_game_rows':targets['available_player_game_rows'],'errors':errors+bundle_errors,
+             'source_gaps':source_gaps,
              'models_modified':False,'probability_adjustment_authorized':False}
     save_new(root/'runs'/(prefix+'.json'),summary)
     return summary
@@ -92,6 +104,7 @@ def main():
     p.add_argument('--run-id',required=True);a=p.parse_args()
     r=cycle(json.loads(Path(a.protocol).read_text()),a.ledger_root,a.root,a.run_id)
     print(json.dumps(r,indent=2))
-    if r['errors']:raise SystemExit('Sporting evidence gaps preserved for review')
+    fatal=[error for error in r['errors'] if error.get('severity')!='warning']
+    if fatal:raise SystemExit('Sporting evidence gaps preserved for review')
 
 if __name__=='__main__':main()
