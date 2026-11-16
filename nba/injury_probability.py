@@ -298,20 +298,24 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
     samples = _history_by_player(player_rows, team, emitted_at, tipoff)
     out_ids = {row["player_id"] for row in outs}
     losses = {field: 0.0 for field in STAT_FIELDS}
-    missing = []
+    missing_required = []
+    missing_descriptive = []
     for row in outs:
         historical = samples.get(row["player_id"])
         if not historical or historical.get("average_minutes") is None:
-            missing.append(row["player_id"] + ":minutes")
+            missing_required.append(row["player_id"] + ":minutes")
             continue
         for field in STAT_FIELDS:
             value = historical.get("per_game", {}).get(field)
             if value is None:
-                missing.append(row["player_id"] + ":" + field)
+                (missing_required if field == "points" else missing_descriptive).append(
+                    row["player_id"] + ":" + field)
             else:
                 losses[field] += float(value)
-    if missing:
-        return {"accepted_out_players": outs, "players_without_historical_minutes": sorted(set(missing))}, "missing_out_player_history"
+    if missing_required:
+        return {"accepted_out_players": outs,
+                "players_without_required_history": sorted(set(missing_required)),
+                "unsupported_descriptive_statistics": sorted(set(missing_descriptive))}, "missing_out_player_history"
 
     starter_evidence = estimate_starter_minutes(team, availability_team, lineup_record or {},
                                                 player_rows, emitted_at, tipoff)
@@ -320,6 +324,7 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
         return {"accepted_out_players": outs, "minute_redistribution": allocation}, "minute_redistribution_unavailable"
     added = {field: 0.0 for field in STAT_FIELDS}
     missing_recipients = []
+    missing_descriptive_recipients = []
     for change in allocation.get("changes", []):
         delta = change.get("minute_delta", 0)
         if delta <= 0:
@@ -331,18 +336,24 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
         for field in STAT_FIELDS:
             value = historical.get("per_game", {}).get(field)
             if value is None:
-                missing_recipients.append(str(change.get("player_id")) + ":" + field)
+                (missing_recipients if field == "points" else missing_descriptive_recipients).append(
+                    str(change.get("player_id")) + ":" + field)
             else:
                 added[field] += delta * float(value) / float(historical["average_minutes"])
     if missing_recipients:
         return {"accepted_out_players": outs, "minute_redistribution": allocation,
-                "replacement_history_gaps": sorted(set(missing_recipients))}, "incomplete_replacement_history"
+                "replacement_history_gaps": sorted(set(missing_recipients)),
+                "unsupported_descriptive_replacement_statistics":
+                    sorted(set(missing_descriptive_recipients))}, "incomplete_replacement_history"
     return {"status": "conditional_historical_rotation_scenario",
             "official_out_count": official_count, "secondary_consensus_out_count": secondary_count,
             "secondary_provider_out_count": provider_count,
             "accepted_out_players": outs, "historical_output_loss_per_game": losses,
             "historical_output_from_added_minutes_per_game": added,
             "estimated_net_points_per_game": added["points"] - losses["points"],
+            "unsupported_descriptive_statistics": sorted(set(missing_descriptive + missing_descriptive_recipients)),
+            "probability_uses": ["minutes", "points"],
+            "descriptive_metric_scope": ["points", "rebounds", "assists", "turnovers"],
             "minute_redistribution": allocation, "players_without_historical_minutes": [],
             "replacement_history_gaps": [], "source_agreement_rule": "NBA official OUT; otherwise a non-conflicting CBS Sports or ESPN provider OUT claim; two-provider agreement is retained when available",
             "conditional_uncertain_out_count": conditional_count,
