@@ -93,6 +93,7 @@
  if(typeof window==="undefined"||typeof document==="undefined")return;
  const sport=new URLSearchParams(location.search).get("sport");if(!sports.includes(sport))return;
  const root=document.getElementById("progressive-forecasts");if(!root)return;
+ if(sport==="nba"&&window.PulsoNbaMatchExpansion){root.hidden=true;if(root.style)root.style.display="none";return;}
  const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
  const local=x=>new Date(x).toLocaleString("es-CL",{timeZone:"America/Santiago",day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});
  const pct=x=>(100*x).toLocaleString("es-CL",{minimumFractionDigits:1,maximumFractionDigits:1})+" %";

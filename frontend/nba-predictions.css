@@ -48,3 +48,17 @@
 @media(max-width:560px){.nba-player-grid,.nba-starters-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nba-team-summary{padding:11px}.nba-team-body{padding:0 10px 10px}.nba-lineup-section{padding:10px}.nba-player-card{align-items:flex-start;flex-wrap:wrap}.nba-player-status{margin-left:30px}.nba-unknown-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .nba-injury-range{margin:10px 0;padding:10px 12px;border:1px solid #6b5934;border-radius:10px;background:#2b271e;color:#ffdc88;font-size:12px;line-height:1.5}
+
+/* NBA: one expandable match contains the full simulation and supporting evidence. */
+.nba-game-disclosure{margin:8px 0;border:1px solid #31556e;border-radius:14px;background:#10283b;overflow:hidden}
+.nba-game-disclosure>summary{list-style:none;cursor:pointer}
+.nba-game-disclosure>summary::-webkit-details-marker{display:none}
+.nba-game-disclosure>summary:after{content:"＋";display:grid;place-items:center;position:absolute;right:18px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:8px;background:#173e54;color:#66dff2;font-size:16px;font-weight:800}
+.nba-game-disclosure>summary{position:relative;padding-right:54px}
+.nba-game-disclosure[open]>summary:after{content:"−"}
+.nba-game-disclosure__content{padding:12px 16px 18px;border-top:1px solid #294b63}
+.nba-game-disclosure__run-meta{margin:0 0 12px;color:#9db8c8;font-size:11px}
+.nba-game-disclosure__content>h4{margin:16px 0 8px;color:#71e1f2;font-size:13px}
+.nba-game-disclosure__section{margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.nba-game-disclosure__section+.nba-game-disclosure__content>h4{border-top:1px solid #294b63}
+@media(max-width:560px){.nba-game-disclosure__content{padding:10px}.nba-game-disclosure>summary:after{right:10px}}
