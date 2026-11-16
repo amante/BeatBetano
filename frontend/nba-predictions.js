@@ -271,6 +271,10 @@
        const availability=availabilityLabels[player.availability_status]?" · "+availabilityLabels[player.availability_status]:"";
        const minuteBasis=player.minutes_source==="availability_adjusted_team_allocation"?"minutos ajustados por disponibilidad":"minutos históricos";
        const name=el("strong",player.player);name.className="nba-player-stat-projections__name";row.append(name);
+       const badges=el("span",undefined,"nba-player-stat-projections__badges");
+       if(player.role==="starter_listed_by_provider"){const badge=el("span","★ STARTER","nba-player-stat-projections__badge nba-player-stat-projections__badge--starter");badge.title="Titular listado por el proveedor";badge.setAttribute("aria-label","Titular listado por el proveedor");badges.append(badge);}
+       if(player.availability_status==="out"){const badge=el("span","✕ OUT","nba-player-stat-projections__badge nba-player-stat-projections__badge--out");badge.title="Baja reportada por la fuente";badge.setAttribute("aria-label","Baja reportada por la fuente");badges.append(badge);}
+       if(badges.childNodes.length)row.append(badges);
        const meta=el("span",role+availability+" · "+(player.projected_minutes===null?"min —":"min "+player.projected_minutes.toFixed(1))+" · "+minuteBasis+" · "+player.historical_games+" PJ");meta.className="nba-player-stat-projections__meta";row.append(meta);
        const metrics=el("div","");metrics.className="nba-player-stat-projections__metrics";
        for(const [key,label] of [["points_projection","PTS"],["rebounds_projection","REB"],["assists_projection","AST"]]){
