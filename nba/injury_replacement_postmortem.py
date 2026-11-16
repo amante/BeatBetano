@@ -47,19 +47,28 @@ def claims_by_team(module_game):
     teams = evidence.get("teams") or {}
     output = {}
     for team, entries in teams.items():
-        output[team] = {}
+        grouped = {}
         for entry in entries if isinstance(entries, list) else []:
             player_id = str(entry.get("player_id", ""))
             if not player_id:
                 continue
-            output[team][player_id] = {
-                "player": entry.get("player"),
-                "conflict": bool(entry.get("conflict")),
-                "status_agreement": entry.get("status_agreement"),
-                "claims": entry.get("claims", []),
-            }
+            item = grouped.setdefault(player_id, {"player": entry.get("player"), "claims": []})
+            if not item.get("player") and entry.get("player"):
+                item["player"] = entry["player"]
+            item["claims"].append({
+                "status": entry.get("status"),
+                "source_url": entry.get("source_url"),
+                "observed_at_utc": entry.get("observed_at_utc"),
+                "reported_at_utc": entry.get("reported_at_utc"),
+                "confidence": entry.get("confidence"),
+            })
+        output[team] = {}
+        for player_id, item in grouped.items():
+            statuses = {str(claim.get("status", "")).casefold() for claim in item["claims"] if claim.get("status")}
+            item["conflict"] = len(statuses) > 1
+            item["status_agreement"] = next(iter(statuses)) if len(statuses) == 1 else None
+            output[team][player_id] = item
     return output
-
 
 def lineup_starters(module_game):
     lineup = (module_game.get("starting_lineups") or {}).get("data") or {}
@@ -161,8 +170,6 @@ def build(snapshot, injury_adjustment, module_context, boxscores, settled=None):
         actual_for_game = {pid: row for (game_id, pid), row in actuals.items() if game_id == gid}
         if settled_ids is not None and gid not in settled_ids:
             continue
-        if not actual_for_game:
-            continue
         scenario = scenarios[gid]
         context = module_context.get("games", {}).get(gid, {})
         claims = claims_by_team(context)
@@ -216,6 +223,8 @@ def build(snapshot, injury_adjustment, module_context, boxscores, settled=None):
             "baseline_home_probability": fixture.get("hybrid_p_home"),
             "injury_scenario_status": scenario.get("status"),
             "injury_scenario_reason": scenario.get("reason"),
+            "player_boxscore_status": "available" if actual_for_game else "unavailable_for_settled_game",
+            "actual_player_rows": len(actual_for_game),
             "injury_adjusted_home_probability": scenario.get("injury_adjusted_home_probability"),
             "home_probability_delta_pp": scenario.get("home_probability_delta_pp"),
             "calibrated": False,
