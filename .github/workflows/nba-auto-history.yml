@@ -11,8 +11,8 @@ on:
         required: true
         type: string
       history_run_id:
-        description: 'Successful NBA prepare historical evidence workflow run ID for same game_date'
-        required: true
+        description: 'Optional successful prepare-history run ID; leave blank to build history in this run'
+        required: false
         type: string
       official_injury_report_url:
         description: 'Optional direct NBA-hosted injury PDF URL when the official index cannot be read'
@@ -41,7 +41,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     needs: tests
     runs-on: ubuntu-24.04
-    timeout-minutes: 28
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
