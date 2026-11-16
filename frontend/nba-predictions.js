@@ -118,6 +118,16 @@
    content.append(el("p",runTitle+(runMeta?" · "+runMeta:""),"nba-game-disclosure__run-meta"));
    const simulation=root.querySelector('.nba-current-run__game[data-game-id="'+gameId+'"]');
    if(simulation){
+    if(simulation.dataset&&typeof summary.querySelector==="function"){
+     const label=simulation.dataset.probabilityLabel||"Probabilidad del modelo";
+     for(const [side,key] of [["away","awayProbability"],["home","homeProbability"]]){
+      const team=summary.querySelector(".daily-team-"+side),value=Number(simulation.dataset[key]);
+      if(!team||!Number.isFinite(value)||value<=0||value>=1)continue;
+      const name=team.querySelector?.(".daily-team-name")?.textContent||team.textContent.trim();
+      const badge=document.createElement("span");badge.className="nba-match-probability"+(label.includes("experimental")?" is-experimental":"");badge.textContent=Math.round(value*100)+"%";
+      badge.title=label+": "+name+" "+(value*100).toFixed(1)+"%";badge.setAttribute("aria-label",label+": "+name+" "+(value*100).toFixed(1)+" por ciento");team.append(badge);
+     }
+    }
     simulation.querySelector("h4")?.remove();
     simulation.className="nba-game-disclosure__section nba-game-disclosure__simulation";
     simulation.querySelectorAll("details").forEach(item=>item.open=true);
@@ -174,7 +184,10 @@
     const baseline=prediction.statistical_baseline_p_home??prediction.hybrid_p_home;
     const modelHome=prediction.model_p_home??baseline;
     const adjustedStatus=["injury_adjusted_research_candidate","matchup_adjusted_research_candidate","travel_adjusted_research_candidate","combined_research_candidate"].includes(prediction.model_probability_status);
-    if(typeof modelHome==="number")card.append(el("p",(adjustedStatus?"Candidato experimental (no calibrado): ":"Modelo base: ")+teamName(prediction.away_team)+" "+((1-modelHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(modelHome*100).toFixed(1)+"%","nba-model-probability"));
+    if(typeof modelHome==="number"){
+     if(card.dataset&&Number.isFinite(modelHome)&&modelHome>0&&modelHome<1){card.dataset.awayProbability=String(1-modelHome);card.dataset.homeProbability=String(modelHome);card.dataset.probabilityLabel=adjustedStatus?"Candidato experimental no calibrado":"Modelo base";}
+     card.append(el("p",(adjustedStatus?"Candidato experimental (no calibrado): ":"Modelo base: ")+teamName(prediction.away_team)+" "+((1-modelHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(modelHome*100).toFixed(1)+"%","nba-model-probability"));
+    }
     if(adjustedStatus&&typeof baseline==="number")card.append(el("p","Referencia estadística sin ajustes: "+teamName(prediction.away_team)+" "+((1-baseline)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(baseline*100).toFixed(1)+"%"));
     if(injury?.status==="research_scenario"){
      const delta=Number(injury.home_probability_delta_pp||0);
