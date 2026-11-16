@@ -168,7 +168,7 @@
    const moduleNames={statistical_baseline:"Probabilidad estadística base",official_injury_report:"Informe oficial de lesiones",starting_lineups:"Quintetos titulares",player_matchups:"Cruces de jugadores",rotation_minutes:"Rotación y minutos",availability_impact:"Impacto de disponibilidad",travel_time_zones:"Viajes y zonas horarias"};
    const statusLabels={included:"Incluido en la predicción",available_not_used:"Datos recibidos; no entran en porcentajes",pending:"Pendiente de publicación o validación",failed:"Falló la consulta",research_scenario:"Afecta el candidato experimental"};
    for(const prediction of currentRows){
-    const card=el("article","");card.className="nba-current-run__game";card.dataset.gameId=String(prediction.game_id);
+    const card=el("article","");card.className="nba-current-run__game";if(card.dataset)card.dataset.gameId=String(prediction.game_id);
     card.append(el("h4",teamName(prediction.away_team)+" — "+teamName(prediction.home_team)));
     const injury=prediction.injury_probability_scenario;
     const baseline=prediction.statistical_baseline_p_home??prediction.hybrid_p_home;
@@ -299,7 +299,7 @@
    const calendarRow=window.PulsoCalendar?.makeMatchRow(matchData,{sport:"nba",stateText:state});
    if(calendarRow?.dataset)calendarRow.dataset.gameId=String(g.game_id);
    if(agenda)agenda.append(calendarRow||el("p",teamName(g.away_team)+" — "+teamName(g.home_team)+" · "+local(g.tipoff_utc)+" · "+state));
-   card.dataset.gameId=String(g.game_id);
+   if(card.dataset)card.dataset.gameId=String(g.game_id);
    card.append(el("h3",teamName(g.away_team)+" — "+teamName(g.home_team)));
    card.append(el("p",local(g.tipoff_utc)+" · "+state));
    if(g.outcome)card.append(el("p","Resultado final: "+g.outcome.away_points+" — "+g.outcome.home_points));
