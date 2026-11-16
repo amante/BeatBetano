@@ -34,6 +34,7 @@ def _players(value):
 
 
 def build(snapshot, module_context, player_history, roster_feed):
+
     snapshot_sha = snapshot.get("content_sha256")
     if not snapshot_sha or snapshot_sha != digest({k: v for k, v in snapshot.items() if k != "content_sha256"}):
         raise ValueError("Snapshot digest mismatch")
@@ -70,6 +71,10 @@ def build(snapshot, module_context, player_history, roster_feed):
         availability = rotation_module.get("availability_status", {}).get("teams", {})
         lineup_data = ctx.get("starting_lineups", {}).get("data", {}).get("teams", {})
         roster_game = roster_feed.get("games", {}).get(gid, {}).get("teams", {})
+        availability_impact = ctx.get("availability_impact", {})
+        conditional_scenario = (availability_impact.get("conditional_production_scenario") or {})
+        conditional_game = conditional_scenario.get("games", {}).get(gid, {})
+        injury_teams = conditional_game.get("teams", {})
         teams = {}
         for team in (fixture["away_team"], fixture["home_team"]):
             roster = roster_game.get(team, {})
@@ -87,6 +92,18 @@ def build(snapshot, module_context, player_history, roster_feed):
             joint_allocations = joint.get(team, {}).get("allocations")
             if not isinstance(joint_allocations, dict):
                 joint_allocations = {}
+            injury_team = injury_teams.get(team, {})
+            minute_redistribution = injury_team.get("minute_redistribution") or {}
+            changes = minute_redistribution.get("changes", [])
+            changes_by_id = {str(row.get("player_id")): row for row in changes
+                             if isinstance(row, dict) and row.get("player_id")}
+            accepted_out_ids = {str(row.get("player_id")) for row in injury_team.get("official_reported_players", [])
+                                if row.get("official_status") == "out" and row.get("player_id")}
+            scenario_valid = (
+                conditional_scenario.get("baseline_snapshot_sha256") == snapshot_sha
+                and minute_redistribution.get("status") == "conditional_historical_rotation_scenario"
+                and bool(changes_by_id)
+            )
             status_rows = availability.get(team, {}).get("players", [])
             status_by_id = {str(p.get("player_id")): p for p in status_rows if p.get("player_id")}
             status_by_name = {name_key(p.get("player")): p for p in status_rows if p.get("player")}
@@ -106,19 +123,39 @@ def build(snapshot, module_context, player_history, roster_feed):
                 availability_status = status_row.get("status", "unknown")
                 player_history_rows = history_by_player.get((team, str(hist.get("player_id"))), []) if hist else []
                 player_history_rows = sorted(player_history_rows, key=lambda row: stamp(row["tipoff_utc"]), reverse=True)[:10]
-                recent = player_history_rows[:5]
                 historical_minutes = hist.get("minutes_projection") if hist else None
-                minutes = joint_allocations.get(pid)
+                base_minutes = joint_allocations.get(pid)
                 minutes_source = "availability_adjusted_team_allocation"
-                if type(minutes) not in (int, float) or not math.isfinite(minutes) or minutes < 0:
-                    minutes = historical_minutes
+                if type(base_minutes) not in (int, float) or not math.isfinite(base_minutes) or base_minutes < 0:
+                    base_minutes = historical_minutes
                     minutes_source = "recent_historical_minutes_not_availability_adjusted"
-                if availability_status == "out":
+                change = changes_by_id.get(pid) if scenario_valid else None
+                change_base = change.get("baseline_minutes") if change else None
+                scenario_minutes = change.get("scenario_minutes") if change else None
+                change_valid = (type(change_base) in (int, float) and math.isfinite(change_base)
+                                and type(scenario_minutes) in (int, float) and math.isfinite(scenario_minutes)
+                                and change_base >= 0 and scenario_minutes >= 0)
+                if scenario_valid and change_valid:
+                    base_minutes = float(change_base)
+                    minutes = float(scenario_minutes)
+                    minutes_source = "injury_conditional_minute_redistribution"
+                    adjustment_status = "applied"
+                else:
+                    minutes = base_minutes
+                    adjustment_status = ("not_applied_missing_player_minutes"
+                                         if scenario_valid and availability_status == "out"
+                                         else "scenario_unavailable" if not scenario_valid
+                                         else "no_player_minute_change_in_scenario")
+                if availability_status == "out" and not (scenario_valid and change_valid):
                     minutes = None
                     minutes_source = "officially_reported_out"
                 elif type(minutes) not in (int, float) or not math.isfinite(minutes) or minutes <= 0:
                     minutes = None
-                    minutes_source = "insufficient_minutes_evidence"
+                    if not (scenario_valid and change_valid and minutes == 0):
+                        minutes_source = "insufficient_minutes_evidence"
+                # Zero minutes is a valid injury scenario for a confirmed OUT player.
+                if scenario_valid and change_valid and scenario_minutes == 0:
+                    minutes = 0.0
                 metrics = {}
                 for metric in ("points", "rebounds", "assists"):
                     sample = [row for row in player_history_rows
@@ -130,7 +167,13 @@ def build(snapshot, module_context, player_history, roster_feed):
                         weighted_minutes += float(row["minutes_played"]) * weight
                         weighted_stat += float(row[metric]) * weight
                     enough = len(sample) >= 3 and sum(float(row["minutes_played"]) for row in sample) >= 60
-                    metrics[metric + "_projection"] = round((weighted_stat / weighted_minutes) * minutes, 1) if enough and minutes and availability_status != "out" else None
+                    rate = weighted_stat / weighted_minutes if enough and weighted_minutes > 0 else None
+                    base_value = round(rate * base_minutes, 1) if rate is not None and base_minutes is not None else None
+                    adjusted_value = round(rate * minutes, 1) if rate is not None and minutes is not None else None
+                    metrics["baseline_" + metric + "_projection"] = base_value
+                    metrics["injury_adjusted_" + metric + "_projection"] = adjusted_value if adjustment_status == "applied" else None
+                    metrics["injury_delta_" + metric + "_projection"] = round(adjusted_value - base_value, 1) if adjusted_value is not None and base_value is not None and adjustment_status == "applied" else None
+                    metrics[metric + "_projection"] = adjusted_value if adjustment_status == "applied" else base_value
                     metrics[metric + "_sample_games"] = len(sample)
                 reason = None
                 if availability_status == "out":
@@ -147,6 +190,11 @@ def build(snapshot, module_context, player_history, roster_feed):
                     "projection_status": "unavailable" if reason == "reported_out" else "insufficient_data" if reason else "estimated",
                     "projection_reason": reason,
                     "projected_minutes": round(float(minutes), 1) if minutes is not None else None,
+                    "baseline_projected_minutes": round(float(base_minutes), 1) if base_minutes is not None else None,
+                    "injury_scenario_minutes": round(float(scenario_minutes), 1) if scenario_valid and change_valid else None,
+                    "injury_minute_delta": round(float(scenario_minutes) - float(change_base), 1) if scenario_valid and change_valid else None,
+                    "injury_adjustment_status": adjustment_status,
+                    "injury_adjustment_source": change.get("projection_method") if scenario_valid and change_valid else None,
                     "minutes_source": minutes_source,
                     "historical_games": len(player_history_rows),
                     **metrics,
@@ -160,6 +208,8 @@ def build(snapshot, module_context, player_history, roster_feed):
                 "roster_source": roster.get("source_url"),
                 "observed_at_utc": roster.get("observed_at_utc"),
                 "availability_adjusted_minutes": bool(joint_allocations),
+                "injury_projection_adjustment_status": ("available" if scenario_valid else "unavailable"),
+                "injury_projection_adjustment_reason": minute_redistribution.get("status") if not scenario_valid else None,
                 "players": projected,
                 "note": "Historical per-minute production multiplied by projected minutes; this is a statistical estimate, not a sportsbook line. Availability is incorporated only when the verified team allocation is available."
             }
@@ -170,7 +220,9 @@ def build(snapshot, module_context, player_history, roster_feed):
         "snapshot_sha256": snapshot_sha,
         "calibrated": False,
         "probabilities_adjusted": False,
-        "method": "recency_weighted_last_10_appearances_per_minute_x_projected_minutes",
+        "method": "recency_weighted_last_10_appearances_per_minute_x_baseline_or_injury_redistributed_minutes",
+        "injury_adjustment": {"status": "conditional_research_scenario", "calibrated": False,
+            "requires": "snapshot-matched conditional production scenario with player baseline and scenario minutes"},
         "minimum_sample": {"appearances_per_stat": 3, "observed_minutes_per_stat": 60},
         "games": games,
     }
