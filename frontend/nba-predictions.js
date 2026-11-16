@@ -100,6 +100,47 @@
   if(!s.official_injury_status_verified)body.append(el("p","El reporte oficial NBA de lesiones no está verificado en esta captura; los porcentajes no incorporan estas disponibilidades.","nba-source-warning"));
   details.append(body);return details;
  }
+ function consolidateGamePanels(){
+  if(!agenda)return;
+  const runSection=root.querySelector(".nba-current-run");
+  const runTitle=runSection?.querySelector(":scope > h3")?.textContent||"Simulación NBA";
+  const runMeta=runSection?.querySelector(":scope > p")?.textContent||"";
+  for(const row of [...agenda.querySelectorAll(".daily-match")]){
+   const gameId=String(row.dataset.gameId||"");
+   if(!gameId)continue;
+   const details=document.createElement("details");details.className="nba-game-disclosure";details.dataset.gameId=gameId;
+   const summary=document.createElement("summary");summary.className=row.className;
+   summary.setAttribute("aria-label","Desplegar simulación de "+row.textContent.trim());
+   for(const child of [...row.childNodes])summary.append(child);
+   details.append(summary);
+   const content=el("div",undefined,"nba-game-disclosure__content");
+   content.append(el("p",runTitle+(runMeta?" · "+runMeta:""),"nba-game-disclosure__run-meta"));
+   const simulation=root.querySelector('.nba-current-run__game[data-game-id="'+gameId+'"]');
+   if(simulation){
+    simulation.querySelector("h4")?.remove();
+    simulation.className="nba-game-disclosure__section nba-game-disclosure__simulation";
+    simulation.querySelectorAll("details").forEach(item=>item.open=true);
+    content.append(el("h4","Simulación y probabilidades"),simulation);
+   }
+   const evidence=root.querySelector('.nba-forward-game[data-game-id="'+gameId+'"]');
+   if(evidence){
+    evidence.querySelector("h3")?.remove();
+    evidence.className="nba-game-disclosure__section nba-game-disclosure__evidence";
+    evidence.querySelectorAll("details").forEach(item=>item.open=true);
+    content.append(el("h4","Alineaciones, disponibilidad y evidencia"),evidence);
+   }
+   if(!simulation&&!evidence)content.append(el("p","No hay detalle de simulación publicado para este partido."));
+   details.append(content);
+   row.replaceWith(details);
+  }
+  root.replaceChildren();
+  root.hidden=true;
+  root.style.display="none";
+  const progressive=document.getElementById("progressive-forecasts");
+  if(progressive){progressive.hidden=true;progressive.style.display="none";}
+  const playerStats=document.getElementById("nba-player-projections");
+  if(playerStats){playerStats.hidden=true;playerStats.style.display="none";}
+ }
  let data=null,currentRun=null,error="";
  function render(){
   root.replaceChildren(el("h2","Resultado de la última corrida NBA"));
@@ -126,7 +167,7 @@
    const moduleNames={statistical_baseline:"Probabilidad estadística base",official_injury_report:"Informe oficial de lesiones",starting_lineups:"Quintetos titulares",player_matchups:"Cruces de jugadores",rotation_minutes:"Rotación y minutos",availability_impact:"Impacto de disponibilidad",travel_time_zones:"Viajes y zonas horarias"};
    const statusLabels={included:"Incluido en la predicción",available_not_used:"Datos recibidos; no entran en porcentajes",pending:"Pendiente de publicación o validación",failed:"Falló la consulta",research_scenario:"Afecta el candidato experimental"};
    for(const prediction of currentRows){
-    const card=el("article","");card.className="nba-current-run__game";
+    const card=el("article","");card.className="nba-current-run__game";card.dataset.gameId=String(prediction.game_id);
     card.append(el("h4",teamName(prediction.away_team)+" — "+teamName(prediction.home_team)));
     const injury=prediction.injury_probability_scenario;
     const baseline=prediction.statistical_baseline_p_home??prediction.hybrid_p_home;
@@ -255,7 +296,9 @@
    const state=g.outcome?"Final":g.source_state==="in"?"En juego al último corte":g.source_status==="STATUS_FINAL"?"Final · cierre emparejado pendiente":g.source_status==="STATUS_POSTPONED"?"Aplazado":g.source_status==="STATUS_CANCELED"?"Cancelado":g.status.includes("review")?"Requiere revisión":Date.now()>=Date.parse(g.tipoff_utc)?"Sin actualización posterior al inicio":"Por comenzar";
    const matchData={sport:"nba",id:g.game_id,away:g.away_team,home:g.home_team,start_utc:g.tipoff_utc,status:g.source_status||g.status,completed:Boolean(g.outcome),away_score:g.outcome?.away_points,home_score:g.outcome?.home_points};
    const calendarRow=window.PulsoCalendar?.makeMatchRow(matchData,{sport:"nba",stateText:state});
+   if(calendarRow)calendarRow.dataset.gameId=String(g.game_id);
    if(agenda)agenda.append(calendarRow||el("p",teamName(g.away_team)+" — "+teamName(g.home_team)+" · "+local(g.tipoff_utc)+" · "+state));
+   card.dataset.gameId=String(g.game_id);
    card.append(el("h3",teamName(g.away_team)+" — "+teamName(g.home_team)));
    card.append(el("p",local(g.tipoff_utc)+" · "+state));
    if(g.outcome)card.append(el("p","Resultado final: "+g.outcome.away_points+" — "+g.outcome.home_points));
@@ -272,6 +315,7 @@
    }
    card.append(el("p","Modelo deportivo integrado y ventaja +20: PASS. "+(data.evaluation_status==="window_open_metrics_withheld"?"Validación prospectiva en curso.":"Ventana cerrada; falta la auditoría final.")));root.append(card);
   }
+  consolidateGamePanels();
  }
  document.getElementById("daily-date").addEventListener("change",render);render();
  window.PulsoNbaForward={ready:(async()=>{try{
