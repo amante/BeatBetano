@@ -17,13 +17,25 @@
   const status={out:"Baja reportada",questionable:"En duda",doubtful:"Dudoso",probable:"Probable",available:"Disponible según fuente",unknown:"Estado sin confirmar"}[player.availability_status]||"Estado sin confirmar";
   const minuteSource=player.minutes_source==="availability_adjusted_team_allocation"?"min ajustados":"min históricos";
   const minutes=typeof player.projected_minutes==="number"?player.projected_minutes.toFixed(1):"—";
-  const meta=node("span",role+" · "+status+" · "+minutes+" "+minuteSource+" · "+(player.historical_games||0)+" PJ","nba-player-stat-projections__meta");
+  const injuryLabel=player.injury_adjustment_status==="applied"?" · ajuste por bajas aplicado":player.injury_adjustment_status==="scenario_unavailable"?" · sin escenario de bajas":"";
+  const meta=node("span",role+" · "+status+" · "+minutes+" "+minuteSource+" · "+(player.historical_games||0)+" PJ"+injuryLabel,"nba-player-stat-projections__meta");
   row.append(meta);
   const metrics=node("div",undefined,"nba-player-stat-projections__metrics");
   for(const [key,label] of [["points_projection","PTS"],["rebounds_projection","REB"],["assists_projection","AST"]]){
    const sample=player[key.replace("_projection","_sample_games")];
-   metrics.append(node("span",label+" "+metric(player[key])+(sample?" · n="+sample:""),"nba-player-stat-projections__metric"));
+   const stat=key.replace("_projection","");
+   const base=player["baseline_"+stat+"_projection"];
+   const adjusted=player["injury_adjusted_"+stat+"_projection"];
+   const delta=player["injury_delta_"+stat+"_projection"];
+   let display=label+" "+metric(player[key]);
+   if(player.injury_adjustment_status==="applied"&&typeof adjusted==="number"&&typeof base==="number"){
+    const signed=typeof delta==="number"?(delta>0?"+":"")+delta.toFixed(1):"";
+    display=label+" "+metric(adjusted)+" · base "+metric(base)+(signed?" ("+signed+")":"");
+   }
+   metrics.append(node("span",display+(sample?" · n="+sample:""),"nba-player-stat-projections__metric"));
   }
+  if(player.injury_adjustment_status==="not_applied_missing_player_minutes")
+   row.append(node("span","Ajuste de lesiones pendiente: faltan minutos de redistribución para este jugador.","nba-player-projections-panel__message"));
   row.append(metrics);
   if(player.projection_status==="unavailable")row.append(node("span","Sin proyección · baja reportada","nba-player-stat-projections__notice"));
   else if(player.projection_reason==="insufficient_historical_sample")row.append(node("span","Muestra histórica insuficiente","nba-player-stat-projections__notice"));
@@ -39,7 +51,7 @@
   if(!feed){panel.append(node("p","Cargando las proyecciones publicadas…","nba-player-projections-panel__message"));return;}
   const selected=dateInput.value;
   const games=feed.predictions.filter(game=>day(game.tipoff_utc)===selected);
-  panel.append(node("p","Corrida #"+feed.run_id+" · publicada "+local(feed.created_at_utc)+". Estimaciones históricas por jugador; no son líneas de apuestas ni modifican el ganador del partido.","nba-player-projections-panel__note"));
+  panel.append(node("p","Corrida #"+feed.run_id+" · publicada "+local(feed.created_at_utc)+". PTS/REB/AST parten del historial por minuto; cuando el escenario prepartido tiene bajas y minutos redistribuidos, se muestra el valor ajustado junto a su base. Es una estimación experimental, no una línea de apuestas.","nba-player-projections-panel__note"));
   if(!games.length){panel.append(node("p","No hay partidos con proyecciones para la fecha seleccionada.","nba-player-projections-panel__message"));return;}
   let shown=0;
   for(const game of games){
