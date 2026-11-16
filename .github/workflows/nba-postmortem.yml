@@ -68,6 +68,21 @@ jobs:
           test -s results/nba/settlement/input/prospective/snapshot.json
           NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           python nba/settle_daily.py --snapshot results/nba/settlement/input/prospective/snapshot.json --as-of "$NOW" --output results/nba/settlement/postmortem.json
+      - name: Measure prospective team confidence against completed results
+        env:
+          AUDIT_RUN_ID: ${{ github.run_id }}
+        run: |
+          python nba/team_confidence_diagnostic.py --prediction-dir nba/learning/predictions --history frontend/data/history.json --settled results/nba/settlement/postmortem.json --output results/nba/settlement/team_confidence_diagnostic.json
+          mkdir -p nba/learning/team_confidence
+          cp results/nba/settlement/team_confidence_diagnostic.json "nba/learning/team_confidence/run-${AUDIT_RUN_ID}.json"
+          cp results/nba/settlement/team_confidence_diagnostic.json nba/learning/team_confidence/latest.json
+          cat results/nba/settlement/team_confidence_diagnostic.json | python -c 'import json,sys; d=json.load(sys.stdin); m=d["minnesota_diagnostic"]; print("Scored games:",d["scored_games"],"Minnesota games:",m["games"],"Conclusion:",m["conclusion"],"Coefficients changed:",m["coefficients_changed"])' >> "$GITHUB_STEP_SUMMARY"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f "nba/learning/team_confidence/run-${AUDIT_RUN_ID}.json" nba/learning/team_confidence/latest.json
+          if ! git diff --cached --quiet; then git commit -m 'data(nba): archive team confidence diagnostic'; fi
+          git pull --rebase origin main
+          git push origin HEAD:main
       - name: Fetch completed player participation for the frozen slate
         id: settled_fixtures
         if: ${{ hashFiles('results/nba/settlement/input/prospective/injury_status_observations.json') != '' }}
@@ -134,4 +149,5 @@ jobs:
           path: |
             results/nba/settlement/postmortem.json
             results/nba/settlement/injury_replacement_audit.json
+            results/nba/settlement/team_confidence_diagnostic.json
           retention-days: 90
