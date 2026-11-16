@@ -11,8 +11,8 @@ on:
         required: true
         type: string
       history_run_id:
-        description: 'Successful NBA prepare historical evidence workflow run ID for same game_date'
-        required: true
+        description: 'Optional successful prepare-history run ID; leave blank to build history in this run'
+        required: false
         type: string
       official_injury_report_url:
         description: 'Optional direct NBA-hosted injury PDF URL when the official index cannot be read'
@@ -41,7 +41,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     needs: tests
     runs-on: ubuntu-24.04
-    timeout-minutes: 28
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -66,7 +66,16 @@ jobs:
         run: |
           python nba/current_feed.py --date "$GAME_DATE" --timestamp "$HISTORY_TIME" --output results/nba/initial_scoreboard.json
           cat results/nba/initial_scoreboard.json | python -c 'import json,sys; x=json.load(sys.stdin); print("Initial pregame candidates:",len(x["future_fixtures"]))'
+      - name: Build historical evidence in this run
+        if: ${{ inputs.history_run_id == '' }}
+        env:
+          GAME_DATE: ${{ inputs.game_date }}
+        run: |
+          python nba/auto_history.py --date "$GAME_DATE" --timestamp "$HISTORY_TIME" --output results/nba/history.json --workdir results/nba/raw
+          python nba/player_game_history.py --history results/nba/history.json --limit 200 --cache-dir results/nba/raw/player-observations --output results/nba/player_game_history.json
+          python nba/capture_team_boxscores.py --history results/nba/history.json --limit 80 --cache-dir results/nba/raw/team-observations --output results/nba/team_boxscores.json
       - name: Download precomputed historical evidence
+        if: ${{ inputs.history_run_id != '' }}
         uses: actions/download-artifact@v7
         with:
           name: nba-prepared-${{ inputs.game_date }}
