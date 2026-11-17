@@ -296,6 +296,40 @@
      }
      card.append(evidence);
     }
+    const travelScenario=prediction.travel_probability_scenario;
+    const travelTeams=prediction.supporting_modules?.travel_time_zones?.data?.teams;
+    if(travelScenario||travelTeams){
+     const details=el("details","");details.className="nba-module-run-status";
+     details.append(el("summary","Descanso · B2B · viajes y husos horarios"));
+     const pathLabels={home_to_home:"local → local",home_to_road:"local → visita",road_to_home:"visita → local",road_to_road:"visita → visita"};
+     const showNumber=(value,digits=0)=>typeof value==="number"&&Number.isFinite(value)?value.toFixed(digits):"—";
+     for(const team of [prediction.away_team,prediction.home_team]){
+      const context=travelTeams?.[team];if(!context)continue;
+      const role=context.is_home?"Local":"Visita";
+      const b2b=context.is_back_to_back?"B2B":"Sin B2B";
+      const route=context.back_to_back_path?pathLabels[context.back_to_back_path]||context.back_to_back_path:null;
+      let line=teamName(team)+" · "+role+" · "+b2b;
+      line+=" · "+(context.rest_days===null||context.rest_days===undefined?"descanso sin historial":context.rest_days+" día"+(context.rest_days===1?"":"s")+" de descanso");
+      if(route)line+=" · "+route;
+      line+=" · viaje reciente "+showNumber(context.cumulative_travel_km_last_7_days)+" km";
+      if(context.timezone_shift_hours!==null&&context.timezone_shift_hours!==undefined){
+       const shift=context.timezone_shift_hours, direction=shift>0?"hacia el este":shift<0?"hacia el oeste":"sin cambio de huso";
+       line+=" · cambio horario "+(shift>0?"+":"")+showNumber(shift,1)+" h "+direction;
+      }
+      line+=" · partidos: "+showNumber(context.games_last_4_days)+"/4 días, "+showNumber(context.games_last_7_days)+"/7 días";
+      if(context.body_clock_tipoff_hour!==null&&context.body_clock_tipoff_hour!==undefined)line+=" · inicio según reloj previo "+showNumber(context.body_clock_tipoff_hour,1)+" h";
+      details.append(el("p",line,"nba-module-run-status__item"));
+     }
+     if(travelScenario?.status==="research_scenario"&&travelScenario.applied){
+      const probability=travelScenario.travel_adjusted_home_probability;
+      details.append(el("p","Candidato experimental del módulo: "+(typeof probability==="number"?(probability*100).toFixed(1)+"% para "+teamName(prediction.home_team):"porcentaje no disponible")+" · el ajuste superó el corte cronológico de esta ejecución; no está certificado.","nba-module-run-status__item nba-module-run-status__item--research_scenario"));
+     }else{
+      const reason=travelScenario?.status==="holdout_no_improvement"?"la validación no mejoró Brier y log loss":travelScenario?.status==="insufficient_chronological_sample"?"la muestra cronológica aún es insuficiente":"no hay evidencia suficiente";
+      details.append(el("p","Los datos de descanso y viaje se muestran como contexto; esta ejecución no aplicó un ajuste porcentual porque "+reason+".","nba-module-run-status__item nba-module-run-status__item--pending"));
+     }
+     details.append(el("p","B2B se estima con fechas locales y horas entre inicios; los kilómetros son una ruta geográfica aproximada, no el itinerario real del equipo."));
+     card.append(details);
+    }
     const playerStats=prediction.player_stat_projections;
     if(playerStats){
      const statsDetails=el("details","");statsDetails.className="nba-module-run-status nba-player-stat-projections";

@@ -1,9 +1,9 @@
-"""Chronological research estimate of NBA travel's incremental win effect.
+"""Chronological research estimate of NBA fatigue, rest and travel effects.
 
-The feature is fitted against pregame challenger probabilities on earlier
-games, then must improve both Brier score and log loss on a later holdout.
-It is never used when the point-in-time sample is too small or validation
-does not pass. No odds or post-tip information is consumed.
+The candidate includes rest/B2B, venue sequence, recent game load, travel
+distance, time-zone direction and body-clock tipoff hour. It is fitted against
+pregame Challenger probabilities and only applied if both Brier and log loss
+improve on a later chronological holdout. No odds or post-tip data are used.
 """
 import argparse
 import hashlib
@@ -11,11 +11,9 @@ import json
 import math
 from datetime import datetime, timezone
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
 from challenger import predict_challenger
-from team_identity import canonical
-from travel_context import VENUES, distance_km
+from travel_context import game_context
 
 MIN_TRAIN = 500
 MIN_HOLDOUT = 100
@@ -36,37 +34,91 @@ def digest(value):
     return hashlib.sha256(encoded).hexdigest()
 
 
+FEATURE_KEYS = (
+    "distance_imbalance_1000km",
+    "timezone_shift_imbalance_hours",
+    "cumulative_travel_imbalance_1000km",
+    "cumulative_timezone_shift_imbalance_hours",
+    "cumulative_absolute_timezone_imbalance_hours",
+    "body_clock_sin_imbalance",
+    "body_clock_cos_imbalance",
+    "distance_body_clock_sin_interaction",
+    "distance_body_clock_cos_interaction",
+    "back_to_back_imbalance",
+    "rested_vs_back_to_back_imbalance",
+    "games_last_4_days_imbalance",
+    "games_last_7_days_imbalance",
+    "home_b2b_after_home",
+    "home_b2b_after_road",
+    "away_b2b_after_home",
+    "away_b2b_after_road",
+)
+
+
 def _travel_rows(rows):
-    """Return pregame travel features, updating each team's venue after games."""
-    last_venue = {}
+    """Return pregame fatigue/travel features from strictly prior games."""
     features = []
-    for row in sorted(rows, key=lambda x: (utc(x["tipoff_utc"]), str(x["game_id"]))):
-        home, away = canonical(row["home_team"]), canonical(row["away_team"])
-        destination = VENUES.get(home)
-        current = {}
-        for team in (home, away):
-            origin = last_venue.get(team)
-            if destination is None or origin is None or origin not in VENUES:
-                current[team] = None
-                continue
-            origin_info = VENUES[origin]
-            distance = distance_km(origin_info, destination)
-            when = utc(row["tipoff_utc"])
-            origin_offset = when.astimezone(ZoneInfo(origin_info[2])).utcoffset()
-            destination_offset = when.astimezone(ZoneInfo(destination[2])).utcoffset()
-            shift = (destination_offset - origin_offset).total_seconds() / 3600
-            current[team] = (distance, shift)
-        if current.get(home) is not None and current.get(away) is not None:
+    seen = []
+    active_season = object()
+    ordered = sorted(rows, key=lambda x: (utc(x["tipoff_utc"]), str(x["game_id"])))
+    for row in ordered:
+        season = row.get("season")
+        if season != active_season:
+            seen = []
+            active_season = season
+        teams = game_context(row["home_team"], row["away_team"], row["tipoff_utc"], seen)
+        home = teams.get(row["home_team"], {})
+        away = teams.get(row["away_team"], {})
+        required = (
+            home.get("travel_distance_km"), away.get("travel_distance_km"),
+            home.get("timezone_shift_hours"), away.get("timezone_shift_hours"),
+            home.get("body_clock_tipoff_hour"), away.get("body_clock_tipoff_hour"),
+        )
+        if all(type(value) in (int, float) and math.isfinite(value) for value in required):
+            home_b2b = home.get("is_back_to_back") is True
+            away_b2b = away.get("is_back_to_back") is True
+            home_rest = home.get("rest_days")
+            away_rest = away.get("rest_days")
+            home_rest = home_rest if type(home_rest) is int else 0
+            away_rest = away_rest if type(away_rest) is int else 0
+            home_hour = math.tau * home["body_clock_tipoff_hour"] / 24.0
+            away_hour = math.tau * away["body_clock_tipoff_hour"] / 24.0
+            home_sin, away_sin = math.sin(home_hour), math.sin(away_hour)
+            home_cos, away_cos = math.cos(home_hour), math.cos(away_hour)
+            distance_imbalance = (away["travel_distance_km"] - home["travel_distance_km"]) / 1000.0
+            body_sin_imbalance = away_sin - home_sin
+            body_cos_imbalance = away_cos - home_cos
+            home_path = home.get("back_to_back_path")
+            away_path = away.get("back_to_back_path")
             features.append({
                 "game_id": str(row["game_id"]),
                 "tipoff_utc": row["tipoff_utc"],
-                "distance_imbalance_1000km": (current[away][0] - current[home][0]) / 1000.0,
-                "timezone_shift_imbalance_hours": current[away][1] - current[home][1],
+                "distance_imbalance_1000km": distance_imbalance,
+                "timezone_shift_imbalance_hours": away["timezone_shift_hours"] - home["timezone_shift_hours"],
+                "cumulative_travel_imbalance_1000km": (
+                    away.get("cumulative_travel_km_last_7_days", 0) -
+                    home.get("cumulative_travel_km_last_7_days", 0)) / 1000.0,
+                "cumulative_timezone_shift_imbalance_hours": (
+                    away.get("cumulative_timezone_shift_hours_last_7_days", 0) -
+                    home.get("cumulative_timezone_shift_hours_last_7_days", 0)),
+                "cumulative_absolute_timezone_imbalance_hours": (
+                    away.get("cumulative_absolute_timezone_shift_hours_last_7_days", 0) -
+                    home.get("cumulative_absolute_timezone_shift_hours_last_7_days", 0)),
+                "body_clock_sin_imbalance": body_sin_imbalance,
+                "body_clock_cos_imbalance": body_cos_imbalance,
+                "distance_body_clock_sin_interaction": distance_imbalance * body_sin_imbalance,
+                "distance_body_clock_cos_interaction": distance_imbalance * body_cos_imbalance,
+                "back_to_back_imbalance": int(away_b2b) - int(home_b2b),
+                "rested_vs_back_to_back_imbalance": (
+                    int(away_b2b and home_rest >= 1) - int(home_b2b and away_rest >= 1)),
+                "games_last_4_days_imbalance": away.get("games_last_4_days", 0) - home.get("games_last_4_days", 0),
+                "games_last_7_days_imbalance": away.get("games_last_7_days", 0) - home.get("games_last_7_days", 0),
+                "home_b2b_after_home": int(home_b2b and home_path == "home_to_home"),
+                "home_b2b_after_road": int(home_b2b and home_path == "road_to_home"),
+                "away_b2b_after_home": int(away_b2b and away_path == "home_to_road"),
+                "away_b2b_after_road": int(away_b2b and away_path == "road_to_road"),
             })
-        # A team's previous venue is its home arena when home, otherwise its
-        # opponent's arena. This also handles consecutive away games correctly.
-        last_venue[home] = home
-        last_venue[away] = home
+        seen.append(row)
     return features
 
 
@@ -80,31 +132,50 @@ def _logit(p):
     return math.log(p / (1.0 - p))
 
 
+def _solve(matrix, vector):
+    """Solve a small positive-definite Newton system with pivoting."""
+    n = len(vector)
+    a = [list(matrix[i]) + [vector[i]] for i in range(n)]
+    for col in range(n):
+        pivot = max(range(col, n), key=lambda row: abs(a[row][col]))
+        if abs(a[pivot][col]) < 1e-12:
+            raise ValueError("Singular travel coefficient fit")
+        a[col], a[pivot] = a[pivot], a[col]
+        scale = a[col][col]
+        a[col] = [value / scale for value in a[col]]
+        for row in range(n):
+            if row == col:
+                continue
+            factor = a[row][col]
+            if factor:
+                a[row] = [left - factor * right for left, right in zip(a[row], a[col])]
+    return [a[i][-1] for i in range(n)]
+
+
 def _fit(samples):
-    means = [sum(row[0][j] for row in samples) / len(samples) for j in range(2)]
-    scales = [math.sqrt(sum((row[0][j] - means[j]) ** 2 for row in samples) / len(samples)) for j in range(2)]
-    scales = [s if s > 1e-8 else 1.0 for s in scales]
-    xs = [[(row[0][j] - means[j]) / scales[j] for j in range(2)] for row in samples]
-    beta = [0.0, 0.0]
-    for _ in range(60):
-        g = [-RIDGE * beta[0], -RIDGE * beta[1]]
-        h00 = h11 = RIDGE
-        h01 = 0.0
+    dimensions = len(samples[0][0])
+    means = [sum(row[0][j] for row in samples) / len(samples) for j in range(dimensions)]
+    scales = [math.sqrt(sum((row[0][j] - means[j]) ** 2 for row in samples) / len(samples))
+              for j in range(dimensions)]
+    scales = [scale if scale > 1e-8 else 1.0 for scale in scales]
+    xs = [[(row[0][j] - means[j]) / scales[j] for j in range(dimensions)] for row in samples]
+    beta = [0.0] * dimensions
+    for _ in range(80):
+        gradient = [-RIDGE * value for value in beta]
+        hessian = [[0.0] * dimensions for _ in range(dimensions)]
+        for j in range(dimensions):
+            hessian[j][j] = RIDGE
         for x, (offset, outcome) in zip(xs, (row[1] for row in samples)):
-            p = _sigmoid(offset + beta[0] * x[0] + beta[1] * x[1])
+            p = _sigmoid(offset + sum(coef * value for coef, value in zip(beta, x)))
             weight = max(1e-8, p * (1.0 - p))
             error = outcome - p
-            g[0] += error * x[0]; g[1] += error * x[1]
-            h00 += weight * x[0] * x[0]
-            h11 += weight * x[1] * x[1]
-            h01 += weight * x[0] * x[1]
-        det = h00 * h11 - h01 * h01
-        if det <= 1e-12:
-            raise ValueError("Singular travel coefficient fit")
-        step = [(g[0] * h11 - g[1] * h01) / det,
-                (g[1] * h00 - g[0] * h01) / det]
-        beta = [max(-2.0, min(2.0, beta[i] + step[i])) for i in range(2)]
-        if max(abs(step[0]), abs(step[1])) < 1e-7:
+            for j in range(dimensions):
+                gradient[j] += error * x[j]
+                for k in range(dimensions):
+                    hessian[j][k] += weight * x[j] * x[k]
+        step = _solve(hessian, gradient)
+        beta = [max(-2.0, min(2.0, beta[j] + step[j])) for j in range(dimensions)]
+        if max(abs(value) for value in step) < 1e-7:
             break
     return {"coefficients_standardized": beta, "feature_means": means, "feature_scales": scales}
 
@@ -159,18 +230,16 @@ def _apply_fit(sample_rows):
     if len(train) < MIN_TRAIN or len(holdout) < MIN_HOLDOUT:
         return {"status": "insufficient_chronological_sample", "train_games": len(train),
                 "holdout_games": len(holdout), "applied": False}
-    fit = _fit([([x["distance_imbalance_1000km"], x["timezone_shift_imbalance_hours"]], y)
-                for x, y in train])
-    keys = ("distance_imbalance_1000km", "timezone_shift_imbalance_hours")
-    standardized = [[(x[keys[j]]-fit["feature_means"][j])/fit["feature_scales"][j] for j in range(2)] for x, _ in holdout]
+    fit = _fit([([x.get(key, 0.0) for key in FEATURE_KEYS], y) for x, y in train])
+    standardized = [[(x.get(key, 0.0)-fit["feature_means"][j])/fit["feature_scales"][j]
+                     for j, key in enumerate(FEATURE_KEYS)] for x, _ in holdout]
     metrics = _metrics([y for _, y in holdout], {"fit": fit, "holdout_x": standardized})
     passed = (metrics["travel_brier"] < metrics["baseline_brier"]
               and metrics["travel_log_loss"] < metrics["baseline_log_loss"])
     if not passed:
         return {"status": "holdout_no_improvement", "train_games": len(train),
                 "holdout": metrics, "applied": False}
-    full_fit = _fit([([x["distance_imbalance_1000km"], x["timezone_shift_imbalance_hours"]], y)
-                     for x, y in sample_rows])
+    full_fit = _fit([([x.get(key, 0.0) for key in FEATURE_KEYS], y) for x, y in sample_rows])
     return {"status": "research_adjustment_validated_on_chronological_holdout",
             "train_games": len(train), "holdout": metrics, "fit": full_fit,
             "applied": True}
@@ -211,8 +280,8 @@ def build(snapshot, module_context, history):
                "calibrated": False, "production_approved": False}
         if fitted.get("applied") and feature is not None:
             fit = fitted["fit"]
-            z = [(feature[key]-fit["feature_means"][i])/fit["feature_scales"][i]
-                 for i, key in enumerate(("distance_imbalance_1000km", "timezone_shift_imbalance_hours"))]
+            z = [(feature.get(key, 0.0)-fit["feature_means"][i])/fit["feature_scales"][i]
+                 for i, key in enumerate(FEATURE_KEYS)]
             delta = sum(a*b for a, b in zip(fit["coefficients_standardized"], z))
             delta = max(-MAX_LOG_ODDS_DELTA, min(MAX_LOG_ODDS_DELTA, delta))
             adjusted = _sigmoid(_logit(base)+delta)
