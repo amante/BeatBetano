@@ -296,30 +296,40 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
                 "unresolved_out_claims": unresolved}, "no_secondary_provider_consensus_out"
 
     samples = _history_by_player(player_rows, team, emitted_at, tipoff)
-    out_ids = {row["player_id"] for row in outs}
     losses = {field: 0.0 for field in STAT_FIELDS}
     missing_required = []
     missing_descriptive = []
+    quantified_outs = []
     for row in outs:
         historical = samples.get(row["player_id"])
+        missing_for_player = []
         if not historical or historical.get("average_minutes") is None:
-            missing_required.append(row["player_id"] + ":minutes")
+            missing_for_player.append("minutes")
+        elif historical.get("per_game", {}).get("points") is None:
+            missing_for_player.append("points")
+        if missing_for_player:
+            missing_required.extend(row["player_id"] + ":" + field for field in missing_for_player)
             continue
+        quantified_outs.append(row)
         for field in STAT_FIELDS:
             value = historical.get("per_game", {}).get(field)
             if value is None:
-                (missing_required if field == "points" else missing_descriptive).append(
-                    row["player_id"] + ":" + field)
+                missing_descriptive.append(row["player_id"] + ":" + field)
             else:
                 losses[field] += float(value)
-    if missing_required:
-        return {"accepted_out_players": outs,
+    unquantified_outs = [row for row in outs
+                         if row not in quantified_outs]
+    if unquantified_outs and not quantified_outs:
+        return {"accepted_out_players": outs, "unquantified_out_players": unquantified_outs,
                 "players_without_required_history": sorted(set(missing_required)),
                 "unsupported_descriptive_statistics": sorted(set(missing_descriptive))}, "missing_out_player_history"
+    # Partial scenarios use only absences with historical minutes and scoring;
+    # unresolved absences remain visible and are never assigned invented values.
+    out_ids = {row["player_id"] for row in quantified_outs}
 
     starter_evidence = estimate_starter_minutes(team, availability_team, lineup_record or {},
                                                 player_rows, emitted_at, tipoff)
-    allocation = _allocations(team, rotation_team, out_ids, samples, outs, starter_evidence)
+    allocation = _allocations(team, rotation_team, out_ids, samples, quantified_outs, starter_evidence)
     if allocation.get("status") != "conditional_historical_rotation_scenario":
         return {"accepted_out_players": outs, "minute_redistribution": allocation}, "minute_redistribution_unavailable"
     added = {field: 0.0 for field in STAT_FIELDS}
@@ -345,10 +355,15 @@ def _multi_source_team_points(team, availability_team, rotation_team, lineup_rec
                 "replacement_history_gaps": sorted(set(missing_recipients)),
                 "unsupported_descriptive_replacement_statistics":
                     sorted(set(missing_descriptive_recipients))}, "incomplete_replacement_history"
-    return {"status": "conditional_historical_rotation_scenario",
+    return {"status": "partial_historical_rotation_scenario" if unquantified_outs else "conditional_historical_rotation_scenario",
+            "is_partial": bool(unquantified_outs),
             "official_out_count": official_count, "secondary_consensus_out_count": secondary_count,
             "secondary_provider_out_count": provider_count,
-            "accepted_out_players": outs, "historical_output_loss_per_game": losses,
+            "quantified_out_count": len(quantified_outs),
+            "accepted_out_players": outs, "quantified_out_players": quantified_outs,
+            "unquantified_out_players": unquantified_outs,
+            "players_without_required_history": sorted(set(missing_required)),
+            "historical_output_loss_per_game": losses,
             "historical_output_from_added_minutes_per_game": added,
             "estimated_net_points_per_game": added["points"] - losses["points"],
             "unsupported_descriptive_statistics": sorted(set(missing_descriptive + missing_descriptive_recipients)),
@@ -433,7 +448,12 @@ def _multi_source_research_scenario(fixture, modules, history, player_history, e
     base = fixture["hybrid_p_home"]
     base_logit = math.log(base / (1.0 - base))
     adjusted = 1.0 / (1.0 + math.exp(-(base_logit + applied_delta)))
-    row.update({"status": "research_scenario", "reason": None,
+    partial_teams = {team: value.get("unquantified_out_players", [])
+                     for team, value in row["teams"].items()
+                     if value.get("is_partial") and value.get("unquantified_out_players")}
+    row.update({"status": "partial_research_scenario" if partial_teams else "research_scenario",
+        "reason": None, "is_partial": bool(partial_teams),
+        "incomplete_history_by_team": partial_teams,
         "estimated_home_points_delta": points_delta, "raw_log_odds_delta": raw_delta,
         "applied_log_odds_delta": applied_delta,
         "log_odds_delta_capped": not math.isclose(raw_delta, applied_delta, rel_tol=0, abs_tol=1e-12),

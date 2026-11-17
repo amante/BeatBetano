@@ -127,7 +127,7 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
   selected_secondary=False
   if candidate:
    secondary=candidate.get('multi_source_scenario')
-   if (isinstance(secondary,dict) and secondary.get('status')=='research_scenario'
+   if (isinstance(secondary,dict) and secondary.get('status') in ('research_scenario','partial_research_scenario')
        and (secondary.get('secondary_provider_out_count',0)>0
             or secondary.get('secondary_consensus_out_count',0)>0)):
     candidate=secondary
@@ -143,7 +143,7 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
    if selected_secondary:copy['official_only_injury_scenario']=official_candidate
    copy['statistical_baseline_p_home']=baseline
    copy['statistical_baseline_p_away']=1.0-baseline
-   if candidate.get('status')=='research_scenario':
+   if candidate.get('status') in ('research_scenario','partial_research_scenario'):
     home=candidate.get('injury_adjusted_home_probability');away=candidate.get('injury_adjusted_away_probability')
     if (type(home) not in (int,float) or type(away) not in (int,float)
         or not math.isfinite(home) or not math.isfinite(away)
