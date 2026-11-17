@@ -162,7 +162,10 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
         matchup_ready = any(team.get("reported_starters") for team in matchup_data.get("teams", {}).values())
         minutes_ready = any(team.get("allocations") is not None for team in minutes_data.get("teams", {}).values())
         impact_ready = any(team.get("official_reported_players") for team in impact_data.get("teams", {}).values())
-        travel_ready = any(team.get("travel_distance_km") is not None for team in travel_data.get("teams", {}).values())
+        travel_ready = any(
+            team.get("travel_distance_km") is not None or team.get("rest_days") is not None
+            or team.get("is_back_to_back") is True or team.get("body_clock_tipoff_hour") is not None
+            for team in travel_data.get("teams", {}).values())
         modules[gid] = {
             "statistical_baseline": {"connected": True, "affects_prediction": True,
                 "status": "included", "entered_prediction": True,
@@ -212,13 +215,18 @@ def build(seed, history, scoreboard, game_date, roster, lineups, sporting, offic
         "teams_with_minutes_allocations": sum(t.get("allocations") is not None for g in minutes.get("games", {}).values() for t in g.get("teams", {}).values()),
         "player_position_entries": sum(len(t.get("reported_starters", [])) for g in matchups["games"].values() for t in g["teams"].values()),
         "travel_distance_estimates": sum(t.get("travel_distance_km") is not None for g in travel["games"].values() for t in g["teams"].values()),
+        "travel_rest_contexts": sum(t.get("rest_days") is not None for g in travel["games"].values() for t in g["teams"].values()),
+        "back_to_back_contexts": sum(t.get("is_back_to_back") is True for g in travel["games"].values() for t in g["teams"].values()),
+        "recent_schedule_load_contexts": sum(t.get("games_last_4_days") is not None for g in travel["games"].values() for t in g["teams"].values()),
         "modules_connected": ["player_matchups", "rotation_minutes", "availability_impact", "travel_time_zones"],
         "modules_affecting_probabilities": [],
         "probabilities_unchanged_from_seed": True,
         "coverage_limitations": ["Projected lineup positions do not establish defensive assignments.",
             "Player-matched injury source claims are archived for reconciliation only; they are not yet connected to probabilities.",
             "Only official injury claims are used for the official availability scenario; missing statuses stay unresolved.",
-            "Travel distance is approximate and no travel coefficient is fitted."]}
+            "Rest is tipoff-to-tipoff; game duration and actual flight itinerary are unavailable.",
+            "B2B classification uses local game dates and a maximum 36-hour tipoff gap.",
+            "A travel/fatigue candidate changes probabilities only if chronological holdout improves both Brier score and log loss; this remains experimental."]}
     return issued, {"summary": summary, "context": body}
 
 
