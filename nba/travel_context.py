@@ -161,6 +161,7 @@ def _team_context(team, is_home, tip, history, destination_code, destination):
         "body_clock_reference": "previous_game_local_timezone",
         "timezone_shift_hours": timezone_shift,
         "timezone_zone_changed": bool(origin and destination and origin[2] != destination[2]),
+        "utc_offset_changed": bool(origin and destination and origin_local.utcoffset() != destination_local.utcoffset()),
         "body_clock_tipoff_hour": body_clock_hour,
         "distance_method": "great_circle_between_representative_arena_coordinates",
         "flight_path_distance": False,
