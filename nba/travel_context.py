@@ -86,7 +86,7 @@ def _team_context(team, is_home, tip, history, destination_code, destination):
             continue
     prior.sort(key=lambda item: (item[0], str(item[1].get("game_id", ""))))
     last = prior[-1] if prior else None
-    base = {"status": "no_prior_game_in_current_season" if not last else "estimated_pregame_context",
+    base = {"status": "no_prior_game_in_current_season" if not last else "estimated_city_to_city_context",
             "is_home": bool(is_home), "destination_home_team": destination_code,
             "destination_time_zone": destination[2] if destination else None}
     if not last:
