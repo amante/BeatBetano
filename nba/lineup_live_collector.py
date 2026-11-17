@@ -1,6 +1,6 @@
-"""Collect attributed pretip projected/confirmed NBA quintets from RotoWire HTML.
+"""Capture RotoWire first for NBA pregame lineups and display-only market context.
 
-No odds extraction, no paywall bypass, and no invented data if page layout changes.
+Official confirmations retain authority; no paywall bypass or invented data.
 """
 import argparse,json,re
 from datetime import datetime,timezone
@@ -137,7 +137,7 @@ def collect(snapshot,session=None,observed=None):
  result["market_contexts"]=market_contexts
  result["fetch_url"]=URL;result["fetch_errors"]=errors
  result["fetched_candidates"]=len(candidates)
- result["notes"]="RotoWire is third-party evidence, not league-confirmed; selectors are validated fail-closed, may yield no data."
+ result["notes"]="RotoWire is the primary third-party pregame capture. NBA/team-confirmed lineups retain authority over projections; odds are display-only and may be unavailable."
  return result,sources
 def main():
  p=argparse.ArgumentParser()

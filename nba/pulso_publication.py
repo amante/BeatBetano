@@ -6,7 +6,7 @@ from datetime import datetime
 def digest(value):
  return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
 
-def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adjustment=None,matchup_adjustment=None,player_stat_projections=None,score_audit=None):
+def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adjustment=None,matchup_adjustment=None,player_stat_projections=None,score_audit=None,rotowire_context=None):
  body={k:v for k,v in snapshot.items() if k!='content_sha256'}
  snapshot_digest=digest(body)
  if snapshot.get('content_sha256')!=snapshot_digest:raise ValueError('Snapshot digest mismatch')
@@ -18,6 +18,31 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
   module_body={k:v for k,v in module_context.items() if k!='content_sha256'}
   if module_context.get('content_sha256')!=digest(module_body):raise ValueError('Module context digest mismatch')
  module_games=module_context.get('games',{})
+ market_games={}
+ if rotowire_context:
+  raw_markets=rotowire_context.get('market_contexts',{})
+  if not isinstance(raw_markets,dict):raise ValueError('Invalid RotoWire market contexts')
+  for gid,market in raw_markets.items():
+   fixture=next((r for r in snapshot['predictions'] if str(r['game_id'])==str(gid)),None)
+   if not fixture or not isinstance(market,dict):continue
+   if market.get('source_provider')!='rotowire' or market.get('display_only') is not True or market.get('model_input') is not False:continue
+   if market.get('source_url')!='https://www.rotowire.com/basketball/nba-lineups.php':continue
+   try:observed=datetime.fromisoformat(str(market['observed_at_utc']).replace('Z','+00:00'))
+   except (KeyError,ValueError,TypeError):continue
+   tip=datetime.fromisoformat(str(fixture['tipoff_utc']).replace('Z','+00:00'))
+   if observed.tzinfo is None or tip.tzinfo is None or observed>=tip:continue
+   safe={'source_provider':'rotowire','source_url':market['source_url'],'observed_at_utc':market['observed_at_utc'],'display_only':True,'model_input':False}
+   ml=market.get('moneyline')
+   if isinstance(ml,dict) and ml.get('team') in (fixture['home_team'],fixture['away_team']) and type(ml.get('american_odds')) is int and ml['american_odds']!=0:
+    safe['moneyline']={'team':ml['team'],'american_odds':ml['american_odds']}
+   spread=market.get('spread')
+   if isinstance(spread,dict) and spread.get('team') in (fixture['home_team'],fixture['away_team']) and type(spread.get('points')) in (int,float) and math.isfinite(spread['points']):
+    safe['spread']={'team':spread['team'],'points':spread['points']}
+   total=market.get('total_points')
+   if type(total) in (int,float) and math.isfinite(total) and total>0:safe['total_points']=total
+   refs=market.get('referees')
+   if isinstance(refs,list):safe['referees']=[x.strip() for x in refs[:3] if isinstance(x,str) and x.strip()]
+   market_games[str(gid)]=safe
  adjustment_games={}
  if injury_adjustment:
   adjustment_body={k:v for k,v in injury_adjustment.items() if k!='content_sha256'}
@@ -171,6 +196,7 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
    copy['probability_adjustments_applied']=applied
    copy['model_probability_calibrated']=False
   if player_stat_projections:copy['player_stat_projections']=player_stat_games[gid]
+  if gid in market_games:copy['market_context']=market_games[gid]
   if score_audit:
    score=score_games[gid];home_points=score.get('projected_home_points');away_points=score.get('projected_away_points')
    if type(home_points) in (int,float) and type(away_points) in (int,float) and math.isfinite(home_points) and math.isfinite(away_points):
@@ -181,4 +207,4 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
  return dict(kind='nba_pulso_research_publication_v1',run_id=str(run_id),snapshot_sha256=snapshot_digest,created_at_utc=snapshot['created_at_utc'],predictions=predictions,calibrated=False,availability_and_lineups_included=bool(module_context),modules_change_probabilities=research_count>0,research_scenarios_affect_probabilities=research_count,source='frozen_nba_prospective_snapshot')
 
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--snapshot',required=True);p.add_argument('--run-id',required=True);p.add_argument('--output',required=True);p.add_argument('--module-context');p.add_argument('--injury-adjustment');p.add_argument('--travel-adjustment');p.add_argument('--matchup-adjustment');p.add_argument('--player-stat-projections');p.add_argument('--score-audit');a=p.parse_args();out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);context=json.loads(Path(a.module_context).read_text()) if a.module_context else None;adjustment=json.loads(Path(a.injury_adjustment).read_text()) if a.injury_adjustment else None;travel=json.loads(Path(a.travel_adjustment).read_text()) if a.travel_adjustment else None;matchup=json.loads(Path(a.matchup_adjustment).read_text()) if a.matchup_adjustment else None;stats=json.loads(Path(a.player_stat_projections).read_text()) if a.player_stat_projections else None;score=json.loads(Path(a.score_audit).read_text()) if a.score_audit and Path(a.score_audit).is_file() else None;out.write_text(json.dumps(build(json.loads(Path(a.snapshot).read_text()),a.run_id,context,adjustment,travel,matchup,stats,score),indent=2,allow_nan=False))
+ p=argparse.ArgumentParser();p.add_argument('--snapshot',required=True);p.add_argument('--run-id',required=True);p.add_argument('--output',required=True);p.add_argument('--module-context');p.add_argument('--injury-adjustment');p.add_argument('--travel-adjustment');p.add_argument('--matchup-adjustment');p.add_argument('--player-stat-projections');p.add_argument('--score-audit');p.add_argument('--rotowire-context');a=p.parse_args();out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);context=json.loads(Path(a.module_context).read_text()) if a.module_context else None;adjustment=json.loads(Path(a.injury_adjustment).read_text()) if a.injury_adjustment else None;travel=json.loads(Path(a.travel_adjustment).read_text()) if a.travel_adjustment else None;matchup=json.loads(Path(a.matchup_adjustment).read_text()) if a.matchup_adjustment else None;stats=json.loads(Path(a.player_stat_projections).read_text()) if a.player_stat_projections else None;score=json.loads(Path(a.score_audit).read_text()) if a.score_audit and Path(a.score_audit).is_file() else None;markets=json.loads(Path(a.rotowire_context).read_text()) if a.rotowire_context and Path(a.rotowire_context).is_file() else None;out.write_text(json.dumps(build(json.loads(Path(a.snapshot).read_text()),a.run_id,context,adjustment,travel,matchup,stats,score,markets),indent=2,allow_nan=False))

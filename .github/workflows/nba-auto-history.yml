@@ -140,7 +140,7 @@ jobs:
         run: |
           python nba/offense_defense_matchups.py --snapshot results/nba/prospective/snapshot.json --possessions results/nba/prospective/possession_intelligence.json --output results/nba/prospective/offense_defense_matchups.json --summary results/nba/prospective/offense_defense_matchups.md
           cat results/nba/prospective/offense_defense_matchups.md >> "$GITHUB_STEP_SUMMARY"
-      - name: Fetch projected/confirmed NBA lineups from RotoWire fallback
+      - name: Capture RotoWire as the primary third-party NBA pregame source
         if: ${{ hashFiles('results/nba/prospective/snapshot.json') != '' }}
         run: |
           python nba/lineup_live_collector.py --snapshot results/nba/prospective/snapshot.json --output results/nba/prospective/lineup_cascade.json --summary results/nba/prospective/lineup_cascade.md --candidates results/nba/prospective/lineup_source_candidates.json
@@ -422,7 +422,7 @@ jobs:
       - name: Publish frozen NBA comparison to PULSO
         if: ${{ hashFiles('results/nba/prospective/snapshot_module_freeze.json') != '' && hashFiles('results/nba/prospective/pregame_module_context.json') != '' }}
         run: |
-          python nba/pulso_publication.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --injury-adjustment results/nba/prospective/injury_probability.json --travel-adjustment results/nba/prospective/travel_probability.json --matchup-adjustment results/nba/prospective/player_matchup_probability.json $(test -s results/nba/prospective/player_stat_projections.json && echo "--player-stat-projections results/nba/prospective/player_stat_projections.json") $(test -s results/nba/prospective/probability_score_audit.json && echo "--score-audit results/nba/prospective/probability_score_audit.json") --run-id "${{ github.run_id }}" --output frontend/data/nba-predictions-latest.json
+          python nba/pulso_publication.py --snapshot results/nba/prospective/snapshot_module_freeze.json --module-context results/nba/prospective/pregame_module_context.json --injury-adjustment results/nba/prospective/injury_probability.json --travel-adjustment results/nba/prospective/travel_probability.json --matchup-adjustment results/nba/prospective/player_matchup_probability.json $(test -s results/nba/prospective/player_stat_projections.json && echo "--player-stat-projections results/nba/prospective/player_stat_projections.json") $(test -s results/nba/prospective/probability_score_audit.json && echo "--score-audit results/nba/prospective/probability_score_audit.json") --rotowire-context results/nba/prospective/lineup_cascade.json --run-id "${{ github.run_id }}" --output frontend/data/nba-predictions-latest.json
           if [ -s frontend/data/nba-injury-status-calibration-latest.json ]; then python nba/injury_status_calibration.py attach --summary frontend/data/nba-injury-status-calibration-latest.json --publication frontend/data/nba-predictions-latest.json; fi
           mkdir -p nba/learning/predictions
           cp results/nba/prospective/snapshot_module_freeze.json "nba/learning/predictions/run-${{ github.run_id }}.json"
