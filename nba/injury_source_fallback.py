@@ -25,19 +25,74 @@ def utcnow():
     return datetime.now(timezone.utc).isoformat()
 
 
+CBS_TEAM_ALIASES = {
+    "atlanta": "ATL", "atlanta hawks": "ATL",
+    "boston": "BOS", "boston celtics": "BOS",
+    "brooklyn": "BKN", "brooklyn nets": "BKN",
+    "charlotte": "CHA", "charlotte hornets": "CHA",
+    "chicago": "CHI", "chicago bulls": "CHI",
+    "cleveland": "CLE", "cleveland cavaliers": "CLE",
+    "dallas": "DAL", "dallas mavericks": "DAL",
+    "denver": "DEN", "denver nuggets": "DEN",
+    "detroit": "DET", "detroit pistons": "DET",
+    "golden st": "GSW", "golden state": "GSW", "golden state warriors": "GSW",
+    "houston": "HOU", "houston rockets": "HOU",
+    "indiana": "IND", "indiana pacers": "IND",
+    "la clippers": "LAC", "l a clippers": "LAC", "los angeles clippers": "LAC",
+    "la lakers": "LAL", "l a lakers": "LAL", "los angeles lakers": "LAL",
+    "memphis": "MEM", "memphis grizzlies": "MEM",
+    "miami": "MIA", "miami heat": "MIA",
+    "milwaukee": "MIL", "milwaukee bucks": "MIL",
+    "minnesota": "MIN", "minnesota timberwolves": "MIN",
+    "new orleans": "NOP", "new orleans pelicans": "NOP",
+    "new york": "NYK", "new york knicks": "NYK",
+    "oklahoma city": "OKC", "oklahoma city thunder": "OKC",
+    "orlando": "ORL", "orlando magic": "ORL",
+    "philadelphia": "PHI", "philadelphia 76ers": "PHI",
+    "phoenix": "PHX", "phoenix suns": "PHX",
+    "portland": "POR", "portland trail blazers": "POR",
+    "sacramento": "SAC", "sacramento kings": "SAC",
+    "san antonio": "SAS", "san antonio spurs": "SAS",
+    "toronto": "TOR", "toronto raptors": "TOR",
+    "utah": "UTA", "utah jazz": "UTA",
+    "washington": "WAS", "washington wizards": "WAS",
+}
+
+
+def _cbs_team_code(label):
+    key = re.sub(r"[^a-z0-9]+", " ", str(label or "").casefold()).strip()
+    return CBS_TEAM_ALIASES.get(key)
+
+
+def _cbs_table_team(table):
+    # CBS renders a team heading immediately before its own player table.
+    # Search nearby headings only; never infer a franchise from a player name.
+    for heading in table.find_all_previous(["h2", "h3", "h4", "h5"], limit=8):
+        code = _cbs_team_code(heading.get_text(" ", strip=True))
+        if code:
+            return code
+    return None
+
+
 def parse_cbs(html, snapshot, observed):
     soup = BeautifulSoup(html, "html.parser")
     rows = []
     for table in soup.find_all("table"):
-        headers = [re.sub(r"\\s+", " ", cell.get_text(" ", strip=True).lower()).strip()
+        headers = [re.sub(r"\s+", " ", cell.get_text(" ", strip=True).casefold()).strip()
                    for cell in table.find_all("th")]
-        if not any("player" in h or "name" in h or "injury" in h or "status" in h for h in headers):
+        if not headers or not any(h in {"player", "name"} or "player" in h or "status" in h or "injury" in h
+                                  for h in headers):
             continue
         player_index = next((i for i, h in enumerate(headers) if "player" in h or h == "name"), None)
-        team_index = next((i for i, h in enumerate(headers) if "team" in h), None)
-        status_index = next((i for i, h in enumerate(headers) if "status" in h or "injury" in h), None)
+        team_index = next((i for i, h in enumerate(headers) if h == "team" or h.endswith(" team")), None)
+        # Prefer the explicit availability column. The prior parser selected the
+        # earlier "Injury" column ("Knee", "Ankle") and dropped every real status.
+        status_index = next((i for i, h in enumerate(headers)
+                             if h in {"injury status", "status", "availability", "availability status"}), None)
+        table_team = _cbs_table_team(table)
         for tr in table.find_all("tr"):
-            cells = [c.get_text(" ", strip=True) for c in tr.find_all(["td", "th"])]
+            cell_nodes = tr.find_all(["td", "th"])
+            cells = [c.get_text(" ", strip=True) for c in cell_nodes]
             if not cells:
                 continue
             text = " | ".join(cells)
@@ -45,15 +100,22 @@ def parse_cbs(html, snapshot, observed):
             status_candidate = extract_status_candidate(status_text)
             if not status_candidate:
                 continue
-            player = cells[player_index] if player_index is not None and player_index < len(cells) else None
-            team = cells[team_index] if team_index is not None and team_index < len(cells) else None
-            rows.append({"player_candidate": player, "team_candidate": team,
-                         "raw_cells": cells, "raw_text": text,
+            player = None
+            if player_index is not None and player_index < len(cell_nodes):
+                player_cell = cell_nodes[player_index]
+                linked_names = [a.get_text(" ", strip=True) for a in player_cell.find_all("a")
+                                if a.get_text(" ", strip=True)]
+                # CBS often includes an abbreviated link and a full-name link in
+                # the same cell; use the longest attributed label for exact roster matching.
+                player = max(linked_names, key=len) if linked_names else player_cell.get_text(" ", strip=True)
+            team = cells[team_index] if team_index is not None and team_index < len(cells) else table_team
+            team_code = _cbs_team_code(team) or team
+            rows.append({"player_candidate": player, "team_candidate": team_code,
+                         "team_label": team, "raw_cells": cells, "raw_text": text,
                          "status_candidate": status_candidate,
                          "source_url": CBS_URL, "observed_at_utc": observed,
                          "officially_verified": False})
     return rows
-
 
 def parse_nbc(html, observed):
     soup = BeautifulSoup(html, "html.parser")
@@ -105,8 +167,11 @@ def collect(snapshot, official, session=None):
                     for row in evidence.get("items", []):
                         candidates.append({**row, "game_id": game_id, "source_url": ESPN_URL,
                                            "observed_at_utc": observed, "officially_verified": False})
-            attempts.append({"source": source, "url": url, "status": "ok",
-                             "candidate_count": len(candidates), "observed_at_utc": observed})
+            attempts.append({"source": source, "url": url,
+                             "status": "ok" if candidates else "no_rows",
+                             "candidate_count": len(candidates), "observed_at_utc": observed,
+                             **({"detail": "Page responded but no injury-status rows were parsed; inspect source markup."}
+                                if not candidates else {})})
             results.append({"source": source, "url": url, "source_type": "provider_injury_report",
                             "observed_at_utc": observed, "officially_verified": False,
                             "candidates": candidates})
