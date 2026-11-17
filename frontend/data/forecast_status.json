@@ -1,42 +1,42 @@
 {
-  "as_of_utc": "2026-11-17T03:49:39.346664+00:00",
+  "as_of_utc": "2026-11-17T18:32:41.780066+00:00",
   "sports": {
     "nba": {
       "status": "processed",
       "publications": [
         {
           "sport": "nba",
-          "as_of_utc": "2026-11-17T03:49:39.641812Z",
+          "as_of_utc": "2026-11-17T18:32:42.195874Z",
           "events": [
             {
               "event_id": "401910002",
               "status": "reused",
-              "snapshot_sha256": "959ad25bab0576cc64b957b26b56449f3baa58b7569da0de09880695b4124477",
-              "stage": "initial"
+              "snapshot_sha256": "0cff15295bedd1e7bb800505661a5529fab7cf5a96bf774f4e013d297499cd15",
+              "stage": "update"
             },
             {
               "event_id": "401910003",
               "status": "reused",
-              "snapshot_sha256": "ea6541c26b12cc931b1b776767b90b457888e1c4d66f3e3696412c620dcae8ff",
-              "stage": "initial"
+              "snapshot_sha256": "60773f5caf3e440eccbad998c305960da905b0d2b72ce2397e99e63e127adfd7",
+              "stage": "update"
             },
             {
               "event_id": "401910004",
               "status": "reused",
-              "snapshot_sha256": "40ee191b15956827a0f4070d1ee802a7928fec8cf7758efcb4d1c3d2a7cd49c5",
-              "stage": "initial"
+              "snapshot_sha256": "fd446ec00caeb8f0ce51539fc5a99cdc1c50f6225155f958aacfd3f03fce548a",
+              "stage": "update"
             },
             {
               "event_id": "401910005",
               "status": "reused",
-              "snapshot_sha256": "16d193a6955f9f00723a869e511a4354cf75ed264ec7b3a4f82a1b24ceeee3b8",
-              "stage": "initial"
+              "snapshot_sha256": "81018e111e40fb9867d26aecf5ab3df45523f387d26242c6395dca237a6cd4f3",
+              "stage": "update"
             },
             {
               "event_id": "401910006",
               "status": "reused",
-              "snapshot_sha256": "92700836bb2e98a3230e247ececd010e7c83bf550b52371a46ff640b140f6073",
-              "stage": "initial"
+              "snapshot_sha256": "f15426f372aee96de6f93a1c408874965e5474197c42dc522178174f5a5928aa",
+              "stage": "update"
             }
           ],
           "forecast_publication_only": true,
@@ -68,7 +68,7 @@
       "missing_baseline_fixture_ids": [],
       "sporting_integration": [
         {
-          "baseline_snapshot_sha256": "8f21dc1914e02b5b800402a6bae54684580d45ba8bdd3c07f64c2f0831670ea2",
+          "baseline_snapshot_sha256": "3877d422d9f54de2580ace0adda719f0f75ef03baa37965813c48f5a6b552847",
           "games": 5,
           "integrated_research_games": 0,
           "game_diagnostics": [
@@ -112,14 +112,14 @@
           "production_approved": false,
           "availability_observation": {
             "status": "captured",
-            "captured_at_utc": "2026-11-17T03:49:40.884553+00:00",
-            "statistical_snapshot_sha256": "8f21dc1914e02b5b800402a6bae54684580d45ba8bdd3c07f64c2f0831670ea2",
-            "statistical_snapshot_created_at_utc": "2026-11-17T03:49:39.641812+00:00",
+            "captured_at_utc": "2026-11-17T18:32:43.152514+00:00",
+            "statistical_snapshot_sha256": "3877d422d9f54de2580ace0adda719f0f75ef03baa37965813c48f5a6b552847",
+            "statistical_snapshot_created_at_utc": "2026-11-17T18:32:42.195874+00:00",
             "later_sidecar_not_retroactive_snapshot_update": true,
             "games": 5,
             "teams": 10,
-            "roster_members": 176,
-            "matched_injury_claims": 30,
+            "roster_members": 175,
+            "matched_injury_claims": 31,
             "unmatched_claims": [],
             "conflicts": [],
             "official_injury_report_retrieved": false,
@@ -178,8 +178,8 @@
             "official_injury_status_verification_scope": "matched_reported_players_only; unlisted players remain unknown",
             "official_team_reports_not_submitted": [],
             "known_out": 28,
-            "uncertain": 2,
-            "unknown": 146,
+            "uncertain": 3,
+            "unknown": 144,
             "teams_allocation_ready": 0,
             "teams_with_provider_lineups": 0,
             "no_odds_input": true,
@@ -192,21 +192,22 @@
               }
             },
             "historical_rotation": {
-              "observed_at_utc": "2026-11-17T03:49:42.782012+00:00",
-              "games_requested": 108,
+              "observed_at_utc": "2026-11-17T18:32:45.226191+00:00",
+              "games_requested": 109,
               "games_unavailable": 0,
               "fixtures_covered": 5,
-              "roster_player_fixture_estimates": 139
+              "roster_player_fixture_estimates": 140
             }
           },
           "team_metrics_observation": {
             "status": "nba_livedata_estimated",
             "cutoff_date": "2026-11-16",
             "official_teams": 0,
-            "fallback_games": 36,
+            "fallback_games": 35,
             "fallback_errors": 0,
             "crosswalk": {
               "bindings": {
+                "401909999": "0022600250",
                 "401909990": "0022600241",
                 "401909988": "0022600239",
                 "401909987": "0022600238",
@@ -240,13 +241,11 @@
                 "401909950": "0022600201",
                 "401909947": "0022600198",
                 "401909946": "0022600197",
-                "401909944": "0022600195",
-                "401909293": "0022600031",
                 "401909288": "0022600026"
               },
               "unresolved": {},
               "source_url": "https://nba-prod-us-east-1-mediaops-stats.s3.amazonaws.com/NBA/staticData/scheduleLeagueV2_2.json",
-              "source_sha256": "3a4df9b8099f3406f6680e2e94482ea32ee016e3dd68dc1e04bd818576a396ef",
+              "source_sha256": "4225a8b9915987b70263bb77b7c6ef213880f5aa6671d8d0c1ffda4b27bec4ad",
               "target_teams": [
                 "CHA",
                 "DET",
@@ -274,13 +273,13 @@
               "missing_teams": []
             },
             "research_ml_games": 0,
-            "research_sha256": "e97ac8371b9160068b7bc20d51202935bb8cb2294e2acf18fefed4780cf98e39",
+            "research_sha256": "47dcccbf85f21ec249bf9f803bb9c45f45566b6c893ab8254179b44329cc7755",
             "player_crosswalk": {
               "links": 394,
               "ambiguous": 0,
               "mapped_roster_entries": 144,
-              "unresolved_roster_entries": 32,
-              "content_sha256": "2cd222c406879846fcf63ecd5951d52451c310ced0b4629df1d8a448f676f328"
+              "unresolved_roster_entries": 31,
+              "content_sha256": "bb5e01bba29a9f2773cde1bd5eb548561c75425fe664b7c13cb84d149939a41d"
             }
           }
         }
@@ -295,73 +294,73 @@
       "publications": [
         {
           "sport": "nhl",
-          "as_of_utc": "2026-11-17T03:50:01.785885Z",
+          "as_of_utc": "2026-11-17T18:33:04.410026Z",
           "events": [
             {
               "event_id": "2026020333",
               "status": "reused",
-              "snapshot_sha256": "9197b13893322f46ecc9127be581140dfb4cea8ff956a546669d3b5601a0b713",
-              "stage": "initial"
+              "snapshot_sha256": "90b6f3aeb982b5c26214ba675817d6534aed09e37d3b3408b8e24a475b94b271",
+              "stage": "update"
             },
             {
               "event_id": "2026020335",
               "status": "reused",
-              "snapshot_sha256": "8bbb0558e2a7f335f81ff7188f1420e8b5abe13c79fb66cab5c1de6c4d9d8551",
-              "stage": "initial"
+              "snapshot_sha256": "aedbbd6f8abb08f2f9cc76f0b0ca983e4086b61fecbe6a605e56506e4e90e349",
+              "stage": "update"
             },
             {
               "event_id": "2026020336",
               "status": "reused",
-              "snapshot_sha256": "5a347f6dfb8c52569df96f56b0f15a9d7a2eb41fcdaba9c65ebbc227c1b36d3b",
-              "stage": "initial"
+              "snapshot_sha256": "b936c509245cb87ad61f8e4e45abe4e5f62de4ab1665e374e248583e142ee02c",
+              "stage": "update"
             },
             {
               "event_id": "2026020337",
               "status": "reused",
-              "snapshot_sha256": "a833d6491535b4bff8f62f4f4d09aaf5dbd08783fea41a359929119bf93dfdbd",
-              "stage": "initial"
+              "snapshot_sha256": "733b5ea537e803e26f92d0e763bdf9f457cce03413db5ab617c81edc0d9fba7a",
+              "stage": "update"
             },
             {
               "event_id": "2026020341",
               "status": "reused",
-              "snapshot_sha256": "50b39a80d091c55a2fca01ca8646ac6ee373ca97ee43bde5894e0a17b0a0f0cf",
-              "stage": "initial"
+              "snapshot_sha256": "b48131765f2b037836098a81d98a9244126388706566aa480b00f4d07823f543",
+              "stage": "update"
             },
             {
               "event_id": "2026020334",
               "status": "reused",
-              "snapshot_sha256": "f1b7fd6b3393c9393a452b2a9e072f91008a3612e94702af1350dc51f0e26e9a",
-              "stage": "initial"
+              "snapshot_sha256": "149733c87395eaf5ccf6f91a50ec53bb0e03c0141a356bf43bb3e69534a9a42e",
+              "stage": "update"
             },
             {
               "event_id": "2026020338",
               "status": "reused",
-              "snapshot_sha256": "586c5436bc4c3ffbb0aa4d37e398e82bf96239610347354e5f7506d0c4769355",
-              "stage": "initial"
+              "snapshot_sha256": "1e160d4205ebe55df3a43fe5f80db195c535c138d6f12dc6175861ae501b3653",
+              "stage": "update"
             },
             {
               "event_id": "2026020339",
               "status": "reused",
-              "snapshot_sha256": "7b9420f5393c3cc2b5549d262f18ef955a828dac120f79893e76c855ad1e618e",
-              "stage": "initial"
+              "snapshot_sha256": "cccb68cffe92b333d908e83b83eac6dfa384c904b942661aba77c2c95b43bef2",
+              "stage": "update"
             },
             {
               "event_id": "2026020340",
               "status": "reused",
-              "snapshot_sha256": "c6eecdb3a332f31fe84e51a024358c5a5e4fc7ad0653d19156c801e0b156dd42",
-              "stage": "initial"
+              "snapshot_sha256": "b9de5e90e2000bb613d556f38efa02694baef4dadb69b758351f7a7b11561809",
+              "stage": "update"
             },
             {
               "event_id": "2026020342",
               "status": "reused",
-              "snapshot_sha256": "28e21211db5ad6e857db435e293a7a2282522bf6832421af8c3e5c5fc3da2ebc",
-              "stage": "initial"
+              "snapshot_sha256": "d0150f01499f7c59a8bf590976451795b9da358094030ee8796652388c1440b6",
+              "stage": "update"
             },
             {
               "event_id": "2026020343",
               "status": "reused",
-              "snapshot_sha256": "1da04a9fa20861cf7a14108e9de576c4ebaa75f0cb8db534ae6a985988364b35",
-              "stage": "initial"
+              "snapshot_sha256": "2c969adf31ba7baab688caecbb1b5b00c6e8563c6063cd332e176fcec7926e36",
+              "stage": "update"
             }
           ],
           "forecast_publication_only": true,
