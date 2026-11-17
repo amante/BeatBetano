@@ -231,7 +231,7 @@ def _apply_fit(sample_rows):
         return {"status": "insufficient_chronological_sample", "train_games": len(train),
                 "holdout_games": len(holdout), "applied": False}
     fit = _fit([([x.get(key, 0.0) for key in FEATURE_KEYS], y) for x, y in train])
-    standardized = [[(x[key]-fit["feature_means"][j])/fit["feature_scales"][j]
+    standardized = [[(x.get(key, 0.0)-fit["feature_means"][j])/fit["feature_scales"][j]
                      for j, key in enumerate(FEATURE_KEYS)] for x, _ in holdout]
     metrics = _metrics([y for _, y in holdout], {"fit": fit, "holdout_x": standardized})
     passed = (metrics["travel_brier"] < metrics["baseline_brier"]
