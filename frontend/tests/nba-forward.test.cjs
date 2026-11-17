@@ -17,7 +17,7 @@ test('render includes per-game original ML and explicit unsupported sporting/+20
 test('uncovered date differs from no games, and fetch failure never falls back to stale percentages',async()=>{assert.match(await render(packet(),'2026-11-05'),/no tiene cobertura suficiente/);const text=await render(packet(),'2026-11-04',false);assert.match(text,/No se pudo cargar/);assert.doesNotMatch(text,/60\.0%/);});
 test('missing paired emission is PASS, changed fixtures hide unsupported percentages',async()=>{let p=packet();p.games[0].first_prediction=null;assert.match(await render(p),/No hay una pareja/);p=packet();p.games[0].issues=['fixture_tipoff_utc_changed'];const text=await render(p);assert.match(text,/requiere revisión/);assert.doesNotMatch(text,/60\.0%/);});
 
-test('agenda uses the same NBA cohort instead of a second empty shared feed',async()=>{const text=await render(packet());assert.match(text,/NBA · 2026-11-04 · 1 partido registrado/);assert.match(text,/Calendario y emisiones del registro NBA/);assert.doesNotMatch(text,/0 partidos|panel NHL/);});
+test('agenda uses the same NBA cohort instead of a second empty shared feed',async()=>{const text=await render(packet());assert.match(text,/NBA · 2026-11-04 · 1 partido registrado/);assert.match(text,/Calendario diario \+ emisiones del registro NBA/);assert.doesNotMatch(text,/0 partidos|panel NHL/);});
 test('full NBA page skips legacy fetch, hides NHL/simulator/stats and keeps date changes aligned',async()=>{
  const fs=require('node:fs'),vm=require('node:vm');
  function el(){return {textContent:'',children:[],style:{},listeners:{},append(...x){this.children.push(...x)},prepend(...x){this.children.unshift(...x)},replaceChildren(...x){this.children=x},addEventListener(type,fn){(this.listeners[type]??=[]).push(fn)}};}
@@ -53,7 +53,7 @@ test('calendar-only fixture is visible and clearly marked as lacking a forecast'
  const schedule={data_kind:'fixtures_and_results_only',games:[{id:'2',sport:'nba',home:'Toronto Raptors',away:'New York Knicks',start_utc:'2026-11-05T01:30:00Z',status:'STATUS_SCHEDULED',completed:false}]};
  const text=await render(packet(),'2026-11-04',true,schedule);
  assert.match(text,/NBA · 2026-11-04 · 2 partidos registrados/);
- assert.match(text,/Toronto Raptors — New York Knicks/);
+ assert.match(text,/New York Knicks — Toronto Raptors/);
  assert.match(text,/todavía no hay pronóstico ni análisis de alineaciones publicado/);
 });
 
