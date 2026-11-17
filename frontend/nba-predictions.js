@@ -261,21 +261,30 @@
     }
     const market=marketPanel(prediction,modelHome,prediction.point_projection);if(market)card.append(market);
     if(adjustedStatus&&typeof baseline==="number")card.append(el("p","Referencia estadística sin ajustes: "+teamName(prediction.away_team)+" "+((1-baseline)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(baseline*100).toFixed(1)+"%"));
-    if(injury?.status==="research_scenario"){
+    if(["research_scenario","partial_research_scenario"].includes(injury?.status)){
+     const partial=injury.status==="partial_research_scenario";
      const delta=Number(injury.home_probability_delta_pp||0);
      const direction=delta>0?"+" :"";
-     card.append(el("p","Cambio aplicado por bajas: "+direction+delta.toFixed(1)+" puntos porcentuales para "+teamName(prediction.home_team)+". El candidato mostrado ya incorpora este cambio.","nba-injury-scenario"));
+     card.append(el("p",(partial?"Ajuste parcial por bajas: ":"Cambio aplicado por bajas: ")+direction+delta.toFixed(1)+" puntos porcentuales para "+teamName(prediction.home_team)+". El candidato mostrado ya incorpora este cambio.","nba-injury-scenario"));
      const evidence=el("details","");evidence.className="nba-module-run-status";
-     evidence.append(el("summary","Bajas y redistribución estimada"));
+     evidence.append(el("summary",partial?"Bajas incluidas y excluidas por falta de historial":"Bajas y redistribución estimada"));
      for(const team of [prediction.away_team,prediction.home_team]){
       const impact=injury.teams?.[team];if(!impact)continue;
-      const outNames=(impact.out_players||[]).map(player=>player.player).filter(Boolean);
-      let line=teamName(team)+": "+(outNames.length?outNames.join(", "):"sin baja OUT confirmada");
-      if(impact.estimated_points_lost_per_game!==null&&impact.estimated_points_lost_per_game!==undefined)line+=" · "+impact.estimated_points_lost_per_game.toFixed(1)+" puntos históricos perdidos";
-      if(impact.estimated_points_added_by_replacements_per_game!==null&&impact.estimated_points_added_by_replacements_per_game!==undefined)line+=" · "+impact.estimated_points_added_by_replacements_per_game.toFixed(1)+" puntos históricos redistribuidos";
+      const included=impact.quantified_out_players||impact.accepted_out_players||impact.out_players||[];
+      const outNames=included.map(player=>player.player).filter(Boolean);
+      let line=teamName(team)+": "+(outNames.length?"incluidas en el cálculo: "+outNames.join(", "):"sin baja cuantificable");
+      const lost=impact.estimated_points_lost_per_game??impact.historical_output_loss_per_game?.points;
+      const gained=impact.estimated_points_added_by_replacements_per_game??impact.historical_output_from_added_minutes_per_game?.points;
+      if(Number.isFinite(lost))line+=" · "+lost.toFixed(1)+" puntos históricos perdidos";
+      if(Number.isFinite(gained))line+=" · "+gained.toFixed(1)+" puntos redistribuidos";
       evidence.append(el("p",line,"nba-module-run-status__item nba-module-run-status__item--research_scenario"));
+      for(const player of impact.unquantified_out_players||[]){
+       const name=player.player||player.player_id||"jugador";
+       const fields=(impact.players_without_required_history||[]).filter(value=>value.startsWith(String(player.player_id)+":")).map(value=>value.split(":").slice(1).join(":"));
+       evidence.append(el("p",teamName(team)+": "+name+" confirmado fuera, excluido del cálculo por falta de historial de "+(fields.join(", ")||"minutos o puntos")+".","nba-module-run-status__item nba-module-run-status__item--pending"));
+      }
      }
-     evidence.append(el("p","Estimación basada en minutos redistribuidos y producción histórica; dudas y estados sin confirmar no se consideran bajas. Escenario experimental, no calibrado ni aprobado para producción."));
+     evidence.append(el("p",partial?"Escenario parcial: solo bajas con historial suficiente entran en la estimación. Las ausencias listadas como excluidas no se imputaron ni se les inventaron minutos o puntos. Experimental, no calibrado ni aprobado para producción.":"Estimación basada en minutos redistribuidos y producción histórica; dudas y estados sin confirmar no se consideran bajas. Escenario experimental, no calibrado ni aprobado para producción."));
      card.append(evidence);
     }else if(injury?.status==="blocked"){
      card.append(el("p","Sin ajuste por lesiones: "+(injury.reason||"faltan datos verificables.")+" Se conserva la probabilidad base.","nba-module-run-status__item nba-module-run-status__item--failed"));
