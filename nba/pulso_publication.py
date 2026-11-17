@@ -73,14 +73,33 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
   matchup_games={str(row['game_id']):row for row in matchup_adjustment.get('games',[])}
   if len(matchup_games)!=len(matchup_adjustment.get('games',[])) or set(matchup_games)!={str(row['game_id']) for row in snapshot['predictions']}:
    raise ValueError('Matchup adjustment must cover the full slate exactly')
- score_games={}
+ score_games={};score_audit_status='not_provided';score_audit_warning=None
  if score_audit:
-  score_body={k:v for k,v in score_audit.items() if k!='content_sha256'}
-  if score_audit.get('snapshot_sha256')!=snapshot_digest:raise ValueError('Score audit / snapshot mismatch')
-  score_games={str(item['game_id']):item for item in score_audit.get('games',[])}
-  if len(score_games)!=len(score_audit.get('games',[])) or set(score_games)!={str(row['game_id']) for row in snapshot['predictions']}:
-   raise ValueError('Score audit must cover the full slate exactly')
-  if score_audit.get('probability_adjustment_authorized') is not False:raise ValueError('Point projections cannot authorize probability changes')
+  audit_rows=score_audit.get('games',[])
+  audit_games={str(item['game_id']):item for item in audit_rows if isinstance(item,dict) and 'game_id' in item}
+  frozen_games={str(row['game_id']):row for row in snapshot['predictions']}
+  safe_flags=(score_audit.get('no_odds_input') is True
+              and score_audit.get('sporting_adjustment_applied') is False
+              and score_audit.get('probability_adjustment_authorized',False) is False
+              and all(item.get('probability_adjustment_authorized') is False for item in audit_rows))
+  same_slate=(len(audit_games)==len(audit_rows) and set(audit_games)==set(frozen_games))
+  same_baseline=same_slate and all(
+   audit_games[gid].get('home_team')==row.get('home_team')
+   and audit_games[gid].get('away_team')==row.get('away_team')
+   and all(type(audit_games[gid].get(key)) in (int,float)
+           and math.isclose(audit_games[gid][key],row.get(key,-1),rel_tol=0,abs_tol=1e-12)
+           for key in ('elo_p_home','challenger_p_home','hybrid_p_home'))
+   for gid,row in frozen_games.items())
+  if not safe_flags or not same_slate:
+   score_audit_status='skipped_incompatible'
+   score_audit_warning='La auditoría de puntos no coincide con la cartelera o no demuestra que sea solo informativa; se publicó el pronóstico sin esa auditoría.'
+  elif score_audit.get('snapshot_sha256')==snapshot_digest:
+   score_games=audit_games;score_audit_status='accepted_snapshot_match'
+  elif same_baseline:
+   score_games=audit_games;score_audit_status='accepted_same_baseline'
+  else:
+   score_audit_status='skipped_incompatible'
+   score_audit_warning='La auditoría pertenece a otro snapshot o sus probabilidades base difieren; se publicó el pronóstico sin esa auditoría.'
  player_stat_games={}
  if player_stat_projections:
   projection_body={k:v for k,v in player_stat_projections.items() if k!='content_sha256'}
@@ -204,7 +223,7 @@ def build(snapshot,run_id,module_context=None,injury_adjustment=None,travel_adju
   if module_context:copy['supporting_modules']=modules
   predictions.append(copy)
  research_count=sum(row.get('model_probability_status') in ('injury_adjusted_research_candidate','matchup_adjusted_research_candidate','travel_adjusted_research_candidate','combined_research_candidate') for row in predictions)
- return dict(kind='nba_pulso_research_publication_v1',run_id=str(run_id),snapshot_sha256=snapshot_digest,created_at_utc=snapshot['created_at_utc'],predictions=predictions,calibrated=False,availability_and_lineups_included=bool(module_context),modules_change_probabilities=research_count>0,research_scenarios_affect_probabilities=research_count,source='frozen_nba_prospective_snapshot')
+ return dict(kind='nba_pulso_research_publication_v1',run_id=str(run_id),snapshot_sha256=snapshot_digest,created_at_utc=snapshot['created_at_utc'],predictions=predictions,calibrated=False,availability_and_lineups_included=bool(module_context),modules_change_probabilities=research_count>0,research_scenarios_affect_probabilities=research_count,score_audit_status=score_audit_status,score_audit_warning=score_audit_warning,source='frozen_nba_prospective_snapshot')
 
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--snapshot',required=True);p.add_argument('--run-id',required=True);p.add_argument('--output',required=True);p.add_argument('--module-context');p.add_argument('--injury-adjustment');p.add_argument('--travel-adjustment');p.add_argument('--matchup-adjustment');p.add_argument('--player-stat-projections');p.add_argument('--score-audit');p.add_argument('--rotowire-context');a=p.parse_args();out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);context=json.loads(Path(a.module_context).read_text()) if a.module_context else None;adjustment=json.loads(Path(a.injury_adjustment).read_text()) if a.injury_adjustment else None;travel=json.loads(Path(a.travel_adjustment).read_text()) if a.travel_adjustment else None;matchup=json.loads(Path(a.matchup_adjustment).read_text()) if a.matchup_adjustment else None;stats=json.loads(Path(a.player_stat_projections).read_text()) if a.player_stat_projections else None;score=json.loads(Path(a.score_audit).read_text()) if a.score_audit and Path(a.score_audit).is_file() else None;markets=json.loads(Path(a.rotowire_context).read_text()) if a.rotowire_context and Path(a.rotowire_context).is_file() else None;out.write_text(json.dumps(build(json.loads(Path(a.snapshot).read_text()),a.run_id,context,adjustment,travel,matchup,stats,score,markets),indent=2,allow_nan=False))
