@@ -370,7 +370,8 @@ def _multi_source_research_scenario(fixture, modules, history, player_history, e
     rotation_game = rotation_module.get("historical_rotation", {}).get("teams", {})
     lineup_game = modules.get("starting_lineups", {}).get("data", {}).get("teams", {})
     player_rows = player_history if isinstance(player_history, list) else player_history.get("players", []) if isinstance(player_history, dict) else []
-    unmatched = evidence.get("unmatched_candidates", [])
+    unmatched = [claim for claim in evidence.get("unmatched_candidates", [])
+                 if str(claim.get("game_id", "")) == gid]
     unresolved_out = [claim for claim in unmatched
                       if str(claim.get("status", "")).strip().casefold() in ("out", "inactive", "ruled out", "suspended")]
     if unresolved_out:

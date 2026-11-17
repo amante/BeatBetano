@@ -122,18 +122,25 @@ def reconcile(snapshot, roster, complement, official=None):
             name = row.get("player_candidate") or row.get("player")
             editorial = source_type == "editorial_player_news" or bool(row.get("editorial_claim"))
             headline = row.get("headline")
+            reported_team = row.get("team_candidate") or row.get("team") or row.get("source_team")
+            scoped_teams = [t for t in fixture_teams if reported_team and same_team(reported_team, t)]
+            # Provider pages contain league-wide lists. Ignore claims assigned to
+            # another team before attempting to match names against this fixture.
+            if reported_team and not scoped_teams:
+                continue
+            candidate_teams = scoped_teams or list(fixture_teams)
             matched_players = []
             if name:
                 if row.get("player_id"):
                     pid = str(row["player_id"])
-                    matched_players = [p for t in fixture_teams
+                    matched_players = [p for t in candidate_teams
                                        for p in fixture_roster.get(t, {}).get("players", [])
                                        if str(p.get("player_id")) == pid]
                 else:
-                    matched_players = [p for t in fixture_teams
+                    matched_players = [p for t in candidate_teams
                                        for p in _match_name(name, fixture_roster.get(t, {}).get("players", []))]
             elif headline and editorial:
-                matched_players = [p for t in fixture_teams
+                matched_players = [p for t in candidate_teams
                                    for p in _match_name(headline, fixture_roster.get(t, {}).get("players", []), editorial=True)]
             # Deduplicate a player that was included through multiple team loops.
             unique = {(str(p.get("player_id")), p.get("player")): p for p in matched_players}
@@ -141,17 +148,17 @@ def reconcile(snapshot, roster, complement, official=None):
             if len(matched_players) != 1:
                 game_unmatched.append({"source": source_name, "candidate": name or headline,
                     "status": state, "reason": "no_unique_exact_roster_match" if not matched_players else "ambiguous_roster_match",
-                    "source_url": row.get("source_url") or source.get("url")})
+                    "source_team": reported_team, "source_url": row.get("source_url") or source.get("url")})
                 continue
             player = matched_players[0]
-            player_team = next((t for t in fixture_teams if any(
+            player_team = next((t for t in candidate_teams if any(
                 str(p.get("player_id")) == str(player.get("player_id"))
                 for p in fixture_roster.get(t, {}).get("players", []))), None)
-            reported_team = row.get("team_candidate") or row.get("team") or row.get("source_team")
             if reported_team and not same_team(reported_team, player_team):
                 game_unmatched.append({"source": source_name, "candidate": name or headline,
                     "status": state, "reason": "source_team_conflicts_with_roster_team",
-                    "source_team": reported_team, "roster_team": player_team})
+                    "source_team": reported_team, "roster_team": player_team,
+                    "source_url": row.get("source_url") or source.get("url")})
                 continue
             record_claim(player_team, player, state, source_name or "Unknown source",
                          row.get("source_url") or source.get("url"), observed, reported,
