@@ -230,7 +230,7 @@ def _apply_fit(sample_rows):
     if len(train) < MIN_TRAIN or len(holdout) < MIN_HOLDOUT:
         return {"status": "insufficient_chronological_sample", "train_games": len(train),
                 "holdout_games": len(holdout), "applied": False}
-    fit = _fit([([x[key] for key in FEATURE_KEYS], y) for x, y in train])
+    fit = _fit([([x.get(key, 0.0) for key in FEATURE_KEYS], y) for x, y in train])
     standardized = [[(x[key]-fit["feature_means"][j])/fit["feature_scales"][j]
                      for j, key in enumerate(FEATURE_KEYS)] for x, _ in holdout]
     metrics = _metrics([y for _, y in holdout], {"fit": fit, "holdout_x": standardized})
@@ -239,7 +239,7 @@ def _apply_fit(sample_rows):
     if not passed:
         return {"status": "holdout_no_improvement", "train_games": len(train),
                 "holdout": metrics, "applied": False}
-    full_fit = _fit([([x[key] for key in FEATURE_KEYS], y) for x, y in sample_rows])
+    full_fit = _fit([([x.get(key, 0.0) for key in FEATURE_KEYS], y) for x, y in sample_rows])
     return {"status": "research_adjustment_validated_on_chronological_holdout",
             "train_games": len(train), "holdout": metrics, "fit": full_fit,
             "applied": True}
@@ -280,7 +280,7 @@ def build(snapshot, module_context, history):
                "calibrated": False, "production_approved": False}
         if fitted.get("applied") and feature is not None:
             fit = fitted["fit"]
-            z = [(feature[key]-fit["feature_means"][i])/fit["feature_scales"][i]
+            z = [(feature.get(key, 0.0)-fit["feature_means"][i])/fit["feature_scales"][i]
                  for i, key in enumerate(FEATURE_KEYS)]
             delta = sum(a*b for a, b in zip(fit["coefficients_standardized"], z))
             delta = max(-MAX_LOG_ODDS_DELTA, min(MAX_LOG_ODDS_DELTA, delta))
