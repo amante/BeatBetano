@@ -44,7 +44,7 @@
   return Boolean(modelSide&&modelSide!==marketSide);
  };
  const marketCalendarStrip=(game,m,modelHome=null)=>{
-  const strip=el("div","");strip.className="nba-calendar-market";strip.setAttribute("aria-label","Cuotas informativas RotoWire");
+  const strip=el("div","");strip.className="nba-calendar-market";
   const label=el("span","Mercado");label.className="nba-calendar-market__label";strip.append(label);
   if(!validMarket(m,game.tipoff_utc)){strip.append(el("span","Cuotas RotoWire aún no disponibles"));return strip;}
   const ml=m.moneyline;
