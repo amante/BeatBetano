@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v4"
+VERSION = "nhl-joint-match-320-v5"
 
 
 def _num(value, label, *, positive=False):
@@ -606,7 +606,7 @@ def run(inputs):
     if scenarios and all(s["scenario_weight"] is not None for s in scenarios):
         weight_total=sum(s["scenario_weight"] for s in scenarios)
         if math.isclose(weight_total,1.0,abs_tol=1e-8):
-            market_keys=("regulation","illustrative_ml","three_goal_lead","first_to_three_goal_lead")
+            market_keys=("regulation","illustrative_ml","three_goal_lead","first_to_three_goal_lead","comeback_after_two_goal_deficit")
             weighted_markets={}
             for key in market_keys:
                 outcomes=scenarios[0]["markets"][key]
@@ -667,6 +667,7 @@ def run(inputs):
             "Player-level anytime goal, assist, and point probabilities are exploratory independent-Poisson estimates and require walk-forward calibration.",
             "Player goal projections feed expected team goals by EV/PP/SH deployment; assists are allocated as player points and are not extra team goals.",
             "Division/rivalry shifts expected goal differential using a bounded, shrunk split of strictly prior two-year regulation goal results; it is experimental, not calibrated, and is omitted when history is insufficient.",
+            "Comeback probability means falling behind by at least two regulation goals and still winning the illustrative ML outcome; a regulation tie receives the same 50/50 overtime split as that market.",
             "PIM affects opportunity volume through an observed roster-to-team exposure ratio, not a fixed minutes-to-power-play conversion.",
             "Schedule, travel and back-to-back context are retained in source inputs but have no estimated coefficient.",
             "When candidate goalie starts exactly cover all prior team games, an experimental mix weights paired scenarios by each candidate's current-season gamesStarted share; this is an uncalibrated historical frequency, not a confirmed starter probability. Incomplete coverage leaves the mix unavailable.",
