@@ -12,8 +12,18 @@
  const svgNS="http://www.w3.org/2000/svg";
  function addIcon(holder,type){
   if(!holder||holder.querySelector("svg"))return;
-  const paths={overview:[["path",{d:"m3 10 9-7 9 7"}],["path",{d:"M5 9v11h14V9"}],["path",{d:"M9 20v-6h6v6"}]],games:[["rect",{x:"3",y:"4",width:"18",height:"17",rx:"2"}],["path",{d:"M8 2v4m8-4v4M3 9h18"}]],calibration:[["circle",{cx:"12",cy:"12",r:"9"}],["path",{d:"M12 7v5l3 2"}]],sport:[["path",{d:"M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"}],["path",{d:"M8 9h.01M16 15h.01M12 8v8m-4-4h8"}]]};
-  const svg=document.createElementNS(svgNS,"svg");svg.setAttribute("viewBox","0 0 24 24");svg.setAttribute("aria-hidden","true");
+  const paths={
+   overview:[["path",{d:"m3 10 9-7 9 7"}],["path",{d:"M5 9v11h14V9"}],["path",{d:"M9 20v-6h6v6"}]],
+   games:[["rect",{x:"3",y:"4",width:"18",height:"17",rx:"2"}],["path",{d:"M8 2v4m8-4v4M3 9h18"}]],
+   calibration:[["circle",{cx:"12",cy:"12",r:"9"}],["path",{d:"M12 7v5l3 2"}]],
+   nba:[["circle",{cx:"12",cy:"12",r:"9"}],["path",{d:"M3.5 9h17M3.5 15h17M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"}]],
+   nfl:[["path",{d:"M3 12c3-5 7-7 12-7 2 0 4 1 6 2-1 5-5 10-12 12-2 0-4-1-6-2 1-2 1-3 0-5Z"}],["path",{d:"m8 12 8 0m-6-2v4m3-4v4"}]],
+   nhl:[["path",{d:"M4 15h15l-2 4H2l2-4Zm5-2 8-8m-2-2 5 5"}],["path",{d:"M7 15v4"}]],
+   soccer:[["circle",{cx:"12",cy:"12",r:"9"}],["path",{d:"m12 7 3 2-1 4h-4L9 9l3-2Zm0-4v4m8 5-5-1m-11 0 5-1m-3 7 4-3m6 3-4-3"}]],
+   tennis:[["circle",{cx:"12",cy:"12",r:"9"}],["path",{d:"M5 5c4 1 7 4 8 8s0 6-2 8M19 5c-4 1-7 4-8 8s0 6 2 8"}]],
+   sport:[["path",{d:"M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"}],["path",{d:"M8 9h.01M16 15h.01M12 8v8m-4-4h8"}]]
+  };
+  const svg=document.createElementNS(svgNS,"svg");svg.setAttribute("viewBox","0 0 24 24");svg.setAttribute("aria-hidden","true");svg.setAttribute("focusable","false");
   for(const [tag,attrs] of paths[type]||paths.sport){const node=document.createElementNS(svgNS,tag);for(const [k,v] of Object.entries(attrs))node.setAttribute(k,v);svg.append(node)}
   holder.replaceChildren(svg);
  }
@@ -21,7 +31,20 @@
   document.querySelectorAll('.nav[data-nav="overview"] span').forEach(x=>addIcon(x,"overview"));
   document.querySelectorAll('.nav[data-nav="games"] span').forEach(x=>addIcon(x,"games"));
   document.querySelectorAll('.nav[data-nav="calibration"] span').forEach(x=>addIcon(x,"calibration"));
-  document.querySelectorAll("#sport-nav .nav:not([data-nav])").forEach(nav=>{const icon=document.createElement("span");icon.setAttribute("aria-hidden","true");addIcon(icon,"sport");nav.prepend(icon)});
+  document.querySelectorAll("#sport-nav .nav:not([data-nav])").forEach(nav=>{const icon=document.createElement("span");icon.setAttribute("aria-hidden","true");addIcon(icon,sport);nav.prepend(icon)});
+ }
+ function setupNavigation(){
+  if(sport==="nhl")return;
+  const targets={overview:document.querySelector(".pulso-page-intro"),games:document.getElementById("daily-panel"),calibration:document.getElementById("model-module-status")};
+  document.querySelectorAll(".nav[data-nav]").forEach(button=>button.addEventListener("click",()=>{
+   const target=targets[button.dataset.nav];if(!target)return;
+   document.querySelectorAll(".nav[data-nav]").forEach(item=>{item.classList.toggle("active",item===button);if(item===button)item.setAttribute("aria-current","page");else item.removeAttribute("aria-current")});
+   target.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth",block:"start"});
+   const heading=target.matches("h1,h2,h3,h4")?target:target.querySelector("h1,h2,h3,h4")||target;
+   if(!heading.hasAttribute("tabindex"))heading.setAttribute("tabindex","-1");
+   heading.focus({preventScroll:true});
+   window.PulsoNavigation?.close();
+  }));
  }
  function logoFor(code){
   if(sport==="nhl"&&nhlCodes.has(code))return "https://assets.nhle.com/logos/nhl/svg/"+code+"_light.svg";
@@ -102,7 +125,7 @@
   intro.append(eyebrow,heading,lead);main.prepend(intro);
  }
  function setup(){
-  setupPageHeading();setupIcons();setupAccordions();teamPass();
+  setupPageHeading();setupIcons();setupNavigation();setupAccordions();teamPass();
   const main=document.querySelector("main");if(!main)return;
   let queued=false;
   const observer=new MutationObserver(records=>{
