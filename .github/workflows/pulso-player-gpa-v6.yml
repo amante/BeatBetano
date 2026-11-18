@@ -1,0 +1,50 @@
+name: PULSO PLAYER — NHL goals, assists and points v6
+on:
+  pull_request:
+    paths:
+      - 'nhl/pulso_player_gpa_v6.py'
+      - 'nhl/pulso_player_v3.py'
+      - '.github/workflows/pulso-player-gpa-v6.yml'
+  workflow_dispatch:
+    inputs:
+      teams:
+        description: 'Comma-separated NHL teams or ALL'
+        required: false
+        type: string
+        default: EDM,COL,DAL,FLA,NYR,TOR
+      start:
+        description: 'First target date for chronological evaluation'
+        required: false
+        type: string
+        default: '2025-10-01'
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Check v6 and source modules compile
+        run: python -m py_compile nhl/pulso_player_gpa_v6.py nhl/pulso_player_v3.py
+  replay:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Run NHL goals-assists-points walk-forward
+        env:
+          PULSO_TEAMS: ${{ inputs.teams }}
+          PULSO_START: ${{ inputs.start }}
+        run: python -m nhl.pulso_player_gpa_v6 --teams "$PULSO_TEAMS" --start "$PULSO_START" --out results/nhl/pulso_player_gpa_v6
+      - uses: actions/upload-artifact@v6
+        with:
+          name: pulso-player-nhl-gpa-v6-${{ github.run_id }}
+          path: results/nhl/pulso_player_gpa_v6/
+          retention-days: 90
