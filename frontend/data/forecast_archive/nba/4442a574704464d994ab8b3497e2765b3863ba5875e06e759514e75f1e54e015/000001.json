@@ -1,0 +1,73 @@
+{
+  "sport": "nba",
+  "as_of_utc": "2026-11-18T18:02:10.431223Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401910012",
+      "start_utc": "2026-11-19T00:30:00Z",
+      "participants": [
+        "TOR",
+        "WSH"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.8020243818223247,
+          "away": 0.19797561817767528
+        },
+        "model_version": "nba-existing-baselines-hybrid-challenger",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "hybrid_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nba-existing-baselines",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": false,
+  "automatic_promotion": false,
+  "source_model_output": {
+    "game_id": "401910012",
+    "tipoff_utc": "2026-11-19T00:30:00Z",
+    "home_team": "TOR",
+    "away_team": "WSH",
+    "elo_p_home": 0.7902602965666544,
+    "challenger_p_home": 0.8020243818223247,
+    "hybrid_p_home": 0.8020243818223247,
+    "hybrid_route": "challenger",
+    "dual_challenger": false,
+    "eligible_for_bet": false,
+    "status": "unvalidated_candidate"
+  },
+  "source_output_sha256": "282d7e69d8d5ee3beef3e0db8f678ca1b47b21a2925855aa7618171abe25c626",
+  "source_output_sha256_scope": "event",
+  "model_provenance": {
+    "data_role": "historical_training_history",
+    "model_code_sha256": "1cee1bd0884eaf344cf35a37b8de4f78c5388816a04a4811b22a11e4c8c2cda3",
+    "training_data_sha256": "2e6097bd338216e45b9d5894da04a8a617a7a2e277e2a1faea5f15a2f89bd180",
+    "training_cutoff_utc": "2026-11-18T04:00:00+00:00",
+    "model_code_revision": "b6df189b774fe58fd0042b0a10ce1ca1de43c560",
+    "model_family": "nba-existing-baselines",
+    "forecast_model_version": "nba-existing-baselines-hybrid-challenger",
+    "source_output_sha256": "282d7e69d8d5ee3beef3e0db8f678ca1b47b21a2925855aa7618171abe25c626"
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-18T18:02:11.077916+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "8931612e8b6da65806107e9d32be29a0dfaa68655849a0b9729800a62ce3cc8c"
+}
