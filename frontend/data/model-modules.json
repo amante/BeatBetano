@@ -160,11 +160,11 @@
           "id": "division_rivalry",
           "name": "División y rivalidad",
           "created": true,
-          "connected": false,
-          "affects_prediction": false,
-          "evidence": "nhl/module_audit.py; nhl/all_module_historical_audit.py",
-          "scope": "Existe auditoría histórica, pero no se ejecuta como ajuste del pronóstico diario.",
-          "note": "Falta integrarlo al modelo diario y cuantificar su efecto."
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nhl/division_rivalry.py; nhl/joint_match_input_builder_321.py; nhl/joint_match_engine_320.py; frontend/nhl-joint-model.js; .github/workflows/pulso-nhl-prospective.yml",
+          "scope": "La diferencia histórica de goles en tiempo regular de partidos divisionales frente a otros rivales, con ajuste adicional de rivalidad cuando hay muestra, cambia los goles esperados antes de calcular ML, tiempo regular y ventaja +3 en el motor integrado.",
+          "note": "Experimental y no calibrado. Solo usa resultados oficiales de los dos años anteriores a la fecha del juego, con un mínimo de 12 partidos divisionales y 12 contra otros rivales por equipo. El efecto se reduce hacia cero y se limita a ±0,35 goles de diferencial; rivalidades Tier A requieren al menos 4 enfrentamientos. Sin muestra suficiente, no modifica porcentajes. El motor integrado sigue siendo condicional y no reemplaza el baseline oficial."
         },
         {
           "id": "goal_process_rt",
