@@ -100,7 +100,7 @@ def run(ledger,output,max_games,delay):
         if path.is_file():
             try:
                 old=json.loads(path.read_text())
-                if old.get("game_id")==game["id"] and old.get("goal_events_available") and old.get("boxscore",{}).get("player_by_game_stats"):
+                if old.get("game_id")==game["id"] and old.get("goal_events_available") and old.get("opponent_style_features_version")==1 and old.get("opponent_style_profile") and old.get("boxscore",{}).get("player_by_game_stats"):
                     cached+=1;continue
             except (ValueError,KeyError):pass
         try:
