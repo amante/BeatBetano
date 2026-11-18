@@ -159,12 +159,24 @@ def game_profile(fixture, plays):
     home_id = int(fixture["home_team_id"])
     away_id = int(fixture["away_team_id"])
     teams = {}
+    final_goals = {
+        home_id: fixture.get("home_goals"),
+        away_id: fixture.get("away_goals"),
+    }
     for team_id, opponent_id in ((home_id, away_id), (away_id, home_id)):
+        observed_goals = counts[team_id]["goals"]
+        official_goals = final_goals[team_id]
         teams[team_info[team_id]] = {
             "team_id": team_id,
             "team_games_in_sample": 1,
             "attack": _finish(counts[team_id]),
             "defense_allowed": _finish(counts[opponent_id]),
+            "goal_attribution_check": {
+                "play_by_play_goals": observed_goals,
+                "official_final_goals": official_goals,
+                "matches_scoreboard": observed_goals == official_goals
+                    if type(official_goals) is int else None,
+            },
         }
     return {
         "game_id": str(fixture["game_id"]),
@@ -227,6 +239,7 @@ def build_report(game_profiles):
             "Distance bands use nearest-goal geometry and are not NHL EDGE danger labels or a fitted expected-goals model.",
             "Blocked-shot events are counted but excluded from shot-origin distance because their coordinates may describe the block location.",
             "No on-ice matchup, line chemistry, score-state, or manpower adjustment is inferred.",
+            "Goal event ownership is checked against the official final score; any mismatch is surfaced and must be resolved before modeling.",
             "No probabilities are changed by this descriptive profile.",
         ],
     }
