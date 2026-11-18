@@ -278,5 +278,16 @@ document.querySelectorAll('input[name="simulation-scope"]').forEach(r=>r.addEven
 $("run-simulation").addEventListener("click",runSimulation);
 $("crumb").textContent=title.toUpperCase();
 $("sport-nav").append(make("div",title,"nav active"));
-$("menu").addEventListener("click",()=>document.querySelector(".sidebar").classList.toggle("open"));
+const menuButton=$("menu"),sidebar=document.querySelector(".sidebar");
+function setMenuOpen(open,restoreFocus=false){
+ sidebar.classList.toggle("open",open);
+ menuButton.setAttribute("aria-expanded",String(open));
+ if(open)sidebar.querySelector("[data-nav]")?.focus();
+ else if(restoreFocus)menuButton.focus();
+}
+menuButton.addEventListener("click",()=>setMenuOpen(!sidebar.classList.contains("open")));
+document.addEventListener("keydown",event=>{
+ if(event.key==="Escape"&&sidebar.classList.contains("open"))setMenuOpen(false,true);
+});
+window.PulsoNavigation={close:()=>setMenuOpen(false)};
 load();
