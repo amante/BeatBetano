@@ -441,7 +441,7 @@
   root.append(el("p","Última captura: "+local(data.last_source_capture_utc)+(stale(data)?" · Datos desactualizados; revisar la fuente.":"")));
   if(data.source_error_count)root.append(el("p","El registro conserva fallos de fuente. La cobertura requiere revisión."));
   if(data.sporting_evidence_errors.length)root.append(el("p","Hay evidencia deportiva que no pudo verificarse."));
-  if(!rows.length){const empty="No se encontraron partidos de NBA en las fuentes consultadas para esta fecha de jornada.";root.append(el("p",empty));if(agenda)agenda.append(el("p",empty));}
+  if(!rows.length){const empty="La fecha elegida todavía no tiene cobertura suficiente en el calendario NBA.";root.append(el("p",empty));if(agenda)agenda.append(el("p",empty));}
   for(const g of rows){
    const card=el("article","");card.className="nba-forward-game";
    const state=g.outcome?"Final":g.source_state==="in"?"En juego al último corte":g.source_status==="STATUS_FINAL"?"Final · cierre emparejado pendiente":g.source_status==="STATUS_POSTPONED"?"Aplazado":g.source_status==="STATUS_CANCELED"?"Cancelado":g.status.includes("review")?"Requiere revisión":Date.now()>=Date.parse(g.tipoff_utc)?"Sin actualización posterior al inicio":"Por comenzar";
