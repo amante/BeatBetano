@@ -79,10 +79,16 @@
    const anchor=document.getElementById("daily-panel")||main.lastElementChild;anchor.insertAdjacentElement("afterend",bucket);
   }
   const content=bucket.querySelector(".pulso-accordion-content");
+  const primaryIds=new Set(["daily-panel","nba-runner","nba-results","progressive-forecasts","nhl-five-market","messages"]);
   [...main.children].forEach(node=>{
-   if(node===bucket||node.id==="daily-panel"||node.id==="progressive-forecasts"||node.id==="nba-runner"||node.id==="messages"||!node.matches(".panel,.forecast-panel"))return;
+   if(node===bucket||primaryIds.has(node.id)||node.classList.contains("simulation-panel")||!node.matches(".panel,.forecast-panel"))return;
    content.append(node);
   });
+  const primary=[...main.children].filter(node=>
+   node!==bucket&&!node.hidden&&(primaryIds.has(node.id)||node.classList.contains("simulation-panel"))
+  );
+  const anchor=primary.at(-1)||document.getElementById("daily-panel");
+  if(anchor&&bucket.previousElementSibling!==anchor)anchor.insertAdjacentElement("afterend",bucket);
   bucket.hidden=!content.children.length;
  }
  function setup(){
