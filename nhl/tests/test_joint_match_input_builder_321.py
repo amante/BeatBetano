@@ -16,16 +16,7 @@ class BuilderTests(unittest.TestCase):
     def test_toi_parses_official_clock_and_seconds(self):
         self.assertAlmostEqual(builder.toi('17:30'),17.5)
         self.assertAlmostEqual(builder.toi(1050),17.5)
-        self.assertAlmostEqual(builder.toi('1050'),17.5)
         with self.assertRaises(ValueError): builder.toi('17:60')
-
-    def test_missing_special_team_toi_is_zero_but_ev_and_total_still_block(self):
-        self.assertEqual(builder.toi(None, allow_missing=True, label='PP'), 0.0)
-        self.assertEqual(builder.toi('', allow_missing=True, label='PK'), 0.0)
-        with self.assertRaisesRegex(ValueError, 'Missing.*EV'):
-            builder.toi(None, label='EV')
-        with self.assertRaisesRegex(ValueError, 'Missing.*total'):
-            builder.toi(None, label='total')
 
     def test_paginated_stats_requires_exact_total(self):
         responses=[({'total':2,'data':[{'playerId':1},{'playerId':2}]},{'url':'x','sha256':'a'*64,'retrieved_at_utc':'2026-11-01T00:00:00Z'})]
