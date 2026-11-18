@@ -208,13 +208,13 @@
         },
         {
           "id": "fuertes_dual",
-          "name": "Clasificación FUERTE / DUAL",
-          "created": false,
-          "connected": false,
-          "affects_prediction": false,
-          "evidence": "nhl/module_validation_readiness.py",
-          "scope": "El registro de preparación enumera el objetivo, sin implementación de predicción diaria.",
-          "note": "Pendiente de creación."
+          "name": "Probabilidades FUERTE / DUAL",
+          "created": true,
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nhl/goal_process.py; nhl/joint_match_engine_320.py; frontend/nhl-joint-model.js; .github/workflows/pulso-nhl-prospective.yml",
+          "scope": "FUERTE estima ganar por 2+ goles en tiempo regular; DUAL estima ganar o empatar en tiempo regular (1X/X2). Ambas probabilidades se calculan de la distribución conjunta de goles esperados que incorpora las variables disponibles del escenario.",
+          "note": "Probabilidades derivadas experimentales, sin calibración; FUERTE y DUAL son mercados, no etiquetas basadas en un umbral arbitrario. El porcentaje de cada mercado cambia cuando cambian las tasas de gol integradas. No son recomendaciones de apuesta."
         },
         {
           "id": "return_injury",
