@@ -13,7 +13,7 @@
   }
   return true;
  }
- const day=x=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x));
+ const day=x=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x));
  const forDay=(x,d)=>x.games.filter(g=>day(g.tipoff_utc)===d);
  function calendarGames(publication,schedule,date){
   const rows=forDay(publication,date).map(game=>({...game,calendar_only:false}));
@@ -236,6 +236,9 @@
   const playerStats=document.getElementById("nba-player-projections");
   if(playerStats){playerStats.hidden=true;playerStats.style.display="none";}
  }
+ const dateInput=document.getElementById("daily-date");
+ const dateInZone=zone=>new Intl.DateTimeFormat("en-CA",{timeZone:zone,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+ if(dateInput&&dateInput.value===dateInZone("America/Santiago"))dateInput.value=dateInZone("America/New_York");
  let data=null,currentRun=null,dailySchedule=null,error="";
  function render(){
   root.replaceChildren(el("h2","Resultado de la última corrida NBA"));
@@ -433,12 +436,12 @@
   const selected=document.getElementById("daily-date").value,rows=calendarGames(data,dailySchedule,selected);
   const label=document.getElementById("daily-label"),source=document.getElementById("feed-message");
   if(label)label.textContent="NBA · "+selected+" · "+rows.length+" partido"+(rows.length===1?" registrado":"s registrados");
-  if(source)source.textContent="Calendario diario + emisiones del registro NBA · captura "+local(data.last_source_capture_utc)+" · fecha Chile."+(rows.some(game=>game.calendar_only)?" · hay partidos sin emisión en la última corrida.":"");
+  if(source)source.textContent="Jornada NBA según fecha oficial de EE. UU. · horarios de Chile · captura "+local(data.last_source_capture_utc)+"."+(rows.some(game=>game.calendar_only)?" · hay partidos sin emisión en la última corrida.":"");
   root.append(el("p","Elo y Challenger experimentales · los ajustes de lesiones, quintetos, cruces y viajes dependen de evidencia suficiente."));
   root.append(el("p","Última captura: "+local(data.last_source_capture_utc)+(stale(data)?" · Datos desactualizados; revisar la fuente.":"")));
   if(data.source_error_count)root.append(el("p","El registro conserva fallos de fuente. La cobertura requiere revisión."));
   if(data.sporting_evidence_errors.length)root.append(el("p","Hay evidencia deportiva que no pudo verificarse."));
-  if(!rows.length){const empty=data.calendar_date_coverage_chile[selected]?"La fuente no reporta partidos dentro de esta cohorte para la fecha elegida.":"La fecha elegida todavía no tiene cobertura suficiente.";root.append(el("p",empty));if(agenda)agenda.append(el("p",empty));}
+  if(!rows.length){const empty="No se encontraron partidos de NBA en las fuentes consultadas para esta fecha de jornada.";root.append(el("p",empty));if(agenda)agenda.append(el("p",empty));}
   for(const g of rows){
    const card=el("article","");card.className="nba-forward-game";
    const state=g.outcome?"Final":g.source_state==="in"?"En juego al último corte":g.source_status==="STATUS_FINAL"?"Final · cierre emparejado pendiente":g.source_status==="STATUS_POSTPONED"?"Aplazado":g.source_status==="STATUS_CANCELED"?"Cancelado":g.status.includes("review")?"Requiere revisión":Date.now()>=Date.parse(g.tipoff_utc)?"Sin actualización posterior al inicio":"Por comenzar";
