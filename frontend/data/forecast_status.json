@@ -1,35 +1,23 @@
 {
-  "as_of_utc": "2026-11-18T00:38:25.145297+00:00",
+  "as_of_utc": "2026-11-18T02:52:53.814397+00:00",
   "sports": {
     "nba": {
       "status": "processed",
       "publications": [
         {
           "sport": "nba",
-          "as_of_utc": "2026-11-18T00:38:25.373896Z",
+          "as_of_utc": "2026-11-18T02:52:54.128846Z",
           "events": [
-            {
-              "event_id": "401910003",
-              "status": "reused",
-              "snapshot_sha256": "0d37154669450452b88b3f0f65f63ef9e1a9a2bac98c382930889525e9117f53",
-              "stage": "final_pregame"
-            },
-            {
-              "event_id": "401910004",
-              "status": "reused",
-              "snapshot_sha256": "d47be0e58aa1724897f504576060c1afa513bc5cadee4de4a1122306224b87c1",
-              "stage": "final_pregame"
-            },
             {
               "event_id": "401910005",
               "status": "reused",
-              "snapshot_sha256": "b942aa558dd47f1071b8a0832ff7e8916d1566c5d1a6821908d795d580cdf7ef",
+              "snapshot_sha256": "d3938102ca31e202878ba85580e88bfb0fe012105d9c9e23fa6a694bbdd4cd47",
               "stage": "update"
             },
             {
               "event_id": "401910006",
               "status": "reused",
-              "snapshot_sha256": "0ec51c96d07e0ee0fb8199461f6f12ecb6f9740496c1480118405141ea17ec78",
+              "snapshot_sha256": "22c0f9f350410e2f76e09eb2c33a3088db21d2a8c1ceb2d136ac09b90b657908",
               "stage": "update"
             }
           ],
@@ -37,21 +25,9 @@
           "selection_approval_changed": false
         }
       ],
-      "fixtures_requested": 4,
-      "fixtures_with_forecast": 4,
+      "fixtures_requested": 2,
+      "fixtures_with_forecast": 2,
       "fixture_bindings": [
-        {
-          "fixture_id": "401910003",
-          "forecast_event_id": "401910003",
-          "method": "same_provider_event_id",
-          "forecast_available": true
-        },
-        {
-          "fixture_id": "401910004",
-          "forecast_event_id": "401910004",
-          "method": "same_provider_event_id",
-          "forecast_available": true
-        },
         {
           "fixture_id": "401910006",
           "forecast_event_id": "401910006",
@@ -68,24 +44,10 @@
       "missing_baseline_fixture_ids": [],
       "sporting_integration": [
         {
-          "baseline_snapshot_sha256": "6600c194d0eb296caf22749f4fac5622422623ea8e3b62c6ee357153e3e4e305",
-          "games": 4,
+          "baseline_snapshot_sha256": "253b229b2280a822d7391ed9e18afa012f2b995e577327c4db0ead4bf069f31f",
+          "games": 2,
           "integrated_research_games": 0,
           "game_diagnostics": [
-            {
-              "game_id": "401910003",
-              "missing": [
-                "MIN: Missing verified roster, injuries, lineups, player effects and score-path evidence; POR: Missing verified roster, injuries, lineups, player effects and score-path evidence"
-              ],
-              "lineup_context": {}
-            },
-            {
-              "game_id": "401910004",
-              "missing": [
-                "SA: Missing verified roster, injuries, lineups, player effects and score-path evidence; DET: Missing verified roster, injuries, lineups, player effects and score-path evidence"
-              ],
-              "lineup_context": {}
-            },
             {
               "game_id": "401910005",
               "missing": [
@@ -105,64 +67,37 @@
           "production_approved": false,
           "availability_observation": {
             "status": "captured",
-            "captured_at_utc": "2026-11-18T00:38:27.149245+00:00",
-            "statistical_snapshot_sha256": "6600c194d0eb296caf22749f4fac5622422623ea8e3b62c6ee357153e3e4e305",
-            "statistical_snapshot_created_at_utc": "2026-11-18T00:38:25.373896+00:00",
+            "captured_at_utc": "2026-11-18T02:52:55.233367+00:00",
+            "statistical_snapshot_sha256": "253b229b2280a822d7391ed9e18afa012f2b995e577327c4db0ead4bf069f31f",
+            "statistical_snapshot_created_at_utc": "2026-11-18T02:52:54.128846+00:00",
             "later_sidecar_not_retroactive_snapshot_update": true,
-            "games": 4,
-            "teams": 8,
-            "roster_members": 141,
-            "matched_injury_claims": 29,
+            "games": 2,
+            "teams": 4,
+            "roster_members": 73,
+            "matched_injury_claims": 13,
             "unmatched_claims": [],
             "conflicts": [],
-            "official_injury_report_retrieved": true,
-            "official_injury_report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-11_04_30PM.pdf",
-            "official_injury_report_as_of_utc": "2026-11-11T21:30:00+00:00",
-            "official_report_parse_status": "complete",
-            "official_report_parse_text_mode": "layout",
-            "official_report_parse_attempts": [
-              {
-                "text_mode": "layout",
-                "parse_mode": "continuous_table",
-                "rows": 91
-              },
-              {
-                "text_mode": "plain",
-                "parse_mode": "page_local_conservative",
-                "rows": 0
-              }
-            ],
-            "official_report_candidate_rows": 91,
+            "official_injury_report_retrieved": false,
+            "official_injury_report_url": null,
+            "official_injury_report_as_of_utc": null,
+            "official_report_parse_status": "unavailable",
+            "official_report_parse_text_mode": null,
+            "official_report_parse_attempts": [],
+            "official_report_candidate_rows": 0,
             "official_report_rows_for_fixtures": 0,
             "official_rows_by_fixture": [
               {
-                "game_id": "401910003",
-                "status": "no_rows_for_fixture",
-                "source_rows": 91,
-                "date_rows": 0,
-                "date_and_matchup_rows": 0,
-                "fixture_team_rows": 0
-              },
-              {
-                "game_id": "401910004",
-                "status": "no_rows_for_fixture",
-                "source_rows": 91,
-                "date_rows": 0,
-                "date_and_matchup_rows": 0,
-                "fixture_team_rows": 0
-              },
-              {
                 "game_id": "401910005",
-                "status": "no_rows_for_fixture",
-                "source_rows": 91,
+                "status": "report_not_retrieved",
+                "source_rows": 0,
                 "date_rows": 0,
                 "date_and_matchup_rows": 0,
                 "fixture_team_rows": 0
               },
               {
                 "game_id": "401910006",
-                "status": "no_rows_for_fixture",
-                "source_rows": 91,
+                "status": "report_not_retrieved",
+                "source_rows": 0,
                 "date_rows": 0,
                 "date_and_matchup_rows": 0,
                 "fixture_team_rows": 0
@@ -170,96 +105,80 @@
             ],
             "official_status_claims_matched": 0,
             "official_status_claims_unmatched": 0,
-            "official_capture_state": "rows_not_scoped_to_fixtures",
+            "official_capture_state": "unavailable",
             "official_injury_status_verification_scope": "matched_reported_players_only; unlisted players remain unknown",
             "official_team_reports_not_submitted": [],
-            "known_out": 29,
+            "known_out": 13,
             "uncertain": 0,
-            "unknown": 112,
+            "unknown": 60,
             "teams_allocation_ready": 0,
             "teams_with_provider_lineups": 0,
             "no_odds_input": true,
             "official_injury_status_verified": false,
             "probability_adjustment_authorized": false,
-            "errors": {},
+            "errors": {
+              "official_injury_report": {
+                "error_type": "HTTPError",
+                "detail": "403 Client Error: Forbidden for url: https://official.nba.com/nba-injury-report-2026-27-season/"
+              }
+            },
             "historical_rotation": {
-              "observed_at_utc": "2026-11-18T00:38:29.102171+00:00",
-              "games_requested": 88,
+              "observed_at_utc": "2026-11-18T02:52:56.288227+00:00",
+              "games_requested": 49,
               "games_unavailable": 0,
-              "fixtures_covered": 4,
-              "roster_player_fixture_estimates": 112
+              "fixtures_covered": 2,
+              "roster_player_fixture_estimates": 56
             }
           },
           "team_metrics_observation": {
             "status": "nba_livedata_estimated",
             "cutoff_date": "2026-11-16",
             "official_teams": 0,
-            "fallback_games": 28,
+            "fallback_games": 15,
             "fallback_errors": 0,
             "crosswalk": {
               "bindings": {
-                "401909999": "0022600250",
                 "401909988": "0022600239",
                 "401909987": "0022600238",
                 "401909986": "0022600237",
-                "401909982": "0022600233",
-                "401909984": "0022600235",
                 "401909304": "0022600042",
-                "401909303": "0022600041",
-                "401909302": "0022600040",
                 "401909301": "0022600039",
                 "401909979": "0022600230",
-                "401909978": "0022600229",
-                "401909977": "0022600228",
-                "401909975": "0022600226",
                 "401909973": "0022600224",
-                "401909969": "0022600220",
                 "401909971": "0022600222",
-                "401909965": "0022600216",
                 "401909962": "0022600213",
                 "401909963": "0022600214",
-                "401909958": "0022600209",
                 "401909952": "0022600203",
                 "401909953": "0022600204",
-                "401909954": "0022600205",
                 "401909950": "0022600201",
-                "401909947": "0022600198",
                 "401909946": "0022600197",
                 "401909288": "0022600026"
               },
               "unresolved": {},
               "source_url": "https://nba-prod-us-east-1-mediaops-stats.s3.amazonaws.com/NBA/staticData/scheduleLeagueV2_2.json",
-              "source_sha256": "eb3de84bf08c02059155385852fa5cec94c60a90d9b4c2af7d5db08c41dcb0a0",
+              "source_sha256": "3e50fbe5147d1cf0bc07708ebf90be649e7a5b10d94cebc9431eb4e27e1ecc7a",
               "target_teams": [
                 "CHA",
-                "DET",
                 "LAC",
                 "LAL",
-                "MIN",
-                "POR",
-                "SA",
                 "UTAH"
               ],
               "covered_teams": [
                 "CHA",
-                "DET",
                 "LAC",
                 "LAL",
-                "MIN",
-                "POR",
-                "SA",
                 "UTAH"
               ],
               "missing_teams": []
             },
             "research_ml_games": 0,
-            "research_sha256": "7192fb2c2e75e2f53dfdaf639a7997a608813099d7d79e8c4b8bd5747241effe",
+            "research_sha256": "2f065f0cfcc65472e411949ffb5c37bb77ef5f62228c44d4eab56ea587731012",
             "player_crosswalk": {
-              "links": 322,
+              "links": 221,
               "ambiguous": 0,
-              "mapped_roster_entries": 114,
-              "unresolved_roster_entries": 27,
-              "content_sha256": "d7222404c0f62e2b9ea5e2af0c8b0e7a21f811038f10532680b632fda22a3aff"
+              "mapped_roster_entries": 60,
+              "unresolved_roster_entries": 13,
+              "content_sha256": "c1e7af1240600d88c92bc8a361c292e32741a823cb857bfecbca5a0199a9188f"
             }
           }
         }
@@ -270,58 +189,8 @@
       "events": []
     },
     "nhl": {
-      "status": "processed",
-      "publications": [
-        {
-          "sport": "nhl",
-          "as_of_utc": "2026-11-18T00:38:49.368766Z",
-          "events": [
-            {
-              "event_id": "2026020339",
-              "status": "reused",
-              "snapshot_sha256": "3c5ab366a6ed174de3d0b5dc446377e8ed1c1777b7df64d96bc111f00268d9d7",
-              "stage": "final_pregame"
-            },
-            {
-              "event_id": "2026020340",
-              "status": "reused",
-              "snapshot_sha256": "857983cac0e02f3fd8af155f37145f11bdbdb68f47b8dea5c337861c4c0dc9ba",
-              "stage": "final_pregame"
-            },
-            {
-              "event_id": "2026020342",
-              "status": "reused",
-              "snapshot_sha256": "2e86245cd5c412388511e7858b0f493a43384c7fdd026e9b3bc332b629f61833",
-              "stage": "update"
-            },
-            {
-              "event_id": "2026020343",
-              "status": "reused",
-              "snapshot_sha256": "1db9c5687614084542f9f8492e05f060bf5ac1d0bdd894d63e5e3a1953581679",
-              "stage": "update"
-            }
-          ],
-          "forecast_publication_only": true,
-          "selection_approval_changed": false
-        }
-      ],
-      "fixtures_requested": 2,
-      "fixtures_with_forecast": 2,
-      "fixture_bindings": [
-        {
-          "fixture_id": "401892734",
-          "forecast_event_id": "2026020339",
-          "method": "explicit_team_name_crosswalk_and_exact_start",
-          "forecast_available": true
-        },
-        {
-          "fixture_id": "401892735",
-          "forecast_event_id": "2026020340",
-          "method": "explicit_team_name_crosswalk_and_exact_start",
-          "forecast_available": true
-        }
-      ],
-      "missing_baseline_fixture_ids": []
+      "status": "no_pending_fixtures",
+      "events": []
     },
     "tennis": {
       "status": "no_pending_fixtures",

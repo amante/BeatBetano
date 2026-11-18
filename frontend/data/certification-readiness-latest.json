@@ -1,13 +1,463 @@
 {
   "schema_version": 1,
   "kind": "multisport_certification_readiness",
-  "generated_at_utc": "2026-11-18T00:38:49.999287+00:00",
-  "evaluation_sha256": "f3863b2dc2906e6ba59cdcdd30ea690f347942f15572778c7b13021ee6868821",
+  "generated_at_utc": "2026-11-18T02:53:15.540494+00:00",
+  "evaluation_sha256": "286767632d228b25638eba5aee8b3da7782813f77972674b1fec012ca5cd346f",
   "holdout_protocol_id": "prospective-certification-holdout-2026-27-v1",
-  "holdout_sha256": "9cca8f8697901d5f2efd23a29d4c96be1915632cdd1333265f4dd2f5b7ca3b1b",
+  "holdout_sha256": "e4a7d73a593ea758865b5b3c8005b17811085a5a676bb6794e3f23ea07a86ac4",
   "holdout_protocol_frozen_at_utc": "2026-11-11T04:31:29Z",
-  "scored_model_versions": 0,
-  "models": [],
+  "scored_model_versions": 9,
+  "models": [
+    {
+      "sport": "nba",
+      "model_version": "nba-existing-baselines",
+      "model_code_sha256": "missing",
+      "scored_forecasts": 37,
+      "stages": [
+        {
+          "stage": "final_pregame",
+          "n": 2
+        },
+        {
+          "stage": "initial",
+          "n": 22
+        },
+        {
+          "stage": "update",
+          "n": 13
+        }
+      ],
+      "by_season": {
+        "2026-27": 37
+      },
+      "lineage_coverage": {
+        "scored_forecasts": 37,
+        "with_model_code_revision": 0,
+        "with_model_code_sha256": 0,
+        "with_training_data_sha256": 0,
+        "with_training_cutoff_utc": 0,
+        "with_predictor_input_sha256": 0,
+        "with_predictor_input_as_of_utc": 0,
+        "with_any_data_cutoff": 0,
+        "with_any_data_fingerprint": 0
+      },
+      "holdout_by_season": {},
+      "holdout_frozen_forecasts": 0,
+      "holdout_lineage_complete_forecasts": 0,
+      "holdout_sample_mature": false,
+      "eligible_for_certification_review": false,
+      "certified": false,
+      "automatic_promotion_allowed": false,
+      "blockers": [
+        "paired_baseline_and_ablation_walk_forward_not_provided",
+        "independent_source_and_reliability_review_not_attested",
+        "prospective_holdout_sample_incomplete",
+        "model_lineage_incomplete",
+        "certification_evidence_packet_missing"
+      ],
+      "evidence_packet": null
+    },
+    {
+      "sport": "nba",
+      "model_version": "nba-existing-baselines-hybrid-challenger",
+      "model_code_sha256": "1cee1bd0884eaf344cf35a37b8de4f78c5388816a04a4811b22a11e4c8c2cda3",
+      "scored_forecasts": 39,
+      "stages": [
+        {
+          "stage": "final_pregame",
+          "n": 8
+        },
+        {
+          "stage": "initial",
+          "n": 14
+        },
+        {
+          "stage": "update",
+          "n": 17
+        }
+      ],
+      "by_season": {
+        "2026-27": 39
+      },
+      "lineage_coverage": {
+        "scored_forecasts": 39,
+        "with_model_code_revision": 39,
+        "with_model_code_sha256": 39,
+        "with_training_data_sha256": 39,
+        "with_training_cutoff_utc": 39,
+        "with_predictor_input_sha256": 0,
+        "with_predictor_input_as_of_utc": 0,
+        "with_any_data_cutoff": 39,
+        "with_any_data_fingerprint": 39
+      },
+      "holdout_by_season": {
+        "2026-27": {
+          "frozen_forecasts": 43,
+          "lineage_complete_forecasts": 43,
+          "settled_forecasts_scored": 17
+        }
+      },
+      "holdout_frozen_forecasts": 43,
+      "holdout_lineage_complete_forecasts": 43,
+      "holdout_sample_mature": false,
+      "eligible_for_certification_review": false,
+      "certified": false,
+      "automatic_promotion_allowed": false,
+      "blockers": [
+        "paired_baseline_and_ablation_walk_forward_not_provided",
+        "independent_source_and_reliability_review_not_attested",
+        "prospective_holdout_sample_incomplete",
+        "certification_evidence_packet_missing"
+      ],
+      "evidence_packet": null
+    },
+    {
+      "sport": "nba",
+      "model_version": "nba-existing-baselines-hybrid-challenger",
+      "model_code_sha256": "missing",
+      "scored_forecasts": 11,
+      "stages": [
+        {
+          "stage": "final_pregame",
+          "n": 1
+        },
+        {
+          "stage": "initial",
+          "n": 10
+        }
+      ],
+      "by_season": {
+        "2026-27": 11
+      },
+      "lineage_coverage": {
+        "scored_forecasts": 11,
+        "with_model_code_revision": 0,
+        "with_model_code_sha256": 0,
+        "with_training_data_sha256": 0,
+        "with_training_cutoff_utc": 0,
+        "with_predictor_input_sha256": 0,
+        "with_predictor_input_as_of_utc": 0,
+        "with_any_data_cutoff": 0,
+        "with_any_data_fingerprint": 0
+      },
+      "holdout_by_season": {},
+      "holdout_frozen_forecasts": 0,
+      "holdout_lineage_complete_forecasts": 0,
+      "holdout_sample_mature": false,
+      "eligible_for_certification_review": false,
+      "certified": false,
+      "automatic_promotion_allowed": false,
+      "blockers": [
+        "paired_baseline_and_ablation_walk_forward_not_provided",
+        "independent_source_and_reliability_review_not_attested",
+        "prospective_holdout_sample_incomplete",
+        "model_lineage_incomplete",
+        "certification_evidence_packet_missing"
+      ],
+      "evidence_packet": null
+    },
+    {
+      "sport": "nba",
+      "model_version": "nba-existing-baselines-hybrid-strong_favorite",
+      "model_code_sha256": "1cee1bd0884eaf344cf35a37b8de4f78c5388816a04a4811b22a11e4c8c2cda3",
+      "scored_forecasts": 6,
+      "stages": [
+        {
+          "stage": "final_pregame",
+          "n": 1
+        },
+        {
+          "stage": "initial",
+          "n": 4
+        },
+        {
+          "stage": "update",
+          "n": 1
+        }
+      ],
+      "by_season": {
+        "2026-27": 6
+      },
+      "lineage_coverage": {
+        "scored_forecasts": 6,
+        "with_model_code_revision": 6,
+        "with_model_code_sha256": 6,
+        "with_training_data_sha256": 6,
+        "with_training_cutoff_utc": 6,
+        "with_predictor_input_sha256": 0,
+        "with_predictor_input_as_of_utc": 0,
+        "with_any_data_cutoff": 6,
+        "with_any_data_fingerprint": 6
+      },
+      "holdout_by_season": {
+        "2026-27": {
+          "frozen_forecasts": 7,
+          "lineage_complete_forecasts": 7,
+          "settled_forecasts_scored": 1
+        }
+      },
+      "holdout_frozen_forecasts": 7,
+      "holdout_lineage_complete_forecasts": 7,
+      "holdout_sample_mature": false,
+      "eligible_for_certification_review": false,
+      "certified": false,
+      "automatic_promotion_allowed": false,
+      "blockers": [
+        "paired_baseline_and_ablation_walk_forward_not_provided",
+        "independent_source_and_reliability_review_not_attested",
+        "prospective_holdout_sample_incomplete",
+        "certification_evidence_packet_missing"
+      ],
+      "evidence_packet": null
+    },
+    {
+      "sport": "nfl",
+      "model_version": "nfl-historical-elo",
+      "model_code_sha256": "8d0cbf6bed0b5df374e91050966404d69dc34aae5970680a2419525c52e6201b",
+      "scored_forecasts": 13,
+      "stages": [
+        {
+          "stage": "final_pregame",
+          "n": 1
+        },
+        {
+          "stage": "initial",
+          "n": 10
+        },
+        {
+          "stage": "update",
+          "n": 2
+        }
+      ],
+      "by_season": {
+        "2026-27": 13
+      },
+      "lineage_coverage": {
+        "scored_forecasts": 13,
+        "with_model_code_revision": 13,
+        "with_model_code_sha256": 13,
+        "with_training_data_sha256": 13,
+        "with_training_cutoff_utc": 13,
+        "with_predictor_input_sha256": 0,
+        "with_predictor_input_as_of_utc": 0,
+        "with_any_data_cutoff": 13,
+        "with_any_data_fingerprint": 13
+      },
+      "holdout_by_season": {
+        "2026-27": {
+          "frozen_forecasts": 13,
+          "lineage_complete_forecasts": 13,
+          "settled_forecasts_scored": 2
+        }
+      },
+      "holdout_frozen_forecasts": 13,
+      "holdout_lineage_complete_forecasts": 13,
+      "holdout_sample_mature": false,
+      "eligible_for_certification_review": false,
+      "certified": false,
+      "automatic_promotion_allowed": false,
+      "blockers": [
+        "paired_baseline_and_ablation_walk_forward_not_provided",
+        "independent_source_and_reliability_review_not_attested",
+        "prospective_holdout_sample_incomplete",
+        "certification_evidence_packet_missing"
+      ],
+      "evidence_packet": null
+    },
+    {
+      "sport": "nfl",
+      "model_version": "nfl-historical-elo",
+      "model_code_sha256": "missing",
+      "scored_forecasts": 13,
+      "stages": [
+        {
+          "stage": "final_pregame",
+          "n": 1
+        },
+        {
+          "stage": "initial",
+          "n": 11
+        },
+        {
+          "stage": "update",
+          "n": 1
+        }
+      ],
+      "by_season": {
+        "2026-27": 13
+      },
+      "lineage_coverage": {
+        "scored_forecasts": 13,
+        "with_model_code_revision": 0,
+        "with_model_code_sha256": 0,
+        "with_training_data_sha256": 0,
+        "with_training_cutoff_utc": 0,
+        "with_predictor_input_sha256": 0,
+        "with_predictor_input_as_of_utc": 0,
+        "with_any_data_cutoff": 0,
+        "with_any_data_fingerprint": 0
+      },
+      "holdout_by_season": {},
+      "holdout_frozen_forecasts": 0,
+      "holdout_lineage_complete_forecasts": 0,
+      "holdout_sample_mature": false,
+      "eligible_for_certification_review": false,
+      "certified": false,
+      "automatic_promotion_allowed": false,
+      "blockers": [
+        "paired_baseline_and_ablation_walk_forward_not_provided",
+        "independent_source_and_reliability_review_not_attested",
+        "prospective_holdout_sample_incomplete",
+        "model_lineage_incomplete",
+        "certification_evidence_packet_missing"
+      ],
+      "evidence_packet": null
+    },
+    {
+      "sport": "nhl",
+      "model_version": "nhl-prior-day-standings",
+      "model_code_sha256": "621165343ac70277c10f3aef7ecac6eac4659ff65965287dfd519402452314b4",
+      "scored_forecasts": 44,
+      "stages": [
+        {
+          "stage": "final_pregame",
+          "n": 3
+        },
+        {
+          "stage": "initial",
+          "n": 14
+        },
+        {
+          "stage": "update",
+          "n": 27
+        }
+      ],
+      "by_season": {
+        "2026-27": 44
+      },
+      "lineage_coverage": {
+        "scored_forecasts": 44,
+        "with_model_code_revision": 44,
+        "with_model_code_sha256": 44,
+        "with_training_data_sha256": 0,
+        "with_training_cutoff_utc": 0,
+        "with_predictor_input_sha256": 44,
+        "with_predictor_input_as_of_utc": 44,
+        "with_any_data_cutoff": 44,
+        "with_any_data_fingerprint": 44
+      },
+      "holdout_by_season": {
+        "2026-27": {
+          "frozen_forecasts": 50,
+          "lineage_complete_forecasts": 50,
+          "settled_forecasts_scored": 27
+        }
+      },
+      "holdout_frozen_forecasts": 50,
+      "holdout_lineage_complete_forecasts": 50,
+      "holdout_sample_mature": false,
+      "eligible_for_certification_review": false,
+      "certified": false,
+      "automatic_promotion_allowed": false,
+      "blockers": [
+        "paired_baseline_and_ablation_walk_forward_not_provided",
+        "independent_source_and_reliability_review_not_attested",
+        "prospective_holdout_sample_incomplete",
+        "certification_evidence_packet_missing"
+      ],
+      "evidence_packet": null
+    },
+    {
+      "sport": "nhl",
+      "model_version": "nhl-prior-day-standings",
+      "model_code_sha256": "missing",
+      "scored_forecasts": 37,
+      "stages": [
+        {
+          "stage": "final_pregame",
+          "n": 12
+        },
+        {
+          "stage": "initial",
+          "n": 17
+        },
+        {
+          "stage": "update",
+          "n": 8
+        }
+      ],
+      "by_season": {
+        "2026-27": 37
+      },
+      "lineage_coverage": {
+        "scored_forecasts": 37,
+        "with_model_code_revision": 0,
+        "with_model_code_sha256": 0,
+        "with_training_data_sha256": 0,
+        "with_training_cutoff_utc": 0,
+        "with_predictor_input_sha256": 0,
+        "with_predictor_input_as_of_utc": 0,
+        "with_any_data_cutoff": 0,
+        "with_any_data_fingerprint": 0
+      },
+      "holdout_by_season": {},
+      "holdout_frozen_forecasts": 0,
+      "holdout_lineage_complete_forecasts": 0,
+      "holdout_sample_mature": false,
+      "eligible_for_certification_review": false,
+      "certified": false,
+      "automatic_promotion_allowed": false,
+      "blockers": [
+        "paired_baseline_and_ablation_walk_forward_not_provided",
+        "independent_source_and_reliability_review_not_attested",
+        "prospective_holdout_sample_incomplete",
+        "model_lineage_incomplete",
+        "certification_evidence_packet_missing"
+      ],
+      "evidence_packet": null
+    },
+    {
+      "sport": "soccer",
+      "model_version": "soccer-existing-poisson-1bd135e4c153",
+      "model_code_sha256": "missing",
+      "scored_forecasts": 2,
+      "stages": [
+        {
+          "stage": "initial",
+          "n": 2
+        }
+      ],
+      "by_season": {
+        "2026-27": 2
+      },
+      "lineage_coverage": {
+        "scored_forecasts": 2,
+        "with_model_code_revision": 0,
+        "with_model_code_sha256": 0,
+        "with_training_data_sha256": 0,
+        "with_training_cutoff_utc": 0,
+        "with_predictor_input_sha256": 0,
+        "with_predictor_input_as_of_utc": 0,
+        "with_any_data_cutoff": 0,
+        "with_any_data_fingerprint": 0
+      },
+      "holdout_by_season": {},
+      "holdout_frozen_forecasts": 0,
+      "holdout_lineage_complete_forecasts": 0,
+      "holdout_sample_mature": false,
+      "eligible_for_certification_review": false,
+      "certified": false,
+      "automatic_promotion_allowed": false,
+      "blockers": [
+        "paired_baseline_and_ablation_walk_forward_not_provided",
+        "independent_source_and_reliability_review_not_attested",
+        "prospective_holdout_sample_incomplete",
+        "model_lineage_incomplete",
+        "certification_evidence_packet_missing"
+      ],
+      "evidence_packet": null
+    }
+  ],
   "policy": {
     "holdout_seasons_minimum": 2,
     "games_per_season_minimum": 100,
