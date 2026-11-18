@@ -20,7 +20,7 @@ MODULES={
  "rescue_probability":{"features":["chronological_goal_events","score_state"],"target":"path_rescue"},
  "fuertes_dual":{"features":["joint_expected_goals","regulation_score_distribution"],"target":"strong_margin_and_double_chance"},
  "return_injury":{"features":["dated_explicit_injury_report","dated_projected_return","prior_and_post_return_toi"],"target":"projected_player_minutes"},
- "opponent_style":{"features":["dated_shot_quality","matchup_context"],"target":"ml"}
+ "opponent_style":{"features":["dated_play_by_play","resolved_event_owner_team","shot_location_and_type","point_in_time_history"],"target":"expected_goals"}
 }
 # What the completed game schedule collector actually provides:
 AVAILABLE={"date","game_id","home_team","away_team","final_goals","game_winner"}
