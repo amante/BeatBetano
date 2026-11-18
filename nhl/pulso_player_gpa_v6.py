@@ -14,7 +14,7 @@ from pathlib import Path
 
 from nhl.pulso_player_v3 import SEASONS, TEAMS, build
 
-METHODS = ("season", "recent10", "ewma")
+METHODS = ("historical", "recent10", "ewma")
 EVENTS = ("goals", "assists")
 SEASON_PRIOR_MINUTES = 600.0
 RECENT_PRIOR_MINUTES = 300.0
@@ -110,13 +110,13 @@ def project(history, target, position, peer_rates):
     rates = {}
     for event in EVENTS:
         peer = peer_rates.get(position, {}).get(event, 0.0)
-        season_rate = _posterior_rate(prior, event, peer, SEASON_PRIOR_MINUTES)
+        historical_rate = _posterior_rate(prior, event, peer, SEASON_PRIOR_MINUTES)
         rates[event] = {
-            "season": season_rate,
-            "recent10": _posterior_rate(recent, event, season_rate, RECENT_PRIOR_MINUTES),
-            "ewma": _posterior_rate(prior, event, season_rate, EWMA_PRIOR_MINUTES)
+            "historical": historical_rate,
+            "recent10": _posterior_rate(recent, event, historical_rate, RECENT_PRIOR_MINUTES),
+            "ewma": _posterior_rate(prior, event, historical_rate, EWMA_PRIOR_MINUTES)
                     if len(prior) < 2 else
-                    _posterior_rate_weighted(prior, event, season_rate,
+                    _posterior_rate_weighted(prior, event, historical_rate,
                                              EWMA_PRIOR_MINUTES, EWMA_DECAY),
         }
     methods = {}
