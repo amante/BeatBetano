@@ -14,6 +14,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+from nhl.opponent_style_profile import game_profile, build_report as build_style_report
 
 HOST = "https://api-web.nhle.com/v1"
 MAX_RESPONSE_BYTES = 25_000_000
@@ -24,6 +25,9 @@ EVENT_TYPES = {
 FIELD_ALIASES = {
     "event_id": {"eventId", "id"},
     "event_type": {"typeDescKey", "typeCode"},
+    "event_owner_team_id": {"eventOwnerTeamId"},
+    "situation_code": {"situationCode", "homeSkaters", "awaySkaters"},
+    "score_state": {"homeScore", "awayScore"},
     "period": {"periodDescriptor"},
     "time": {"timeInPeriod", "timeRemaining"},
     "x_coordinate": {"xCoord", "xCoordOrigin"},
@@ -102,6 +106,7 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
     for offset in range(lookback_days):
         day = start + timedelta(days=offset)
         url = f"{HOST}/score/{day.isoformat()}"
+        captured_at = datetime.now(timezone.utc).isoformat()
         try:
             payload, raw = fetch_json(url)
             captured_at = datetime.now(timezone.utc).isoformat()
@@ -126,11 +131,14 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
                 continue
             home = game.get("homeTeam", {}).get("abbrev")
             away = game.get("awayTeam", {}).get("abbrev")
-            if not home or not away:
+            home_id = game.get("homeTeam", {}).get("id")
+            away_id = game.get("awayTeam", {}).get("id")
+            if not home or not away or type(home_id) is not int or type(away_id) is not int:
                 continue
             fixtures.append({
                 "game_id": gid, "date": game.get("gameDate", day.isoformat()),
                 "start_utc": game.get("startTimeUTC"), "home": home, "away": away,
+                "home_team_id": home_id, "away_team_id": away_id,
                 "home_goals": game.get("homeTeam", {}).get("score"),
                 "away_goals": game.get("awayTeam", {}).get("score"),
             })
@@ -148,6 +156,7 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
     failures = []
     for fixture in selected:
         url = f"{HOST}/gamecenter/{fixture['game_id']}/play-by-play"
+        retrieved = datetime.now(timezone.utc).isoformat()
         try:
             payload, raw = fetch_json(url)
             retrieved = datetime.now(timezone.utc).isoformat()
@@ -173,8 +182,10 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
                 for field, aliases in FIELD_ALIASES.items():
                     if aliases & keys:
                         per_game["any_" + field] += 1
+            style_profile = game_profile(fixture, rows)
             record = {
                 **fixture, "status": "captured", "url": url,
+                "team_style_profile": style_profile,
                 "retrieved_at_utc": retrieved, "sha256": digest,
                 "raw_file": str(raw_path.relative_to(root)),
                 "response_bytes": len(raw), "event_count": len(rows),
@@ -194,6 +205,7 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
                 "status": "fetch_or_schema_error",
                 "error": f"{type(error).__name__}: {str(error)[:240]}",
             })
+    style_report = build_style_report([row["team_style_profile"] for row in games])
     report = {
         "kind": "nhl_gamecenter_opponent_style_source_audit_v1",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -210,6 +222,7 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
         "field_names_under_review": {key: sorted(value) for key, value in FIELD_ALIASES.items()},
         "calendar_sources": calendar_sources,
         "games": games,
+        "team_style_profile": style_report,
         "failures": failures,
         "limitations": [
             "These are postgame observations; use them only as features for later games.",
@@ -234,6 +247,10 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
         "",
     ]
     lines.extend(f"- {key}: {value}" for key, value in sorted(type_counts.items()))
+    lines.extend(["", "### Campos efectivos por tipo de evento", ""])
+    for kind, keys in sorted(event_schema_keys.items()):
+        if "shot" in kind or kind == "goal":
+            lines.append(f"- {kind}: {', '.join(sorted(keys))}")
     lines.extend(["", "## Campos observados en eventos de tiro", ""])
     for field in FIELD_ALIASES:
         lines.append(f"- {field}: presente en {event_counts.get(field, 0)} de {len(games)} partidos capturados")
@@ -247,8 +264,50 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
             f"| {row['date']} | {row['game_id']} | {row['away']} @ {row['home']} | "
             f"{row['event_count']} | {row['field_coverage'].get('shot_events', 0)} |"
         )
+    lines.extend(["", "## Perfil descriptivo de ataque y defensa", ""])
+    lines.append("Este perfil es pospartido y no modifica probabilidades.")
+    lines.append("")
+    lines.append("| Equipo | PJ | Ataque: a puerta / fallados / bloqueados / goles | Defensa: permitidos / fallados / bloqueados / goles | Ataque <25 ft / ubicados |")
+    lines.append("|---|---:|---:|---:|---:|")
+    for team, profile in sorted(style_report["teams"].items()):
+        attack = profile["attack"]
+        defense = profile["defense_allowed"]
+        lines.append(
+            f"| {team} | {attack['games']} | "
+            f"{attack['shots_on_goal']} / {attack['missed_shots']} / {attack['blocked_shot_events']} / {attack['goals']} | "
+            f"{defense['shots_on_goal']} / {defense['missed_shots']} / {defense['blocked_shot_events']} / {defense['goals']} | "
+            f"{attack['distance_bins_ft'].get('0-25', 0)} / {attack['located_unblocked_shots']} |"
+        )
+    goal_checks = [
+        (game, team, profile.get("goal_attribution_check", {}))
+        for game in style_report["games"]
+        for team, profile in game.get("team_profiles", {}).items()
+    ]
+    checked_goals = [check for _, _, check in goal_checks if check.get("matches_scoreboard") is not None]
+    matched_goals = sum(check["matches_scoreboard"] is True for check in checked_goals)
+    lines.extend(["", "## Validación de atribución de goles", ""])
+    lines.append(f"- Equipos comparables contra el marcador oficial: {matched_goals} de {len(checked_goals)}")
+    mismatches = [(game, team, check) for game, team, check in goal_checks
+                  if check.get("matches_scoreboard") is False]
+    if mismatches:
+        lines.extend(["", "| Partido | Equipo | Goles PBP | Marcador oficial |", "|---|---|---:|---:|"])
+        for game, team, check in mismatches:
+            lines.append(
+                f"| {game['away']} @ {game['home']} | {team} | "
+                f"{check['play_by_play_goals']} | {check['official_final_goals']} |"
+            )
+    else:
+        lines.append("- Sin discrepancias entre los goles atribuidos y el marcador oficial.")
+    coordinate_rows = [row["team_style_profile"].get("coordinate_diagnostics", {}) for row in games]
+    x_values = [value for row in coordinate_rows for value in (row.get("x_min"), row.get("x_max")) if value is not None]
+    y_values = [value for row in coordinate_rows for value in (row.get("y_min"), row.get("y_max")) if value is not None]
+    lines.extend(["", "## Diagnóstico de coordenadas", ""])
+    lines.append(f"- Rango X observado: {min(x_values) if x_values else 'sin dato'} a {max(x_values) if x_values else 'sin dato'}")
+    lines.append(f"- Rango Y observado: {min(y_values) if y_values else 'sin dato'} a {max(y_values) if y_values else 'sin dato'}")
+    lines.append("- Las unidades y orientación de coordenadas siguen sin verificarse; los bins de distancia son solo descriptivos.")
     lines.extend(["", "## Límites", ""])
     lines.extend(f"- {item}" for item in report["limitations"])
+    lines.extend(f"- {item}" for item in style_report["limitations"])
     markdown = "\n".join(lines) + "\n"
     (root / "report.md").write_text(markdown, encoding="utf-8")
     summary_path = Path(os.environ["GITHUB_STEP_SUMMARY"]) if os.environ.get("GITHUB_STEP_SUMMARY") else None

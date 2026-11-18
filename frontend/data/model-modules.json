@@ -229,12 +229,12 @@
         {
           "id": "opponent_style",
           "name": "Estilo y emparejamiento del rival",
-          "created": false,
+          "created": true,
           "connected": false,
           "affects_prediction": false,
-          "evidence": "nhl/joint_match_engine_320.py; nhl/module_validation_readiness.py",
-          "scope": "La hoja de preparación solicita variables del rival; no existe un predictor de estilo identificado.",
-          "note": "Pendiente de creación."
+          "evidence": "nhl/opponent_style_profile.py; nhl/opponent_style_source_audit.py",
+          "scope": "Resume descriptivamente por equipo tiros a puerta, fallados, bloqueados, goles, tipo de tiro y distancia geométrica aproximada al arco; separa ataque y tiros permitidos.",
+          "note": "No está conectado al pronóstico ni modifica porcentajes. La distancia es una aproximación desde coordenadas PBP, no etiqueta NHL EDGE de peligro; la muestra capturada es acotada y pospartido. Faltan archivo histórico punto en tiempo, estado de manpower y validación antes de modelar efecto."
         }
       ]
     },
