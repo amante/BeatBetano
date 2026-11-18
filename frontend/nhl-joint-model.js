@@ -88,6 +88,7 @@
     if(row&&typeof row==="object")details.append(make("p",code+" · "+(row.division_games??0)+" partidos divisionales · "+(row.other_games??0)+" contra otras divisiones"));
    }
    if(Number.isFinite(evidence.head_to_head_games))details.append(make("p","Enfrentamientos directos previos: "+evidence.head_to_head_games));
+   if(context.source&&context.source.latest_label_date)details.append(make("p","Historial oficial disponible hasta: "+context.source.latest_label_date));
    details.append(make("small","Solo resultados en tiempo regular anteriores a la fecha del partido · ajuste experimental, sin calibración."));
    card.append(details);
   }
