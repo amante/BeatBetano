@@ -129,7 +129,11 @@ def _episodes(team_snapshots):
             else:
                 episode["last_report_day"] = snapshot["game_day"]
                 episode["name"] = name or episode["name"]
+        conflicts = set(injured) & set(active)
         for pid, name in active.items():
+            # A contradictory snapshot cannot close an injury episode.
+            if pid in conflicts:
+                continue
             episode = open_by_player.pop(pid, None)
             if episode is not None and snapshot["game_day"] >= episode["injury_report_day"]:
                 completed.append({**episode, "projected_return_day": snapshot["game_day"],
@@ -249,9 +253,20 @@ def build(history_dir, current_report, player_history, raw_history):
         for team in (game["home"], game["away"]):
             snapshots = histories.get(team, [])
             # Return events closed by this exact current pregame lineup are candidates.
-            candidates = [episode for episode in completed_by_team.get(team, [])
-                          if episode["projected_return_game_id"] == game_id]
+            current_snapshot = next((row for row in snapshots if row["game_id"] == game_id), None)
+            current_active = current_snapshot["active"] if current_snapshot else {}
             all_episodes = completed_by_team.get(team, [])
+            candidates = []
+            for episode in all_episodes:
+                pid = episode["player_id"]
+                if pid not in current_active or episode["projected_return_day"] > game_day:
+                    continue
+                rows, _ = _player_rows(pid, team, player_history, raw_history, game_day, game_start)
+                appearances_since_return = sum(
+                    1 for row in rows if episode["projected_return_day"] <= row["date"] < game_day
+                )
+                if appearances_since_return < 3:
+                    candidates.append(episode)
             episodes = []
             per_player_rows = {}
             source_manifest = []
@@ -259,7 +274,10 @@ def build(history_dir, current_report, player_history, raw_history):
                 rows, source = _player_rows(episode["player_id"], team, player_history,
                                             raw_history, game_day, game_start)
                 if source:
-                    source_manifest.append(source)
+                    source_manifest.append({
+                        "url": source.get("url"), "sha256": source.get("sha256"),
+                        "retrieved_at_utc": source.get("retrieved_at"),
+                    })
                     ratio = _training_ratio(episode, rows, game_day)
                     if ratio:
                         episodes.append(ratio)
@@ -269,16 +287,23 @@ def build(history_dir, current_report, player_history, raw_history):
             for episode in candidates:
                 pid = episode["player_id"]
                 rows = per_player_rows.get(pid, [])
-                if any(row["date"] >= episode["injury_report_day"] for row in rows):
-                    # A past appearance after the injury report means this is not the first return game.
-                    if any(row["date"] < game_day for row in rows):
-                        continue
-                days_out = (game_day - episode["injury_report_day"]).days
+                # Keep the empirical first-three-appearance ramp active only while
+                # the player remains projected active and fewer than three games have
+                # been logged since the first projected return.
+                appearances_since_return = sum(
+                    1 for row in rows if episode["projected_return_day"] <= row["date"] < game_day
+                )
+                if appearances_since_return >= 3:
+                    continue
+                days_out = (episode["projected_return_day"] - episode["injury_report_day"]).days
                 if days_out < 1:
                     continue
                 band = _band(days_out)
                 summary = cohort[band]
                 applied = summary["status"] == "eligible_experimental_adjustment" and summary["minutes_factor"] is not None and summary["minutes_factor"] < 0.995
+                for evidence in (episode.get("injury_source"), episode.get("projected_return_source")):
+                    if evidence and evidence not in source_manifest:
+                        source_manifest.append(evidence)
                 player_outputs[str(pid)] = {
                     "player_id": pid, "name": episode["name"],
                     "status": "adjustment_applied" if applied else summary["status"],
