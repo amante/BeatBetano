@@ -19,7 +19,7 @@ MODULES={
  "first_to_three_goal_lead":{"features":["chronological_goal_events"],"target":"path_3goal"},
  "rescue_probability":{"features":["chronological_goal_events","score_state"],"target":"path_rescue"},
  "fuertes_dual":{"features":["joint_expected_goals","regulation_score_distribution"],"target":"strong_margin_and_double_chance"},
- "return_injury":{"features":["historical_injury_report","return_to_form"],"target":"ml"},
+ "return_injury":{"features":["dated_explicit_injury_report","dated_projected_return","prior_and_post_return_toi"],"target":"projected_player_minutes"},
  "opponent_style":{"features":["dated_shot_quality","matchup_context"],"target":"ml"}
 }
 # What the completed game schedule collector actually provides:
