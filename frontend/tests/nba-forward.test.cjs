@@ -3,13 +3,13 @@ const {validate,forDay,calendarGames,stale}=require('../nba-predictions.js');
 const packet=()=>({kind:'nba_forward_publication_v2',as_of_utc:'2026-11-05T04:00:00Z',last_source_capture_utc:'2026-11-05T03:00:00Z',performance_metrics:null,sporting_adjustment_applied:false,evaluation_status:'window_open_metrics_withheld',source_error_count:0,sporting_evidence_errors:[],calendar_date_coverage_chile:{'2026-11-05':false},games:[{game_id:'1',home_team:'BOS',away_team:'MIL',tipoff_utc:'2026-11-05T02:00:00Z',source_state:'in',status:'paired_pregame_emission',issues:[],outcome:null,sporting:{BOS:null,MIL:null},first_prediction:{game_id:'1',home_team:'BOS',away_team:'MIL',tipoff_utc:'2026-11-05T02:00:00Z',prediction_as_of_utc:'2026-11-04T20:00:00Z',elo_p_home:.6,challenger_p_home:.65}}]});
 test('publication keeps original per-game timestamp, both MLs and Chile date',()=>{const p=packet();assert.equal(validate(p),true);assert.equal(forDay(p,'2026-11-04').length,1);assert.equal(forDay(p,'2026-11-05').length,0);assert.equal(stale(p,Date.parse('2026-11-05T12:00:00Z')),true);});
 test('duplicates, invalid probabilities, post-start emission and interim metrics fail closed',()=>{for(const mutate of [p=>p.games.push(p.games[0]),p=>p.games[0].first_prediction.elo_p_home=NaN,p=>p.games[0].first_prediction.prediction_as_of_utc=p.games[0].tipoff_utc,p=>p.performance_metrics={brier:.2}]){const p=packet();mutate(p);assert.equal(validate(p),false);}});
-async function render(p,date='2026-11-04',ok=true,schedule={data_kind:'fixtures_and_results_only',games:[]}){
+async function render(p,date='2026-11-04',ok=true,schedule={data_kind:'fixtures_and_results_only',games:[]},run=null){
  const fs=require('node:fs'),vm=require('node:vm');
  function element(tag){return {tag,style:{},textContent:'',children:[],append(...x){this.children.push(...x)},prepend(...x){this.children.unshift(...x)},replaceChildren(...x){this.children=x},addEventListener(){}};}
  const main=element('main'),picker={value:date,addEventListener(){}},agenda=element('div'),label=element('h2'),source=element('p');
  main.append(label,source,agenda);
  const document={createElement:element,querySelector:s=>s==='main'?main:null,getElementById:id=>({'daily-date':picker,'daily-results':agenda,'daily-label':label,'feed-message':source}[id]||null)};const window={};
- vm.runInNewContext(fs.readFileSync(require.resolve('../nba-predictions.js'),'utf8'),{window,document,location:{search:'?sport=nba'},URLSearchParams,Intl,Date,fetch:async url=>url.endsWith('/daily.json')?({ok:true,json:async()=>schedule}):({ok:!url.endsWith('/nba-forward-latest.json')||ok,json:async()=>p})});
+ vm.runInNewContext(fs.readFileSync(require.resolve('../nba-predictions.js'),'utf8'),{window,document,location:{search:'?sport=nba'},URLSearchParams,Intl,Date,fetch:async url=>url.endsWith('/daily.json')?({ok:true,json:async()=>schedule}):url.endsWith('/nba-predictions-latest.json')?({ok:true,json:async()=>run||p}):({ok:!url.endsWith('/nba-forward-latest.json')||ok,json:async()=>p})});
  await window.PulsoNbaForward.ready;
  const text=n=>[n.textContent||'',...(n.children||[]).map(text)].join(' ');return text(main);
 }
@@ -17,7 +17,7 @@ test('render includes per-game original ML and explicit unsupported sporting/+20
 test('uncovered date differs from no games, and fetch failure never falls back to stale percentages',async()=>{assert.match(await render(packet(),'2026-11-05'),/no tiene cobertura suficiente/);const text=await render(packet(),'2026-11-04',false);assert.match(text,/No se pudo cargar/);assert.doesNotMatch(text,/60\.0%/);});
 test('missing paired emission is PASS, changed fixtures hide unsupported percentages',async()=>{let p=packet();p.games[0].first_prediction=null;assert.match(await render(p),/No hay una pareja/);p=packet();p.games[0].issues=['fixture_tipoff_utc_changed'];const text=await render(p);assert.match(text,/requiere revisión/);assert.doesNotMatch(text,/60\.0%/);});
 
-test('agenda uses the same NBA cohort instead of a second empty shared feed',async()=>{const text=await render(packet());assert.match(text,/NBA · 2026-11-04 · 1 partido registrado/);assert.match(text,/Calendario diario \+ emisiones del registro NBA/);assert.doesNotMatch(text,/0 partidos|panel NHL/);});
+test('agenda uses the same NBA cohort instead of a second empty shared feed',async()=>{const text=await render(packet());assert.match(text,/NBA · 2026-11-04 · 1 partido registrado/);assert.match(text,/fecha oficial de EE\. UU\./);assert.doesNotMatch(text,/0 partidos|panel NHL/);});
 test('full NBA page skips legacy fetch, hides NHL/simulator/stats and keeps date changes aligned',async()=>{
  const fs=require('node:fs'),vm=require('node:vm');
  function el(){return {textContent:'',children:[],style:{},listeners:{},append(...x){this.children.push(...x)},prepend(...x){this.children.unshift(...x)},replaceChildren(...x){this.children=x},addEventListener(type,fn){(this.listeners[type]??=[]).push(fn)}};}
@@ -33,7 +33,7 @@ test('full NBA page skips legacy fetch, hides NHL/simulator/stats and keeps date
  for(const panel of [yesterday,simulator,elements['daily-stats'],elements['nhl-five-market'],elements['nhl-joint-model'],elements['pulso-nhl-research']])assert.equal(panel.hidden,true);
  elements['daily-date'].value='2026-11-04';for(const fn of elements['daily-date'].listeners.change)fn();
  assert.equal(elements['daily-label'].textContent,'NBA · 2026-11-04 · 1 partido registrado');
- assert.match(elements['feed-message'].textContent,/registro NBA/);
+ assert.match(elements['feed-message'].textContent,/horarios de Chile/);
 });
 
 
@@ -55,6 +55,16 @@ test('calendar-only fixture is visible and clearly marked as lacking a forecast'
  assert.match(text,/NBA · 2026-11-04 · 2 partidos registrados/);
  assert.match(text,/New York Knicks — Toronto Raptors/);
  assert.match(text,/todavía no hay pronóstico ni análisis de alineaciones publicado/);
+});
+test('calendar-only game still shows RotoWire market when current run has its matchup',async()=>{
+ const schedule={data_kind:'fixtures_and_results_only',games:[{id:'2',sport:'nba',home:'Toronto Raptors',away:'New York Knicks',start_utc:'2026-11-05T01:30:00Z',status:'STATUS_SCHEDULED',completed:false}]};
+ const run={kind:'nba_pulso_research_publication_v1',created_at_utc:'2026-11-05T00:15:00Z',predictions:[{game_id:'2',tipoff_utc:'2026-11-05T01:30:00Z',model_p_home:.24,market_context:{source_provider:'rotowire',display_only:true,model_input:false,observed_at_utc:'2026-11-05T00:10:00Z',moneyline:{team:'Toronto Raptors',american_odds:-120},spread:{team:'Toronto Raptors',points:-2.5},total_points:220}}]};
+ const text=await render(packet(),'2026-11-04',true,schedule,run);
+ assert.match(text,/ML · Toronto Raptors -120/);
+ assert.match(text,/Spread · Toronto Raptors -2\.5/);
+ assert.match(text,/Total · 220\.0/);
+ assert.match(text,/GOLDEN TICKET · ML divergente/);
+ assert.doesNotMatch(text,/todavía no hay pronóstico ni análisis de alineaciones publicado/);
 });
 
 test('shared NHL markup belongs only to NHL across all five sport routes',()=>{

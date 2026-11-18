@@ -8,6 +8,7 @@ from zoneinfo import ZoneInfo
 from pathlib import Path
 
 TZ=ZoneInfo("America/Santiago")
+NBA_SCHEDULE_TZ=ZoneInfo("America/New_York")
 FEEDS={
  "nba":[("NBA","basketball/nba")],
  "nfl":[("NFL","football/nfl")],
@@ -69,8 +70,16 @@ def collect(day,fetch=get_json):
      data=fetch(BASE+path+"/scoreboard?dates="+d+"&limit=300")
      for e in data.get("events") or []:
       item=parse_event(e,sport,country,league)
-      if item and datetime.fromisoformat(item["start_utc"].replace("Z","+00:00")).astimezone(TZ).date().isoformat()==day:
-       rows.append(item)
+      if item:
+       start=datetime.fromisoformat(item["start_utc"].replace("Z","+00:00"))
+       if sport=="nba":
+        # NBA slate dates follow the league's Eastern calendar; show tipoffs in Chile time.
+        nba_date=start.astimezone(NBA_SCHEDULE_TZ).date().isoformat()
+        if nba_date!=day:continue
+        item["nba_schedule_date_et"]=nba_date
+        rows.append(item)
+       elif start.astimezone(TZ).date().isoformat()==day:
+        rows.append(item)
     except Exception as exc:
      result["errors"].append({"sport":sport,"feed":league,"date":d,"error":str(exc)[:150]})
    unique={x["id"]:x for x in rows}
