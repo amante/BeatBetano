@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v2"
+VERSION = "nhl-joint-match-320-v3"
 
 
 def _num(value, label, *, positive=False):
@@ -208,6 +208,9 @@ def team_profile(team, team_code):
                     "pim": _num(prod.get("penaltyMinutes"), "penalty minutes") / gp}
         projected = {"minutes": scenario["total"], "EV": scenario["EV"],
                      "PP": scenario["PP"], "PK": scenario["PK"],
+                     "EV_goals": ev_rate * scenario["EV"],
+                     "PP_goals": pp_rate * scenario["PP"],
+                     "SH_goals": sh_rate * scenario["PK"],
                      "goals": ev_rate * scenario["EV"] + pp_rate * scenario["PP"] + sh_rate * scenario["PK"],
                      "assists": total_assists_rate * scenario["total"],
                      "shots": total_shots_rate * scenario["total"],
@@ -269,11 +272,12 @@ def team_profile(team, team_code):
         goals = _num(full_totals.get(goals_key), "roster " + strength + " goals")
         points = _num(full_totals.get(points_key), "roster " + strength + " points")
         credit_ratios[strength] = points / goals if goals else None
-    event_rates = {
-        "EV": rates["ev_points"] / credit_ratios["EV"] if credit_ratios["EV"] else rates["ev_goals"],
-        "PP": rates["pp_points"] / credit_ratios["PP"] if credit_ratios["PP"] else rates["pp_goals"],
-        "PK": rates["sh_points"] / credit_ratios["PK"] if credit_ratios["PK"] else rates["sh_goals"],
-    }
+    # Goals drive the team score. Assists estimate a player's own G+A point
+    # distribution; counting them again as team goals double-counts scoring.
+    event_rates = {"EV": rates["ev_goals"], "PP": rates["pp_goals"], "PK": rates["sh_goals"]}
+    total_roster_goals = sum(_num(full_totals.get(key), "roster goals") for key in ("evGoals", "ppGoals", "shGoals"))
+    assist_goal_ratio = (_num(full_totals.get("assists"), "roster assists") / total_roster_goals
+                         if total_roster_goals > 0 else None)
     active_ids={p["player_id"] for p in skaters}
     change_data=team.get("lineup_changes",{});incoming=list(change_data.get("new_in_projection",[]))
     incoming_ids={p.get("player_id") for p in incoming};outgoing=list(change_data.get("out_of_projection",[]))
@@ -345,7 +349,8 @@ def team_profile(team, team_code):
         "lineup_coverage": coverage,
         "rates": rates,
         "credit_ratios": credit_ratios,
-        "goal_event_rates_from_player_points": event_rates,
+        "goal_event_rates_from_player_goals": event_rates,
+        "historical_assists_per_goal": assist_goal_ratio,
         "season": {"games": gp, "shots_for_per_game": shots_for,
                    "shots_against_per_game": shots_against,
                    "goals_for_per_game": _num(summary.get("goalsForPerGame"), "team goals for"),
@@ -403,7 +408,7 @@ def _scoring_rate(attacking, defending, goalie, league_pk_rate):
     ev_shots_against = defending["season"]["shots_against_per_game"] * attacking["ev_share"]
     expected_ev_shots = math.sqrt(max(1e-9, ev_shots_for * ev_shots_against))
     shot_factor = expected_ev_shots / max(1e-9, ev_shots_for)
-    non_pp_rate = attacking["goal_event_rates_from_player_points"]["EV"] * shot_factor
+    non_pp_rate = attacking["goal_event_rates_from_player_goals"]["EV"] * shot_factor
 
     # Estimate penalty opportunities from both clubs' dated special-team
     # counts. Active opponent PIM exposure adjusts opportunities empirically.
@@ -414,7 +419,7 @@ def _scoring_rate(attacking, defending, goalie, league_pk_rate):
     opp_pk_leak = defending["special"]["pk_goals_allowed_rate"]
     if own_pp_rate is None or opp_pk_leak is None or league_pk_rate <= 0:
         raise ValueError("Incomplete PP/PK rates")
-    pp_lineup_goals = attacking["goal_event_rates_from_player_points"]["PP"] * expected_pp_opps / max(1e-9, own_pp)
+    pp_lineup_goals = attacking["goal_event_rates_from_player_goals"]["PP"] * expected_pp_opps / max(1e-9, own_pp)
     pp_lineup_rate = pp_lineup_goals / max(1e-9, expected_pp_opps)
     # Match own team efficiency, the projected PP personnel, and opponent PK
     # allowance. Shrink the short opponent PK sample halfway toward the
@@ -432,21 +437,26 @@ def _scoring_rate(attacking, defending, goalie, league_pk_rate):
         raise ValueError("Invalid team defensive goal-per-shot rate")
     goalie_goal_rate = 1 - goalie["save_pct"]
     goalie_factor = goalie_goal_rate / opponent_baseline_goal_rate
-    rate = (non_pp_rate + pp_rate + short_handed_rate) * goalie_factor
+    expected_ev_goals = non_pp_rate * goalie_factor
+    expected_pp_goals = pp_rate * goalie_factor
+    expected_sh_goals = short_handed_rate * goalie_factor
+    rate = expected_ev_goals + expected_pp_goals + expected_sh_goals
     if not math.isfinite(rate) or rate <= 0 or rate >= 10:
         raise ValueError("Unsupported expected goal rate")
     return {
         "expected_goals": rate,
+        "expected_goals_by_strength": {"EV": expected_ev_goals, "PP": expected_pp_goals,
+                                       "SH": expected_sh_goals},
         "components": {
             "projected_ev_goals_per_game": ar["ev_goals"],
-            "projected_ev_scoring_events_from_assisted_points": attacking["goal_event_rates_from_player_points"]["EV"],
+            "projected_ev_scoring_events_from_player_goals": attacking["goal_event_rates_from_player_goals"]["EV"],
             "ev_points_per_goal_credit_ratio": attacking["credit_ratios"]["EV"],
             "projected_ev_shots_per_game": ar["ev_shots"],
             "opponent_ev_shots_allowed_proxy": ev_shots_against,
             "expected_ev_shots": expected_ev_shots,
             "ev_shot_matchup_factor": shot_factor,
             "projected_pp_goals_per_game": ar["pp_goals"],
-            "projected_pp_scoring_events_from_assisted_points": attacking["goal_event_rates_from_player_points"]["PP"],
+            "projected_pp_scoring_events_from_player_goals": attacking["goal_event_rates_from_player_goals"]["PP"],
             "pp_points_per_goal_credit_ratio": attacking["credit_ratios"]["PP"],
             "expected_pp_opportunities": expected_pp_opps,
             "team_pp_goal_rate": own_pp_rate,
@@ -466,6 +476,53 @@ def _scoring_rate(attacking, defending, goalie, league_pk_rate):
             "pk_minutes_per_game": ar["pk_minutes"],
         },
     }
+
+
+def _poisson_probability_at_least_one(mean):
+    return -math.expm1(-mean)
+
+
+def _player_probabilities(team, scoring):
+    """Allocate game-scoring means to skaters, then derive experimental G/A/P props."""
+    phase_rates = {"EV": team["rates"]["ev_goals"],
+                   "PP": team["rates"]["pp_goals"],
+                   "SH": team["rates"]["sh_goals"]}
+    phase_means = scoring["expected_goals_by_strength"]
+    assist_rate = team["rates"]["assists"]
+    assist_goal_ratio = team["historical_assists_per_goal"]
+    assist_mean = (scoring["expected_goals"] * assist_goal_ratio
+                   if assist_goal_ratio is not None else None)
+    rows = []
+    for item in team["player_contributions"]:
+        projected = item["projected"]
+        goal_mean = 0.0
+        for phase in ("EV", "PP", "SH"):
+            denominator = phase_rates[phase]
+            if denominator > 0:
+                goal_mean += phase_means[phase] * projected[phase + "_goals"] / denominator
+        player_assists = (assist_mean * projected["assists"] / assist_rate
+                          if assist_mean is not None and assist_rate > 0
+                          else 0.0 if assist_mean is not None else None)
+        point_mean = goal_mean + player_assists if player_assists is not None else None
+        probability = {
+            "goal_at_least_one": _poisson_probability_at_least_one(goal_mean),
+            "assist_at_least_one": (_poisson_probability_at_least_one(player_assists)
+                                    if player_assists is not None else None),
+            "point_at_least_one": (_poisson_probability_at_least_one(point_mean)
+                                   if point_mean is not None else None),
+            "point_two_or_more": (max(0.0, 1.0 - math.exp(-point_mean) * (1.0 + point_mean))
+                                  if point_mean is not None else None),
+        }
+        rows.append({
+            "player_id": item["player_id"], "name": item["name"],
+            "unit": item["unit"], "line": item["line"],
+            "status": "experimental_probability",
+            "expected": {"goals": goal_mean, "assists": player_assists, "points": point_mean},
+            "probability": probability,
+            "points_identity": "expected_points = expected_goals + expected_assists",
+            "probability_model": "independent Poisson player goal and assist counts",
+        })
+    return rows
 
 
 def run(inputs):
@@ -497,11 +554,15 @@ def run(inputs):
             h = _scoring_rate(home, away, ag, league_pk_rate)
             a = _scoring_rate(away, home, hg, league_pk_rate)
             markets = calculate(h["expected_goals"], a["expected_goals"])
+            home_player_probabilities = _player_probabilities(home, h)
+            away_player_probabilities = _player_probabilities(away, a)
             weight=(hg["starter_probability"]*ag["starter_probability"]
                     if hg["starter_probability"] is not None and ag["starter_probability"] is not None else None)
             scenarios.append({"home_goalie": hg, "away_goalie": ag, "scenario_weight": weight,
                               "expected_goals": {"home": h["expected_goals"], "away": a["expected_goals"]},
                               "home_components": h["components"], "away_components": a["components"],
+                              "player_probabilities": {home_code: home_player_probabilities,
+                                                       away_code: away_player_probabilities},
                               "markets": markets})
     weighted_summary=None
     if scenarios and all(s["scenario_weight"] is not None for s in scenarios):
@@ -544,6 +605,13 @@ def run(inputs):
         "lineup_impact": {home_code: home["lineup_impact"], away_code: away["lineup_impact"]},
         "player_contributions": {home_code: home["player_contributions"],
                                  away_code: away["player_contributions"]},
+        "player_scoring_model": {
+            "team_score_influence": "player goal rates by EV/PP/SH deployment feed team expected goals and game outcome probabilities",
+            "assists_role": "assists estimate individual A and G+A point probabilities; they are not counted as additional team goals",
+            "point_identity": "points = goals + assists",
+            "player_probabilities_vary_by_goalie_scenario": True,
+            "calibrated": False,
+        },
         "schedule_context": {home_code: {"context": home["schedule"], "probability_effect_applied": False},
                              away_code: {"context": away["schedule"], "probability_effect_applied": False}},
         "possession_context": {home_code: {"faceoff_win_pct": home["faceoff_win_pct"],
@@ -558,7 +626,8 @@ def run(inputs):
             "Poisson rates use observed per-game player production and shot rates, not fitted coefficients.",
             "Individual defender on-ice suppression and line-pair effects are unavailable; team shots-against is used.",
             "For partial projected lineups, only identified skaters are minute-adjusted; unresolved roster contribution stays at its aggregate team baseline.",
-            "Assists describe lineup contribution but are not added as independent goals.",
+            "Player-level anytime goal, assist, and point probabilities are exploratory independent-Poisson estimates and require walk-forward calibration.",
+            "Player goal projections feed expected team goals by EV/PP/SH deployment; assists are allocated as player points and are not extra team goals.",
             "PIM affects opportunity volume through an observed roster-to-team exposure ratio, not a fixed minutes-to-power-play conversion.",
             "Schedule, travel and back-to-back context are retained in source inputs but have no estimated coefficient.",
             "When candidate goalie starts exactly cover all prior team games, an experimental mix weights paired scenarios by each candidate's current-season gamesStarted share; this is an uncalibrated historical frequency, not a confirmed starter probability. Incomplete coverage leaves the mix unavailable.",
