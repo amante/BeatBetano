@@ -91,8 +91,18 @@
   if(anchor&&bucket.previousElementSibling!==anchor)anchor.insertAdjacentElement("afterend",bucket);
   bucket.hidden=!content.children.length;
  }
+ function setupPageHeading(){
+  const main=document.querySelector("main");
+  if(!main||main.querySelector("h1"))return;
+  const labels={nba:"NBA",nhl:"NHL",nfl:"NFL",soccer:"Fútbol",tennis:"Tenis"};
+  const intro=document.createElement("section");intro.className="pulso-page-intro";intro.setAttribute("aria-label","Introducción");
+  const eyebrow=document.createElement("div");eyebrow.className="eyebrow";eyebrow.textContent="PULSO / "+(labels[sport]||"DEPORTE");
+  const heading=document.createElement("h1");heading.textContent="Tu jornada, de un vistazo.";
+  const lead=document.createElement("p");lead.textContent="Calendario, ejecución y resultados en un solo recorrido.";
+  intro.append(eyebrow,heading,lead);main.prepend(intro);
+ }
  function setup(){
-  setupIcons();setupAccordions();teamPass();
+  setupPageHeading();setupIcons();setupAccordions();teamPass();
   const main=document.querySelector("main");if(!main)return;
   let queued=false;
   const observer=new MutationObserver(records=>{
