@@ -150,24 +150,21 @@ def estimate(home, away, cutoff, labels, source=None):
             else g["away_goals"] - g["home_goals"]
             for g in rivalry_games
         ]
-        home_other_div = [
-            d for g, d in zip(
-                [g for g in games if g["home"] == home or g["away"] == home],
-                [((g["home_goals"] - g["away_goals"]) if g["home"] == home
-                  else (g["away_goals"] - g["home_goals"]))
-                 for g in games if g["home"] == home or g["away"] == home],
-            )
-            if TEAM_DIVISION[home] == TEAM_DIVISION[g["away"] if g["home"] == home else g["home"]]
-            and (g["away"] if g["home"] == home else g["home"]) != away
-        ]
-        away_other_div = [
-            (g["home_goals"] - g["away_goals"]) if g["home"] == away
-            else (g["away_goals"] - g["home_goals"])
-            for g in games
-            if (g["home"] == away or g["away"] == away)
-            and TEAM_DIVISION[away] == TEAM_DIVISION[g["away"] if g["home"] == away else g["home"]]
-            and (g["away"] if g["home"] == away else g["home"]) != home
-        ]
+        home_other_div, away_other_div = [], []
+        for game in games:
+            for team, excluded_opponent, destination in (
+                (home, away, home_other_div),
+                (away, home, away_other_div),
+            ):
+                if team not in (game["home"], game["away"]):
+                    continue
+                opponent = game["away"] if game["home"] == team else game["home"]
+                if opponent == excluded_opponent or TEAM_DIVISION[team] != TEAM_DIVISION[opponent]:
+                    continue
+                differential = (game["home_goals"] - game["away_goals"]
+                                if game["home"] == team
+                                else game["away_goals"] - game["home_goals"])
+                destination.append(differential)
         if len(home_other_div) >= MIN_OTHER_GAMES and len(away_other_div) >= MIN_OTHER_GAMES:
             h2h_mean = _mean(home_h2h)
             peer_baseline = 0.5 * (_mean(home_other_div) - _mean(away_other_div))
