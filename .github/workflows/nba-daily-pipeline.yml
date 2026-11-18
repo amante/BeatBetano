@@ -1,81 +1,63 @@
-name: NBA verified pregame three-model run
+name: NBA PULSO — dispatch verified auto-history pregame
 on:
-  pull_request:
-    paths:
-      - 'multisport/**'
-      - 'nba/**'
-      - '.github/workflows/nba-daily-pipeline.yml'
   workflow_dispatch:
     inputs:
       game_date:
-        description: 'NBA scoreboard date YYYY-MM-DD'
+        description: 'NBA scoreboard date YYYY-MM-DD (US league calendar)'
         required: true
         type: string
-      history_file:
-        description: 'Repository path to verified complete history JSON'
-        required: true
+      history_run_id:
+        description: 'Optional successful NBA prepare-history run ID; leave blank to build history in this run'
+        required: false
+        type: string
+      official_injury_report_url:
+        description: 'Optional direct NBA-hosted injury PDF URL if the official index is unavailable'
+        required: false
         type: string
 permissions:
+  actions: write
   contents: read
 jobs:
-  tests:
-    runs-on: ubuntu-latest
+  dispatch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - run: python -m pip install requests
-      - run: python -m unittest discover -s nba/tests -v
-  pregame:
-    permissions:
-      contents: write
-    concurrency:
-      group: daily-forecast-publication
-      cancel-in-progress: false
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
-    needs: tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - run: python -m pip install requests
-      - name: Validate inputs and run verified daily pregame predictions
+      - name: Validate inputs and dispatch the self-building NBA PULSO workflow
         env:
+          GH_TOKEN: ${{ github.token }}
           GAME_DATE: ${{ inputs.game_date }}
-          HISTORY_FILE: ${{ inputs.history_file }}
+          HISTORY_RUN_ID: ${{ inputs.history_run_id }}
+          OFFICIAL_INJURY_REPORT_URL: ${{ inputs.official_injury_report_url }}
         run: |
           python - <<'PY'
-          import os,re
-          from pathlib import Path
-          date=os.environ["GAME_DATE"]
-          if not re.fullmatch(r"\d{4}-\d{2}-\d{2}",date):
-              raise ValueError("Bad NBA game date")
-          p=Path(os.environ["HISTORY_FILE"])
-          if p.is_absolute() or ".." in p.parts or p.suffix!=".json" or not p.is_file():
-              raise ValueError("Invalid or missing verified history file")
+          import os
+          from datetime import date
+          day = date.fromisoformat(os.environ["GAME_DATE"])
+          if day.year not in (2026, 2027):
+              raise ValueError("Game date is outside the supported NBA season")
+          run_id = os.environ.get("HISTORY_RUN_ID", "").strip()
+          if run_id and not run_id.isdigit():
+              raise ValueError("history_run_id must contain digits only")
+          url = os.environ.get("OFFICIAL_INJURY_REPORT_URL", "").strip()
+          if url and not url.startswith("https://"):
+              raise ValueError("official injury report URL must use HTTPS")
           PY
-          python nba/daily_pipeline.py --history "$HISTORY_FILE" --date "$GAME_DATE" --output results/nba/prospective/three_model_snapshot.json --forecast-archive frontend/data/forecast_archive
-      - name: Preserve NBA initial and updated predictions
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          mkdir -p frontend/data/forecast_archive
-          git add frontend/data/forecast_archive
-          if ! git diff --cached --quiet; then
-            git commit -m "data: preserve NBA pregame forecast revisions"
-            git push origin HEAD:main
+
+          args=(--repo amante/BeatBetano --ref main -f "game_date=$GAME_DATE")
+          if [ -n "$HISTORY_RUN_ID" ]; then
+            args+=(-f "history_run_id=$HISTORY_RUN_ID")
           fi
-      - name: Archive pregame evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: nba-pregame-${{ github.run_id }}
-          path: |
-            results/nba/prospective/*.json
-            frontend/data/forecast_archive
-          retention-days: 90
+          if [ -n "$OFFICIAL_INJURY_REPORT_URL" ]; then
+            args+=(-f "official_injury_report_url=$OFFICIAL_INJURY_REPORT_URL")
+          fi
+
+          gh workflow run nba-auto-history.yml "${args[@]}"
+          {
+            echo "## NBA PULSO pregame dispatched"
+            echo
+            echo "Date: $GAME_DATE"
+            echo
+            echo "The self-building workflow creates and audits the verified history, collects injury evidence from the official and complementary sources, excludes games that have already started, and publishes only the eligible pregame snapshot."
+            echo
+            echo "[Open the NBA automatic verified-history workflow](https://github.com/amante/BeatBetano/actions/workflows/nba-auto-history.yml)"
+          } >> "$GITHUB_STEP_SUMMARY"
