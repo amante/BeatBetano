@@ -45,8 +45,11 @@ if(new URLSearchParams(location.search).get("sport")==="nhl"){
   button.addEventListener("click",()=>{
    const element=byId(target);if(element.tagName==="DETAILS")element.open=true;
    element.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth",block:"start"});
-   document.querySelectorAll("[data-nav]").forEach(b=>b.classList.toggle("active",b===button));
-   document.querySelector(".sidebar").classList.remove("open");
+   document.querySelectorAll("[data-nav]").forEach(b=>{b.classList.toggle("active",b===button);if(b===button)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+   const focusTarget=element.querySelector("h1,h2,h3,h4,summary")||element;
+   if(!focusTarget.hasAttribute("tabindex"))focusTarget.setAttribute("tabindex","-1");
+   focusTarget.focus({preventScroll:true});
+   window.PulsoNavigation?.close();
   });
  }
 }
