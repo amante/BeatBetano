@@ -187,6 +187,25 @@ def _binary_scores(probabilities, outcomes):
     }
 
 
+def _calibration_bins(probabilities, outcomes, groups=10):
+    bins = []
+    for index in range(groups):
+        selected = [
+            (probability, outcome)
+            for probability, outcome in zip(probabilities, outcomes)
+            if min(groups - 1, int(probability * groups)) == index
+        ]
+        bins.append({
+            "bin": index,
+            "n": len(selected),
+            "predicted": (sum(pair[0] for pair in selected) / len(selected)
+                          if selected else None),
+            "observed": (sum(pair[1] for pair in selected) / len(selected)
+                         if selected else None),
+        })
+    return bins
+
+
 def _summarize(records):
     report = {}
     for stat in ("goals", "assists", "points"):
@@ -203,6 +222,7 @@ def _summarize(records):
                 "count_mae": (sum(abs(a - p) for a, p in zip(actual_count, expected)) / n
                               if n else None),
                 "at_least_one": _binary_scores(probability, actual_binary),
+                "calibration_bins": _calibration_bins(probability, actual_binary),
             }
     return report
 
