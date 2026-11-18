@@ -31,7 +31,7 @@ def load_history(path):
         if row.get("date") and len(str(row.get("date"))) == 10
     )
     metadata = {
-        "path": source.as_posix(),
+        "path": source.relative_to(Path.cwd()).as_posix() if source.is_relative_to(Path.cwd()) else source.name,
         "sha256": hashlib.sha256(raw).hexdigest(),
         "rows": len(rows),
         "first_label_date": label_dates[0] if label_dates else None,
