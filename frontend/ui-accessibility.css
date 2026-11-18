@@ -1,0 +1,70 @@
+/* PULSO accessibility pass: softer navy surfaces, readable metadata and consistent controls. */
+:root{
+  --ui-bg:#10283b;
+  --ui-bg-soft:#15344a;
+  --ui-card:#193b53;
+  --ui-card-deep:#15344a;
+  --ui-border:#41657c;
+  --ui-border-soft:#315269;
+  --ui-text:#f2f7fa;
+  --ui-muted:#b7cbd6;
+  --ui-subtle:#a7bfcd;
+  --ui-radius:18px;
+}
+body{
+  background:radial-gradient(ellipse at 78% -15%,#28536c 0,transparent 42%),linear-gradient(150deg,#142f43,#10283b 68%,#17374f)!important;
+  line-height:1.6;
+}
+.daily-panel,.panel,.forecast-panel,.pulso-accordion{
+  background:linear-gradient(145deg,#1c4058,#153249)!important;
+  border-color:#41657c!important;
+}
+.metric,.daily-empty,.forecast-card,.nba-team-details,.nba-player-card{
+  background-color:#14334a!important;
+  border-color:#355b72;
+}
+.daily-match.daily-match-card{
+  background:#15344a;
+  border-color:#31546b;
+}
+.daily-match.daily-match-card:hover{background:#1a3d55;border-color:#4b7188}
+.daily-source,.nba-capture-time,.nba-roster-note,.forecast-footnote{
+  color:var(--ui-subtle)!important;
+  font-size:12px!important;
+  line-height:1.6;
+}
+.daily-controls,.daily-time,.daily-match-card .daily-time,.daily-match-card .daily-state,
+.daily-match-card .live-note,.pulso-versus,.nba-team-count,.nba-player-name,
+.nba-player-status,.nba-roster-details>summary,.nba-unknown-details>summary,
+.nba-section-empty,.nba-coverage-empty,.nba-game-disclosure__run-meta,
+.forecast-state,.forecast-date,.forecast-table,.forecast-table thead th,
+.forecast-table td:last-child,.forecast-card details,.forecast-footnote,
+.pulso-accordion>summary small{
+  font-size:12px!important;
+}
+.metric>span{font-size:11px!important;line-height:1.45;letter-spacing:.06em}
+.daily-group h3{font-size:14px}
+.nba-player-status{padding:4px 7px;line-height:1.35}
+.nba-player-number,.daily-team-initials{font-size:11px}
+.daily-team-name{font-size:15px}
+.daily-match-card .daily-team-name{font-size:15px}
+.daily-match-card .daily-state{padding:6px 10px}
+.daily-match-card .live-note{line-height:1.55}
+button,input,select{min-height:44px}
+.pulso-inline-accordion>summary,.pulso-accordion>summary,
+.nba-team-summary,.nba-roster-details>summary,.nba-unknown-details>summary,
+.forecast-card summary,.nba-game-disclosure>summary{
+  min-height:44px;
+}
+@media(max-width:700px){
+  .daily-match-card .daily-time{font-size:11px!important}
+  .daily-match-card .daily-state{font-size:11px!important}
+  .daily-match-card .daily-team-name{font-size:14px}
+  .daily-match-card .daily-team-initials{font-size:10px}
+  .metric>span{font-size:10px!important}
+}
+@media(max-width:420px){
+  .daily-match-card .daily-time{font-size:11px!important}
+  .daily-match-card .daily-state{max-width:82px;font-size:11px!important}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
