@@ -232,9 +232,9 @@
           "created": true,
           "connected": false,
           "affects_prediction": false,
-          "evidence": "nhl/opponent_style_profile.py; nhl/opponent_style_source_audit.py",
-          "scope": "Resume descriptivamente por equipo tiros a puerta, fallados, bloqueados, goles, tipo de tiro y distancia geométrica aproximada al arco; separa ataque y tiros permitidos.",
-          "note": "No está conectado al pronóstico ni modifica porcentajes. La distancia es una aproximación desde coordenadas PBP, no etiqueta NHL EDGE de peligro; la muestra capturada es acotada y pospartido. Faltan archivo histórico punto en tiempo, estado de manpower y validación antes de modelar efecto."
+          "evidence": "nhl/opponent_style_profile.py; nhl/opponent_style_source_audit.py; nhl/historical_game_collector.py; nhl/opponent_style_walkforward.py; .github/workflows/nhl-full-historical-backfill.yml",
+          "scope": "Genera perfiles descriptivos por equipo desde PBP y un challenger histórico walk-forward con volumen y distancia geométrica de tiros; compara goles esperados y ML contra un baseline usando solo partidos de fechas anteriores.",
+          "note": "El archivo histórico completo debe regenerarse para incluir PBP de tiros. El walk-forward solo es elegible para investigación; el módulo sigue desconectado y no cambia porcentajes hasta revisar el holdout y obtener confirmación prospectiva."
         }
       ]
     },

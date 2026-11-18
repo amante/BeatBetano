@@ -7,6 +7,15 @@ import argparse,json,time,random,os
 from pathlib import Path
 import requests
 
+try:
+    from .opponent_style_profile import game_profile
+except ImportError:
+    from opponent_style_profile import game_profile
+
+SHOT_EVENTS={"shot-on-goal","missed-shot","blocked-shot","goal"}
+SHOT_DETAIL_FIELDS=("eventOwnerTeamId","xCoord","yCoord","shotType","situationCode",
+                    "homeScore","awayScore","shootingPlayerId","scoringPlayerId","goalieInNetId")
+
 BASE="https://api-web.nhle.com/v1/gamecenter/{}/{}"
 def fetch(session,url,sleep=time.sleep):
     for attempt in range(6):
@@ -25,6 +34,29 @@ def fetch(session,url,sleep=time.sleep):
             sleep(min(100,3*2**attempt))
     raise RuntimeError("NHL retries exhausted")
 
+def _compact_shot_events(events):
+    compact=[]
+    for event in events:
+        if not isinstance(event,dict):continue
+        kind=str(event.get("typeDescKey") or "").strip().lower().replace("_","-")
+        if kind not in SHOT_EVENTS:continue
+        raw=event.get("details") or {}
+        details={}
+        for key in SHOT_DETAIL_FIELDS:
+            if key in raw:
+                details[key]=raw[key]
+            elif key in event:
+                details[key]=event[key]
+        compact.append({
+            "eventId":event.get("eventId"),
+            "typeDescKey":kind,
+            "periodDescriptor":event.get("periodDescriptor"),
+            "timeInPeriod":event.get("timeInPeriod"),
+            "details":details,
+        })
+    return compact
+
+
 def extract(game,box,pbp):
     events=pbp.get("plays",[])
     if not isinstance(events,list):raise ValueError("Missing PBP plays")
@@ -32,19 +64,31 @@ def extract(game,box,pbp):
     for e in events:
         if e.get("typeDescKey")!="goal":continue
         d=e.get("details") or {}
-        side=d.get("eventOwnerTeamId")
+        side=d.get("eventOwnerTeamId",e.get("eventOwnerTeamId"))
         goals.append({"event_id":e.get("eventId"),"period":(e.get("periodDescriptor") or {}).get("number"),
                       "period_type":(e.get("periodDescriptor") or {}).get("periodType"),
                       "time_in_period":e.get("timeInPeriod"),"owner_team_id":side,
                       "home_score":e.get("homeScore"),"away_score":e.get("awayScore")})
+    home_team=box.get("homeTeam") or {}
+    away_team=box.get("awayTeam") or {}
+    if type(home_team.get("id")) is not int or type(away_team.get("id")) is not int:
+        raise ValueError("Missing official numeric team IDs from boxscore")
+    compact_shots=_compact_shot_events(events)
+    fixture={"game_id":game["id"],"date":game["date"],"home":game["home"],"away":game["away"],
+             "home_team_id":home_team["id"],"away_team_id":away_team["id"],
+             "home_goals":game["hg"],"away_goals":game["ag"]}
+    style_profile=game_profile(fixture,compact_shots)
     return {"game_id":game["id"],"date":game["date"],"home":game["home"],"away":game["away"],
       "result_final":{"home_goals":game["hg"],"away_goals":game["ag"]},
       "game_info":{"game_state":box.get("gameState"),"game_type":box.get("gameType")},
-      "boxscore":{"home_team":box.get("homeTeam"),"away_team":box.get("awayTeam"),
+      "boxscore":{"home_team":home_team,"away_team":away_team,
         "player_by_game_stats":box.get("playerByGameStats")},
       "goal_events":goals,"goal_events_available":bool(goals),
       "pbp_event_count":len(events),
-      "point_in_time_warning":"Boxscore and PBP are POSTGAME only; never treat starting goalie or lineups as pregame confirmed."}
+      "opponent_style_features_version":1,
+      "opponent_style_profile":style_profile,
+      "opponent_style_shot_event_count":len(compact_shots),
+      "point_in_time_warning":"Boxscore and PBP are POSTGAME only; a game profile is used only as prior-date evidence, never for its own forecast."}
 
 def run(ledger,output,max_games,delay):
     output.mkdir(parents=True,exist_ok=True)
@@ -56,7 +100,7 @@ def run(ledger,output,max_games,delay):
         if path.is_file():
             try:
                 old=json.loads(path.read_text())
-                if old.get("game_id")==game["id"] and old.get("goal_events_available") and old.get("boxscore",{}).get("player_by_game_stats"):
+                if old.get("game_id")==game["id"] and old.get("goal_events_available") and old.get("opponent_style_features_version")==1 and old.get("opponent_style_profile") and old.get("boxscore",{}).get("player_by_game_stats"):
                     cached+=1;continue
             except (ValueError,KeyError):pass
         try:

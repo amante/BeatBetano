@@ -15,7 +15,7 @@ def backfill(ledger,root,max_seconds=19000,pause=1.5):
             try:
                 item=json.loads(path.read_text())
                 if (str(item.get("game_id"))==gid and item.get("date")==game["date"] and
-                    item.get("goal_events_available") and item.get("boxscore",{}).get("player_by_game_stats")):
+                    item.get("goal_events_available") and item.get("opponent_style_features_version")==1 and item.get("opponent_style_profile") and item.get("boxscore",{}).get("player_by_game_stats")):
                     cached+=1;continue
             except (OSError,ValueError):pass
         if time.monotonic()+90>deadline:break

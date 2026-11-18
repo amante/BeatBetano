@@ -11,6 +11,7 @@ class TestAutomatedBackfill(unittest.TestCase):
  def test_recognizes_existing_verified_cache_without_requests(self):
   row={"id":"123","date":"2024-10-01","home":"BOS","away":"MTL"}
   item={"game_id":"123","date":"2024-10-01","goal_events_available":True,
+        "opponent_style_features_version":1,"opponent_style_profile":{"team_profiles":{}},
         "boxscore":{"player_by_game_stats":{"homeTeam":{}}}}
   with tempfile.TemporaryDirectory() as d:
    (Path(d)/"123.json").write_text(json.dumps(item))

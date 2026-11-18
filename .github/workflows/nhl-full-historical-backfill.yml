@@ -98,6 +98,22 @@ jobs:
           if m["missing_games"] or m["invalid_files"]:
             raise SystemExit("Historical completeness not achieved: inspect batch jobs and missing.json")
           PY
+      - name: Run chronological opponent-style evaluation
+        run: |
+          python -m unittest nhl.tests.test_opponent_style_walkforward nhl.tests.test_historical_game_collector nhl.tests.test_backfill_all_history nhl.tests.test_consolidate_historical_games -v
+          python nhl/opponent_style_walkforward.py --archive results/nhl/full_archive --output results/nhl/opponent_style_walkforward.json
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=json.loads(Path("results/nhl/opponent_style_walkforward.json").read_text())
+          h=r["untouched_holdout"];d=r["holdout_delta_candidate_minus_baseline"]
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as f:
+            f.write("\n## NHL opponent-style chronological holdout\n\n")
+            f.write("Holdout: "+str(h["games"])+" games from "+h["from"]+".\n\n")
+            f.write("Baseline goals Poisson NLL: "+str(h["baseline"]["team_goal_poisson_nll"])+"; challenger: "+str(h["candidate"]["team_goal_poisson_nll"])+"; delta: "+str(d["team_goal_poisson_nll"])+" (negative favors challenger).\n\n")
+            f.write("Baseline ML Brier: "+str(h["baseline"]["moneyline_brier"])+"; challenger: "+str(h["candidate"]["moneyline_brier"])+"; delta: "+str(d["moneyline_brier"])+" (negative favors challenger).\n\n")
+            f.write("Production promotion: no. Percentages changed: no.\n")
+          PY
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -105,4 +121,5 @@ jobs:
           path: |
             results/nhl/full_archive/
             results/nhl/missing.json
+            results/nhl/opponent_style_walkforward.json
           retention-days: 90
