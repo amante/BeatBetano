@@ -14,6 +14,17 @@
     if (className) node.className = className;
     return node;
   };
+  const flagIcon = (active) => {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("focusable", "false");
+    const mark = document.createElementNS("http://www.w3.org/2000/svg", active ? "path" : "circle");
+    if (active) mark.setAttribute("d", "m5 12 4 4L19 6");
+    else { mark.setAttribute("cx", "12"); mark.setAttribute("cy", "12"); mark.setAttribute("r", "7"); }
+    svg.append(mark);
+    return svg;
+  };
   const stage = (module) => {
     if (fields.every(([key]) => module[key])) return "Seguimiento y calibración";
     if (module.created && module.connected) return "Conectado · falta afectar porcentajes";
@@ -49,8 +60,10 @@
       const flags = el("div", undefined, "module-lifecycle-flags");
       for (const [key, label] of fields) {
         const active = module[key] === true;
-        const flag = el("span", `${active ? "✓" : "○"} ${label}`, `module-lifecycle-flag ${active ? "is-yes" : "is-no"}`);
+        const flag = el("span", undefined, `module-lifecycle-flag ${active ? "is-yes" : "is-no"}`);
+        flag.setAttribute("role", "img");
         flag.setAttribute("aria-label", `${label}: ${active ? "Sí" : "No"}`);
+        flag.append(flagIcon(active), el("span", label));
         flags.append(flag);
       }
       const details = el("details", undefined, "module-lifecycle-details");
