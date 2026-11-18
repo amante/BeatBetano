@@ -278,16 +278,19 @@ document.querySelectorAll('input[name="simulation-scope"]').forEach(r=>r.addEven
 $("run-simulation").addEventListener("click",runSimulation);
 $("crumb").textContent=title.toUpperCase();
 $("sport-nav").append(make("div",title,"nav active"));
-const menuButton=$("menu"),sidebar=document.querySelector(".sidebar");
-function setMenuOpen(open,restoreFocus=false){
- sidebar.classList.toggle("open",open);
- menuButton.setAttribute("aria-expanded",String(open));
- if(open)sidebar.querySelector("[data-nav]")?.focus();
- else if(restoreFocus)menuButton.focus();
+const menuButton=$("menu");
+const sidebar=typeof document.querySelector==="function"?document.querySelector(".sidebar"):null;
+if(menuButton&&sidebar&&typeof document.addEventListener==="function"){
+ function setMenuOpen(open,restoreFocus=false){
+  sidebar.classList.toggle("open",open);
+  menuButton.setAttribute("aria-expanded",String(open));
+  if(open)sidebar.querySelector("[data-nav]")?.focus();
+  else if(restoreFocus)menuButton.focus();
+ }
+ menuButton.addEventListener("click",()=>setMenuOpen(!sidebar.classList.contains("open")));
+ document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"&&sidebar.classList.contains("open"))setMenuOpen(false,true);
+ });
+ window.PulsoNavigation={close:()=>setMenuOpen(false)};
 }
-menuButton.addEventListener("click",()=>setMenuOpen(!sidebar.classList.contains("open")));
-document.addEventListener("keydown",event=>{
- if(event.key==="Escape"&&sidebar.classList.contains("open"))setMenuOpen(false,true);
-});
-window.PulsoNavigation={close:()=>setMenuOpen(false)};
 load();
