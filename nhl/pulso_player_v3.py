@@ -74,7 +74,8 @@ def build(teams,seasons,fetch=fetch_json):
     records.append({"game_id":game,"date":scheduled_date,"player_id":player,
       "team":team,"opponent":g["opponentAbbrev"],"home":g["homeRoadFlag"]=="H",
       "rest_days":rest,"toi_minutes":to_minutes(g["toi"]),
-      "shots_on_goal":int(g["shots"]),"goals":int(g["goals"]),\n      "assists":int(g["assists"]),"points":int(g["points"])})
+      "shots_on_goal":int(g["shots"]),"goals":int(g["goals"]),
+      "assists":int(g["assists"]),"points":int(g["points"])})
  return validate(records),positions,sources
 def evaluate(rows,positions,start="2025-10-01"):
  # v1 forecast needs team and player prior records. Replay each skater on its own
