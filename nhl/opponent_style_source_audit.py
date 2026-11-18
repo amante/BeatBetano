@@ -274,6 +274,13 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
             f"{attack['blocked_shot_events']} | {attack['goals']} | "
             f"{attack['distance_bins_ft'].get('0-25', 0)} / {attack['located_unblocked_shots']} |"
         )
+    coordinate_rows = [row["team_style_profile"].get("coordinate_diagnostics", {}) for row in games]
+    x_values = [value for row in coordinate_rows for value in (row.get("x_min"), row.get("x_max")) if value is not None]
+    y_values = [value for row in coordinate_rows for value in (row.get("y_min"), row.get("y_max")) if value is not None]
+    lines.extend(["", "## Diagnóstico de coordenadas", ""])
+    lines.append(f"- Rango X observado: {min(x_values) if x_values else 'sin dato'} a {max(x_values) if x_values else 'sin dato'}")
+    lines.append(f"- Rango Y observado: {min(y_values) if y_values else 'sin dato'} a {max(y_values) if y_values else 'sin dato'}")
+    lines.append("- Las unidades y orientación de coordenadas siguen sin verificarse; los bins de distancia son solo descriptivos.")
     lines.extend(["", "## Límites", ""])
     lines.extend(f"- {item}" for item in report["limitations"])
     lines.extend(f"- {item}" for item in style_report["limitations"])
