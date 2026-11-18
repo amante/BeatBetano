@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v6"
+VERSION = "nhl-joint-match-320-v7"
 
 
 def _num(value, label, *, positive=False):
@@ -103,6 +103,96 @@ def _minutes_scenario(team):
                    "incoming_player_ids": sorted(incoming_ids), "by_group": group_audit}
 
 
+def _apply_return_minutes(team, minute_scenario, minute_audit):
+    """Apply evidence-gated return ramp, redistributing minutes inside the same unit."""
+    records = team.get("return_to_play", {}).get("players", {})
+    if not isinstance(records, dict):
+        records = {}
+    players = {p["player_id"]: p for line in team.get("projected_lines", [])
+               for p in line.get("players", [])}
+    audit_rows = []
+    applied = {}
+    for key, item in records.items():
+        if not isinstance(item, dict):
+            continue
+        try:
+            player_id = int(item.get("player_id", key))
+        except (TypeError, ValueError):
+            continue
+        player = players.get(player_id)
+        if player is None:
+            continue
+        status = item.get("status", "evidence_unavailable")
+        row = {"player_id": player_id, "name": item.get("name") or player.get("name"),
+               "status": status, "days_out": item.get("days_out"),
+               "duration_band": item.get("duration_band"),
+               "historical_players": item.get("historical_players", 0),
+               "historical_episodes": item.get("historical_episodes", 0),
+               "minutes_factor": 1.0, "minutes_before": minute_scenario[player_id]["total"],
+               "minutes_after": minute_scenario[player_id]["total"]}
+        if status == "adjustment_applied":
+            factor = item.get("minutes_factor")
+            if type(factor) not in (int, float) or not math.isfinite(factor) or not 0.70 <= factor < 0.995:
+                row["status"] = "invalid_adjustment_ignored"
+            else:
+                row["minutes_factor"] = float(factor)
+                applied[player_id] = (row, float(factor))
+        audit_rows.append(row)
+    if not applied:
+        result = {"status": "no_supported_adjustment", "applied": False, "players": audit_rows}
+        minute_audit["return_to_play"] = result
+        return minute_scenario, minute_audit
+
+    by_player = {row["player_id"]: row for row in audit_rows}
+    successful = set()
+    for group in ("forwards", "defense"):
+        members = [p for line in team.get("projected_lines", []) if line.get("unit") == group
+                   for p in line.get("players", [])]
+        returners = [p for p in members if p["player_id"] in applied]
+        recipients = [p for p in members if p["player_id"] not in applied]
+        recipient_minutes = sum(minute_scenario[p["player_id"]]["total"] for p in recipients)
+        reductions = sum(minute_scenario[p["player_id"]]["total"] * (1.0 - applied[p["player_id"]][1])
+                         for p in returners)
+        if not returners or recipient_minutes <= 0:
+            for player in returners:
+                by_player[player["player_id"]]["status"] = "minutes_reallocation_unavailable"
+                by_player[player["player_id"]]["minutes_factor"] = 1.0
+            continue
+        for player in returners:
+            pid = player["player_id"]
+            minutes = minute_scenario[pid]
+            _, factor = applied[pid]
+            for key in ("total", "EV", "PP", "PK"):
+                minutes[key] *= factor
+            by_player[pid]["minutes_after"] = minutes["total"]
+            successful.add(pid)
+        if reductions:
+            for player in recipients:
+                pid = player["player_id"]
+                minutes = minute_scenario[pid]
+                before = minutes["total"]
+                addition = reductions * before / recipient_minutes
+                shares = {key: minutes[key] / before for key in ("EV", "PP", "PK")} if before > 0 else {"EV": 0, "PP": 0, "PK": 0}
+                minutes["total"] = before + addition
+                for key in ("EV", "PP", "PK"):
+                    minutes[key] += addition * shares[key]
+    if not successful:
+        minute_audit["return_to_play"] = {"status": "minutes_reallocation_unavailable",
+                                          "applied": False, "players": audit_rows}
+        return minute_scenario, minute_audit
+    allocated = sum(item["total"] for item in minute_scenario.values())
+    if not math.isclose(allocated, minute_audit["allocated_minutes"], abs_tol=1e-7):
+        raise ValueError("Return-to-play minute redistribution does not conserve the team budget")
+    for group, detail in minute_audit.get("by_group", {}).items():
+        group_ids = {p["player_id"] for line in team["projected_lines"] if line.get("unit") == group
+                     for p in line.get("players", [])}
+        detail["allocated_minutes"] = sum(minute_scenario[pid]["total"] for pid in group_ids)
+    result = {"status": "adjustment_applied", "applied": True, "players": audit_rows,
+              "method": "scale returning skater minutes and redistribute within same forward/defense unit"}
+    minute_audit["return_to_play"] = result
+    return minute_scenario, minute_audit
+
+
 def _historical_contribution(player):
     gp = _num(player.get("games_played"), "availability player games", positive=True)
     prod = player.get("production", {})
@@ -153,6 +243,7 @@ def team_profile(team, team_code):
         raise ValueError("No identified projected skaters for partial scenario " + team_code)
 
     minute_scenario, minute_audit = _minutes_scenario(team)
+    minute_scenario, minute_audit = _apply_return_minutes(team, minute_scenario, minute_audit)
     rates = {"ev_goals": 0.0, "pp_goals": 0.0, "sh_goals": 0.0,
              "ev_points": 0.0, "pp_points": 0.0, "sh_points": 0.0,
              "assists": 0.0, "shots": 0.0, "ev_shots": 0.0,
