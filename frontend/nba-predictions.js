@@ -446,19 +446,23 @@
    const card=el("article","");card.className="nba-forward-game";
    const state=g.outcome?"Final":g.source_state==="in"?"En juego al último corte":g.source_status==="STATUS_FINAL"?"Final · cierre emparejado pendiente":g.source_status==="STATUS_POSTPONED"?"Aplazado":g.source_status==="STATUS_CANCELED"?"Cancelado":g.status.includes("review")?"Requiere revisión":Date.now()>=Date.parse(g.tipoff_utc)?"Sin actualización posterior al inicio":"Por comenzar";
    const matchData={sport:"nba",id:g.game_id,away:g.away_team,home:g.home_team,start_utc:g.tipoff_utc,status:g.source_status||g.status,completed:Boolean(g.outcome),away_score:g.outcome?.away_points,home_score:g.outcome?.home_points};
-   if(g.calendar_only){
-    const calendarRow=window.PulsoCalendar?.makeMatchRow(matchData,{sport:"nba"});
-    if(calendarRow?.dataset)calendarRow.dataset.gameId=String(g.game_id);
-    if(agenda)agenda.append(calendarRow||el("p",teamName(g.away_team)+" — "+teamName(g.home_team)+" · "+local(g.tipoff_utc)+" · Por comenzar"));
-    const card=el("article","");card.className="nba-forward-game nba-forward-game--calendar-only";
-    card.append(el("h3",teamName(g.away_team)+" — "+teamName(g.home_team)));
-    card.append(el("p",local(g.tipoff_utc)+" · Partido del calendario diario"));
-    card.append(el("p","Este encuentro no aparece en la última corrida NBA; todavía no hay pronóstico ni análisis de alineaciones publicado."));
-    if(card.dataset)card.dataset.gameId=String(g.game_id);root.append(card);continue;
-   }
    const latest=currentRun?.predictions.find(row=>String(row.game_id)===String(g.game_id)&&row.tipoff_utc===g.tipoff_utc);
    const market=latest?.market_context||g.market_context;
    const modelHome=latest?(latest.model_p_home??latest.statistical_baseline_p_home??latest.hybrid_p_home):null;
+   if(g.calendar_only){
+    const calendarRow=window.PulsoCalendar?.makeMatchRow(matchData,{sport:"nba"});
+    if(calendarRow?.dataset)calendarRow.dataset.gameId=String(g.game_id);
+    if(agenda){agenda.append(calendarRow||el("p",teamName(g.away_team)+" — "+teamName(g.home_team)+" · "+local(g.tipoff_utc)+" · Por comenzar"));agenda.append(marketCalendarStrip(g,market,modelHome));}
+    const card=el("article","");card.className="nba-forward-game nba-forward-game--calendar-only";
+    card.append(el("h3",teamName(g.away_team)+" — "+teamName(g.home_team)));
+    card.append(el("p",local(g.tipoff_utc)+" · Partido del calendario diario"));
+    if(latest){
+     card.append(el("p","Pronóstico disponible en la última corrida; aún no está incorporado al registro prospectivo."));
+     const marketDetails=marketPanel({...g,market_context:market,first_prediction:latest},modelHome);
+     if(marketDetails)card.append(marketDetails);
+    }else card.append(el("p","Este encuentro no aparece en la última corrida NBA; todavía no hay pronóstico ni análisis de alineaciones publicado."));
+    if(card.dataset)card.dataset.gameId=String(g.game_id);root.append(card);continue;
+   }
    const calendarRow=window.PulsoCalendar?.makeMatchRow(matchData,{sport:"nba",stateText:state});
    if(calendarRow?.dataset)calendarRow.dataset.gameId=String(g.game_id);
    if(agenda){agenda.append(calendarRow||el("p",teamName(g.away_team)+" — "+teamName(g.home_team)+" · "+local(g.tipoff_utc)+" · "+state));agenda.append(marketCalendarStrip(g,market,modelHome));}
