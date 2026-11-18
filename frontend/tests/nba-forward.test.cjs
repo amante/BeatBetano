@@ -33,7 +33,7 @@ test('full NBA page skips legacy fetch, hides NHL/simulator/stats and keeps date
  for(const panel of [yesterday,simulator,elements['daily-stats'],elements['nhl-five-market'],elements['nhl-joint-model'],elements['pulso-nhl-research']])assert.equal(panel.hidden,true);
  elements['daily-date'].value='2026-11-04';for(const fn of elements['daily-date'].listeners.change)fn();
  assert.equal(elements['daily-label'].textContent,'NBA · 2026-11-04 · 1 partido registrado');
- assert.match(elements['feed-message'].textContent,/registro NBA/);
+ assert.match(elements['feed-message'].textContent,/horarios de Chile/);
 });
 
 
