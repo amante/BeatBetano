@@ -72,3 +72,13 @@ button,input,select{min-height:44px}
 details>summary{min-height:44px;cursor:pointer}
 details>summary:focus-visible,[tabindex="-1"]:focus-visible{outline:3px solid #83e3f3!important;outline-offset:3px}
 .upload,.mobile-menu{min-height:44px}.mobile-menu{min-width:44px;display:inline-grid;place-items:center}
+@media(max-width:420px){
+  .daily-match.daily-match-card{grid-template-columns:minmax(0,1fr) 82px;gap:7px 10px}
+  .daily-match-card .daily-time{grid-column:1;grid-row:1;align-self:center;padding-top:0}
+  .daily-match-card .daily-team-away{grid-column:1;grid-row:2}
+  .daily-match-card .daily-team-home{grid-column:1;grid-row:3}
+  .daily-match-card .daily-state{grid-column:2;grid-row:1/span 3;align-self:center;justify-self:end;width:82px;max-width:none;white-space:normal}
+  .daily-match-card .daily-team{gap:8px}
+  .daily-match-card .daily-team-name{font-size:14px;line-height:1.35}
+  .daily-match-card .live-note{grid-column:1/-1;grid-row:auto}
+}
