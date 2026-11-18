@@ -1,37 +1,37 @@
 {
   "schema_version": 1,
   "kind": "nba_team_confidence_diagnostic_v1",
-  "created_at_utc": "2026-11-17T22:34:23.709407+00:00",
-  "scored_games": 33,
+  "created_at_utc": "2026-11-18T22:14:04.136500+00:00",
+  "scored_games": 38,
   "deduplicated_to_latest_pregame_forecast_per_game": true,
   "skipped_post_tipoff_predictions": 0,
   "models": {
     "elo": {
-      "n": 33,
-      "mean_forecast": 0.5114795523668793,
-      "observed_win_rate": 0.5151515151515151,
-      "mean_bias": -0.003671962784635942,
-      "brier": 0.21886689821588104,
-      "log_loss": 0.6232823966243211,
-      "accuracy": 0.6060606060606061
+      "n": 38,
+      "mean_forecast": 0.5326107656546849,
+      "observed_win_rate": 0.5,
+      "mean_bias": 0.03261076565468484,
+      "brier": 0.23171654936248837,
+      "log_loss": 0.654662070313705,
+      "accuracy": 0.6052631578947368
     },
     "challenger": {
-      "n": 33,
-      "mean_forecast": 0.49766627897879295,
-      "observed_win_rate": 0.5151515151515151,
-      "mean_bias": -0.01748523617272223,
-      "brier": 0.22591760585767612,
-      "log_loss": 0.6390205759105967,
-      "accuracy": 0.6060606060606061
+      "n": 38,
+      "mean_forecast": 0.5221684947611324,
+      "observed_win_rate": 0.5,
+      "mean_bias": 0.022168494761132335,
+      "brier": 0.23851761351336723,
+      "log_loss": 0.6712511247540895,
+      "accuracy": 0.6052631578947368
     },
     "hybrid": {
-      "n": 33,
-      "mean_forecast": 0.4969488792019403,
-      "observed_win_rate": 0.5151515151515151,
-      "mean_bias": -0.018202635949574785,
-      "brier": 0.22604231848541664,
-      "log_loss": 0.639806311978139,
-      "accuracy": 0.6060606060606061
+      "n": 38,
+      "mean_forecast": 0.5210785335189577,
+      "observed_win_rate": 0.5,
+      "mean_bias": 0.0210785335189577,
+      "brier": 0.23784093159540007,
+      "log_loss": 0.6690022001256944,
+      "accuracy": 0.6052631578947368
     }
   },
   "team_metrics": {
@@ -138,9 +138,9 @@
       }
     },
     "CHA": {
-      "games": 1,
+      "games": 2,
       "home_games": 0,
-      "away_games": 1,
+      "away_games": 2,
       "models": {
         "elo": {
           "n": 0,
@@ -308,9 +308,9 @@
       }
     },
     "DET": {
-      "games": 1,
+      "games": 2,
       "home_games": 0,
-      "away_games": 1,
+      "away_games": 2,
       "models": {
         "elo": {
           "n": 0,
@@ -444,8 +444,8 @@
       }
     },
     "LAC": {
-      "games": 2,
-      "home_games": 2,
+      "games": 3,
+      "home_games": 3,
       "away_games": 0,
       "models": {
         "elo": {
@@ -478,8 +478,8 @@
       }
     },
     "LAL": {
-      "games": 2,
-      "home_games": 0,
+      "games": 3,
+      "home_games": 1,
       "away_games": 2,
       "models": {
         "elo": {
@@ -614,8 +614,8 @@
       }
     },
     "MIN": {
-      "games": 2,
-      "home_games": 2,
+      "games": 3,
+      "home_games": 3,
       "away_games": 0,
       "models": {
         "elo": {
@@ -682,9 +682,9 @@
       }
     },
     "NY": {
-      "games": 2,
+      "games": 3,
       "home_games": 1,
-      "away_games": 1,
+      "away_games": 2,
       "models": {
         "elo": {
           "n": 0,
@@ -852,9 +852,9 @@
       }
     },
     "POR": {
-      "games": 3,
+      "games": 4,
       "home_games": 1,
-      "away_games": 2,
+      "away_games": 3,
       "models": {
         "elo": {
           "n": 0,
@@ -886,8 +886,8 @@
       }
     },
     "SA": {
-      "games": 2,
-      "home_games": 1,
+      "games": 3,
+      "home_games": 2,
       "away_games": 1,
       "models": {
         "elo": {
@@ -954,8 +954,8 @@
       }
     },
     "TOR": {
-      "games": 2,
-      "home_games": 1,
+      "games": 3,
+      "home_games": 2,
       "away_games": 1,
       "models": {
         "elo": {
@@ -988,9 +988,9 @@
       }
     },
     "UTAH": {
-      "games": 2,
+      "games": 3,
       "home_games": 1,
-      "away_games": 1,
+      "away_games": 2,
       "models": {
         "elo": {
           "n": 0,
@@ -1057,8 +1057,8 @@
     }
   },
   "minnesota_diagnostic": {
-    "games": 2,
-    "home_games": 2,
+    "games": 3,
+    "home_games": 3,
     "away_games": 0,
     "models": {
       "elo": {
@@ -1621,6 +1621,86 @@
         "challenger": 0.7557929011829848,
         "hybrid": 0.7557929011829848
       }
+    },
+    {
+      "game_id": "401910002",
+      "home_team": "TOR",
+      "away_team": "NY",
+      "tipoff_utc": "2026-11-18T00:30:00Z",
+      "prediction_as_of_utc": "2026-11-17T23:15:32.909112+00:00",
+      "model_revision": "96a1b7410291bd4c355f061bcb72eebd31961fa0",
+      "snapshot_file": "run-44197050930.json",
+      "snapshot_sha256": "d1f422f9c8e40f753a3e56d034388de29f69180a3bb24d2670d8e39f58770fd4",
+      "outcome_home": 0,
+      "probabilities_home": {
+        "elo": 0.47181514683116754,
+        "challenger": 0.4036308691537927,
+        "hybrid": 0.4036308691537927
+      }
+    },
+    {
+      "game_id": "401910003",
+      "home_team": "MIN",
+      "away_team": "POR",
+      "tipoff_utc": "2026-11-18T01:00:00Z",
+      "prediction_as_of_utc": "2026-11-17T23:15:32.909112+00:00",
+      "model_revision": "96a1b7410291bd4c355f061bcb72eebd31961fa0",
+      "snapshot_file": "run-44197050930.json",
+      "snapshot_sha256": "d1f422f9c8e40f753a3e56d034388de29f69180a3bb24d2670d8e39f58770fd4",
+      "outcome_home": 1,
+      "probabilities_home": {
+        "elo": 0.5911302353631249,
+        "challenger": 0.5989614487116629,
+        "hybrid": 0.5989614487116629
+      }
+    },
+    {
+      "game_id": "401910004",
+      "home_team": "SA",
+      "away_team": "DET",
+      "tipoff_utc": "2026-11-18T01:00:00Z",
+      "prediction_as_of_utc": "2026-11-17T23:15:32.909112+00:00",
+      "model_revision": "96a1b7410291bd4c355f061bcb72eebd31961fa0",
+      "snapshot_file": "run-44197050930.json",
+      "snapshot_sha256": "d1f422f9c8e40f753a3e56d034388de29f69180a3bb24d2670d8e39f58770fd4",
+      "outcome_home": 0,
+      "probabilities_home": {
+        "elo": 0.676003474457208,
+        "challenger": 0.7321317881854257,
+        "hybrid": 0.7321317881854257
+      }
+    },
+    {
+      "game_id": "401910005",
+      "home_team": "LAL",
+      "away_team": "CHA",
+      "tipoff_utc": "2026-11-18T04:00:00Z",
+      "prediction_as_of_utc": "2026-11-17T23:15:32.909112+00:00",
+      "model_revision": "96a1b7410291bd4c355f061bcb72eebd31961fa0",
+      "snapshot_file": "run-44197050930.json",
+      "snapshot_sha256": "d1f422f9c8e40f753a3e56d034388de29f69180a3bb24d2670d8e39f58770fd4",
+      "outcome_home": 1,
+      "probabilities_home": {
+        "elo": 0.789773273851836,
+        "challenger": 0.8352854177378058,
+        "hybrid": 0.8352854177378058
+      }
+    },
+    {
+      "game_id": "401910006",
+      "home_team": "LAC",
+      "away_team": "UTAH",
+      "tipoff_utc": "2026-11-18T03:30:00Z",
+      "prediction_as_of_utc": "2026-11-17T23:15:32.909112+00:00",
+      "model_revision": "96a1b7410291bd4c355f061bcb72eebd31961fa0",
+      "snapshot_file": "run-44197050930.json",
+      "snapshot_sha256": "d1f422f9c8e40f753a3e56d034388de29f69180a3bb24d2670d8e39f58770fd4",
+      "outcome_home": 0,
+      "probabilities_home": {
+        "elo": 0.8316617362676735,
+        "challenger": 0.8494060708341753,
+        "hybrid": 0.8316617362676735
+      }
     }
   ],
   "source_snapshots": [
@@ -1665,6 +1745,24 @@
       "snapshot_sha256": "0f118f0c44c1bb3889d311c55b80c600058245455804fc2ca32e80652ae50cb5",
       "created_at_utc": "2026-11-16T18:03:14.462871+00:00",
       "model_revision": "586a1b5285e0af09145f23c9c3275f08783c76ff"
+    },
+    {
+      "file": "run-44191899432.json",
+      "snapshot_sha256": "8ddaa202d0705fab37b163cdd9520f8594bc2dfb8066375233a23193454db8a3",
+      "created_at_utc": "2026-11-17T22:42:41.480508+00:00",
+      "model_revision": "a1c7457a17e23b8bb0f1ecb6c71375460cdc230c"
+    },
+    {
+      "file": "run-44194164753.json",
+      "snapshot_sha256": "b9ae5fd3b77cd98848173f2517952265e5f03cb3a54fb304dfefd75bcd180755",
+      "created_at_utc": "2026-11-17T22:56:48.871116+00:00",
+      "model_revision": "acd1e03bb122ca545a4889661be1078b7f9781b0"
+    },
+    {
+      "file": "run-44197050930.json",
+      "snapshot_sha256": "d1f422f9c8e40f753a3e56d034388de29f69180a3bb24d2670d8e39f58770fd4",
+      "created_at_utc": "2026-11-17T23:15:32.909112+00:00",
+      "model_revision": "96a1b7410291bd4c355f061bcb72eebd31961fa0"
     }
   ],
   "limitations": [
