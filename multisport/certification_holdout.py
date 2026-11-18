@@ -30,7 +30,7 @@ def _lineage_complete(item):
 
 def capture(archive, policy, evaluation=None):
     frozen_at = _utc(policy["frozen_at_utc"])
-    chains, chain_issues, _ = _forecast_chains(archive)
+    chains, chain_issues, _, legacy_digest_scope_unverified = _forecast_chains(archive)
     selected, forecast_issues = _forecast_versions(chains)
     rejected = Counter()
     grouped = defaultdict(lambda: {"events": set(), "lineage_complete_events": set(),
@@ -115,8 +115,12 @@ def capture(archive, policy, evaluation=None):
         "inputs": {
             "verified_chains": len(chains),
             "valid_pregame_model_emissions": len(selected),
+            "legacy_source_output_digest_scope_unverified": legacy_digest_scope_unverified,
             "history_sha256": digest((evaluation or {}).get("inputs", {})),
         },
+        "lineage_warnings": ([
+            "Legacy source-output sub-digests cannot be independently verified because older snapshots stored a slate digest beside one event payload; enclosing snapshot seals were verified."
+        ] if legacy_digest_scope_unverified else []),
         "models": models,
         "rejected_counts": dict(sorted(exclusions.items())),
         "certified": False,
