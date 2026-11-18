@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v3"
+VERSION = "nhl-joint-match-320-v4"
 
 
 def _num(value, label, *, positive=False):
@@ -478,6 +478,42 @@ def _scoring_rate(attacking, defending, goalie, league_pk_rate):
     }
 
 
+
+def _apply_division_rivalry(home_scoring, away_scoring, evidence):
+    """Apply a bounded prior-history goal-differential shift before market math."""
+    requested = 0.0
+    if isinstance(evidence, dict) and evidence.get("status") in ("applied", "eligible_no_directional_signal"):
+        candidate = evidence.get("expected_goal_differential_delta", 0.0)
+        if type(candidate) not in (int, float) or not math.isfinite(candidate) or abs(candidate) > 0.35:
+            raise ValueError("Invalid division/rivalry adjustment")
+        requested = float(candidate)
+    old_home = home_scoring["expected_goals"]
+    old_away = away_scoring["expected_goals"]
+    applied = max(-2 * (old_home - 0.05), min(2 * (old_away - 0.05), requested))
+    for scoring, delta in ((home_scoring, applied / 2), (away_scoring, -applied / 2)):
+        old = scoring["expected_goals"]
+        new = old + delta
+        if old <= 0 or new <= 0:
+            raise ValueError("Division/rivalry shift produced invalid expected goals")
+        factor = new / old
+        scoring["expected_goals_by_strength"] = {
+            strength: value * factor
+            for strength, value in scoring["expected_goals_by_strength"].items()
+        }
+        scoring["expected_goals"] = new
+        scoring["components"]["division_rivalry_goal_rate_factor"] = factor
+    output = dict(evidence or {})
+    output.update({
+        "requested_goal_differential_delta": requested,
+        "applied_goal_differential_delta": applied,
+        "home_expected_goals_delta": applied / 2,
+        "away_expected_goals_delta": -applied / 2,
+        "applied_to_percentages": abs(applied) > 1e-9,
+        "calibrated": False,
+    })
+    return output
+
+
 def _poisson_probability_at_least_one(mean):
     return -math.expm1(-mean)
 
@@ -553,6 +589,7 @@ def run(inputs):
         for ag in away_goalies:
             h = _scoring_rate(home, away, ag, league_pk_rate)
             a = _scoring_rate(away, home, hg, league_pk_rate)
+            division_rivalry = _apply_division_rivalry(h, a, inputs.get("division_rivalry"))
             markets = calculate(h["expected_goals"], a["expected_goals"])
             home_player_probabilities = _player_probabilities(home, h)
             away_player_probabilities = _player_probabilities(away, a)
@@ -560,6 +597,7 @@ def run(inputs):
                     if hg["starter_probability"] is not None and ag["starter_probability"] is not None else None)
             scenarios.append({"home_goalie": hg, "away_goalie": ag, "scenario_weight": weight,
                               "expected_goals": {"home": h["expected_goals"], "away": a["expected_goals"]},
+                              "division_rivalry": division_rivalry,
                               "home_components": h["components"], "away_components": a["components"],
                               "player_probabilities": {home_code: home_player_probabilities,
                                                        away_code: away_player_probabilities},
@@ -628,6 +666,7 @@ def run(inputs):
             "For partial projected lineups, only identified skaters are minute-adjusted; unresolved roster contribution stays at its aggregate team baseline.",
             "Player-level anytime goal, assist, and point probabilities are exploratory independent-Poisson estimates and require walk-forward calibration.",
             "Player goal projections feed expected team goals by EV/PP/SH deployment; assists are allocated as player points and are not extra team goals.",
+            "Division/rivalry shifts expected goal differential using a bounded, shrunk split of strictly prior two-year regulation goal results; it is experimental, not calibrated, and is omitted when history is insufficient.",
             "PIM affects opportunity volume through an observed roster-to-team exposure ratio, not a fixed minutes-to-power-play conversion.",
             "Schedule, travel and back-to-back context are retained in source inputs but have no estimated coefficient.",
             "When candidate goalie starts exactly cover all prior team games, an experimental mix weights paired scenarios by each candidate's current-season gamesStarted share; this is an uncalibrated historical frequency, not a confirmed starter probability. Incomplete coverage leaves the mix unavailable.",
