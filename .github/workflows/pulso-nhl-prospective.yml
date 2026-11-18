@@ -18,6 +18,7 @@ on:
       - 'nhl/joint_goal_model.py'
       - 'nhl/goal_process.py'
       - 'nhl/joint_match_input_builder_321.py'
+      - 'nhl/return_to_play.py'
       - 'nhl/joint_match_engine_320.py'
       - 'nhl/division_rivalry.py'
       - 'frontend/nhl-joint-model.js'
@@ -496,6 +497,17 @@ jobs:
         with:
           name: pulso-nhl-pregame-evidence-${{ github.run_id }}
           path: .
+      - name: Estimate return-to-play minutes from dated injury and NHL game-log evidence
+        env:
+          REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
+        run: |
+          DAY="${REQUESTED_DAY:-$(date -u +%F)}"
+          python -m nhl.return_to_play \
+            --history-dir nhl/learning/pregame \
+            --current-report "nhl/learning/pregame/run-${{ github.run_id }}.json" \
+            --player-history "results/pulso/nhl/$DAY/skater_history.json" \
+            --raw-history "results/pulso/nhl/$DAY/skater_history.sources.json.gz" \
+            --output "results/pulso/nhl/$DAY/return_to_play.json"
       - name: Assemble and run integrated NHL scenarios from captured evidence
         env:
           REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
@@ -508,6 +520,7 @@ jobs:
             --goalies "results/pulso/nhl/$DAY/all_goalie_candidates_260.json" \
             --special-teams "results/pulso/nhl/$DAY/special_teams_counts.json" \
             --cutoff "$DAY" \
+            --return-to-play "results/pulso/nhl/$DAY/return_to_play.json" \
             --output "results/pulso/nhl/$DAY/joint_match_inputs_321.json"
           RUN_DAY="$DAY" python - <<'PY'
           import json, os
