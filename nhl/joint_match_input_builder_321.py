@@ -66,12 +66,25 @@ def number(row,key,positive=False):
     if type(x) not in (int,float) or not math.isfinite(x) or x < 0 or (positive and x<=0): raise ValueError("Missing/invalid NHL stat "+key)
     return x
 
-def toi(value):
-    if type(value) in (float,int) and math.isfinite(value) and value>=0: return value/60 if value>100 else value
-    if isinstance(value,str) and ":" in value:
-        mm,ss=value.split(":",1)
-        if mm.isdigit() and ss.isdigit() and int(ss)<60:return int(mm)+int(ss)/60
-    raise ValueError("Invalid NHL time-on-ice value")
+def toi(value, *, allow_missing=False, label="TOI"):
+    # NHL stats can return null for zero special-team usage. Only callers for
+    # PP/PK roles may opt into treating that absent role time as zero; EV and
+    # total TOI remain required so missing player data still blocks the game.
+    if value is None or (isinstance(value, str) and not value.strip()):
+        if allow_missing:
+            return 0.0
+        raise ValueError("Missing NHL time-on-ice value for " + label)
+    if type(value) in (float,int) and math.isfinite(value) and value>=0:
+        return value/60 if value>100 else value
+    if isinstance(value,str):
+        value=value.strip()
+        if ":" in value:
+            mm,ss=value.split(":",1)
+            if mm.isdigit() and ss.isdigit() and int(ss)<60:return int(mm)+int(ss)/60
+        elif value.isdigit():
+            numeric=int(value)
+            return numeric/60 if numeric>100 else float(numeric)
+    raise ValueError("Invalid NHL time-on-ice value for " + label + ": " + repr(value))
 
 def build(report, context, changes, goalies, special, cutoff):
     fixtures={str(g["game_id"]):g for g in report.get("games",[])}
@@ -124,8 +137,10 @@ def build(report, context, changes, goalies, special, cutoff):
         abbrevs=str(s.get("teamAbbrevs",""))
         if abbrevs != code: raise ValueError(code+" player season stats are multi-team or wrong-team: "+str(person.get("name")))
         gp=number(s,"gamesPlayed",True)
-        minutes={"EV":toi(t.get("evenStrengthTimeOnIcePerGame")),"PP":toi(t.get("powerPlayTimeOnIcePerGame")),"PK":toi(t.get("shorthandedTimeOnIcePerGame"))}
-        total=toi(t.get("timeOnIcePerGame"))
+        minutes={"EV":toi(t.get("evenStrengthTimeOnIcePerGame"),label="EV"),
+                 "PP":toi(t.get("powerPlayTimeOnIcePerGame"),allow_missing=True,label="PP"),
+                 "PK":toi(t.get("shorthandedTimeOnIcePerGame"),allow_missing=True,label="PK")}
+        total=toi(t.get("timeOnIcePerGame"),label="total")
         prod={k:number(s,k) for k in ("goals","assists","shots","penaltyMinutes","evGoals","ppGoals","shGoals","evPoints","ppPoints","shPoints")}
         return {"player_id":int(pid),"name":person.get("name") or s.get("skaterFullName"),"team_abbrevs":code,"position":s.get("positionCode"),"availability":"active","games_played":gp,"minutes_per_game":minutes,"total_minutes_per_game":total,"production":prod}
     for gid,f in fixtures.items():
