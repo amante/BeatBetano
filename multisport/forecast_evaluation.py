@@ -41,8 +41,9 @@ def _nhl_names():
 def _forecast_chains(archive):
     root = Path(archive)
     chains, issues, sealed = [], Counter(), []
+    legacy_digest_scope_unverified = 0
     if not root.exists():
-        return chains, {"archive_missing": 1}, sealed
+        return chains, {"archive_missing": 1}, sealed, legacy_digest_scope_unverified
     for folder in sorted(root.glob("*/*")):
         if not folder.is_dir():
             continue
@@ -76,15 +77,24 @@ def _forecast_chains(archive):
                         raise ValueError("fixture_identity_changed")
                 source = snap.get("source_model_output")
                 source_sha = snap.get("source_output_sha256")
-                if source is not None and source_sha is not None and digest(source) != source_sha:
-                    raise ValueError("source_output_digest_mismatch")
+                source_scope = snap.get("source_output_sha256_scope")
+                if source is not None and source_sha is not None:
+                    if source_scope == "event":
+                        if digest(source) != source_sha:
+                            raise ValueError("source_output_digest_mismatch")
+                    elif source_scope is None:
+                        # Older publishers hashed the full slate but archived only one event.
+                        # The enclosing snapshot seal remains verifiable; this sub-digest does not.
+                        legacy_digest_scope_unverified += 1
+                    else:
+                        raise ValueError("unsupported_source_output_digest_scope")
                 snapshots.append(snap)
                 sealed.append(snap["content_sha256"])
                 previous = snap
             chains.append(snapshots)
         except (ValueError, KeyError, TypeError, OSError, json.JSONDecodeError) as exc:
             issues[str(exc) or type(exc).__name__] += 1
-    return chains, issues, sealed
+    return chains, issues, sealed, legacy_digest_scope_unverified
 
 
 def _history_index(history):
@@ -265,7 +275,7 @@ def _score(rows, categories):
 def evaluate(archive, history):
     """Join each version's latest pregame emission to a final result and score once."""
     results_by_id = _history_index(history)
-    chains, chain_issues, sealed = _forecast_chains(archive)
+    chains, chain_issues, sealed, legacy_digest_scope_unverified = _forecast_chains(archive)
     selected, forecast_issues = _forecast_versions(chains)
     exclusions = Counter(chain_issues)
     exclusions.update(forecast_issues)
@@ -333,9 +343,13 @@ def evaluate(archive, history):
             "forecasts_bound_to_history": bound_forecasts,
             "pending_forecasts": pending,
             "scored_forecast_groups": len(groups),
+            "legacy_source_output_digest_scope_unverified": legacy_digest_scope_unverified,
         },
         "groups": groups,
         "exclusion_counts": dict(sorted(exclusions.items())),
+        "lineage_warnings": ([
+            "Legacy source-output digests are not independently verifiable because older snapshots stored a slate digest beside one event payload; outer snapshot seals were verified."
+        ] if legacy_digest_scope_unverified else []),
         "certification": {
             "certified": False,
             "independent_validation_passed": False,
