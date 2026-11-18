@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from multisport.daily_forecasts import publish,latest,_directory
 from multisport.daily_pipeline import run, soccer_source, coverage_bindings
+from multisport.data_lineage import digest
 from multisport.tests.test_forecast_revisions import source
 
 
@@ -30,6 +31,15 @@ class DailyTests(unittest.TestCase):
                 # A fixture leaving the slate does not break remaining event chains.
                 s['as_of_utc']='2026-11-06T12:00:00Z';s[key]=s[key][1:]
                 self.assertEqual(publish(sport,s,d)['events'][0]['revision'],2)
+
+    def test_source_digest_covers_archived_event_payload(self):
+        with tempfile.TemporaryDirectory() as d:
+            s=source('nba')
+            publish('nba',s,d)
+            snap=latest(_directory(d,'nba','1'))
+            self.assertEqual(snap['source_output_sha256_scope'],'event')
+            self.assertEqual(snap['source_output_sha256'],digest(snap['source_model_output']))
+            self.assertNotEqual(snap['source_output_sha256'],digest(s))
 
     def test_missing_source_retains_archive_and_final_is_not_confirmation(self):
         with tempfile.TemporaryDirectory() as d:

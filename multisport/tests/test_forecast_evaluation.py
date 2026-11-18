@@ -98,6 +98,39 @@ class ForecastEvaluationTests(unittest.TestCase):
         self.assertEqual(report["coverage"]["forecasts_bound_to_history"], 1)
         self.assertEqual(report["coverage"]["scored_forecast_groups"], 1)
 
+    def test_legacy_slate_digest_is_warning_and_event_digest_still_fails_closed(self):
+        start = "2026-11-07T18:00:00Z"
+        data = source("nba", "evt-legacy", "BOS", "MIL", start,
+                      "2026-11-07T10:00:00Z", .60)
+        history = [{
+            "id": "evt-legacy", "source_event_id": "evt-legacy", "sport": "nba",
+            "home": "Boston Celtics", "away": "Milwaukee Bucks",
+            "start_utc": start, "status": "STATUS_FINAL", "completed": True,
+            "home_score": "110", "away_score": "100", "source": "test feed",
+        }]
+        legacy = frozen_snapshot(
+            "nba", data, instant=datetime(2026, 11, 7, 12, 0, tzinfo=timezone.utc))
+        legacy["source_model_output"] = data["predictions"][0]
+        legacy["source_output_sha256"] = digest(data)  # prior publisher hashed full slate
+        legacy["content_sha256"] = digest({k:v for k,v in legacy.items() if k!="content_sha256"})
+        with tempfile.TemporaryDirectory() as tmp:
+            self.write_chain(tmp, "nba", "evt-legacy", [legacy])
+            report = evaluate(tmp, history)
+        self.assertEqual(report["coverage"]["scored_forecast_groups"], 1)
+        self.assertEqual(report["coverage"]["legacy_source_output_digest_scope_unverified"], 1)
+        self.assertEqual(report["exclusion_counts"], {})
+        self.assertTrue(report["lineage_warnings"])
+
+        scoped = dict(legacy)
+        scoped["source_output_sha256_scope"] = "event"
+        scoped["source_output_sha256"] = digest({"tampered": True})
+        scoped["content_sha256"] = digest({k:v for k,v in scoped.items() if k!="content_sha256"})
+        with tempfile.TemporaryDirectory() as tmp:
+            self.write_chain(tmp, "nba", "evt-legacy", [scoped])
+            rejected = evaluate(tmp, history)
+        self.assertEqual(rejected["coverage"]["verified_chains"], 0)
+        self.assertEqual(rejected["exclusion_counts"]["source_output_digest_mismatch"], 1)
+
     def test_tennis_score_is_not_guessed_from_raw_score_fields(self):
         start = "2026-11-07T18:00:00Z"
         snap = frozen_snapshot(

@@ -53,8 +53,9 @@ def publish(sport,source,archive,revision='unrecorded',final_window_minutes=30,l
             stage='final_pregame'
         single={**copy.deepcopy(report),'events':[copy.deepcopy(event)]}
         single['events'][0]['forecast']['stage']=stage
-        single['source_output_sha256']=digest(source)
         single['source_model_output']=copy.deepcopy(source_event(sport,source,event['event_id']))
+        single['source_output_sha256']=digest(single['source_model_output'])
+        single['source_output_sha256_scope']='event'
         declared=source.get('model_provenance')
         if isinstance(declared,dict):
             single['model_provenance']=copy.deepcopy(declared)
