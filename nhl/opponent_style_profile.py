@@ -92,6 +92,7 @@ def _finish(counts):
 def _summarize_events(plays, team_info):
     counts = {team_id: _empty_counts() for team_id in team_info}
     unassigned = Counter()
+    all_x, all_y = [], []
     location_anomalies = []
     for event in plays:
         if not isinstance(event, dict):
@@ -99,6 +100,12 @@ def _summarize_events(plays, team_info):
         kind = _event_type(event)
         if kind not in SHOT_TYPES:
             continue
+        x = _coordinate(event, ("xCoord", "xCoordOrigin"))
+        y = _coordinate(event, ("yCoord", "yCoordOrigin"))
+        if x is not None:
+            all_x.append(x)
+        if y is not None:
+            all_y.append(y)
         owner = _team_id(event)
         if owner not in counts:
             unassigned[kind] += 1
@@ -119,8 +126,6 @@ def _summarize_events(plays, team_info):
         # Blocked-shot coordinates can mark the block, not the shot origin.
         if kind not in LOCATION_TYPES:
             continue
-        x = _coordinate(event, ("xCoord", "xCoordOrigin"))
-        y = _coordinate(event, ("yCoord", "yCoordOrigin"))
         if x is None or y is None or abs(x) > MAX_ABS_X or abs(y) > MAX_ABS_Y:
             row["invalid_or_missing_location"] += 1
             if len(location_anomalies) < 5:
@@ -135,7 +140,13 @@ def _summarize_events(plays, team_info):
             row["distance_bins_ft"]["25-40"] += 1
         else:
             row["distance_bins_ft"]["40+"] += 1
-    return counts, dict(sorted(unassigned.items())), location_anomalies
+    coordinates = {
+        "shot_events_with_x": len(all_x), "shot_events_with_y": len(all_y),
+        "x_min": min(all_x) if all_x else None, "x_max": max(all_x) if all_x else None,
+        "y_min": min(all_y) if all_y else None, "y_max": max(all_y) if all_y else None,
+        "units_verified": False,
+    }
+    return counts, dict(sorted(unassigned.items())), location_anomalies, coordinates
 
 
 def game_profile(fixture, plays):
@@ -144,7 +155,7 @@ def game_profile(fixture, plays):
         int(fixture["home_team_id"]): fixture["home"],
         int(fixture["away_team_id"]): fixture["away"],
     }
-    counts, unassigned, anomalies = _summarize_events(plays, team_info)
+    counts, unassigned, anomalies, coordinate_diagnostics = _summarize_events(plays, team_info)
     home_id = int(fixture["home_team_id"])
     away_id = int(fixture["away_team_id"])
     teams = {}
@@ -164,6 +175,7 @@ def game_profile(fixture, plays):
         "team_profiles": teams,
         "unassigned_shot_events": unassigned,
         "location_anomalies": anomalies,
+        "coordinate_diagnostics": coordinate_diagnostics,
         "coordinate_assumption": "distance to nearer goal line at x=+/-89 ft; descriptive geometry, not official NHL danger classification",
         "applied_to_prediction": False,
         "calibrated": False,
