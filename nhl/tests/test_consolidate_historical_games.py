@@ -2,13 +2,16 @@ import sys,unittest,json,tempfile
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from consolidate_historical_games import consolidate
+def _style_profile():
+ return {"team_profiles":{"BOS":{"goal_attribution_check":{"matches_scoreboard":True}},"MTL":{"goal_attribution_check":{"matches_scoreboard":True}}}}
+
 class TestConsolidation(unittest.TestCase):
  def test_merge_and_next_missing(self):
   with tempfile.TemporaryDirectory() as root:
    base=Path(root);a=base/"a";b=base/"b";a.mkdir();b.mkdir()
    rows=[{"id":str(i),"date":"2025-10-01","home":"BOS","away":"MTL"} for i in range(3)]
    for directory,i in ((a,0),(b,1)):
-    (directory/(str(i)+".json")).write_text(json.dumps({"game_id":str(i),"date":"2025-10-01","home":"BOS","away":"MTL","goal_events_available":True,"boxscore":{"player_by_game_stats":{"homeTeam":{}}}}))
+    (directory/(str(i)+".json")).write_text(json.dumps({"game_id":str(i),"date":"2025-10-01","home":"BOS","away":"MTL","goal_events_available":True,"opponent_style_features_version":1,"opponent_style_profile":_style_profile(),"boxscore":{"player_by_game_stats":{"homeTeam":{}}}}))
    summary,missing=consolidate(rows,[a,b],base/"out")
    self.assertEqual(summary["consolidated_games"],2)
    self.assertEqual([x["id"] for x in missing],["2"])
