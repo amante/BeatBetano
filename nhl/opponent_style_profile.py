@@ -38,7 +38,7 @@ def _event_type(event):
 
 
 def _team_id(event):
-    value = _first_value(event, ("eventOwnerTeamId", "teamId", "eventTeamId"))
+    value = _first_value(event, ("eventOwnerTeamId",))
     try:
         numeric = int(value)
     except (TypeError, ValueError):
