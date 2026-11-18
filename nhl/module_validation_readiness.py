@@ -18,7 +18,7 @@ MODULES={
  "three_goal_lead":{"features":["chronological_goal_events"],"target":"path_3goal"},
  "first_to_three_goal_lead":{"features":["chronological_goal_events"],"target":"path_3goal"},
  "rescue_probability":{"features":["chronological_goal_events","score_state"],"target":"path_rescue"},
- "fuertes_dual":{"features":["joint_model_probabilities","validated_thresholds"],"target":"ml"},
+ "fuertes_dual":{"features":["joint_expected_goals","regulation_score_distribution"],"target":"strong_margin_and_double_chance"},
  "return_injury":{"features":["historical_injury_report","return_to_form"],"target":"ml"},
  "opponent_style":{"features":["dated_shot_quality","matchup_context"],"target":"ml"}
 }

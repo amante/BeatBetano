@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v5"
+VERSION = "nhl-joint-match-320-v6"
 
 
 def _num(value, label, *, positive=False):
@@ -606,7 +606,7 @@ def run(inputs):
     if scenarios and all(s["scenario_weight"] is not None for s in scenarios):
         weight_total=sum(s["scenario_weight"] for s in scenarios)
         if math.isclose(weight_total,1.0,abs_tol=1e-8):
-            market_keys=("regulation","illustrative_ml","three_goal_lead","first_to_three_goal_lead","comeback_after_two_goal_deficit")
+            market_keys=("regulation","illustrative_ml","three_goal_lead","first_to_three_goal_lead","comeback_after_two_goal_deficit","strong_win_regulation","double_chance_regulation")
             weighted_markets={}
             for key in market_keys:
                 outcomes=scenarios[0]["markets"][key]

@@ -39,6 +39,10 @@ def calculate(lh,la):
     wh=sum(p*q for i,p in enumerate(hp) for j,q in enumerate(ap) if i>j)
     wa=sum(p*q for i,p in enumerate(hp) for j,q in enumerate(ap) if i<j)
     draw=max(0,1-wh-wa)
+    strong_home=sum(p*q for i,p in enumerate(hp) for j,q in enumerate(ap) if i>=j+2)
+    strong_away=sum(p*q for i,p in enumerate(hp) for j,q in enumerate(ap) if j>=i+2)
+    dual_home=wh+draw
+    dual_away=wa+draw
     # Goal-event process: both 3-goal leads can happen, and first-to-3 is exclusive.
     total=lh+la;prob=lh/total
     # (score difference, has_home_3, has_away_3, first_hit)
@@ -71,6 +75,9 @@ def calculate(lh,la):
             for (d,hh,aa,f,hd,ad),v in states.items() if ad)
     return {"lambda_home":round(lh,4),"lambda_away":round(la,4),
        "regulation":{"home":round(wh,5),"draw":round(draw,5),"away":round(wa,5)},
+       "strong_win_regulation":{"home":round(strong_home,5),"away":round(strong_away,5)},
+       "double_chance_regulation":{"home":round(dual_home,5),"away":round(dual_away,5)},
+       "strong_dual_definition":"FUERTE = ganar por 2+ goles en 60 minutos; DUAL = ganar o empatar en 60 minutos (1X/X2)",
        "illustrative_ml":{"home":round(wh+draw/2,5),"away":round(wa+draw/2,5)},
        "three_goal_lead":{"home":round(outcomes["home3"],5),"away":round(outcomes["away3"],5)},
        "first_to_three_goal_lead":{"home":round(outcomes["home_first"],5),"away":round(outcomes["away_first"],5)},
