@@ -1,0 +1,40 @@
+name: NHL opponent-style source audit
+on:
+  pull_request:
+    paths:
+      - 'nhl/opponent_style_source_audit.py'
+      - '.github/workflows/nhl-opponent-style-source-audit.yml'
+  workflow_dispatch:
+    inputs:
+      date_to:
+        description: "Último día completo de temporada regular a incluir (YYYY-MM-DD)"
+        required: false
+        type: string
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Capture up to 20 completed games and audit event fields
+        env:
+          DATE_TO: ${{ github.event.inputs.date_to }}
+        run: |
+          if [ -n "$DATE_TO" ]; then
+            python -m nhl.opponent_style_source_audit --date-to "$DATE_TO" --lookback-days 7 --max-games 20
+          else
+            python -m nhl.opponent_style_source_audit --lookback-days 7 --max-games 20
+          fi
+      - name: Save raw evidence and coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nhl-opponent-style-source-audit
+          path: nhl-opponent-style-audit/
+          if-no-files-found: warn
+          retention-days: 14
