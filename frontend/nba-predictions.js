@@ -15,8 +15,21 @@
  }
  const day=x=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(x));
  const forDay=(x,d)=>x.games.filter(g=>day(g.tipoff_utc)===d);
+ function calendarGames(publication,schedule,date){
+  const rows=forDay(publication,date).map(game=>({...game,calendar_only:false}));
+  const ids=new Set(rows.map(game=>String(game.game_id)));
+  for(const fixture of schedule?.games||[]){
+   if(fixture?.sport!=="nba"||fixture.id==null||!fixture.start_utc||!fixture.home||!fixture.away||day(fixture.start_utc)!==date)continue;
+   const id=String(fixture.id);if(ids.has(id))continue;
+   const home=fixture.home,away=fixture.away;
+   const hasScore=fixture.completed&&Number.isFinite(Number(fixture.home_score))&&Number.isFinite(Number(fixture.away_score));
+   rows.push({game_id:id,home_team:home,away_team:away,tipoff_utc:fixture.start_utc,status:"calendar_only",source_status:fixture.status||"STATUS_SCHEDULED",source_state:"calendar",issues:[],sporting:{[home]:null,[away]:null},first_prediction:null,outcome:hasScore?{home_points:Number(fixture.home_score),away_points:Number(fixture.away_score)}:null,calendar_only:true});
+   ids.add(id);
+  }
+  return rows.sort((a,b)=>a.tipoff_utc.localeCompare(b.tipoff_utc));
+ }
  const stale=(x,now=Date.now())=>!stamp(x.last_source_capture_utc)||now-Date.parse(x.last_source_capture_utc)>8*3600*1000;
- if(typeof module!=="undefined")module.exports={validate,forDay,stale};
+ if(typeof module!=="undefined")module.exports={validate,forDay,calendarGames,stale};
  if(typeof window==="undefined"||typeof document==="undefined")return;
  if(new URLSearchParams(location.search).get("sport")!=="nba")return;
  const marketPill=document.querySelector(".top-actions .pill");if(marketPill)marketPill.textContent="MERCADO SOLO INFO";
@@ -223,7 +236,7 @@
   const playerStats=document.getElementById("nba-player-projections");
   if(playerStats){playerStats.hidden=true;playerStats.style.display="none";}
  }
- let data=null,currentRun=null,error="";
+ let data=null,currentRun=null,dailySchedule=null,error="";
  function render(){
   root.replaceChildren(el("h2","Resultado de la última corrida NBA"));
   if(agenda)agenda.replaceChildren();
@@ -417,10 +430,10 @@
    if(source)source.textContent=error||"Cargando el registro NBA…";
    root.append(el("p",error||"Cargando el registro NBA…"));return;
   }
-  const selected=document.getElementById("daily-date").value,rows=forDay(data,selected);
+  const selected=document.getElementById("daily-date").value,rows=calendarGames(data,dailySchedule,selected);
   const label=document.getElementById("daily-label"),source=document.getElementById("feed-message");
   if(label)label.textContent="NBA · "+selected+" · "+rows.length+" partido"+(rows.length===1?" registrado":"s registrados");
-  if(source)source.textContent="Calendario y emisiones del registro NBA · captura "+local(data.last_source_capture_utc)+" · fecha Chile.";
+  if(source)source.textContent="Calendario diario + emisiones del registro NBA · captura "+local(data.last_source_capture_utc)+" · fecha Chile."+(rows.some(game=>game.calendar_only)?" · hay partidos sin emisión en la última corrida.":"");
   root.append(el("p","Elo y Challenger experimentales · los ajustes de lesiones, quintetos, cruces y viajes dependen de evidencia suficiente."));
   root.append(el("p","Última captura: "+local(data.last_source_capture_utc)+(stale(data)?" · Datos desactualizados; revisar la fuente.":"")));
   if(data.source_error_count)root.append(el("p","El registro conserva fallos de fuente. La cobertura requiere revisión."));
@@ -430,6 +443,16 @@
    const card=el("article","");card.className="nba-forward-game";
    const state=g.outcome?"Final":g.source_state==="in"?"En juego al último corte":g.source_status==="STATUS_FINAL"?"Final · cierre emparejado pendiente":g.source_status==="STATUS_POSTPONED"?"Aplazado":g.source_status==="STATUS_CANCELED"?"Cancelado":g.status.includes("review")?"Requiere revisión":Date.now()>=Date.parse(g.tipoff_utc)?"Sin actualización posterior al inicio":"Por comenzar";
    const matchData={sport:"nba",id:g.game_id,away:g.away_team,home:g.home_team,start_utc:g.tipoff_utc,status:g.source_status||g.status,completed:Boolean(g.outcome),away_score:g.outcome?.away_points,home_score:g.outcome?.home_points};
+   if(g.calendar_only){
+    const calendarRow=window.PulsoCalendar?.makeMatchRow(matchData,{sport:"nba"});
+    if(calendarRow?.dataset)calendarRow.dataset.gameId=String(g.game_id);
+    if(agenda)agenda.append(calendarRow||el("p",teamName(g.away_team)+" — "+teamName(g.home_team)+" · "+local(g.tipoff_utc)+" · Por comenzar"));
+    const card=el("article","");card.className="nba-forward-game nba-forward-game--calendar-only";
+    card.append(el("h3",teamName(g.away_team)+" — "+teamName(g.home_team)));
+    card.append(el("p",local(g.tipoff_utc)+" · Partido del calendario diario"));
+    card.append(el("p","Este encuentro no aparece en la última corrida NBA; todavía no hay pronóstico ni análisis de alineaciones publicado."));
+    if(card.dataset)card.dataset.gameId=String(g.game_id);root.append(card);continue;
+   }
    const latest=currentRun?.predictions.find(row=>String(row.game_id)===String(g.game_id)&&row.tipoff_utc===g.tipoff_utc);
    const market=latest?.market_context||g.market_context;
    const modelHome=latest?(latest.model_p_home??latest.statistical_baseline_p_home??latest.hybrid_p_home):null;
@@ -459,11 +482,13 @@
  }
  document.getElementById("daily-date").addEventListener("change",render);render();
  window.PulsoNbaForward={ready:(async()=>{try{
-  const [response,currentResponse]=await Promise.all([
+  const [response,currentResponse,dailyResponse]=await Promise.all([
    fetch("./data/nba-forward-latest.json",{cache:"no-store"}),
-   fetch("./data/nba-predictions-latest.json",{cache:"no-store"}).catch(()=>null)
+   fetch("./data/nba-predictions-latest.json",{cache:"no-store"}).catch(()=>null),
+   fetch("./data/daily.json",{cache:"no-store"}).catch(()=>null)
   ]);
   if(!response.ok)throw Error("source");const x=await response.json();if(!validate(x))throw Error("contract");data=x;
+  if(dailyResponse?.ok){try{const schedule=await dailyResponse.json();if(schedule?.data_kind==="fixtures_and_results_only"&&Array.isArray(schedule.games))dailySchedule=schedule;}catch{}}
   if(currentResponse?.ok){
    const latest=await currentResponse.json();
    if(latest?.kind==="nba_pulso_research_publication_v1"&&stamp(latest.created_at_utc)&&Array.isArray(latest.predictions))currentRun=latest;
