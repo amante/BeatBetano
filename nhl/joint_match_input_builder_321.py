@@ -87,12 +87,17 @@ def toi(value, *, allow_missing=False, label="TOI"):
             return numeric/60 if numeric>100 else float(numeric)
     raise ValueError("Invalid NHL time-on-ice value for " + label + ": " + repr(value))
 
-def build(report, context, changes, goalies, special, cutoff, division_history=None, division_history_source=None):
+def build(report, context, changes, goalies, special, cutoff, division_history=None, division_history_source=None, return_to_play=None):
     fixtures={str(g["game_id"]):g for g in report.get("games",[])}
     if len(fixtures)!=len(report.get("games",[])): raise ValueError("Duplicate schedule fixture")
     if context.get("kind")!="nhl_pregame_player_evidence_v1" or changes.get("kind")!="nhl_projected_lineup_changes_v1": raise ValueError("Wrong lineup evidence contract")
     if goalies.get("kind")!="nhl_all_goalie_candidates_history_260": raise ValueError("Wrong goalie history contract")
     day=date.fromisoformat(cutoff); season=season_for(cutoff)
+    return_by_game={}
+    if (isinstance(return_to_play,dict) and return_to_play.get("kind")=="nhl_return_to_play_v1"
+            and return_to_play.get("date")==cutoff):
+        return_by_game={str(item.get("game_id")):item for item in return_to_play.get("games",[])
+                        if isinstance(item,dict) and item.get("game_id") is not None}
     if division_history is None:
         history_path=Path(__file__).resolve().parents[1]/"reports/nhl/goalie-candidate-2026-11-02/evidence/labels.csv"
         if history_path.is_file():
@@ -257,11 +262,26 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                     "team_roster_penalty_minutes":{"total":totals["penaltyMinutes"],"games_played":gp,"unattributed_multi_team_players":0},
                     "team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":0},
                     "schedule":{},"_unknown":unknown}
+            return_game=return_by_game.get(gid,{})
+            return_teams=return_game.get("teams",{}) if isinstance(return_game,dict) else {}
+            for code in (f["home"],f["away"]):
+                return_team=return_teams.get(code,{})
+                if not return_team or not isinstance(return_team,dict) or not isinstance(return_team.get("players",{}),dict):
+                    return_team={"status":"source_unavailable","players":{},"source_manifest":[]}
+                sides[code]["return_to_play"]=return_team
             cutoff_for_engine=cutoff
             if date.fromisoformat(cutoff_for_engine)>=start.date(): raise ValueError("source cutoff is not strictly before fixture UTC date")
             captured=datetime.now(timezone.utc)
             if captured>=start: raise ValueError("Assembly completed after puck drop")
             manifest=s1+s2+s3+s4+s5+s6
+            for code in (f["home"],f["away"]):
+                for source in sides[code].get("return_to_play",{}).get("source_manifest",[]):
+                    stamp=source.get("retrieved_at_utc") or source.get("retrieved_at")
+                    if stamp and source.get("url"):
+                        retrieved=utc(stamp)
+                        if retrieved<start:
+                            manifest.append({"url":source["url"],"sha256":source.get("sha256"),
+                                             "retrieved_at_utc":retrieved.isoformat()})
             editor=cg.get("editorial_source")
             if not editor or not editor.get("sha256") or not editor.get("url"): raise ValueError("missing dated editorial lineup provenance")
             editorial_at=utc(cg["feature_as_of_utc"])
@@ -307,9 +327,11 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
 def main():
     p=argparse.ArgumentParser()
     for key in ("report","context","changes","goalies","special-teams","output"):p.add_argument("--"+key,required=True)
-    p.add_argument("--cutoff",required=True);a=p.parse_args()
+    p.add_argument("--cutoff",required=True);p.add_argument("--return-to-play");a=p.parse_args()
     def read(path):return json.loads(Path(path).read_text())
-    result=build(read(a.report),read(a.context),read(a.changes),read(a.goalies),read(a.special_teams),a.cutoff)
+    return_data=read(a.return_to_play) if a.return_to_play else None
+    result=build(read(a.report),read(a.context),read(a.changes),read(a.goalies),read(a.special_teams),a.cutoff,
+                 return_to_play=return_data)
     out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(result,indent=2)+"\n")
     print(json.dumps({"inputs":len(result["games"]),"blocked":len(result["blocked_games"]),"calibrated":False}))
 if __name__=="__main__":main()
