@@ -25,7 +25,7 @@ EVENT_TYPES = {
 FIELD_ALIASES = {
     "event_id": {"eventId", "id"},
     "event_type": {"typeDescKey", "typeCode"},
-    "event_owner_team_id": {"eventOwnerTeamId", "teamId", "eventTeamId"},
+    "event_owner_team_id": {"eventOwnerTeamId"},
     "situation_code": {"situationCode", "homeSkaters", "awaySkaters"},
     "score_state": {"homeScore", "awayScore"},
     "period": {"periodDescriptor"},
