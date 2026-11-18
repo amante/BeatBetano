@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-12",
+  "audited_at": "2026-11-17",
   "definitions": {
     "created": "Hay una implementación ejecutable del módulo; una mención en la hoja de ruta no basta.",
     "connected": "La ejecución diaria incorpora su salida al paquete del pronóstico o a uno de sus mercados publicados; recopilarla por separado no basta.",
@@ -111,30 +111,30 @@
           "name": "Líneas de ataque y pares defensivos",
           "created": true,
           "connected": true,
-          "affects_prediction": false,
-          "evidence": "nhl/team_units.py; nhl/nhl_hoy.py",
-          "scope": "La fortaleza de unidades se adjunta como evidencia del partido; no mueve el porcentaje base.",
-          "note": "Falta un coeficiente con evidencia histórica que entre en la fórmula."
+          "affects_prediction": true,
+          "evidence": "nhl/joint_match_input_builder_321.py; nhl/joint_match_engine_320.py; .github/workflows/pulso-nhl-prospective.yml",
+          "scope": "La composición de skaters identificados en líneas ofensivas y unidades defensivas entra por producción histórica individual y minutos proyectados; cambia goles esperados y porcentajes ML/RT/+3 del escenario integrado condicional.",
+          "note": "Experimental y no calibrado. El modelo representa composición y despliegue de los jugadores; todavía no estima química entre compañeros ni supresión defensiva individual por pareja. Requiere cobertura de roster y TOI."
         },
         {
           "id": "goalie_daily",
           "name": "Arqueros y calidad del titular/suplente",
           "created": true,
           "connected": true,
-          "affects_prediction": false,
-          "evidence": "nhl/goalie_daily.py; nhl/nhl_hoy.py",
-          "scope": "La comparación de arqueros se adjunta al partido; no modifica statistical_p_home.",
-          "note": "Permanece fuera de la fórmula: el candidato histórico de SV% empeoró el holdout (Brier 0.245599→0.246198; log loss 0.684300→0.685515). Las señales adicionales de forma reciente, descanso y carga tampoco superaron el control; falta una señal/modelo que pase la comparación cronológica."
+          "affects_prediction": true,
+          "evidence": "nhl/joint_match_input_builder_321.py; nhl/joint_match_engine_320.py; .github/workflows/pulso-nhl-prospective.yml",
+          "scope": "La tasa histórica de atajadas de cada arquero candidato modifica los goles esperados y los porcentajes de cada escenario ML/RT/+3. Los candidatos se muestran por separado; solo se promedian cuando las participaciones históricas cubren ambos equipos.",
+          "note": "Escenario condicional experimental, no calibrado ni sustituto del baseline. No se inventa titular. El candidato ML separado de SV% no fue aprobado en holdout y no se usa como modelo promocionado."
         },
         {
           "id": "special_teams",
           "name": "Power play y penalty kill",
           "created": true,
           "connected": true,
-          "affects_prediction": false,
-          "evidence": "nhl/official_team_stats.py; nhl/nhl_hoy.py",
-          "scope": "Las estadísticas oficiales se incluyen como evidencia, no como ajuste de probabilidad.",
-          "note": "Falta impacto PP/PK calculado dentro del modelo de goles/ganador."
+          "affects_prediction": true,
+          "evidence": "nhl/special_teams_capture.py; nhl/joint_match_input_builder_321.py; nhl/joint_match_engine_320.py; .github/workflows/pulso-nhl-prospective.yml",
+          "scope": "La conversión PP propia, el PK rival, las oportunidades esperadas y los minutos PP proyectados se integran en goles esperados; por eso cambian los porcentajes del escenario ML/RT/+3.",
+          "note": "Experimental y no calibrado. Usa conteos oficiales previos al partido y tasas de jugadores; si falta evidencia válida, el escenario se bloquea y reporta el motivo."
         },
         {
           "id": "context",
