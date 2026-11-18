@@ -185,15 +185,33 @@ def main():
     parser.add_argument("--raw-out", required=True)
     args = parser.parse_args()
     report = json.loads(Path(args.report).read_text())
-    raw, _ = fetch()
-    result = build(raw, report)
+    raw = b""
+    try:
+        raw, _ = fetch()
+        result = build(raw, report)
+    except Exception as error:
+        result = {
+            "kind": "nhl_rotowire_pregame_capture_454",
+            "captured_at_utc": datetime.now(timezone.utc).isoformat(),
+            "source": {
+                "source_url": URL,
+                "sha256": hashlib.sha256(raw).hexdigest() if raw else None,
+            },
+            "games": [],
+            "unmatched_cards": [],
+            "source_error": type(error).__name__ + ": " + str(error)[:240],
+            "probabilities_modified": False,
+            "official": False,
+        }
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+    Path(args.raw_out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.raw_out).write_bytes(raw)
     print(json.dumps({
         "rotowire_cards": len(result["games"]),
         "unmatched_cards": len(result["unmatched_cards"]),
+        "source_error": bool(result.get("source_error")),
         "probabilities_modified": False,
     }))
 
