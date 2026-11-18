@@ -102,9 +102,9 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
     for offset in range(lookback_days):
         day = start + timedelta(days=offset)
         url = f"{HOST}/score/{day.isoformat()}"
-        captured_at = datetime.now(timezone.utc).isoformat()
         try:
             payload, raw = fetch_json(url)
+            captured_at = datetime.now(timezone.utc).isoformat()
             calendar_sources.append({
                 "url": url,
                 "sha256": hashlib.sha256(raw).hexdigest(),
@@ -144,12 +144,13 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
     type_counts = Counter()
     field_counts = Counter()
     event_counts = Counter()
+    event_schema_keys = {}
     failures = []
     for fixture in selected:
         url = f"{HOST}/gamecenter/{fixture['game_id']}/play-by-play"
-        retrieved = datetime.now(timezone.utc).isoformat()
         try:
             payload, raw = fetch_json(url)
+            retrieved = datetime.now(timezone.utc).isoformat()
             rows = event_rows(payload)
             if not rows:
                 raise ValueError("No recognizable event rows in play-by-play response")
@@ -162,6 +163,7 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
                 keys = _all_keys(event)
                 kind = _event_type(event)
                 kinds[kind] += 1
+                event_schema_keys.setdefault(kind, set()).update(keys)
                 per_game["events"] += 1
                 if _is_shot_event(event):
                     per_game["shot_events"] += 1
@@ -203,6 +205,7 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
         "games_failed": len(failures),
         "event_count": sum(row["event_count"] for row in games),
         "event_type_counts": dict(sorted(type_counts.items())),
+        "event_field_names": {key: sorted(value) for key, value in sorted(event_schema_keys.items())},
         "games_with_shot_fields": dict(sorted(event_counts.items())),
         "field_names_under_review": {key: sorted(value) for key, value in FIELD_ALIASES.items()},
         "calendar_sources": calendar_sources,
@@ -252,6 +255,7 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
     if summary_path:
         with summary_path.open("a", encoding="utf-8") as summary:
             summary.write(markdown)
+    print(markdown)
     print(json.dumps({
         "games_found": len(fixtures), "games_selected": len(selected),
         "games_captured": len(games), "games_failed": len(failures),
