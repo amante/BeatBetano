@@ -8,6 +8,8 @@ The 18 projected skaters are assigned exactly 180 forward and 120 defense skater
 
 Player points by strength (goals plus assists) convert to team goal events through the actual current-roster points-per-goal ratio for that strength. This lets playmaking affect the scoring rate without counting assists as extra goals. Projected even-strength shots are compared with the opponent's team shots-against. PP opportunity volume uses both teams' observed PP/short-handed counts, adjusted by the projected opponent lineup's PIM rate relative to that team's roster history. PP conversion combines own team PP efficiency, projected PP-personnel scoring rate, and opponent PK allowance, with the PK rate shrunk halfway toward the games-weighted league rate. No PIM-minute-to-power-play conversion is hardcoded.
 
+The goal-event recurrence also reports a comeback market: a side must fall behind by at least two goals during regulation and finish with an illustrative ML win. Regulation ties split 50/50 for overtime, matching the existing ML calculation. Both sides' probabilities may be positive because they describe separate paths. This feature is experimental and uncalibrated.
+
 For each candidate goalie, its own observed saves/shots replaces the opponent team's historical goals-against-per-shot rate. The engine does not blend unconfirmed goalies or invent starter weights. The same regulation-goal Poisson distributions generate all displayed markets.
 
 ## Boundaries
