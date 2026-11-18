@@ -199,12 +199,12 @@
         {
           "id": "rescue_probability",
           "name": "Probabilidad de remontada",
-          "created": false,
-          "connected": false,
-          "affects_prediction": false,
-          "evidence": "multisport/ROADMAP.md; nhl/module_validation_readiness.py",
-          "scope": "Está identificada como objetivo, sin modelo ejecutable conectado.",
-          "note": "Pendiente de creación."
+          "created": true,
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nhl/goal_process.py; nhl/joint_match_engine_320.py; frontend/nhl-joint-model.js; .github/workflows/pulso-nhl-prospective.yml",
+          "scope": "El proceso de goles sigue secuencias de marcador y calcula la probabilidad de que cada equipo quede dos goles abajo en algún momento y aun así gane ML; entra al mismo motor y se muestra junto a ML, tiempo regular y +3.",
+          "note": "Modelo de trayectoria experimental con goles Poisson independientes, no calibrado. La probabilidad de cada lado no es complementaria: ambos equipos pueden remontar en distintas trayectorias. Si termina empatado el tiempo regular, usa el mismo reparto 50/50 de prórroga del ML ilustrativo. No reemplaza el baseline ni es una recomendación de apuesta."
         },
         {
           "id": "fuertes_dual",
