@@ -73,6 +73,24 @@
   const m=scenario.markets,none=Math.max(0,1-m.first_to_three_goal_lead.home-m.first_to_three_goal_lead.away),grid=make("div",undefined,"nhl-joint-market-grid");
   const rows=[["Ganador ilustrativo",game.home+" "+pct(m.illustrative_ml.home),game.away+" "+pct(m.illustrative_ml.away)],["Tiempo regular",game.home+" "+pct(m.regulation.home),"Empate "+pct(m.regulation.draw)+" · "+game.away+" "+pct(m.regulation.away)],["Alcanza ventaja de +3",game.home+" "+pct(m.three_goal_lead.home),game.away+" "+pct(m.three_goal_lead.away)],["Primero en +3",game.home+" "+pct(m.first_to_three_goal_lead.home),game.away+" "+pct(m.first_to_three_goal_lead.away)+" · Ninguno "+pct(none)]];
   rows.forEach(row=>{const item=make("div",undefined,"nhl-joint-market");item.append(make("strong",row[0]),make("span",row[1]),make("span",row[2]));grid.append(item);});card.append(grid);
+  const context=scenario.division_rivalry;
+  if(context){
+   const details=make("details",undefined,"nhl-joint-context");
+   const delta=context.applied_goal_differential_delta??context.expected_goal_differential_delta??0;
+   const signed=typeof delta==="number"?(delta>0?"+":"")+delta.toFixed(2).replace(".",",")+" goles":"—";
+   const status=context.applied_to_percentages?"Ajuste aplicado · "+signed+" al diferencial esperado":
+    context.status==="insufficient_history"?"Sin ajuste · muestra histórica insuficiente":
+    context.status==="context_only"?"Contexto divisional; sin señal histórica aplicable":"Sin cambio direccional histórico";
+   details.append(make("summary","División y rivalidad · "+status));
+   const evidence=context.evidence||{};
+   for(const code of [game.home,game.away]){
+    const row=evidence[code];
+    if(row&&typeof row==="object")details.append(make("p",code+" · "+(row.division_games??0)+" partidos divisionales · "+(row.other_games??0)+" contra otras divisiones"));
+   }
+   if(Number.isFinite(evidence.head_to_head_games))details.append(make("p","Enfrentamientos directos previos: "+evidence.head_to_head_games));
+   details.append(make("small","Solo resultados en tiempo regular anteriores a la fecha del partido · ajuste experimental, sin calibración."));
+   card.append(details);
+  }
   const props=scenario.player_probabilities||{};
   addPlayerProbabilities(card,game.home,props[game.home]);
   addPlayerProbabilities(card,game.away,props[game.away]);
