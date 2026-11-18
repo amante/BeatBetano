@@ -106,6 +106,7 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
     for offset in range(lookback_days):
         day = start + timedelta(days=offset)
         url = f"{HOST}/score/{day.isoformat()}"
+        captured_at = datetime.now(timezone.utc).isoformat()
         try:
             payload, raw = fetch_json(url)
             captured_at = datetime.now(timezone.utc).isoformat()
@@ -155,6 +156,7 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
     failures = []
     for fixture in selected:
         url = f"{HOST}/gamecenter/{fixture['game_id']}/play-by-play"
+        retrieved = datetime.now(timezone.utc).isoformat()
         try:
             payload, raw = fetch_json(url)
             retrieved = datetime.now(timezone.utc).isoformat()
@@ -265,15 +267,37 @@ def audit(date_to, lookback_days=7, max_games=20, output_dir="nhl-opponent-style
     lines.extend(["", "## Perfil descriptivo de ataque y defensa", ""])
     lines.append("Este perfil es pospartido y no modifica probabilidades.")
     lines.append("")
-    lines.append("| Equipo | PJ muestra | Tiros a puerta | Fallados | Bloqueados | Goles | <25 ft / tiros ubicados |")
-    lines.append("|---|---:|---:|---:|---:|---:|---:|")
+    lines.append("| Equipo | PJ | Ataque: a puerta / fallados / bloqueados / goles | Defensa: permitidos / fallados / bloqueados / goles | Ataque <25 ft / ubicados |")
+    lines.append("|---|---:|---:|---:|---:|")
     for team, profile in sorted(style_report["teams"].items()):
         attack = profile["attack"]
+        defense = profile["defense_allowed"]
         lines.append(
-            f"| {team} | {attack['games']} | {attack['shots_on_goal']} | {attack['missed_shots']} | "
-            f"{attack['blocked_shot_events']} | {attack['goals']} | "
+            f"| {team} | {attack['games']} | "
+            f"{attack['shots_on_goal']} / {attack['missed_shots']} / {attack['blocked_shot_events']} / {attack['goals']} | "
+            f"{defense['shots_on_goal']} / {defense['missed_shots']} / {defense['blocked_shot_events']} / {defense['goals']} | "
             f"{attack['distance_bins_ft'].get('0-25', 0)} / {attack['located_unblocked_shots']} |"
         )
+    goal_checks = [
+        (game, team, profile.get("goal_attribution_check", {}))
+        for game in style_report["games"]
+        for team, profile in game.get("team_profiles", {}).items()
+    ]
+    checked_goals = [check for _, _, check in goal_checks if check.get("matches_scoreboard") is not None]
+    matched_goals = sum(check["matches_scoreboard"] is True for check in checked_goals)
+    lines.extend(["", "## Validación de atribución de goles", ""])
+    lines.append(f"- Equipos comparables contra el marcador oficial: {matched_goals} de {len(checked_goals)}")
+    mismatches = [(game, team, check) for game, team, check in goal_checks
+                  if check.get("matches_scoreboard") is False]
+    if mismatches:
+        lines.extend(["", "| Partido | Equipo | Goles PBP | Marcador oficial |", "|---|---|---:|---:|"])
+        for game, team, check in mismatches:
+            lines.append(
+                f"| {game['away']} @ {game['home']} | {team} | "
+                f"{check['play_by_play_goals']} | {check['official_final_goals']} |"
+            )
+    else:
+        lines.append("- Sin discrepancias entre los goles atribuidos y el marcador oficial.")
     coordinate_rows = [row["team_style_profile"].get("coordinate_diagnostics", {}) for row in games]
     x_values = [value for row in coordinate_rows for value in (row.get("x_min"), row.get("x_max")) if value is not None]
     y_values = [value for row in coordinate_rows for value in (row.get("y_min"), row.get("y_max")) if value is not None]
