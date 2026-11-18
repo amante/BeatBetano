@@ -19,6 +19,18 @@
     for(const goalie of [scenario.home_goalie,scenario.away_goalie])if(goalie.starter_probability!==null&&goalie.starter_probability!==undefined&&!inRange(goalie.starter_probability))return false;
     const m=scenario.markets;
     if(!m||!sumToOne([m.illustrative_ml&&m.illustrative_ml.home,m.illustrative_ml&&m.illustrative_ml.away])||!sumToOne([m.regulation&&m.regulation.home,m.regulation&&m.regulation.draw,m.regulation&&m.regulation.away])||!inRange(m.three_goal_lead&&m.three_goal_lead.home)||!inRange(m.three_goal_lead&&m.three_goal_lead.away)||!inRange(m.first_to_three_goal_lead&&m.first_to_three_goal_lead.home)||!inRange(m.first_to_three_goal_lead&&m.first_to_three_goal_lead.away)||m.first_to_three_goal_lead.home+m.first_to_three_goal_lead.away>1.00001)return false;
+    if(scenario.player_probabilities!==undefined){
+     for(const players of Object.values(scenario.player_probabilities)){
+      if(!Array.isArray(players)||players.some(p=>!p||!p.player_id||!p.name||!p.expected||!p.probability||
+       !finite(p.expected.goals)||p.expected.goals<0||
+       (p.expected.assists!==null&&p.expected.assists!==undefined&&(!finite(p.expected.assists)||p.expected.assists<0))||
+       (p.expected.points!==null&&p.expected.points!==undefined&&(!finite(p.expected.points)||p.expected.points<0))||
+       !inRange(p.probability.goal_at_least_one)||
+       (p.probability.assist_at_least_one!==null&&p.probability.assist_at_least_one!==undefined&&!inRange(p.probability.assist_at_least_one))||
+       (p.probability.point_at_least_one!==null&&p.probability.point_at_least_one!==undefined&&!inRange(p.probability.point_at_least_one))||
+       (p.probability.point_two_or_more!==null&&p.probability.point_two_or_more!==undefined&&!inRange(p.probability.point_two_or_more))))return false;
+     }
+    }
    }
   }
   return data.blocked_games.every(x=>x&&x.game_id&&x.home&&x.away&&typeof x.reason==="string"&&(!x.category||["lineup_not_confirmed","other_input_unavailable"].includes(x.category)));
@@ -39,17 +51,36 @@
  const make=(tag,text,cls)=>{const el=doc.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;};
  const pct=x=>inRange(x)?(x*100).toFixed(1).replace(".",",")+"%":"—";
  let feed=null,error=null,dateInput=doc.getElementById("daily-date");
+ function addPlayerProbabilities(parent,team,players){
+  if(!Array.isArray(players)||!players.length)return;
+  const details=make("details",undefined,"nhl-joint-player-props");
+  details.append(make("summary",team+" · probabilidades individuales ("+players.length+")"));
+  const list=make("div",undefined,"nhl-joint-player-list");
+  for(const player of players){
+   const row=make("article",undefined,"nhl-joint-player-row");
+   row.append(make("strong",player.name));
+   const p=player.probability||{};
+   row.append(make("span","Gol ≥1 "+pct(p.goal_at_least_one)+" · Asistencia ≥1 "+pct(p.assist_at_least_one)+" · Punto ≥1 "+pct(p.point_at_least_one)+" · 2+ puntos "+pct(p.point_two_or_more)));
+   row.append(make("small","Proyección: "+(player.expected.goals??0).toFixed(2)+" G + "+(player.expected.assists==null?"s/d":player.expected.assists.toFixed(2)+" A")+" = "+(player.expected.points==null?"s/d":player.expected.points.toFixed(2)+" P")+" · escenario experimental, sin calibrar"));
+   list.append(row);
+  }
+  details.append(list);parent.append(details);
+ }
  function addScenario(game,scenario,index){
   const card=make("article",undefined,"nhl-joint-scenario"),goalie=(g)=>g.name+(inRange(g.starter_probability)?" · titularidad histórica "+pct(g.starter_probability):g.starter_confirmed?" · confirmado":" · candidato");
   card.append(make("h5","Escenario "+(index+1)+" · Local: "+goalie(scenario.home_goalie)+" · Visita: "+goalie(scenario.away_goalie)));
   card.append(make("p","Goles esperados · "+game.home+" "+scenario.expected_goals.home.toFixed(2)+" — "+scenario.expected_goals.away.toFixed(2)+" "+game.away,"nhl-joint-goals"));
   const m=scenario.markets,none=Math.max(0,1-m.first_to_three_goal_lead.home-m.first_to_three_goal_lead.away),grid=make("div",undefined,"nhl-joint-market-grid");
   const rows=[["Ganador ilustrativo",game.home+" "+pct(m.illustrative_ml.home),game.away+" "+pct(m.illustrative_ml.away)],["Tiempo regular",game.home+" "+pct(m.regulation.home),"Empate "+pct(m.regulation.draw)+" · "+game.away+" "+pct(m.regulation.away)],["Alcanza ventaja de +3",game.home+" "+pct(m.three_goal_lead.home),game.away+" "+pct(m.three_goal_lead.away)],["Primero en +3",game.home+" "+pct(m.first_to_three_goal_lead.home),game.away+" "+pct(m.first_to_three_goal_lead.away)+" · Ninguno "+pct(none)]];
-  rows.forEach(row=>{const item=make("div",undefined,"nhl-joint-market");item.append(make("strong",row[0]),make("span",row[1]),make("span",row[2]));grid.append(item);});card.append(grid);return card;
+  rows.forEach(row=>{const item=make("div",undefined,"nhl-joint-market");item.append(make("strong",row[0]),make("span",row[1]),make("span",row[2]));grid.append(item);});card.append(grid);
+  const props=scenario.player_probabilities||{};
+  addPlayerProbabilities(card,game.home,props[game.home]);
+  addPlayerProbabilities(card,game.away,props[game.away]);
+  return card;
  }
  function render(){
   root.replaceChildren(make("h3","Modelo integrado NHL · escenarios"));const meta=make("div",undefined,"nhl-joint-meta");meta.append(make("span","Experimental · no calibrado","nhl-experimental-badge"));root.append(meta);
-  root.append(make("p","Alineaciones y minutos EV/PP/PK, producción proyectada de jugadores, bajas identificadas, rendimiento PP/PK, defensa por tiros y arqueros candidatos modifican estos escenarios. Cada combinación de arqueros se muestra por separado. No reemplaza el baseline de PULSO.","nhl-joint-note"));
+  root.append(make("p","Los goles proyectados por jugador alimentan los goles esperados y las probabilidades del partido. Las asistencias completan G+A=Puntos y generan probabilidades individuales de gol, asistencia y puntos por escenario de arquero. Es experimental, no calibrado ni reemplaza el baseline oficial de PULSO.","nhl-joint-note"));
   const status=make("p","Consultando última ejecución…","daily-source");root.append(status);
   if(!feed){status.textContent=error?"No se pudo cargar el modelo integrado: "+error:"El primer escenario aparecerá después de la próxima ejecución diaria.";return;}
   if(!validate(feed)){status.textContent="La publicación integrada no superó la validación. No se muestran sus probabilidades.";return;}
