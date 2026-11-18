@@ -25867,21 +25867,49 @@
     "kind": "nba_injury_status_empirical_summary",
     "groups": [
       {
+        "source": "CBS Sports",
+        "status": "questionable",
+        "source_type": "provider_injury_report",
+        "observations": 2,
+        "played": 1,
+        "did_not_play": 1,
+        "played_rate": 0.5,
+        "played_rate_wilson_95": [
+          0.09453120573423074,
+          0.9054687942657693
+        ],
+        "median_lead_time_hours": 1.7408585799999998
+      },
+      {
         "source": "ESPN",
         "status": "questionable",
         "source_type": "provider_injury_report",
-        "observations": 20,
+        "observations": 21,
         "played": 18,
-        "did_not_play": 2,
-        "played_rate": 0.9,
+        "did_not_play": 3,
+        "played_rate": 0.8571428571428571,
         "played_rate_wilson_95": [
-          0.6989663547715128,
-          0.9721335187862319
+          0.6536393971937906,
+          0.9501898750027473
         ],
         "median_lead_time_hours": 8.702695563055556
+      },
+      {
+        "source": "NBA official PDF",
+        "status": "questionable",
+        "source_type": "official_league_report",
+        "observations": 2,
+        "played": 1,
+        "did_not_play": 1,
+        "played_rate": 0.5,
+        "played_rate_wilson_95": [
+          0.09453120573423074,
+          0.9054687942657693
+        ],
+        "median_lead_time_hours": 1.7408585799999998
       }
     ],
-    "unique_settled_source_claims": 20,
+    "unique_settled_source_claims": 25,
     "fit_for_prediction_weights": false,
     "note": "Descriptive pregame source-status versus actual participation. Rates are not causal effects or approved probability weights."
   }
