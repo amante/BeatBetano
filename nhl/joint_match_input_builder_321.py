@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from nhl.pulso_goalie_multisource_257 import TEAM_NAMES, norm
+from nhl.division_rivalry import estimate as estimate_division_rivalry, load_history as load_division_history
 
 API = "https://api.nhle.com/stats/rest/en"
 
@@ -86,12 +87,18 @@ def toi(value, *, allow_missing=False, label="TOI"):
             return numeric/60 if numeric>100 else float(numeric)
     raise ValueError("Invalid NHL time-on-ice value for " + label + ": " + repr(value))
 
-def build(report, context, changes, goalies, special, cutoff):
+def build(report, context, changes, goalies, special, cutoff, division_history=None, division_history_source=None):
     fixtures={str(g["game_id"]):g for g in report.get("games",[])}
     if len(fixtures)!=len(report.get("games",[])): raise ValueError("Duplicate schedule fixture")
     if context.get("kind")!="nhl_pregame_player_evidence_v1" or changes.get("kind")!="nhl_projected_lineup_changes_v1": raise ValueError("Wrong lineup evidence contract")
     if goalies.get("kind")!="nhl_all_goalie_candidates_history_260": raise ValueError("Wrong goalie history contract")
     day=date.fromisoformat(cutoff); season=season_for(cutoff)
+    if division_history is None:
+        history_path=Path(__file__).resolve().parents[1]/"reports/nhl/goalie-candidate-2026-11-02/evidence/labels.csv"
+        if history_path.is_file():
+            division_history,division_history_source=load_division_history(history_path)
+        else:
+            division_history,division_history_source=[],None
     skaters,s1=stat_rows("skater/summary",season,cutoff)
     toi_rows,s2=stat_rows("skater/timeonice",season,cutoff)
     teams,s3=stat_rows("team/summary",season,cutoff,"teamFullName:ASC")
@@ -283,7 +290,8 @@ def build(report, context, changes, goalies, special, cutoff):
                         goalie_sources.append({"url":meta.get("url"),"sha256":meta.get("sha256"),"retrieved_at_utc":stamp.isoformat()})
             manifest+=goalie_sources
             if any(utc(x["retrieved_at_utc"])>=start for x in manifest): raise ValueError("Post-start source")
-            output.append({"kind":"nhl_joint_match_inputs_v1","game_id":gid,"home":f["home"],"away":f["away"],"start_utc":f["start_utc"],"cutoff_exclusive":cutoff_for_engine,"captured_at_utc":captured.isoformat(),"poststart_reconstruction":False,"league_context":{"powerplay_goals_allowed_per_opportunity":league_pk_rate},"teams":sides,"unknowns":unknown,"source_manifest":manifest})
+            division_rivalry=estimate_division_rivalry(f["home"],f["away"],cutoff_for_engine,division_history,division_history_source)
+            output.append({"kind":"nhl_joint_match_inputs_v1","game_id":gid,"home":f["home"],"away":f["away"],"start_utc":f["start_utc"],"cutoff_exclusive":cutoff_for_engine,"captured_at_utc":captured.isoformat(),"poststart_reconstruction":False,"league_context":{"powerplay_goals_allowed_per_opportunity":league_pk_rate},"division_rivalry":division_rivalry,"teams":sides,"unknowns":unknown,"source_manifest":manifest})
         except (KeyError,TypeError,ValueError) as e:
             reason=str(e)[:240]
             category=blocker_category(reason)
