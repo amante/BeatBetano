@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "audited_at": "2026-11-17",
+  "audited_at": "2026-11-18",
   "definitions": {
     "created": "Hay una implementación ejecutable del módulo; una mención en la hoja de ruta no basta.",
     "connected": "La ejecución diaria incorpora su salida al paquete del pronóstico o a uno de sus mercados publicados; recopilarla por separado no basta.",
@@ -219,12 +219,12 @@
         {
           "id": "return_injury",
           "name": "Retorno tras lesión",
-          "created": false,
-          "connected": false,
-          "affects_prediction": false,
-          "evidence": "nhl/module_audit.py; nhl/module_validation_readiness.py",
-          "scope": "El código disponible solo lo enumera como requisito de evaluación; no hay predictor ejecutable de retorno a forma.",
-          "note": "Pendiente de creación."
+          "created": true,
+          "connected": true,
+          "affects_prediction": true,
+          "evidence": "nhl/return_to_play.py; nhl/joint_match_input_builder_321.py; nhl/joint_match_engine_320.py; .github/workflows/pulso-nhl-prospective.yml",
+          "scope": "Detecta retornos proyectados solo con un reporte NHL.com de lesión fechado y alineación posterior; estima una rampa de minutos con el TOI oficial de los primeros tres partidos tras el regreso frente a los cinco previos. Reduce minutos de retorno y redistribuye dentro de la misma unidad, cambiando goles esperados y mercados del escenario.",
+          "note": "Ajuste experimental sin calibración médica. Exige 20 jugadores distintos en la banda de duración, usa historial anterior a cada partido y limita el efecto a reducciones. Ausencia de alineación no se interpreta como lesión; sin muestra suficiente, no hay ajuste."
         },
         {
           "id": "opponent_style",
