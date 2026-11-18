@@ -26,10 +26,16 @@ def load_history(path):
     rows = list(csv.DictReader(raw.decode("utf-8-sig").splitlines()))
     if not rows:
         raise ValueError("Division/rivalry history is empty")
+    label_dates = sorted(
+        str(row.get("date")) for row in rows
+        if row.get("date") and len(str(row.get("date"))) == 10
+    )
     metadata = {
         "path": source.as_posix(),
         "sha256": hashlib.sha256(raw).hexdigest(),
         "rows": len(rows),
+        "first_label_date": label_dates[0] if label_dates else None,
+        "latest_label_date": label_dates[-1] if label_dates else None,
         "source": "NHL official Gamecenter labels, regulation scores",
     }
     return rows, metadata
