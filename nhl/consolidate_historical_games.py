@@ -20,7 +20,9 @@ def consolidate(ledger,source_dirs,destination):
             if (not expected or obj.get("date")!=expected["date"]
                 or obj.get("home")!=expected["home"] or obj.get("away")!=expected["away"]
                 or not obj.get("goal_events_available")
-                or not obj.get("boxscore",{}).get("player_by_game_stats")):
+                or not obj.get("boxscore",{}).get("player_by_game_stats")
+                or obj.get("opponent_style_features_version")!=1
+                or not obj.get("opponent_style_profile")):
                 invalid.append(str(path));continue
             compact=json.dumps(obj,sort_keys=True,separators=(",",":"))
             if gid in seen and seen[gid]!=compact:
@@ -34,7 +36,7 @@ def consolidate(ledger,source_dirs,destination):
        "missing_games":len(missing),"invalid_files":invalid,
        "source_folders":[str(p) for p in source_dirs],
        "next_missing_id":missing[0]["id"] if missing else None,
-       "status":"postgame_archive_not_pregame_validated"}
+       "status":"postgame_style_archive_for_later_dates_not_same_game_pregame"}
     (destination/"manifest.json").write_text(json.dumps(stats,indent=2))
     return stats,missing
 
