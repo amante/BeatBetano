@@ -42,29 +42,41 @@ def calculate(lh,la):
     # Goal-event process: both 3-goal leads can happen, and first-to-3 is exclusive.
     total=lh+la;prob=lh/total
     # (score difference, has_home_3, has_away_3, first_hit)
-    states={(0,False,False,0):1.0}
-    outcomes={"home3":0.,"away3":0.,"home_first":0.,"away_first":0.}
+    states={(0,False,False,0,False,False):1.0}
+    outcomes={"home3":0.,"away3":0.,"home_first":0.,"away_first":0.,
+              "home_comeback":0.,"away_comeback":0.}
     weights=poisson(total,45)
     for n,weight in enumerate(weights):
         if n: # Generate exactly n score events from n-1
             nxt={}
-            for (diff,hh,aa,first),v in states.items():
+            for (diff,hh,aa,first,home_down_two,away_down_two),v in states.items():
                 for d,p in ((1,prob),(-1,1-prob)):
                     newdiff=diff+d
                     nh=hh or newdiff>=3;na=aa or newdiff<=-3
                     first2=first if first else (1 if not hh and nh else 2 if not aa and na else 0)
-                    key=(newdiff,nh,na,first2)
+                    home_down=home_down_two or newdiff<=-2
+                    away_down=away_down_two or newdiff>=2
+                    key=(newdiff,nh,na,first2,home_down,away_down)
                     nxt[key]=nxt.get(key,0)+v*p
             states=nxt
-        outcomes["home3"]+=weight*sum(v for (d,hh,aa,f),v in states.items() if hh)
-        outcomes["away3"]+=weight*sum(v for (d,hh,aa,f),v in states.items() if aa)
-        outcomes["home_first"]+=weight*sum(v for (d,hh,aa,f),v in states.items() if f==1)
-        outcomes["away_first"]+=weight*sum(v for (d,hh,aa,f),v in states.items() if f==2)
+        outcomes["home3"]+=weight*sum(v for (d,hh,aa,f,hd,ad),v in states.items() if hh)
+        outcomes["away3"]+=weight*sum(v for (d,hh,aa,f,hd,ad),v in states.items() if aa)
+        outcomes["home_first"]+=weight*sum(v for (d,hh,aa,f,hd,ad),v in states.items() if f==1)
+        outcomes["away_first"]+=weight*sum(v for (d,hh,aa,f,hd,ad),v in states.items() if f==2)
+        outcomes["home_comeback"]+=weight*sum(
+            v*(1.0 if d>0 else 0.5 if d==0 else 0.0)
+            for (d,hh,aa,f,hd,ad),v in states.items() if hd)
+        outcomes["away_comeback"]+=weight*sum(
+            v*(1.0 if d<0 else 0.5 if d==0 else 0.0)
+            for (d,hh,aa,f,hd,ad),v in states.items() if ad)
     return {"lambda_home":round(lh,4),"lambda_away":round(la,4),
        "regulation":{"home":round(wh,5),"draw":round(draw,5),"away":round(wa,5)},
        "illustrative_ml":{"home":round(wh+draw/2,5),"away":round(wa+draw/2,5)},
        "three_goal_lead":{"home":round(outcomes["home3"],5),"away":round(outcomes["away3"],5)},
        "first_to_three_goal_lead":{"home":round(outcomes["home_first"],5),"away":round(outcomes["away_first"],5)},
+       "comeback_after_two_goal_deficit":{"home":round(outcomes["home_comeback"],5),
+                                          "away":round(outcomes["away_comeback"],5)},
+       "comeback_definition":"falls behind by at least two regulation goals, then wins illustrative ML; a regulation tie is split 50/50 for overtime",
        "model":"unfitted_independent_poisson_shrunken_goals",
        "calibrated":False,"official":False,"challenger":False,"bet_authorized":False}
 
