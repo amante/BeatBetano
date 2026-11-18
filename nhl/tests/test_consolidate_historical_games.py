@@ -18,7 +18,7 @@ class TestConsolidation(unittest.TestCase):
  def test_conflicting_records_fail_closed(self):
   with tempfile.TemporaryDirectory() as root:
    base=Path(root);a=base/"a";b=base/"b";a.mkdir();b.mkdir()
-   rec={"game_id":"1","date":"2025-10-01","home":"BOS","away":"MTL","goal_events_available":True,"boxscore":{"player_by_game_stats":{"homeTeam":{}}}}
+   rec={"game_id":"1","date":"2025-10-01","home":"BOS","away":"MTL","goal_events_available":True,"opponent_style_features_version":1,"opponent_style_profile":_style_profile(),"boxscore":{"player_by_game_stats":{"homeTeam":{}}}}
    (a/"1.json").write_text(json.dumps(rec))
    (b/"1.json").write_text(json.dumps(dict(rec,pbp_event_count=10)))
    with self.assertRaises(ValueError):
