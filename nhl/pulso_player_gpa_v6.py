@@ -250,7 +250,7 @@ def replay(rows, positions, start_date="2025-10-01"):
                     }
                 }
                 prediction = project(player_history[pid], row, position, peer_rates)
-                if prediction["projection"] is not None:
+                if prediction.get("status") == "research_projection":
                     predictions.append({
                         "game_id": row["game_id"], "date": day, "player_id": pid,
                         "team": row["team"], "position": position,

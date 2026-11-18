@@ -26,6 +26,16 @@ class JointMatchEngine320Tests(unittest.TestCase):
                 markets = scenario["markets"]
                 self.assertAlmostEqual(sum(markets["regulation"][k] for k in ("home", "draw", "away")), 1, places=4)
                 self.assertAlmostEqual(sum(markets["illustrative_ml"].values()), 1, places=4)
+            for code in ("CBJ", "COL"):
+                props = scenario["player_probabilities"][code]
+                self.assertTrue(props)
+                for player in props:
+                    self.assertAlmostEqual(player["expected"]["points"],
+                                           player["expected"]["goals"] + player["expected"]["assists"])
+                    self.assertGreaterEqual(player["probability"]["point_at_least_one"],
+                                            player["probability"]["goal_at_least_one"])
+                    self.assertGreaterEqual(player["probability"]["point_at_least_one"],
+                                            player["probability"]["assist_at_least_one"])
 
     def test_minute_reallocation_conserves_exact_regulation_budget(self):
         out = run(self.inputs)
@@ -83,16 +93,26 @@ class JointMatchEngine320Tests(unittest.TestCase):
         result = run(changed)["scenarios"][0]["expected_goals"]["home"]
         self.assertGreater(result, original)
 
-    def test_assisted_points_affect_scoring_but_are_converted_to_goal_events(self):
+    def test_assists_drive_player_point_probability_but_are_not_extra_team_goals(self):
         original = run(self.inputs)
         changed = copy.deepcopy(self.inputs)
-        player = changed["teams"]["CBJ"]["projected_lines"][0]["players"][0]["production"]
-        player["assists"] += 20
-        player["evPoints"] += 20
+        source_player = changed["teams"]["CBJ"]["projected_lines"][0]["players"][0]
+        source_player["production"]["assists"] += 20
+        source_player["production"]["evPoints"] += 20
         result = run(changed)
-        self.assertGreater(result["scenarios"][0]["expected_goals"]["home"], original["scenarios"][0]["expected_goals"]["home"])
-        original_player = next(p for p in original["lineup_impact"]["CBJ"]["incoming_to_projected_lineup"] if p["name"] == "Dmitri Voronkov")
-        self.assertGreaterEqual(original_player["projected_contribution_per_game"]["assists"], 0)
+        self.assertAlmostEqual(result["scenarios"][0]["expected_goals"]["home"],
+                               original["scenarios"][0]["expected_goals"]["home"])
+        player_id = source_player["player_id"]
+        original_player = next(p for p in original["scenarios"][0]["player_probabilities"]["CBJ"]
+                               if p["player_id"] == player_id)
+        changed_player = next(p for p in result["scenarios"][0]["player_probabilities"]["CBJ"]
+                              if p["player_id"] == player_id)
+        self.assertGreater(changed_player["probability"]["assist_at_least_one"],
+                           original_player["probability"]["assist_at_least_one"])
+        self.assertGreater(changed_player["probability"]["point_at_least_one"],
+                           original_player["probability"]["point_at_least_one"])
+        self.assertAlmostEqual(changed_player["expected"]["points"],
+                               changed_player["expected"]["goals"] + changed_player["expected"]["assists"])
 
     def test_unresolved_injury_is_blocker_and_scratch_history_is_accounted(self):
         out = run(self.inputs)
