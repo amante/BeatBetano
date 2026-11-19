@@ -153,14 +153,37 @@
   lineupHead.append(el("h4","Quinteto inicial"),el("span",s.lineup_status==="confirmed"?"Confirmado por proveedor":s.lineup_status==="projected"?"Proyectado por proveedor":"Sin confirmación","nba-lineup-badge "+(s.lineup_status==="confirmed"?"is-confirmed":"is-projected")));
   lineup.append(lineupHead);
   if(starters.length){
-   const grid=el("div",undefined,"nba-player-grid nba-starters-grid");
+   const court=el("div","");court.className="nba-lineup-court";
+   const note=el("p","Quinteto listado · las posiciones individuales no vienen informadas por la fuente.");note.className="nba-lineup-court__note";
+   const surface=el("div","");surface.className="nba-lineup-court__surface";
+   surface.setAttribute("role","group");surface.setAttribute("aria-label","Vista de cancha con los titulares listados de "+teamName(team));
+   const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+   svg.setAttribute("viewBox","0 0 600 280");svg.setAttribute("preserveAspectRatio","none");svg.setAttribute("aria-hidden","true");svg.classList.add("nba-lineup-court__markings");
+   const shapes=[
+    ["rect",{x:"5",y:"5",width:"590",height:"270",rx:"5"}],
+    ["line",{x1:"300",y1:"5",x2:"300",y2:"275"}],
+    ["circle",{cx:"300",cy:"140",r:"34"}],
+    ["rect",{x:"5",y:"85",width:"105",height:"110"}],
+    ["rect",{x:"490",y:"85",width:"105",height:"110"}],
+    ["circle",{cx:"110",cy:"140",r:"35"}],
+    ["circle",{cx:"490",cy:"140",r:"35"}]
+   ];
+   for(const [tag,attrs] of shapes){const shape=document.createElementNS("http://www.w3.org/2000/svg",tag);for(const [key,value] of Object.entries(attrs))shape.setAttribute(key,value);svg.append(shape);}
+   surface.append(svg);
+   const grid=el("div","");grid.className="nba-lineup-court__players";grid.setAttribute("role","list");
    for(const [index,entry] of starters.entries()){
-    const p=entry.player,reportedStatus=p&&p.status&&p.status!=="unknown";
-    const label=p?.status==="out"?"Baja reportada · revisar quinteto":p&&["questionable","doubtful"].includes(p.status)?"En duda según fuente":reportedStatus?statusLabels[p.status]:"Titular listado · disponibilidad sin confirmar";
-    const tone=p?.status==="out"?"out":p&&["questionable","doubtful"].includes(p.status)?"doubt":"starter";
-    grid.append(playerCard(p?.player||entry.raw,label,tone,index));
+    const p=entry.player,status=String(p?.status||"").toLowerCase(),name=p?.player||entry.raw;
+    const tile=el("div","");tile.className="nba-lineup-court__player";tile.setAttribute("role","listitem");
+    const number=el("span",String(index+1).padStart(2,"0"));number.className="nba-lineup-court__number";tile.append(number);
+    const playerName=el("strong",name);playerName.className="nba-lineup-court__name";tile.append(playerName);
+    if(["out","questionable","doubtful"].includes(status)){
+     const icon=el("span",status==="out"?"×":"!");icon.className="nba-lineup-court__injury"+(status==="out"?" is-out":" is-questionable");
+     const description=status==="out"?"Fuera según reporte":status==="questionable"?"En duda según reporte":"Dudoso según reporte";
+     icon.setAttribute("role","img");icon.setAttribute("aria-label",description);icon.title=description;tile.append(icon);
+    }
+    grid.append(tile);
    }
-   lineup.append(grid);
+   surface.append(grid);court.append(note,surface);lineup.append(court);
   }else lineup.append(el("p","El proveedor no entregó nombres de titulares para esta captura.","nba-section-empty"));
   body.append(lineup);
   if(!outs.length&&!doubts.length)body.append(el("p","Esta captura no trae bajas ni dudas individuales reportadas.","nba-section-empty"));

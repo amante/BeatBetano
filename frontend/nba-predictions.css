@@ -90,3 +90,19 @@
 .nba-player-stat-projections__identity .nba-player-stat-projections__badge{display:inline-flex!important;align-items:center!important;gap:4px!important;padding:4px 9px!important;border:1px solid!important;border-radius:999px!important;font-size:10px!important;font-weight:900!important;line-height:1.2!important;letter-spacing:.04em!important;white-space:nowrap!important}
 .nba-player-stat-projections__identity .nba-player-stat-projections__badge--starter{border-color:#42d6a6!important;background:linear-gradient(135deg,#155842,#123e4b)!important;color:#9dffd4!important;box-shadow:0 0 0 1px rgba(66,214,166,.18),0 2px 8px rgba(19,178,125,.16)!important}
 .nba-player-stat-projections__identity .nba-player-stat-projections__badge--out{border-color:#ff6876!important;background:linear-gradient(135deg,#642633,#44212e)!important;color:#ffc0c4!important;box-shadow:0 0 0 1px rgba(255,104,118,.2),0 2px 8px rgba(193,45,69,.18)!important}
+
+/* Starting five court view */
+.nba-lineup-court{margin-top:10px}
+.nba-lineup-court__note{margin:0 0 8px;color:#b6cad6;font-size:11px;line-height:1.45}
+.nba-lineup-court__surface{position:relative;min-height:150px;display:flex;align-items:center;padding:18px;overflow:hidden;border:1px solid #9b8053;border-radius:14px;background:linear-gradient(135deg,#4b4334 0%,#67583e 48%,#4b4334 100%)}
+.nba-lineup-court__markings{position:absolute;inset:0;width:100%;height:100%;opacity:.58;pointer-events:none}
+.nba-lineup-court__markings rect,.nba-lineup-court__markings line,.nba-lineup-court__markings circle{fill:none;stroke:#e7cea0;stroke-width:2}
+.nba-lineup-court__players{position:relative;z-index:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;width:100%;align-items:center}
+.nba-lineup-court__player{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:56px;padding:8px 7px;border:1px solid rgba(206,224,232,.48);border-radius:11px;background:rgba(12,35,52,.94);box-shadow:0 3px 10px rgba(0,0,0,.18)}
+.nba-lineup-court__number{display:grid;place-items:center;flex:none;width:22px;height:22px;border-radius:50%;background:#205066;color:#b9f4fa;font-size:10px;font-weight:850}
+.nba-lineup-court__name{min-width:0;color:#f4f8fa;font-size:11px;line-height:1.25;overflow-wrap:anywhere}
+.nba-lineup-court__injury{display:grid;place-items:center;flex:none;width:23px;height:23px;border-radius:50%;font-size:15px;font-weight:900;line-height:1}
+.nba-lineup-court__injury.is-out{background:#762e3b;color:#fff0f1;border:1px solid #ff9da6}
+.nba-lineup-court__injury.is-questionable{background:#674d20;color:#fff1c7;border:1px solid #f5cd71}
+@media(max-width:700px){.nba-lineup-court__surface{min-height:185px;padding:14px}.nba-lineup-court__players{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.nba-lineup-court__player{min-height:48px}.nba-lineup-court__player:last-child:nth-child(odd){grid-column:1/-1;width:calc(50% - 4px);justify-self:center}}
+@media(prefers-reduced-motion:reduce){.nba-lineup-court__player{scroll-behavior:auto}}
