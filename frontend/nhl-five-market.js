@@ -109,37 +109,12 @@
   if(jointRoot){
    const remaining=jointRoot.querySelectorAll(".nhl-joint-game").length;
    const blocked=jointRoot.querySelector(".nhl-joint-blocked");
-   if(remaining===0&&!blocked&&hasRows){jointRoot.hidden=true;jointRoot.style.display="none";}
+   if(remaining===0&&!blocked&&hasRows&&jointRoot.dataset.publishedDate===selected){jointRoot.hidden=true;jointRoot.style.display="none";}
    else{jointRoot.hidden=false;jointRoot.style.display="";}
   }
  }
 
- function renderCalendarProbabilities(data){
-  const date=document.getElementById("daily-date")?.value;
-  document.querySelectorAll(".daily-match[data-nhl-id]").forEach(row=>{
-   row.querySelectorAll(".nhl-calendar-probability").forEach(item=>item.remove());
-   if(!data||data.date!==date)return;
-   const id=String(row.dataset.nhlId||"").replace(/^nhl[-_:]/,"");
-   const game=data.games.find(item=>String(item.game_id).replace(/^nhl[-_:]/,"")===id&&item.status==="experimental_forecast"&&item.ml&&typeof item.ml.home==="number"&&typeof item.ml.away==="number");
-   if(!game)return;
-   for(const [side,value] of [["away",game.ml.away],["home",game.ml.home]]){
-    const team=row.querySelector(".daily-team-"+side);
-    if(!team)continue;
-    const name=team.querySelector(".daily-team-name")?.textContent||game[side];
-    const item=make("span",undefined,"nhl-calendar-probability");
-    item.append(make("strong",pct(value)));
-    const trend=game.ml_trend&&game.ml_trend[side];
-    if(trend==="up"||trend==="down"){
-     const arrow=make("span",trend==="up"?"↑":"↓","nhl-probability-trend "+(trend==="up"?"is-up":"is-down"));
-     arrow.setAttribute("aria-label",trend==="up"?"La probabilidad subió":"La probabilidad bajó");arrow.title=arrow.getAttribute("aria-label");item.append(arrow);
-    }
-    item.setAttribute("aria-label",name+": "+pct(value)+" probabilidad de victoria");
-    item.title=item.getAttribute("aria-label");
-    team.append(item);
-   }
-  });
- }
- let published=null,loadError=null;
+  let published=null,loadError=null;
  function renderContent(){
  root.hidden=false;root.style.display="";
  renderCalendarProbabilities(published);
