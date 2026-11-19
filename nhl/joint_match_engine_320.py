@@ -727,7 +727,7 @@ def run(inputs):
         "goalie_start_distribution": {home_code: inputs["teams"][home_code].get("goalie_start_distribution"),
                                       away_code: inputs["teams"][away_code].get("goalie_start_distribution")},
         "rotowire_pregame": {
-            "status": "observed" if any(inputs["teams"][code].get("rotowire_pregame") for code in (home_code, away_code)) else "unavailable",
+            "status": "observed" if any((inputs["teams"][code].get("rotowire_pregame") or {}).get("status") == "observed" for code in (home_code, away_code)) else "unavailable",
             "teams": {code: inputs["teams"][code].get("rotowire_pregame") for code in (home_code, away_code)},
             "market_observation": inputs["teams"][home_code].get("rotowire_market_observation"),
             "source": inputs["teams"][home_code].get("rotowire_source") or inputs["teams"][away_code].get("rotowire_source"),
