@@ -1,0 +1,84 @@
+{
+  "kind": "nhl_daily_postmortem",
+  "date": "2026-11-16",
+  "timezone": "America/Santiago",
+  "pipeline_code_sha256": "2e36ff109bb00d16aabb80c15f594eec5e5a8395c2a38911d2dc6f2c1441c620",
+  "status": "no_forecasts",
+  "complete": true,
+  "official_games": 2,
+  "forecast_games": 0,
+  "graded_games": 0,
+  "market_forecasts_scored": 0,
+  "player_props": {
+    "kind": "nhl_player_props_postmortem_v1",
+    "status": "no_frozen_player_forecasts",
+    "forecast_games": 0,
+    "graded_games": 0,
+    "forecast_players": 0,
+    "graded_players": 0,
+    "selection_policy": "latest valid pregame player forecast captured before puck drop; postgame revisions are rejected",
+    "scenario_policy": "grade scenario probabilities only when both official starters match a recorded goalie scenario; otherwise retain alternatives without blending them",
+    "metrics": [],
+    "players": [],
+    "source_errors": {},
+    "automatic_parameter_updates": false,
+    "calibration_status": "observations_only_pending_independent_validation",
+    "limitations": [
+      "Players absent from the official boxscore are not assigned zero statistics.",
+      "DNP rows are excluded from accuracy metrics.",
+      "Unmatched goalie scenarios are retained but not averaged."
+    ]
+  },
+  "unpredicted_games": [
+    "2026020331",
+    "2026020332"
+  ],
+  "source_forecast_files": 0,
+  "unique_forecast_issuances": 0,
+  "selection_policy": "earliest valid pregame issuance per game/model/market",
+  "pending_game_ids": [],
+  "source_errors": {},
+  "games": [
+    {
+      "game_id": "2026020331",
+      "home": "NYR",
+      "away": "MTL",
+      "start_utc": "2026-11-17T00:30:00Z",
+      "state": "OFF",
+      "home_score": 3,
+      "away_score": 1,
+      "prediction_available": false,
+      "outcomes": null
+    },
+    {
+      "game_id": "2026020332",
+      "home": "UTA",
+      "away": "VAN",
+      "start_utc": "2026-11-17T02:30:00Z",
+      "state": "OFF",
+      "home_score": 2,
+      "away_score": 3,
+      "prediction_available": false,
+      "outcomes": null
+    }
+  ],
+  "market_scores": [],
+  "metrics": [],
+  "paired_ml_comparison": null,
+  "source_hashes": {
+    "https://api-web.nhle.com/v1/score/2026-11-15": "87c887147c8e75f4d998034268aadd62eb5340e12bb20054b8b276ba80b84adf",
+    "https://api-web.nhle.com/v1/score/2026-11-16": "b946f218025943cc909fbab7d0f7430687a65e7ee1f00fc354de60fe53886a9f",
+    "https://api-web.nhle.com/v1/score/2026-11-17": "3c87d3181ce05a9e8a1a237a3eb4fdfc83d475f9dce0635b91a2296c0ddec6e0"
+  },
+  "automatic_promotion": false,
+  "parameters_changed": false,
+  "learning_state": "observations_only_pending_independent_validation",
+  "limitations": [
+    "Markets from the same game are correlated.",
+    "No parameter changes or promotion from daily results.",
+    "Hashes verify content, not independent original capture time."
+  ],
+  "revision_sha256": "e7fd32702d09ce7364d7bdccbe038ad003f1ce4c256c614be00cc03029f63a70",
+  "generated_at_utc": "2026-11-19T20:43:16.092671+00:00",
+  "archive_path": "reports/nhl/daily/2026-11-16/revisions/e7fd32702d09ce7364d7bdccbe038ad003f1ce4c256c614be00cc03029f63a70"
+}

@@ -2,13 +2,33 @@
   "kind": "nhl_daily_postmortem",
   "date": "2026-11-17",
   "timezone": "America/Santiago",
-  "pipeline_code_sha256": "c23e36b3bb099a362cb773c0b2a2056d6e9d9713b4894c7aae667ed6ccdbae27",
+  "pipeline_code_sha256": "2e36ff109bb00d16aabb80c15f594eec5e5a8395c2a38911d2dc6f2c1441c620",
   "status": "complete",
   "complete": true,
   "official_games": 9,
   "forecast_games": 9,
   "graded_games": 9,
   "market_forecasts_scored": 45,
+  "player_props": {
+    "kind": "nhl_player_props_postmortem_v1",
+    "status": "no_frozen_player_forecasts",
+    "forecast_games": 0,
+    "graded_games": 0,
+    "forecast_players": 0,
+    "graded_players": 0,
+    "selection_policy": "latest valid pregame player forecast captured before puck drop; postgame revisions are rejected",
+    "scenario_policy": "grade scenario probabilities only when both official starters match a recorded goalie scenario; otherwise retain alternatives without blending them",
+    "metrics": [],
+    "players": [],
+    "source_errors": {},
+    "automatic_parameter_updates": false,
+    "calibration_status": "observations_only_pending_independent_validation",
+    "limitations": [
+      "Players absent from the official boxscore are not assigned zero statistics.",
+      "DNP rows are excluded from accuracy metrics.",
+      "Unmatched goalie scenarios are retained but not averaged."
+    ]
+  },
   "unpredicted_games": [],
   "source_forecast_files": 45,
   "unique_forecast_issuances": 45,
@@ -1135,7 +1155,7 @@
     "https://api-web.nhle.com/v1/gamecenter/2026020341/play-by-play": "258634e73cf07a3a9601ee8bb3680486ce288f5bcf00a149bc8243eb75f5e64e",
     "https://api-web.nhle.com/v1/score/2026-11-16": "b946f218025943cc909fbab7d0f7430687a65e7ee1f00fc354de60fe53886a9f",
     "https://api-web.nhle.com/v1/score/2026-11-17": "3c87d3181ce05a9e8a1a237a3eb4fdfc83d475f9dce0635b91a2296c0ddec6e0",
-    "https://api-web.nhle.com/v1/score/2026-11-18": "a6199577cf9514e34777d1d45e1575dd9b9fac7ad0fe6bb32e89c2fe81ece9af"
+    "https://api-web.nhle.com/v1/score/2026-11-18": "fe6a9c61e52bfcc8b9e925db82178ae6549c60860ad4bca088456d051dcb85b9"
   },
   "automatic_promotion": false,
   "parameters_changed": false,
@@ -1145,7 +1165,7 @@
     "No parameter changes or promotion from daily results.",
     "Hashes verify content, not independent original capture time."
   ],
-  "revision_sha256": "631cdda283bb68e7a9a6984a529e62881031f655be3da9ce5276e65cb9da7637",
-  "generated_at_utc": "2026-11-18T20:37:39.343620+00:00",
-  "archive_path": "reports/nhl/daily/2026-11-17/revisions/631cdda283bb68e7a9a6984a529e62881031f655be3da9ce5276e65cb9da7637"
+  "revision_sha256": "818f66bf2efdecaad9ac6a873e44a6ba794f8131a8f8e64aadb5713317bb0312",
+  "generated_at_utc": "2026-11-19T20:43:16.756521+00:00",
+  "archive_path": "reports/nhl/daily/2026-11-17/revisions/818f66bf2efdecaad9ac6a873e44a6ba794f8131a8f8e64aadb5713317bb0312"
 }

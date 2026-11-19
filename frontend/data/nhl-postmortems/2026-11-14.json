@@ -2,13 +2,33 @@
   "kind": "nhl_daily_postmortem",
   "date": "2026-11-14",
   "timezone": "America/Santiago",
-  "pipeline_code_sha256": "c23e36b3bb099a362cb773c0b2a2056d6e9d9713b4894c7aae667ed6ccdbae27",
+  "pipeline_code_sha256": "2e36ff109bb00d16aabb80c15f594eec5e5a8395c2a38911d2dc6f2c1441c620",
   "status": "needs_review",
   "complete": false,
   "official_games": 13,
   "forecast_games": 11,
   "graded_games": 9,
   "market_forecasts_scored": 45,
+  "player_props": {
+    "kind": "nhl_player_props_postmortem_v1",
+    "status": "no_frozen_player_forecasts",
+    "forecast_games": 0,
+    "graded_games": 0,
+    "forecast_players": 0,
+    "graded_players": 0,
+    "selection_policy": "latest valid pregame player forecast captured before puck drop; postgame revisions are rejected",
+    "scenario_policy": "grade scenario probabilities only when both official starters match a recorded goalie scenario; otherwise retain alternatives without blending them",
+    "metrics": [],
+    "players": [],
+    "source_errors": {},
+    "automatic_parameter_updates": false,
+    "calibration_status": "observations_only_pending_independent_validation",
+    "limitations": [
+      "Players absent from the official boxscore are not assigned zero statistics.",
+      "DNP rows are excluded from accuracy metrics.",
+      "Unmatched goalie scenarios are retained but not averaged."
+    ]
+  },
   "unpredicted_games": [
     "2026020312",
     "2026020321"
@@ -1197,7 +1217,7 @@
     "No parameter changes or promotion from daily results.",
     "Hashes verify content, not independent original capture time."
   ],
-  "revision_sha256": "3f4727ac754c7d911d0ff631e16db8c79af2a4be12effef5925f6f5fd19323c2",
-  "generated_at_utc": "2026-11-17T20:59:58.502310+00:00",
-  "archive_path": "reports/nhl/daily/2026-11-14/revisions/3f4727ac754c7d911d0ff631e16db8c79af2a4be12effef5925f6f5fd19323c2"
+  "revision_sha256": "ebb76b86473a1eb9c8c4f3c7954fdfecbeb4ad28eff901017a586181f144744d",
+  "generated_at_utc": "2026-11-19T20:43:15.071334+00:00",
+  "archive_path": "reports/nhl/daily/2026-11-14/revisions/ebb76b86473a1eb9c8c4f3c7954fdfecbeb4ad28eff901017a586181f144744d"
 }
