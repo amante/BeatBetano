@@ -26,19 +26,20 @@ def _utc(value):
     return parsed
 
 
-def _resolve(name, roster):
+def _resolve(name, roster, role=None):
     if not isinstance(name, str) or not name.strip():
         return {"name": name, "player_id": None, "identity_status": "missing_name"}
     wanted = normalized(name)
     players = roster.get("players", [])
-    exact = [p for p in players if normalized(p.get("full_name", "")) == wanted]
+    eligible = [p for p in players if role is None or p.get("position_group") == role]
+    exact = [p for p in eligible if normalized(p.get("full_name", "")) == wanted]
     if len(exact) == 1:
         return {"name": name, "player_id": exact[0]["player_id"], "resolved_name": exact[0]["full_name"],
                 "identity_status": "exact", "position_group": exact[0].get("position_group")}
     parts = wanted.split()
     initial_matches = []
     if len(parts) >= 2 and len(parts[0]) == 1:
-        for player in players:
+        for player in eligible:
             tokens = normalized(player.get("full_name", "")).split()
             if len(tokens) >= 2 and tokens[0].startswith(parts[0]) and tokens[-1] == parts[-1]:
                 if len(parts) == 2 or tokens[1:-1] == parts[1:-1]:
@@ -83,7 +84,7 @@ def _side(raw_side, roster):
         candidate = goalie_raw.get("player")
         if isinstance(candidate, dict):
             goalie = {
-                **_resolve(candidate.get("name"), roster),
+                **_resolve(candidate.get("name"), roster, role="goalie"),
                 "reported_status": goalie_raw.get("certainty") or candidate.get("status_observation"),
                 "source_text": goalie_raw.get("text"),
                 "officially_confirmed": False,
