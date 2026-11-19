@@ -73,7 +73,16 @@ def build(snapshot, module_context, player_history, roster_feed):
         roster_game = roster_feed.get("games", {}).get(gid, {}).get("teams", {})
         availability_impact = ctx.get("availability_impact", {})
         conditional_scenario = (availability_impact.get("conditional_production_scenario") or {})
-        conditional_game = conditional_scenario.get("games", {}).get(gid, {})
+        scenario_games = conditional_scenario.get("games")
+        if isinstance(scenario_games, dict):
+            conditional_game = scenario_games.get(gid, {})
+        elif (conditional_scenario.get("baseline_snapshot_sha256") == snapshot_sha
+              and isinstance(conditional_scenario.get("teams"), dict)):
+            # The module bundle stores one game at a time inside each game's
+            # context. Also accept the full-slate shape used by offline jobs.
+            conditional_game = conditional_scenario
+        else:
+            conditional_game = {}
         injury_teams = conditional_game.get("teams", {})
         teams = {}
         for team in (fixture["away_team"], fixture["home_team"]):
