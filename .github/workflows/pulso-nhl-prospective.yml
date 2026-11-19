@@ -46,6 +46,7 @@ on:
       - 'nhl/tests/test_goalie_ml_inference.py'
       - 'nhl/pulso_prospective_capture.py'
       - 'nhl/rotowire_pregame_capture_454.py'
+      - 'nhl/rotowire_evidence_475.py'
       - 'nhl/tests/test_rotowire_pregame_capture_454.py'
       - 'nhl/tests/test_player_evidence.py'
       - '.github/workflows/pulso-nhl-prospective.yml'
@@ -156,6 +157,17 @@ jobs:
             --report "results/pulso/nhl/$DAY/report.json" \
             --out "results/pulso/nhl/$DAY/rotowire_pregame_454.json" \
             --raw-out "results/pulso/nhl/$DAY/rotowire_pregame_raw.html"
+      - name: Reconcile RotoWire observations with official fixtures and rosters
+        env:
+          REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
+        run: |
+          DAY="${REQUESTED_DAY:-$(date -u +%F)}"
+          python -m nhl.rotowire_evidence_475 \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --capture "results/pulso/nhl/$DAY/rotowire_pregame_454.json" \
+            --rosters "results/pulso/nhl/$DAY/official_roster_candidates.json" \
+            --out "results/pulso/nhl/$DAY/rotowire_evidence_475.json" \
+            --public-out frontend/data/nhl-rotowire-pregame-latest.json
       - name: Audit fixture-attested player and goalie identities
         run: |
           DAY="${{ inputs.day || needs.schedule-window.outputs.day }}"
