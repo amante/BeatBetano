@@ -125,7 +125,7 @@
    const audit=row.audit;if(!audit)continue;
    if(audit.applied){
     const delta=finite(audit.projected_PP_goal_delta)?(audit.projected_PP_goal_delta>0?"+":"")+audit.projected_PP_goal_delta.toFixed(3).replace(".",","):"—";
-    details.append(make("p",row.team+" · "+audit.team_PP_minutes_before?.toFixed(1)+" min PP conservados · contribución PP1/PP2 "+audit.projected_PP_goals_before?.toFixed(3)+" → "+audit.projected_PP_goals_after?.toFixed(3)+" goles+" · Δ "+delta+" goles"));
+    details.append(make("p",row.team+" · "+audit.team_PP_minutes_before?.toFixed(1)+" min PP conservados · contribución PP1/PP2 "+audit.projected_PP_goals_before?.toFixed(3)+" → "+audit.projected_PP_goals_after?.toFixed(3)+" goles · Δ "+delta+" goles"));
     for(const key of ["PP1","PP2"]){const unit=audit.units&&audit.units[key];if(Array.isArray(unit))details.append(make("small",key+" · "+unit.map(p=>p.name+" ("+(p.projected_PP_minutes||0).toFixed(1)+" min)").join(" · ")));}
    }else details.append(make("p",row.team+" · sin ajuste: "+(reasons[audit.reason]||audit.reason||"evidencia insuficiente")));
   }
