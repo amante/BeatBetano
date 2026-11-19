@@ -425,14 +425,15 @@
     if(playerStats){
      const statsDetails=el("details","");statsDetails.className="nba-module-run-status nba-player-stat-projections";
      statsDetails.append(el("summary","Puntos · rebotes · asistencias por jugador"));
-     statsDetails.append(el("p","Estimación basada en producción histórica por minuto y minutos previstos; no es una línea de apuestas ni modifica la probabilidad del partido."));
+     statsDetails.append(el("p","Estimación basada en producción histórica por minuto y minutos previstos; no es una línea de apuestas ni modifica la probabilidad del partido. Los jugadores OUT se muestran en la tabla de bajas y se excluyen de estas proyecciones."));
      for(const team of [prediction.away_team,prediction.home_team]){
       const teamData=playerStats.teams?.[team];if(!teamData)continue;
-      const adjustedPlayers=(teamData.players||[]).filter(player=>player.injury_adjustment_status==="applied").length;
+      const projectionPlayers=(teamData.players||[]).filter(player=>player.availability_status!=="out"&&player.projection_status!=="unavailable");
+      const adjustedPlayers=projectionPlayers.filter(player=>player.injury_adjustment_status==="applied").length;
        const adjustmentLabel=adjustedPlayers?(" · "+adjustedPlayers+" con minutos ajustados por bajas"):(teamData.injury_projection_adjustment_status==="available"?" · escenario de bajas sin cambio individual":" · ajuste por bajas no calculable");
        const teamHeading=el("h5",teamName(team)+(teamData.roster_verified?" · plantilla verificada":" · plantilla sin verificar")+adjustmentLabel);teamHeading.className="nba-player-stat-projections__team";statsDetails.append(teamHeading);
-      if(!teamData.players?.length){statsDetails.append(el("p","No hay plantilla disponible para proyectar.","nba-section-empty"));continue;}
-      for(const player of teamData.players){
+      if(!projectionPlayers.length){statsDetails.append(el("p",teamData.players?.length?"Todos los jugadores de esta plantilla están fuera y aparecen en la tabla de bajas.":"No hay plantilla disponible para proyectar.","nba-section-empty"));continue;}
+      for(const player of projectionPlayers){
        const row=el("div","");row.className="nba-player-stat-projections__player";
        const role=player.role==="starter_listed_by_provider"?"Titular listado":"Rol sin confirmar";
        const availabilityLabels={out:"Fuera según reporte",unknown:"Disponibilidad sin confirmar",questionable:"En duda",doubtful:"Dudoso",probable:"Probable",available:"Disponible según fuente"};
