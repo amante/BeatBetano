@@ -212,7 +212,7 @@
  }
  function renderView(){
   root.hidden=false;root.style.display="";
-  root.replaceChildren(make("h3","Modelo integrado NHL · escenarios"));const meta=make("div",undefined,"nhl-joint-meta");meta.append(make("span","Experimental · no calibrado","nhl-experimental-badge"));root.append(meta);
+  root.replaceChildren(make("h3","Modelo integrado NHL · escenarios"));root.dataset.publishedDate=feed?.date||"";const meta=make("div",undefined,"nhl-joint-meta");meta.append(make("span","Experimental · no calibrado","nhl-experimental-badge"));root.append(meta);
   root.append(make("p","Los goles proyectados por jugador alimentan los goles esperados y las probabilidades del partido. Las asistencias completan G+A=Puntos y generan probabilidades individuales de gol, asistencia y puntos por escenario de arquero. Es experimental, no calibrado ni reemplaza el baseline oficial de PULSO.","nhl-joint-note"));
   const status=make("p","Consultando última ejecución…","daily-source");root.append(status);
   if(!feed){status.textContent=error?"No se pudo cargar el modelo integrado: "+error:"El primer escenario aparecerá después de la próxima ejecución diaria.";return;}
