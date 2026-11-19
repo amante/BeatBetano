@@ -8,7 +8,7 @@ from pathlib import Path
 from nhl.historical_target_walkforward import CATEGORIES
 from nhl.pulso_pregame_v7 import parse_utc
 
-def present(slate,run_id=None):
+def present(slate,run_id=None,previous=None):
  if slate.get("kind")!="nhl_daily_complete_slate_274" or slate.get("official") is not False or slate.get("odds_used") is not False:
   raise ValueError("Untrusted daily slate")
  raw=slate["games"]
@@ -16,6 +16,9 @@ def present(slate,run_id=None):
   raise ValueError("Incomplete or duplicated schedule")
  if run_id is not None and not str(run_id).isdigit():raise ValueError("Numeric run ID required")
  output=[]
+ previous_games={}
+ if isinstance(previous,dict) and previous.get("date")==slate.get("date") and isinstance(previous.get("games"),list):
+  previous_games={str(row.get("game_id")):row for row in previous["games"] if isinstance(row,dict)}
  for g in raw:
   state=g["forecast_status"];markets=g.get("markets")
   if state=="experimental_forecast":
@@ -30,9 +33,18 @@ def present(slate,run_id=None):
    if markets is not None:raise ValueError("Unavailable game has model probabilities")
   else:raise ValueError("Unknown game status")
   ml=markets["ml"] if markets else None
+  prior=previous_games.get(str(g["game_id"]))
+  if not prior or prior.get("home")!=g["home"] or prior.get("away")!=g["away"] or prior.get("start_utc")!=g["start_utc"] or not isinstance(prior.get("ml"),dict) or ml is None:
+   prior=None
+  ml_change=None
+  ml_trend=None
+  if prior:
+   ml_change={side:ml[side]-prior["ml"][side] for side in ("home","away")}
+   ml_trend={side:("up" if ml_change[side]>1e-9 else "down" if ml_change[side]<-1e-9 else "unchanged") for side in ("home","away")}
   output.append({"game_id":str(g["game_id"]),"home":g["home"],"away":g["away"],
     "start_utc":g["start_utc"],"status":state,
-    "ml":ml,"rt":markets["rt"] if markets else None,
+    "ml":ml,"previous_ml":prior["ml"] if prior else None,"ml_change":ml_change,"ml_trend":ml_trend,
+    "rt":markets["rt"] if markets else None,
     "home_plus3":markets["home3"]["yes"] if markets else None,
     "away_plus3":markets["away3"]["yes"] if markets else None,
     "first_to_plus3":markets["first3"] if markets else None,
@@ -55,8 +67,11 @@ def present(slate,run_id=None):
       "Lineup availability can adjust ML only as an unvalidated conditional scenario when both team exposures are complete and pregame; goalie, travel, officials and special teams are not incorporated"]}
 def main():
  p=argparse.ArgumentParser();p.add_argument("--slate",required=True);p.add_argument("--out",required=True)
- p.add_argument("--run-id")
- a=p.parse_args();result=present(json.loads(Path(a.slate).read_text()),a.run_id)
+ p.add_argument("--run-id");p.add_argument("--previous")
+ a=p.parse_args()
+ previous_path=Path(a.previous) if a.previous else None
+ previous=json.loads(previous_path.read_text()) if previous_path and previous_path.exists() else None
+ result=present(json.loads(Path(a.slate).read_text()),a.run_id,previous)
  dest=Path(a.out);dest.parent.mkdir(parents=True,exist_ok=True)
  dest.write_text(json.dumps(result,indent=2))
  print(json.dumps({"official_schedule_games":result["official_schedule_games"],"experimental_predicted_games":result["experimental_predicted_games"],"markets":["ml","rt","home3","away3","first3"]}))
