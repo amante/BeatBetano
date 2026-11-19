@@ -271,9 +271,11 @@
     const baseline=prediction.statistical_baseline_p_home??prediction.hybrid_p_home;
     const modelHome=prediction.model_p_home??baseline;
     const adjustedStatus=["injury_adjusted_research_candidate","matchup_adjusted_research_candidate","travel_adjusted_research_candidate","combined_research_candidate"].includes(prediction.model_probability_status);
+    const probabilityCalibrated=currentRun.calibrated===true&&prediction.model_probability_calibrated===true;
+    const probabilityLabel=adjustedStatus?"Candidato experimental no calibrado":probabilityCalibrated?"Modelo base calibrado":"Modelo base sin calibración certificada";
     if(typeof modelHome==="number"){
-     if(card.dataset&&Number.isFinite(modelHome)&&modelHome>0&&modelHome<1){card.dataset.awayProbability=String(1-modelHome);card.dataset.homeProbability=String(modelHome);card.dataset.probabilityLabel=adjustedStatus?"Candidato experimental no calibrado":"Modelo base";}
-     card.append(el("p",(adjustedStatus?"Candidato experimental (no calibrado): ":"Modelo base: ")+teamName(prediction.away_team)+" "+((1-modelHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(modelHome*100).toFixed(1)+"%","nba-model-probability"));
+     if(card.dataset&&Number.isFinite(modelHome)&&modelHome>0&&modelHome<1){card.dataset.awayProbability=String(1-modelHome);card.dataset.homeProbability=String(modelHome);card.dataset.probabilityLabel=probabilityLabel;}
+     card.append(el("p",(adjustedStatus?"Candidato experimental (no calibrado): ":probabilityCalibrated?"Modelo base calibrado: ":"Modelo base (sin calibración certificada): ")+teamName(prediction.away_team)+" "+((1-modelHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(modelHome*100).toFixed(1)+"%","nba-model-probability"));
     }
     const market=marketPanel(prediction,modelHome,prediction.point_projection);if(market)card.append(market);
     if(adjustedStatus&&typeof baseline==="number")card.append(el("p","Referencia estadística sin ajustes: "+teamName(prediction.away_team)+" "+((1-baseline)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(baseline*100).toFixed(1)+"%"));
