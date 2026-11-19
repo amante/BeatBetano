@@ -131,3 +131,21 @@
 .nhl-dashboard .daily-match-card .daily-team-name{flex:1 1 auto}
 @media(max-width:700px){.nhl-dashboard .daily-match-card .nhl-calendar-probability{padding:3px 5px;font-size:10px}.nhl-dashboard .daily-match-card .nhl-calendar-probability strong{font-size:10px}}
 @media(max-width:420px){.nhl-dashboard .daily-match-card .daily-team{gap:5px}.nhl-dashboard .daily-match-card .nhl-calendar-probability{padding:2px 4px}}
+
+/* NHL match disclosures reuse NBA's one-card / two-panel interaction. */
+.nhl-dashboard details.nhl-game-disclosure{margin:8px 0;border:1px solid #31556e;border-radius:14px;background:#10283b;overflow:hidden}
+.nhl-dashboard details.nhl-game-disclosure>summary.daily-match.daily-match-card{position:relative;display:grid;list-style:none;cursor:pointer;margin:0!important;padding-right:54px;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.nhl-dashboard details.nhl-game-disclosure>summary.daily-match.daily-match-card::-webkit-details-marker{display:none}
+.nhl-dashboard details.nhl-game-disclosure>summary.daily-match.daily-match-card:after{content:"＋";display:grid;place-items:center;position:absolute;right:18px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:8px;background:#173e54;color:#66dff2;font-size:16px;font-weight:800}
+.nhl-dashboard details.nhl-game-disclosure[open]>summary.daily-match.daily-match-card:after{content:"−"}
+.nhl-dashboard details.nhl-game-disclosure .nba-game-disclosure__content{padding:12px 16px 18px;border-top:1px solid #294b63}
+.nhl-dashboard details.nhl-game-disclosure .nba-game-disclosure__panel{min-width:0}
+.nhl-dashboard details.nhl-game-disclosure .nba-game-disclosure__panel>h4{margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid #294b63;color:#71e1f2;font-size:14px}
+.nhl-dashboard details.nhl-game-disclosure .nba-game-disclosure__run-meta{margin:0 0 12px;color:#9db8c8;font-size:11px;line-height:1.5}
+.nhl-dashboard .nhl-inline-joint{margin-top:12px;padding:10px 12px;border:1px solid #31556e;border-radius:11px;background:#102638}
+.nhl-dashboard .nhl-inline-joint>summary{list-style:none;cursor:pointer;color:#71e1f2;font-size:12px;font-weight:750}
+.nhl-dashboard .nhl-inline-joint>summary::-webkit-details-marker{display:none}
+.nhl-dashboard .nhl-inline-joint>summary:before{content:"＋";display:inline-grid;place-items:center;width:20px;height:20px;margin-right:8px;border-radius:6px;background:#173e54;color:#63dff1}
+.nhl-dashboard .nhl-inline-joint[open]>summary:before{content:"−"}
+.nhl-dashboard .nhl-inline-joint>.nhl-joint-game{margin:10px 0 0}
+@media(max-width:760px){.nhl-dashboard details.nhl-game-disclosure .nba-game-disclosure__content{padding:10px}.nhl-dashboard details.nhl-game-disclosure>summary.daily-match.daily-match-card:after{right:10px}}
