@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v7"
+VERSION = "nhl-joint-match-320-v8"
 
 
 def _num(value, label, *, positive=False):
@@ -228,6 +228,137 @@ def _partial_roster_ledger(team, skaters, full_totals, team_games):
     return {"base":base,"residual":residual,"absent":absent,"excluded_player_ids":sorted(unavailable)}
 
 
+def _apply_rotowire_power_play(team, minute_scenario, skaters, minute_audit):
+    """Reallocate the existing PP-minute budget to a fully resolved RotoWire PP1/PP2."""
+    def skip(reason):
+        minute_audit["rotowire_power_play"] = {
+            "status": "not_applied", "applied": False, "reason": reason,
+            "probability_delta": None,
+        }
+        return minute_scenario, minute_audit
+
+    evidence = team.get("rotowire_pregame")
+    if not isinstance(evidence, dict) or evidence.get("status") != "observed":
+        return skip("rotowire_observation_unavailable")
+    units = {}
+    for key in ("power_play_1", "power_play_2"):
+        item = evidence.get(key)
+        if not isinstance(item, dict) or item.get("status") != "observed":
+            return skip(key + "_not_observed")
+        people = item.get("players")
+        if not isinstance(people, list) or len(people) != 5:
+            return skip(key + "_does_not_have_five_resolved_players")
+        ids = []
+        for person in people:
+            pid = person.get("player_id") if isinstance(person, dict) else None
+            if type(pid) is not int or pid <= 0:
+                return skip(key + "_contains_unresolved_player_identity")
+            ids.append(pid)
+        if len(set(ids)) != 5:
+            return skip(key + "_contains_duplicate_player_identity")
+        units[key] = ids
+    if set(units["power_play_1"]) & set(units["power_play_2"]):
+        return skip("player_appears_in_both_power_play_units")
+
+    roster_by_id = {player["player_id"]: player for player in skaters}
+    pp_ids = set(units["power_play_1"] + units["power_play_2"])
+    missing = sorted(pp_ids - set(roster_by_id))
+    if missing:
+        return skip("power_play_player_not_in_projected_roster:" + ",".join(map(str, missing)))
+
+    pp_budget = sum(row["PP"] for row in minute_scenario.values())
+    if pp_budget <= 1e-9:
+        return skip("no_projected_team_power_play_minutes")
+    capacities = {
+        pid: max(0.0, minute_scenario[pid]["total"] - minute_scenario[pid]["PK"])
+        for pid in pp_ids
+    }
+    if sum(capacities.values()) + 1e-8 < pp_budget:
+        return skip("projected_power_play_budget_exceeds_unit_capacity")
+    weights = {
+        pid: _num(roster_by_id[pid].get("minutes_per_game", {}).get("PP"),
+                  "historical PP minutes for RotoWire player")
+        for pid in pp_ids
+    }
+    if sum(weights.values()) <= 1e-9:
+        return skip("no_historical_PP_minutes_for_RotoWire_units")
+
+    allocation = {pid: 0.0 for pid in pp_ids}
+    remaining = pp_budget
+    available = set(pp_ids)
+    while remaining > 1e-8 and available:
+        weight_total = sum(weights[pid] for pid in available)
+        if weight_total <= 1e-9:
+            return skip("historical_PP_minutes_cannot_allocate_full_budget")
+        capped = []
+        for pid in available:
+            proposed = remaining * weights[pid] / weight_total
+            room = capacities[pid] - allocation[pid]
+            if proposed > room + 1e-8:
+                capped.append(pid)
+        if not capped:
+            for pid in available:
+                allocation[pid] += remaining * weights[pid] / weight_total
+            remaining = 0.0
+            break
+        for pid in capped:
+            room = max(0.0, capacities[pid] - allocation[pid])
+            allocation[pid] += room
+            remaining -= room
+            available.remove(pid)
+    if remaining > 1e-6:
+        return skip("could_not_conserve_projected_power_play_minutes")
+
+    prior_pp_goals = 0.0
+    revised_pp_goals = 0.0
+    for player in skaters:
+        pid = player["player_id"]
+        row = minute_scenario[pid]
+        prior_pp = row["PP"]
+        target_pp = allocation.get(pid, 0.0)
+        gp = _num(player.get("games_played"), "RotoWire player games", positive=True)
+        historical_pp = _num(player.get("minutes_per_game", {}).get("PP"), "historical player PP minutes") * gp
+        pp_goals = _num(player.get("production", {}).get("ppGoals"), "historical player PP goals")
+        rate = pp_goals / historical_pp if historical_pp > 0 else 0.0
+        prior_pp_goals += rate * prior_pp
+        revised_pp_goals += rate * target_pp
+        if target_pp:
+            row["EV"] = row["total"] - row["PK"] - target_pp
+            if row["EV"] < -1e-8:
+                return skip("power_play_minutes_would_make_EV_minutes_negative")
+            row["PP"] = target_pp
+        else:
+            row["EV"] += prior_pp
+            row["PP"] = 0.0
+
+    minute_audit["rotowire_power_play"] = {
+        "status": "applied", "applied": True,
+        "source_role": "projected_provider_units_not_official_confirmation",
+        "method": "preserve_team_PP_minutes_and_reallocate_by_prior_player_PP_TOI_within_projected_PP1_PP2",
+        "team_PP_minutes_before": pp_budget,
+        "team_PP_minutes_after": sum(row["PP"] for row in minute_scenario.values()),
+        "projected_PP_goals_before": prior_pp_goals,
+        "projected_PP_goals_after": revised_pp_goals,
+        "projected_PP_goal_delta": revised_pp_goals - prior_pp_goals,
+        "units": {
+            "PP1": [{"player_id": pid, "name": roster_by_id[pid]["name"],
+                     "historical_PP_minutes_per_game": weights[pid],
+                     "projected_PP_minutes": allocation[pid]} for pid in units["power_play_1"]],
+            "PP2": [{"player_id": pid, "name": roster_by_id[pid]["name"],
+                     "historical_PP_minutes_per_game": weights[pid],
+                     "projected_PP_minutes": allocation[pid]} for pid in units["power_play_2"]],
+        },
+        "probability_delta": None,
+        "calibrated": False,
+    }
+    if not math.isclose(sum(row["PP"] for row in minute_scenario.values()), pp_budget, abs_tol=1e-7):
+        raise ValueError("RotoWire PP redistribution does not conserve team PP minutes")
+    if not math.isclose(sum(row["total"] for row in minute_scenario.values()),
+                        minute_audit["allocated_minutes"], abs_tol=1e-7):
+        raise ValueError("RotoWire PP redistribution does not conserve skater minutes")
+    return minute_scenario, minute_audit
+
+
 def team_profile(team, team_code):
     summary = team["team_summary"]
     st = team["special_teams"]
@@ -244,6 +375,7 @@ def team_profile(team, team_code):
 
     minute_scenario, minute_audit = _minutes_scenario(team)
     minute_scenario, minute_audit = _apply_return_minutes(team, minute_scenario, minute_audit)
+    minute_scenario, minute_audit = _apply_rotowire_power_play(team, minute_scenario, skaters, minute_audit)
     rates = {"ev_goals": 0.0, "pp_goals": 0.0, "sh_goals": 0.0,
              "ev_points": 0.0, "pp_points": 0.0, "sh_points": 0.0,
              "assists": 0.0, "shots": 0.0, "ev_shots": 0.0,
@@ -668,6 +800,16 @@ def run(inputs):
     league_pk_rate = _num(inputs["league_context"].get("powerplay_goals_allowed_per_opportunity"),
                           "league PK rate", positive=True)
     unknowns = list(inputs.get("unknowns", []))
+    rotowire_pp_applied = any(
+        profile.get("minute_distribution", {}).get("rotowire_power_play", {}).get("applied") is True
+        for profile in (home, away)
+    )
+    base_home = base_away = None
+    if rotowire_pp_applied:
+        home_without_rotowire = dict(inputs["teams"][home_code], rotowire_pregame=None)
+        away_without_rotowire = dict(inputs["teams"][away_code], rotowire_pregame=None)
+        base_home = team_profile(home_without_rotowire, home_code)
+        base_away = team_profile(away_without_rotowire, away_code)
     for team in (home, away):
         for player in inputs["teams"][team["team"]].get("unavailable_players", []):
             if player.get("availability") == "injury" and player.get("player_id") is None:
@@ -682,12 +824,38 @@ def run(inputs):
             a = _scoring_rate(away, home, hg, league_pk_rate)
             division_rivalry = _apply_division_rivalry(h, a, inputs.get("division_rivalry"))
             markets = calculate(h["expected_goals"], a["expected_goals"])
+            pp_impact = None
+            if rotowire_pp_applied:
+                base_h = _scoring_rate(base_home, base_away, ag, league_pk_rate)
+                base_a = _scoring_rate(base_away, base_home, hg, league_pk_rate)
+                base_markets = calculate(base_h["expected_goals"], base_a["expected_goals"])
+
+                def difference(after, before):
+                    if isinstance(after, dict) and isinstance(before, dict):
+                        return {key: difference(value, before[key]) for key, value in after.items()
+                                if key in before}
+                    if type(after) in (int, float) and type(before) in (int, float):
+                        return after - before
+                    return None
+
+                pp_impact = {
+                    "status": "applied_unvalidated_scenario_delta",
+                    "home_expected_goals_without_PP1_PP2": base_h["expected_goals"],
+                    "away_expected_goals_without_PP1_PP2": base_a["expected_goals"],
+                    "current_home_expected_goals": h["expected_goals"],
+                    "current_away_expected_goals": a["expected_goals"],
+                    "markets_without_PP1_PP2": base_markets,
+                    "market_probability_delta": difference(markets, base_markets),
+                    "official": False,
+                    "calibrated": False,
+                }
             home_player_probabilities = _player_probabilities(home, h)
             away_player_probabilities = _player_probabilities(away, a)
             weight=(hg["starter_probability"]*ag["starter_probability"]
                     if hg["starter_probability"] is not None and ag["starter_probability"] is not None else None)
             scenarios.append({"home_goalie": hg, "away_goalie": ag, "scenario_weight": weight,
                               "expected_goals": {"home": h["expected_goals"], "away": a["expected_goals"]},
+                              "rotowire_pp_impact": pp_impact,
                               "division_rivalry": division_rivalry,
                               "home_components": h["components"], "away_components": a["components"],
                               "player_probabilities": {home_code: home_player_probabilities,
@@ -731,7 +899,8 @@ def run(inputs):
             "teams": {code: inputs["teams"][code].get("rotowire_pregame") for code in (home_code, away_code)},
             "market_observation": inputs["teams"][home_code].get("rotowire_market_observation"),
             "source": inputs["teams"][home_code].get("rotowire_source") or inputs["teams"][away_code].get("rotowire_source"),
-            "probabilities_modified": False,
+            "probabilities_modified": rotowire_pp_applied,
+            "power_play_adjustment_applied": rotowire_pp_applied,
         },
         "scenario_weighted_summary": weighted_summary,
         "scenarios": scenarios,
