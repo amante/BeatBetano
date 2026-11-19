@@ -379,6 +379,44 @@ def team_profile(team, team_code):
     if partial_lineup and not skaters and coverage.get("mode") != "team_aggregate_fallback":
         raise ValueError("No identified projected skaters for partial scenario " + team_code)
 
+    if coverage.get("mode") == "team_aggregate_fallback":
+        gp = _num(summary.get("gamesPlayed"), "team games", positive=True)
+        shots_for = _num(summary.get("shotsForPerGame"), "team shots for", positive=True)
+        shots_against = _num(summary.get("shotsAgainstPerGame"), "team shots against", positive=True)
+        goals_for = _num(summary.get("goalsForPerGame"), "team goals for", positive=True)
+        goals_against = _num(summary.get("goalsAgainstPerGame"), "team goals against", positive=True)
+        goalies = team.get("goalie_candidates", [])
+        if not goalies:
+            raise ValueError("No team or goalie baseline for " + team_code)
+        rates = {"ev_goals": 0.0, "pp_goals": 0.0, "sh_goals": 0.0,
+                 "ev_points": 0.0, "pp_points": 0.0, "sh_points": 0.0,
+                 "ev_assists": 0.0, "pp_assists": 0.0, "sh_assists": 0.0,
+                 "assists": 0.0, "shots": 0.0, "ev_shots": 0.0,
+                 "pim": 0.0, "ev_minutes": 0.0, "pp_minutes": 0.0,
+                 "pk_minutes": 0.0}
+        return {
+            "team": team_code, "summary": summary, "players": [],
+            "lineup_coverage": coverage, "rates": rates,
+            "credit_ratios": {"EV": None, "PP": None, "PK": None},
+            "goal_event_rates_from_player_goals": {"EV": 0.0, "PP": 0.0, "PK": 0.0},
+            "historical_assists_per_goal": None,
+            "season": {"games": gp, "shots_for_per_game": shots_for,
+                       "shots_against_per_game": shots_against,
+                       "goals_for_per_game": goals_for,
+                       "goals_against_per_game": goals_against},
+            "special": {"games": 0, "pp_per_game": 0.0, "pp_goal_rate": None,
+                        "pk_opportunities_per_game": 0.0, "pk_goals_allowed_rate": None,
+                        "pp_goals_per_game": 0.0},
+            "team_pim_per_game": None, "projected_pim_per_game": 0.0,
+            "penalty_rate_ratio": None, "projected_pp_goals_per_game": 0.0,
+            "projected_pp_minutes_per_game": 0.0,
+            "faceoff_win_pct": summary.get("faceoffWinPct"), "ev_share": 0.0,
+            "goalies": goalies, "schedule": team.get("schedule", {}),
+            "minute_distribution": {"status": "omitted_team_aggregate_fallback"},
+            "player_contributions": [],
+            "lineup_impact": {"status": "omitted_team_aggregate_fallback"},
+        }
+
     minute_scenario, minute_audit = _minutes_scenario(team)
     minute_scenario, minute_audit = _apply_return_minutes(team, minute_scenario, minute_audit)
     minute_scenario, minute_audit = _apply_rotowire_power_play(team, minute_scenario, skaters, minute_audit)
@@ -786,10 +824,10 @@ def _apply_division_rivalry(home_scoring, away_scoring, evidence):
         if old <= 0 or new <= 0:
             raise ValueError("Division/rivalry shift produced invalid expected goals")
         factor = new / old
-        scoring["expected_goals_by_strength"] = {
-            strength: value * factor
-            for strength, value in scoring["expected_goals_by_strength"].items()
-        }
+        by_strength=scoring.get("expected_goals_by_strength")
+        scoring["expected_goals_by_strength"] = ({
+            strength: value * factor for strength,value in by_strength.items()
+        } if isinstance(by_strength,dict) else None)
         scoring["expected_goals"] = new
         scoring["components"]["division_rivalry_goal_rate_factor"] = factor
     output = dict(evidence or {})

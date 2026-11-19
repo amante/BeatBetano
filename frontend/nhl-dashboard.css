@@ -109,3 +109,15 @@
 .nhl-joint-context summary{cursor:pointer;color:#8be8f8;font-size:12px;font-weight:700;line-height:1.5}
 .nhl-joint-context p{font-size:11px;line-height:1.5;color:#b9d2df;margin:7px 0}
 .nhl-joint-context small{display:block;font-size:10px;line-height:1.5;color:#8faebe}
+
+/* Pregame odds-free win probabilities stay visible in the calendar row. */
+.nhl-calendar-probabilities{display:flex;flex:1 1 220px;flex-wrap:wrap;align-items:center;gap:6px 12px;min-width:0;color:#d4e8f2;font-size:12px}
+.nhl-calendar-probability{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.nhl-calendar-probability strong{font-weight:700;flex:0 0 auto;white-space:normal}
+.nhl-probability-trend{font-size:16px;font-weight:900;line-height:1}
+.nhl-probability-trend.is-up{color:#71dda0}
+.nhl-probability-trend.is-down{color:#ff8585}
+.nhl-joint-blocked{margin-top:8px;border-top:1px solid #294e62;padding-top:8px;color:#adc9d7;font-size:12px}
+.nhl-joint-blocked summary{cursor:pointer;color:#7fdcf1}
+.nhl-joint-blocked p{margin:7px 0}
+@media(max-width:520px){.nhl-dashboard .nhl-calendar-probabilities{grid-column:2;flex-basis:auto;gap:6px 10px}.nhl-dashboard .nhl-calendar-probability{white-space:normal}}

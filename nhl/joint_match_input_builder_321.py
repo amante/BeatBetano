@@ -184,8 +184,16 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
             if captured_at and utc(captured_at) >= start: raise ValueError("Pregame evidence captured after puck drop")
         try:
             cg=context_games.get(gid); lg=change_games.get(gid); gg=goalie_games.get(gid); rg=rotowire_by_game.get(gid)
-            if not cg or (cg["home"],cg["away"])!=(f["home"],f["away"]): raise ValueError("missing/mismatched projected fixture")
-            if not gg: raise ValueError("missing goalie-history fixture")
+            game_fallback_reasons=[]
+            if not cg or (cg.get("home"),cg.get("away"))!=(f["home"],f["away"]):
+                cg={"home":f["home"],"away":f["away"],"teams":{}}
+                game_fallback_reasons.append("No hay captura de alineaciones identificable para este partido.")
+            if not gg or (gg.get("home"),gg.get("away")) not in ((None,None),(f["home"],f["away"])):
+                gg={"teams":{}}
+                game_fallback_reasons.append("No hay historial individual verificable de porteros.")
+            if lg and (lg.get("home"),lg.get("away")) not in ((None,None),(f["home"],f["away"])):
+                lg=None
+                game_fallback_reasons.append("La comparación de alineaciones corresponde a otro partido.")
             if rg and ((rg.get("home"),rg.get("away"))!=(f["home"],f["away"])
                        or rg.get("start_utc")!=f["start_utc"]):
                 raise ValueError("RotoWire fixture identity mismatch")
@@ -193,20 +201,29 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                 raise ValueError("late RotoWire evidence")
             change_teams=(lg or {}).get("teams",{})
             sides={};unknown=[]
+            editorial_source=cg.get("editorial_source")
+            if not editorial_source or not editorial_source.get("sha256") or not editorial_source.get("url") or not cg.get("feature_as_of_utc"):
+                game_fallback_reasons.append("No hay procedencia editorial fechada para validar líneas.")
             for code in (f["home"],f["away"]):
                 side=cg["teams"].get(code) or {}; diff=change_teams.get(code); teamrow=team_by_code.get(code); sp=special.get("teams",{}).get(code)
                 groups=side.get("projected")
                 if not isinstance(groups,dict):
                     groups={}
-                lineup_missing=not (groups.get("forwards") or groups.get("defense"))
-                if side.get("availability_conflict"):
-                    raise ValueError(code+" projected lineup conflicts with reported absence")
+                lineup_conflict=bool(side.get("availability_conflict"))
+                lineup_missing=lineup_conflict or not (groups.get("forwards") or groups.get("defense"))
+                fallback_reasons=list(game_fallback_reasons)
+                if lineup_conflict: fallback_reasons.append("La proyección de líneas contradice el reporte de disponibilidad.")
+                if lineup_missing: fallback_reasons.append("No hay alineación proyectada identificable.")
                 coverage=side.get("projected_skaters_identity_coverage",{})
                 projected_partial=(lineup_missing or not bool(side.get("projected_skaters_identity_complete"))
                                    or not groups.get("forwards") or not groups.get("defense"))
                 unresolved_names=list(coverage.get("unresolved_names",[]))
                 if lineup_missing:
-                    unknown.append(code+" projected lineup not captured; using team aggregate baseline only; player props and lineup-specific effects omitted")
+                    unknown.append(code+" projected lineup missing or contradictory; team aggregate fallback; player props and lineup effects omitted")
+                    diff={"new_in_projection":[],"out_of_projection":[]}
+                if not diff or diff.get("status")!="projected_changes_observed_not_calibrated":
+                    fallback_reasons.append("No hay comparación verificable con la alineación anterior.")
+                    if not lineup_missing: unknown.append(code+" prior-lineup comparison unavailable; no removals inferred")
                     diff={"new_in_projection":[],"out_of_projection":[]}
                 if projected_partial:
                     if not unresolved_names:
@@ -223,74 +240,120 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                         if not lineup_missing:
                             unknown.append(code+" prior-lineup comparison unavailable; no removals inferred")
                         diff={"new_in_projection":[],"out_of_projection":[]}
-                elif not diff or diff.get("status")!="projected_changes_observed_not_calibrated":
-                    raise ValueError(code+" lineup-change evidence incomplete")
-                if not teamrow or not sp: raise ValueError(code+" team/special-team stats unavailable")
+                if not teamrow: raise ValueError(code+" official team stats unavailable")
+                if not sp:
+                    fallback_reasons.append("Faltan estadísticas oficiales de PP/PK para "+code+".")
+                    sp={"games_played":0,"powerplay_goals":0,"powerplay_opportunities":0,"opponent_powerplay_goals":0,"times_shorthanded":0}
+                elif number(sp,"powerplay_opportunities")<=0 or number(sp,"times_shorthanded")<=0:
+                    fallback_reasons.append("La muestra oficial de PP/PK está incompleta para "+code+".")
                 lines=[]
                 coverage_counts={}
                 for unit,field in (("forwards","forwards"),("defense","defense")):
                     raw=groups.get(field)
                     expected=12 if unit=="forwards" else 6
-                    if not isinstance(raw,list):
-                        if projected_partial: raw=[]
-                        else: raise ValueError(code+" "+field+" projections incomplete")
-                    if len(raw)!=(4 if unit=="forwards" else 3) and not projected_partial:
-                        raise ValueError(code+" "+field+" projections incomplete")
+                    if not isinstance(raw,list) or len(raw)!=(4 if unit=="forwards" else 3):
+                        fallback_reasons.append("La proyección de "+field+" está incompleta.")
+                        raw=[]
                     resolved_count=sum(1 for line in raw for person in line if person.get("identity_resolved") and person.get("player_id") is not None)
                     coverage_counts[unit]=dict(expected=expected,captured=sum(len(line) for line in raw),resolved=resolved_count,
                                                        ev_toi_derived=sum(1 for line in raw for person in line if person.get("identity_resolved") and person.get("player_id") is not None and player.get(str(person.get("player_id"))) and toi_by_id.get(str(person.get("player_id"))) and (toi_by_id[str(person.get("player_id"))].get("evenStrengthTimeOnIcePerGame") is None or not str(toi_by_id[str(person.get("player_id"))].get("evenStrengthTimeOnIcePerGame")).strip())))
                     if coverage_counts[unit]["captured"] < expected:
+                        fallback_reasons.append("Faltan plazas de "+unit+" en la alineación capturada.")
                         unknown.append(code+" "+unit+" projected slots not captured: "+str(expected-coverage_counts[unit]["captured"]))
+                    def safe_player_record(person,reason):
+                        try:
+                            return player_record(person,code)
+                        except (KeyError,TypeError,ValueError) as error:
+                            fallback_reasons.append("Hay jugadores sin estadísticas individuales atribuibles con certeza.")
+                            unknown.append(code+" "+reason+" excluded for "+str(person.get("name") or person.get("player_id"))+": "+str(error)[:140])
+                            return None
+                    if unresolved_names:
+                        fallback_reasons.append("Hay identidades de jugadores de la alineación sin resolver.")
                     for i,line in enumerate(raw,1):
                         resolved=[person for person in line if person.get("identity_resolved") and person.get("player_id") is not None]
-                        lines.append({"unit":unit,"line":i,"players":[player_record(person,code) for person in resolved]})
+                        modeled=[record for record in (safe_player_record(person,"projected player history") for person in resolved) if record]
+                        lines.append({"unit":unit,"line":i,"players":modeled})
                 if not any(item["players"] for item in lines) and not lineup_missing:
                     unknown.append(code+" projected lineup has no resolved identities; using team aggregate baseline only; player props and lineup-specific effects omitted")
+                    fallback_reasons.append("No hay identidades de patinadores utilizables.")
                     lineup_missing=True
                     diff={"new_in_projection":[],"out_of_projection":[]}
                 captured_ids={person["player_id"] for line in lines for person in line["players"]}
                 incoming=[]
                 for x in diff.get("new_in_projection",[]):
                     if x.get("player_id") in captured_ids:
-                        incoming.append(player_record({"player_id":x["player_id"],"name":x["name"]},code))
+                        record=safe_player_record({"player_id":x.get("player_id"),"name":x.get("name")},"incoming player history")
+                        if record: incoming.append(record)
                     else:
                         unknown.append(code+" incoming skater omitted from adjustment; absent from identified projected lines: "+str(x.get("name") or x.get("player_id")))
                 outgoing=[]
-                for x in diff["out_of_projection"]:
-                    p=player_record({"player_id":x["player_id"],"name":x["name"]},code);p["position"]="D" if x.get("position_group")=="defense" else "F";outgoing.append(p)
+                for x in diff.get("out_of_projection",[]):
+                    p=safe_player_record({"player_id":x.get("player_id"),"name":x.get("name")},"outgoing player history")
+                    if p: p["position"]="D" if x.get("position_group")=="defense" else "F";outgoing.append(p)
                 absent=[]
+                injured_goalie_ids=set()
                 for field in ("injuries","scratches"):
                     names=groups.get(field)
-                    if names is None: unknown.append(code+" "+field+" source missing"); continue
+                    if names is None:
+                        fallback_reasons.append("Falta la captura de "+field+" para confirmar disponibilidad.")
+                        unknown.append(code+" "+field+" source missing"); continue
                     for person in names:
-                        if not person.get("identity_resolved"): unknown.append(code+" unresolved "+field+": "+str(person.get("name"))); continue
-                        p=player_record(person,code);p["availability"]="injury" if field=="injuries" else "scratch";absent.append(p)
-                candidates=gg["teams"].get(code,[]);glist=[]
+                        if not person.get("identity_resolved"):
+                            fallback_reasons.append("Hay una baja o ausencia sin identidad verificable.")
+                            unknown.append(code+" unresolved "+field+": "+str(person.get("name"))); continue
+                        pid=person.get("player_id")
+                        is_goalie=str(person.get("position") or person.get("position_code") or "").strip().upper() in ("G","GOALIE")
+                        if field=="injuries" and pid is not None and (is_goalie or str(pid) in {str(g.get("player_id")) for g in gg.get("teams",{}).get(code,[])} or (str(pid),code) in goalie_rows_by_identity):
+                            injured_goalie_ids.add(str(pid))
+                            unknown.append(code+" goalie injury excluded from skater availability: "+str(person.get("name")))
+                            fallback_reasons.append("Se detectó una baja de portero; no se atribuye como baja de patinador.")
+                            continue
+                        p=safe_player_record(person,field+" player history")
+                        if p: p["availability"]="injury" if field=="injuries" else "scratch";absent.append(p)
+                candidates=gg.get("teams",{}).get(code,[]);glist=[]
                 team_games=number(teamrow,"gamesPlayed",True)
                 for g in candidates:
-                    if g.get("status")!="observed": raise ValueError(code+" goalie history unavailable")
-                    stat_rows_for_goalie=goalie_rows_by_identity.get((str(g["player_id"]),code),[])
-                    if len(stat_rows_for_goalie)>1: raise ValueError(code+" duplicate goalie start history")
-                    games_started=number(stat_rows_for_goalie[0],"gamesStarted") if stat_rows_for_goalie else 0
-                    if games_started>team_games: raise ValueError(code+" goalie starts exceed team games")
-                    glist.append({"player_id":g["player_id"],"name":g["name"],"status":"observed","candidate_status":g.get("candidate_status"),"independently_confirmed_starter":False,"games_started_before_cutoff":games_started,"team_games_played_before_cutoff":team_games,"metrics":{"season_to_date":{"shots_against":g["metrics"]["season_to_date"]["shots_against"],"saves":g["metrics"]["season_to_date"]["saves"]}}})
-                if not glist: raise ValueError(code+" no goalie candidates")
+                    try:
+                        if g.get("status")!="observed": raise ValueError("history unavailable")
+                        pid=str(g["player_id"])
+                        if pid in injured_goalie_ids: continue
+                        stat_rows_for_goalie=goalie_rows_by_identity.get((pid,code),[])
+                        if len(stat_rows_for_goalie)>1: raise ValueError("duplicate goalie start history")
+                        games_started=number(stat_rows_for_goalie[0],"gamesStarted") if stat_rows_for_goalie else 0
+                        if games_started>team_games: raise ValueError("goalie starts exceed team games")
+                        goalie_stats=g["metrics"]["season_to_date"]
+                        glist.append({"player_id":g["player_id"],"name":g["name"],"status":"observed","candidate_status":g.get("candidate_status"),"independently_confirmed_starter":False,"games_started_before_cutoff":games_started,"team_games_played_before_cutoff":team_games,"metrics":{"season_to_date":{"shots_against":goalie_stats["shots_against"],"saves":goalie_stats["saves"]}}})
+                    except (KeyError,TypeError,ValueError) as error:
+                        fallback_reasons.append("Falta historial individual verificable de un portero.")
+                        unknown.append(code+" goalie candidate omitted: "+str(error)[:120])
+                if not glist:
+                    shots_against=number(teamrow,"shotsAgainstPerGame",True)
+                    goals_against=number(teamrow,"goalsAgainstPerGame")
+                    saves_per_game=shots_against-goals_against
+                    if saves_per_game<0: raise ValueError(code+" invalid team aggregate goalie proxy")
+                    glist=[{"player_id":None,"name":"Promedio defensivo del equipo (sin portero identificado)","status":"observed","candidate_status":"team_aggregate_save_rate_proxy","independently_confirmed_starter":False,"games_started_before_cutoff":0,"team_games_played_before_cutoff":team_games,"starter_probability":None,"metrics":{"season_to_date":{"shots_against":shots_against,"saves":saves_per_game}}}]
+                    fallback_reasons.append("Se usa la tasa defensiva oficial como referencia de portería, sin atribuirla a un jugador.")
                 candidate_starts=sum(g["games_started_before_cutoff"] for g in glist)
                 complete_start_coverage=(candidate_starts==team_games)
                 for g in glist:
                     g["starter_probability"]=g["games_started_before_cutoff"]/team_games if complete_start_coverage else None
                 goalie_start_distribution={"status":"complete_empirical_share" if complete_start_coverage else "incomplete_candidate_coverage","method":"candidate_games_started_divided_by_team_games_played","team_games_played":team_games,"candidate_starts":candidate_starts,"probabilities_sum_to_one":complete_start_coverage}
-                if groups.get("injuries") is None or groups.get("scratches") is None: unknown.append(code+" incomplete availability report")
+                if groups.get("injuries") is None or groups.get("scratches") is None:
+                    fallback_reasons.append("El reporte de disponibilidad está incompleto.")
+                    unknown.append(code+" incomplete availability report")
                 exact=[r for r in skaters if r.get("teamAbbrevs")==code]
                 multi=[r for r in skaters if code in str(r.get("teamAbbrevs","")).split(",") and r.get("teamAbbrevs")!=code]
-                if multi: raise ValueError(code+" traded-player season attribution unresolved")
+                if multi:
+                    fallback_reasons.append("Hay estadísticas de jugadores transferidos que no se pueden atribuir al equipo actual.")
+                    unknown.append(code+" multi-team player statistics excluded from individual attribution")
                 totals={k:sum(number(r,k) for r in exact) for k in ("goals","assists","shots","penaltyMinutes","evGoals","evPoints","ppGoals","ppPoints","shGoals","shPoints")}
                 gp=number(teamrow,"gamesPlayed",True)
-                modeled_count=sum(item["resolved"] for item in coverage_counts.values())
+                modeled_count=sum(len(line["players"]) for line in lines)
                 projected_slots=sum(item["expected"] for item in coverage_counts.values())
-                aggregate_only=lineup_missing and modeled_count==0
+                aggregate_only=bool(fallback_reasons) or lineup_missing or modeled_count==0
                 sides[code]={"projected_lines":lines,
-                    "lineup_coverage":{"partial":modeled_count<projected_slots,"mode":"team_aggregate_fallback" if aggregate_only else ("identified_partial_lineup" if modeled_count<projected_slots else "projected_lineup"),
+                    "lineup_coverage":{"partial":aggregate_only or modeled_count<projected_slots,"mode":"team_aggregate_fallback" if aggregate_only else ("identified_partial_lineup" if modeled_count<projected_slots else "projected_lineup"),
+                        "fallback_reasons":list(dict.fromkeys(fallback_reasons)),
                         "expected_skaters":projected_slots,
                         "captured_skaters":sum(item["captured"] for item in coverage_counts.values()),
                         "modeled_skaters":modeled_count,"ev_toi_derived_player_count":sum(item["ev_toi_derived"] for item in coverage_counts.values()),
@@ -298,12 +361,20 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                     "lineup_changes":{"new_in_projection":incoming,"out_of_projection":outgoing},
                     "unavailable_players":absent,"goalie_candidates":glist,"goalie_start_distribution":goalie_start_distribution,
                     "team_summary":teamrow,"special_teams":{"games_played":sp["games_played"],"powerplay_goals":sp["powerplay_goals"],"powerplay_opportunities":sp["powerplay_opportunities"],"opponent_powerplay_goals":sp["opponent_powerplay_goals"],"times_shorthanded":sp["times_shorthanded"]},
-                    "team_roster_penalty_minutes":{"total":totals["penaltyMinutes"],"games_played":gp,"unattributed_multi_team_players":0},
-                    "team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":0},
+                    "team_roster_penalty_minutes":{"total":totals["penaltyMinutes"],"games_played":gp,"unattributed_multi_team_players":len(multi)},
+                    "team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":len(multi)},
                     "rotowire_pregame":(rg.get("teams",{}).get(code) if rg else None),
                     "rotowire_market_observation":(rg.get("market_observation") if rg else None),
                     "rotowire_source":(rg.get("source") if rg else None),
                     "schedule":{},"_unknown":unknown}
+            if any(sides[code]["lineup_coverage"]["mode"]=="team_aggregate_fallback" for code in sides):
+                combined_reasons=list(dict.fromkeys(reason for side in sides.values() for reason in side["lineup_coverage"].get("fallback_reasons",[])))
+                for code,side in sides.items():
+                    side["projected_lines"]=[]
+                    side["lineup_changes"]={"new_in_projection":[],"out_of_projection":[]}
+                    side["unavailable_players"]=[]
+                    side["lineup_coverage"].update({"partial":True,"mode":"team_aggregate_fallback","modeled_skaters":0,"fallback_reasons":combined_reasons})
+                unknown.extend(combined_reasons)
             return_game=return_by_game.get(gid,{})
             return_teams=return_game.get("teams",{}) if isinstance(return_game,dict) else {}
             for code in (f["home"],f["away"]):
@@ -329,10 +400,10 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                             manifest.append({"url":source["url"],"sha256":source.get("sha256"),
                                              "retrieved_at_utc":retrieved.isoformat()})
             editor=cg.get("editorial_source")
-            if not editor or not editor.get("sha256") or not editor.get("url"): raise ValueError("missing dated editorial lineup provenance")
-            editorial_at=utc(cg["feature_as_of_utc"])
-            if editorial_at>=start: raise ValueError("late editorial lineup capture")
-            manifest.append({"url":editor["url"],"sha256":editor["sha256"],"retrieved_at_utc":editorial_at.isoformat()})
+            if editor and editor.get("sha256") and editor.get("url") and cg.get("feature_as_of_utc"):
+                editorial_at=utc(cg["feature_as_of_utc"])
+                if editorial_at>=start: raise ValueError("late editorial lineup capture")
+                manifest.append({"url":editor["url"],"sha256":editor["sha256"],"retrieved_at_utc":editorial_at.isoformat()})
             for source in special.get("sources",[]):
                 stamp=source.get("retrieved_at_utc") or source.get("retrieved_at")
                 if stamp:
@@ -343,13 +414,11 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                 if ref and ref.get("retrieved_at"):
                     if utc(ref["retrieved_at"])>=start: raise ValueError("late prior-lineup reference")
                     manifest.append({"url":ref.get("url"),"sha256":ref.get("sha256"),"retrieved_at_utc":utc(ref["retrieved_at"]).isoformat()})
-            for code in (f["home"],f["away"]):
-                if code not in pp_index or code not in pk_index: raise ValueError(code+" missing PP/PK source counts")
-                stat= special.get("teams",{}).get(code,{})
-                if stat.get("powerplay_opportunities",0)<=0 or stat.get("times_shorthanded",0)<=0: raise ValueError(code+" PP/PK sample empty")
+            # In team-aggregate mode, incomplete PP/PK counts are an explicit
+            # omission; the aggregate baseline does not consume those rates.
             goalie_sources=[]
             for code in (f["home"],f["away"]):
-                for g in goalie_games[gid]["teams"].get(code,[]):
+                for g in (goalie_games.get(gid) or {}).get("teams",{}).get(code,[]):
                     if g.get("status")=="observed":
                         meta=g.get("source",{}); stamp=utc(meta.get("retrieved_at", ""))
                         if stamp>=start: raise ValueError("post-start goalie statistics")

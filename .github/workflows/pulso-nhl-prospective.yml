@@ -442,6 +442,7 @@ jobs:
           python -m nhl.pulso_research_presentation_275 \
             --slate frontend/data/nhl-complete-slate-latest.json \
             --run-id "${{ github.run_id }}" \
+            --previous frontend/data/nhl-daily-predictions-latest.json \
             --out frontend/data/nhl-daily-predictions-latest.json
       - name: Calculate explicit minute-based Poisson ML sensitivity
         run: python -m nhl.minute_adjusted_ml --publication frontend/data/nhl-daily-predictions-latest.json --exposure frontend/data/nhl-absence-exposure.json --output frontend/data/nhl-minute-adjusted-ml.json
