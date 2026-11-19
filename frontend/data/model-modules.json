@@ -133,8 +133,8 @@
           "connected": true,
           "affects_prediction": true,
           "evidence": "nhl/special_teams_capture.py; nhl/joint_match_input_builder_321.py; nhl/joint_match_engine_320.py; .github/workflows/pulso-nhl-prospective.yml",
-          "scope": "La conversión PP propia, el PK rival, las oportunidades esperadas y los minutos PP proyectados modifican goles esperados y los porcentajes ML/RT/+3. Cuando RotoWire entrega cinco identidades reconciliadas en PP1 y PP2 por equipo, la reasignación del presupuesto de minutos PP según el TOI histórico de cada jugador también modifica las tasas de gol PP.",
-          "note": "Experimental y no calibrado. Los conteos oficiales previos al partido sostienen el componente agregado. El ajuste individual PP1/PP2 solo se aplica con ambas unidades completas, identidades presentes en la alineación proyectada e historial de minutos PP. Si falta evidencia, se conserva el cálculo previo y se registra el motivo; no se bloquea ni se inventa la unidad."
+          "scope": "La conversión PP propia, el PK rival, las oportunidades esperadas y los minutos PP proyectados modifican goles esperados y porcentajes ML/RT/+3. Con PP1/PP2 completos e identidades reconciliadas, el tiempo PP histórico por jugador reasigna el presupuesto de PP y modifica goles y asistencias individuales por situación.",
+          "note": "Experimental y no calibrado. El componente agregado usa conteos oficiales previos al partido. El ajuste PP1/PP2 requiere ambas unidades, identidades dentro de la alineación e historial PP. Las asistencias individuales se distribuyen con puntos menos goles por EV/PP/PK y minutos proyectados. Si falta cobertura, se conserva el cálculo anterior; no se bloquea el juego ni se inventan datos."
         },
         {
           "id": "context",
