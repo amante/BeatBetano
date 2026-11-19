@@ -98,7 +98,7 @@ jobs:
           print('Frontend assets and entrypoints verified')
           PY
 
-  deploy:
+  prepare:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository))
     needs: verify
     runs-on: ubuntu-24.04
@@ -106,10 +106,6 @@ jobs:
     permissions:
       contents: read
       pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -133,6 +129,20 @@ jobs:
         with:
           name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           path: frontend
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository))
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Publish
         id: deployment
         uses: actions/deploy-pages@v4
