@@ -824,10 +824,10 @@ def _apply_division_rivalry(home_scoring, away_scoring, evidence):
         if old <= 0 or new <= 0:
             raise ValueError("Division/rivalry shift produced invalid expected goals")
         factor = new / old
-        scoring["expected_goals_by_strength"] = {
-            strength: value * factor
-            for strength, value in scoring["expected_goals_by_strength"].items()
-        }
+        by_strength=scoring.get("expected_goals_by_strength")
+        scoring["expected_goals_by_strength"] = ({
+            strength: value * factor for strength,value in by_strength.items()
+        } if isinstance(by_strength,dict) else None)
         scoring["expected_goals"] = new
         scoring["components"]["division_rivalry_goal_rate_factor"] = factor
     output = dict(evidence or {})
