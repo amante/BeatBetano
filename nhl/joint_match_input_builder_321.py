@@ -68,9 +68,9 @@ def number(row,key,positive=False):
     return x
 
 def toi(value, *, allow_missing=False, label="TOI"):
-    # NHL stats can return null for zero special-team usage. Only callers for
-    # PP/PK roles may opt into treating that absent role time as zero; EV and
-    # total TOI remain required so missing player data still blocks the game.
+    # NHL stats can return null for zero PP/PK usage. When EV alone is null,
+    # player_record derives it from the official total minus PP and PK TOI.
+    # Total TOI remains required; no missing total is imputed.
     if value is None or (isinstance(value, str) and not value.strip()):
         if allow_missing:
             return 0.0
@@ -159,12 +159,24 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
         abbrevs=str(s.get("teamAbbrevs",""))
         if abbrevs != code: raise ValueError(code+" player season stats are multi-team or wrong-team: "+str(person.get("name")))
         gp=number(s,"gamesPlayed",True)
-        minutes={"EV":toi(t.get("evenStrengthTimeOnIcePerGame"),label="EV"),
-                 "PP":toi(t.get("powerPlayTimeOnIcePerGame"),allow_missing=True,label="PP"),
-                 "PK":toi(t.get("shorthandedTimeOnIcePerGame"),allow_missing=True,label="PK")}
+        pp=toi(t.get("powerPlayTimeOnIcePerGame"),allow_missing=True,label="PP")
+        pk=toi(t.get("shorthandedTimeOnIcePerGame"),allow_missing=True,label="PK")
         total=toi(t.get("timeOnIcePerGame"),label="total")
+        raw_ev=t.get("evenStrengthTimeOnIcePerGame")
+        if raw_ev is None or (isinstance(raw_ev,str) and not raw_ev.strip()):
+            ev=total-pp-pk
+            if ev < -1.5:
+                raise ValueError("Cannot derive EV TOI from official total, PP and PK values for "+str(person.get("name")))
+            ev=max(0.0,ev)
+            ev_source="derived_official_total_minus_PP_and_PK"
+        else:
+            ev=toi(raw_ev,label="EV")
+            ev_source="official_even_strength_time_on_ice_per_game"
+        minutes={"EV":ev,"PP":pp,"PK":pk}
+        minute_sources={"EV":ev_source,"PP":"official_power_play_time_on_ice_per_game_or_explicit_zero",
+                        "PK":"official_shorthanded_time_on_ice_per_game_or_explicit_zero"}
         prod={k:number(s,k) for k in ("goals","assists","shots","penaltyMinutes","evGoals","ppGoals","shGoals","evPoints","ppPoints","shPoints")}
-        return {"player_id":int(pid),"name":person.get("name") or s.get("skaterFullName"),"team_abbrevs":code,"position":s.get("positionCode"),"availability":"active","games_played":gp,"minutes_per_game":minutes,"total_minutes_per_game":total,"production":prod}
+        return {"player_id":int(pid),"name":person.get("name") or s.get("skaterFullName"),"team_abbrevs":code,"position":s.get("positionCode"),"availability":"active","games_played":gp,"minutes_per_game":minutes,"minutes_per_game_sources":minute_sources,"total_minutes_per_game":total,"production":prod}
     for gid,f in fixtures.items():
         start=utc(f["start_utc"])
         if start <= observed or start <= utc(report["generated_at_utc"]): continue
@@ -182,15 +194,20 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
             change_teams=(lg or {}).get("teams",{})
             sides={};unknown=[]
             for code in (f["home"],f["away"]):
-                side=cg["teams"].get(code); diff=change_teams.get(code); teamrow=team_by_code.get(code); sp=special.get("teams",{}).get(code)
-                if not side or not side.get("projected") or not side["projected"].get("forwards") or not side["projected"].get("defense"):
-                    raise ValueError(code+" projected lineup not captured")
+                side=cg["teams"].get(code) or {}; diff=change_teams.get(code); teamrow=team_by_code.get(code); sp=special.get("teams",{}).get(code)
+                groups=side.get("projected")
+                if not isinstance(groups,dict):
+                    groups={}
+                lineup_missing=not (groups.get("forwards") or groups.get("defense"))
                 if side.get("availability_conflict"):
                     raise ValueError(code+" projected lineup conflicts with reported absence")
-                groups=side["projected"]
                 coverage=side.get("projected_skaters_identity_coverage",{})
-                projected_partial=not bool(side.get("projected_skaters_identity_complete"))
+                projected_partial=(lineup_missing or not bool(side.get("projected_skaters_identity_complete"))
+                                   or not groups.get("forwards") or not groups.get("defense"))
                 unresolved_names=list(coverage.get("unresolved_names",[]))
+                if lineup_missing:
+                    unknown.append(code+" projected lineup not captured; using team aggregate baseline only; player props and lineup-specific effects omitted")
+                    diff={"new_in_projection":[],"out_of_projection":[]}
                 if projected_partial:
                     if not unresolved_names:
                         unresolved_names=[
@@ -202,8 +219,9 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                         ]
                     if unresolved_names:
                         unknown.append(code+" projected skaters excluded (identity unresolved): "+", ".join(str(name) for name in unresolved_names[:12]))
-                    if not diff or diff.get("status")!="projected_changes_observed_not_calibrated":
-                        unknown.append(code+" prior-lineup comparison unavailable; no removals inferred")
+                    if lineup_missing or not diff or diff.get("status")!="projected_changes_observed_not_calibrated":
+                        if not lineup_missing:
+                            unknown.append(code+" prior-lineup comparison unavailable; no removals inferred")
                         diff={"new_in_projection":[],"out_of_projection":[]}
                 elif not diff or diff.get("status")!="projected_changes_observed_not_calibrated":
                     raise ValueError(code+" lineup-change evidence incomplete")
@@ -219,14 +237,17 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                     if len(raw)!=(4 if unit=="forwards" else 3) and not projected_partial:
                         raise ValueError(code+" "+field+" projections incomplete")
                     resolved_count=sum(1 for line in raw for person in line if person.get("identity_resolved") and person.get("player_id") is not None)
-                    coverage_counts[unit]=dict(expected=expected,captured=sum(len(line) for line in raw),resolved=resolved_count)
+                    coverage_counts[unit]=dict(expected=expected,captured=sum(len(line) for line in raw),resolved=resolved_count,
+                                                       ev_toi_derived=sum(1 for line in raw for person in line if person.get("identity_resolved") and person.get("player_id") is not None and player.get(str(person.get("player_id"))) and toi_by_id.get(str(person.get("player_id"))) and (toi_by_id[str(person.get("player_id"))].get("evenStrengthTimeOnIcePerGame") is None or not str(toi_by_id[str(person.get("player_id"))].get("evenStrengthTimeOnIcePerGame")).strip())))
                     if coverage_counts[unit]["captured"] < expected:
                         unknown.append(code+" "+unit+" projected slots not captured: "+str(expected-coverage_counts[unit]["captured"]))
                     for i,line in enumerate(raw,1):
                         resolved=[person for person in line if person.get("identity_resolved") and person.get("player_id") is not None]
                         lines.append({"unit":unit,"line":i,"players":[player_record(person,code) for person in resolved]})
-                if not any(item["players"] for item in lines):
-                    raise ValueError(code+" no projected skater identities available")
+                if not any(item["players"] for item in lines) and not lineup_missing:
+                    unknown.append(code+" projected lineup has no resolved identities; using team aggregate baseline only; player props and lineup-specific effects omitted")
+                    lineup_missing=True
+                    diff={"new_in_projection":[],"out_of_projection":[]}
                 captured_ids={person["player_id"] for line in lines for person in line["players"]}
                 incoming=[]
                 for x in diff.get("new_in_projection",[]):
@@ -267,10 +288,13 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                 gp=number(teamrow,"gamesPlayed",True)
                 modeled_count=sum(item["resolved"] for item in coverage_counts.values())
                 projected_slots=sum(item["expected"] for item in coverage_counts.values())
+                aggregate_only=lineup_missing and modeled_count==0
                 sides[code]={"projected_lines":lines,
-                    "lineup_coverage":{"partial":modeled_count<projected_slots,"expected_skaters":projected_slots,
+                    "lineup_coverage":{"partial":modeled_count<projected_slots,"mode":"team_aggregate_fallback" if aggregate_only else ("identified_partial_lineup" if modeled_count<projected_slots else "projected_lineup"),
+                        "expected_skaters":projected_slots,
                         "captured_skaters":sum(item["captured"] for item in coverage_counts.values()),
-                        "modeled_skaters":modeled_count,"excluded_names":unresolved_names,"by_unit":coverage_counts},
+                        "modeled_skaters":modeled_count,"ev_toi_derived_player_count":sum(item["ev_toi_derived"] for item in coverage_counts.values()),
+                        "excluded_names":unresolved_names,"by_unit":coverage_counts},
                     "lineup_changes":{"new_in_projection":incoming,"out_of_projection":outgoing},
                     "unavailable_players":absent,"goalie_candidates":glist,"goalie_start_distribution":goalie_start_distribution,
                     "team_summary":teamrow,"special_teams":{"games_played":sp["games_played"],"powerplay_goals":sp["powerplay_goals"],"powerplay_opportunities":sp["powerplay_opportunities"],"opponent_powerplay_goals":sp["opponent_powerplay_goals"],"times_shorthanded":sp["times_shorthanded"]},

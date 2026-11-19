@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v9"
+VERSION = "nhl-joint-match-320-v10"
 
 
 def _num(value, label, *, positive=False):
@@ -376,7 +376,7 @@ def team_profile(team, team_code):
         raise ValueError("Duplicate or excessive projected identities for " + team_code)
     if not partial_lineup and len(skaters) != 18:
         raise ValueError("Expected 12 forwards and 6 defensemen for " + team_code)
-    if partial_lineup and not skaters:
+    if partial_lineup and not skaters and coverage.get("mode") != "team_aggregate_fallback":
         raise ValueError("No identified projected skaters for partial scenario " + team_code)
 
     minute_scenario, minute_audit = _minutes_scenario(team)
@@ -736,6 +736,39 @@ def _scoring_rate(attacking, defending, goalie, league_pk_rate):
 
 
 
+def _aggregate_scoring_rate(attacking, defending, goalie):
+    """Conservative team-season fallback when a projected lineup is unavailable."""
+    attack = attacking["season"]["goals_for_per_game"]
+    allow = defending["season"]["goals_against_per_game"]
+    shots_against = defending["season"]["shots_against_per_game"]
+    if attack <= 0 or allow <= 0 or shots_against <= 0:
+        raise ValueError("Invalid official team aggregate rates for fallback")
+    baseline_goal_rate = allow / shots_against
+    if baseline_goal_rate <= 0:
+        raise ValueError("Invalid opponent team goal-per-shot baseline")
+    save_pct = _num(goalie.get("save_pct"), "goalie save percentage")
+    if save_pct >= 1:
+        raise ValueError("Invalid goalie save percentage")
+    goalie_factor = (1 - save_pct) / baseline_goal_rate
+    expected = math.sqrt(attack * allow) * goalie_factor
+    if not math.isfinite(expected) or expected <= 0 or expected >= 10:
+        raise ValueError("Unsupported aggregate fallback goal rate")
+    return {
+        "expected_goals": expected,
+        "expected_goals_by_strength": None,
+        "components": {
+            "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
+            "attacking_goals_for_per_game": attack,
+            "opponent_goals_against_per_game": allow,
+            "team_aggregate_baseline": math.sqrt(attack * allow),
+            "opponent_goalie_save_pct": save_pct,
+            "opponent_goalie_factor": goalie_factor,
+            "individual_lineup_adjustment": "omitted_projected_lineup_unavailable",
+            "special_teams_personnel_adjustment": "omitted_projected_lineup_unavailable",
+        },
+    }
+
+
 def _apply_division_rivalry(home_scoring, away_scoring, evidence):
     """Apply a bounded prior-history goal-differential shift before market math."""
     requested = 0.0
@@ -838,12 +871,25 @@ def run(inputs):
     cutoff = inputs.get("cutoff_exclusive")
     if not cutoff or cutoff >= start.date().isoformat():
         raise ValueError("Input date cutoff is not strictly before the game")
-    home = team_profile(inputs["teams"][home_code], home_code)
-    away = team_profile(inputs["teams"][away_code], away_code)
+    original_team_inputs = inputs["teams"]
+    aggregate_fallback = any(
+        original_team_inputs[code].get("lineup_coverage", {}).get("mode") == "team_aggregate_fallback"
+        for code in (home_code, away_code)
+    )
+    profile_inputs = original_team_inputs
+    if aggregate_fallback:
+        # Do not apply an isolated team's player/PP deployment when the matchup
+        # must use the team-aggregate fallback for both sides.
+        profile_inputs = {
+            code: dict(team, rotowire_pregame=None)
+            for code, team in original_team_inputs.items()
+        }
+    home = team_profile(profile_inputs[home_code], home_code)
+    away = team_profile(profile_inputs[away_code], away_code)
     league_pk_rate = _num(inputs["league_context"].get("powerplay_goals_allowed_per_opportunity"),
                           "league PK rate", positive=True)
     unknowns = list(inputs.get("unknowns", []))
-    rotowire_pp_applied = any(
+    rotowire_pp_applied = (not aggregate_fallback) and any(
         profile.get("minute_distribution", {}).get("rotowire_power_play", {}).get("applied") is True
         for profile in (home, away)
     )
@@ -863,8 +909,9 @@ def run(inputs):
     home_goalies, away_goalies = _goalie_scenarios(home), _goalie_scenarios(away)
     for hg in home_goalies:
         for ag in away_goalies:
-            h = _scoring_rate(home, away, ag, league_pk_rate)
-            a = _scoring_rate(away, home, hg, league_pk_rate)
+            rate = _aggregate_scoring_rate if aggregate_fallback else None
+            h = rate(home, away, ag) if rate else _scoring_rate(home, away, ag, league_pk_rate)
+            a = rate(away, home, hg) if rate else _scoring_rate(away, home, hg, league_pk_rate)
             division_rivalry = _apply_division_rivalry(h, a, inputs.get("division_rivalry"))
             markets = calculate(h["expected_goals"], a["expected_goals"])
             pp_impact = None
@@ -892,13 +939,14 @@ def run(inputs):
                     "official": False,
                     "calibrated": False,
                 }
-            home_player_probabilities = _player_probabilities(home, h)
-            away_player_probabilities = _player_probabilities(away, a)
+            home_player_probabilities = [] if aggregate_fallback else _player_probabilities(home, h)
+            away_player_probabilities = [] if aggregate_fallback else _player_probabilities(away, a)
             weight=(hg["starter_probability"]*ag["starter_probability"]
                     if hg["starter_probability"] is not None and ag["starter_probability"] is not None else None)
             scenarios.append({"home_goalie": hg, "away_goalie": ag, "scenario_weight": weight,
                               "expected_goals": {"home": h["expected_goals"], "away": a["expected_goals"]},
                               "rotowire_pp_impact": pp_impact,
+                              "forecast_basis": "team_aggregate_fallback" if aggregate_fallback else "projected_skaters_and_goalie_scenarios",
                               "division_rivalry": division_rivalry,
                               "home_components": h["components"], "away_components": a["components"],
                               "player_probabilities": {home_code: home_player_probabilities,
@@ -930,6 +978,13 @@ def run(inputs):
         "home": home_code,
         "away": away_code,
         "start_utc": inputs["start_utc"],
+        "forecast_basis": "team_aggregate_fallback" if aggregate_fallback else "projected_skaters_and_goalie_scenarios",
+        "lineup_fallback": {
+            "applied": aggregate_fallback,
+            "player_props_available": not aggregate_fallback,
+            "reason": "At least one team has no identified projected skaters; team-season goal rates and goalie scenarios used for both teams." if aggregate_fallback else None,
+            "omitted_factors": ["projected lines", "player-level props", "lineup-driven absence and replacement effects", "RotoWire PP1/PP2 deployment"] if aggregate_fallback else [],
+        },
         "source_cutoff_exclusive": cutoff,
         "captured_at_utc": inputs["captured_at_utc"],
         "status": "historical_reconstruction_only" if reconstruction else "conditional_unvalidated_scenarios",
@@ -950,14 +1005,20 @@ def run(inputs):
         "minute_distribution": {home_code: home["minute_distribution"],
                                 away_code: away["minute_distribution"]},
         "lineup_coverage": {home_code: home["lineup_coverage"], away_code: away["lineup_coverage"]},
-        "lineup_impact": {home_code: home["lineup_impact"], away_code: away["lineup_impact"]},
-        "player_contributions": {home_code: home["player_contributions"],
-                                 away_code: away["player_contributions"]},
+        "lineup_impact": (
+            {home_code: {"status": "not_applied_missing_projected_lineup"},
+             away_code: {"status": "not_applied_missing_projected_lineup"}}
+            if aggregate_fallback else
+            {home_code: home["lineup_impact"], away_code: away["lineup_impact"]}
+        ),
+        "player_contributions": {home_code: [] if aggregate_fallback else home["player_contributions"],
+                                 away_code: [] if aggregate_fallback else away["player_contributions"]},
         "player_scoring_model": {
             "team_score_influence": "player goal rates by EV/PP/SH deployment feed team expected goals and game outcome probabilities",
             "assists_role": "individual assists are distributed by EV/PP/SH historical points-minus-goals rates and projected minutes; assists contribute to individual points but not extra team goals",
             "point_identity": "points = goals + assists",
-            "player_probabilities_vary_by_goalie_scenario": True,
+            "player_probabilities_vary_by_goalie_scenario": not aggregate_fallback,
+            "status": "omitted_projected_lineup_unavailable" if aggregate_fallback else "experimental_player_rates",
             "calibrated": False,
         },
         "schedule_context": {home_code: {"context": home["schedule"], "probability_effect_applied": False},
@@ -974,6 +1035,7 @@ def run(inputs):
             "Poisson rates use observed per-game player production and shot rates, not fitted coefficients.",
             "Individual defender on-ice suppression and line-pair effects are unavailable; team shots-against is used.",
             "For partial projected lineups, only identified skaters are minute-adjusted; unresolved roster contribution stays at its aggregate team baseline.",
+            "If either team has no identified projected lineup, the matchup falls back symmetrically to official team-season goals-for/goals-against rates and goalie scenarios; no player props, lineup, injury-replacement, or PP-unit effects are issued for that matchup.",
             "Player-level anytime goal, assist, and point probabilities are exploratory independent-Poisson estimates and require walk-forward calibration.",
             "Player goals feed expected team goals by EV/PP/SH deployment. Assists are allocated by situation-specific historical player points-minus-goals per minute and projected deployment; PP1/PP2 reallocations therefore change individual assist and point shares without adding assists to team goals.",
             "Division/rivalry shifts expected goal differential using a bounded, shrunk split of strictly prior two-year regulation goal results; it is experimental, not calibrated, and is omitted when history is insufficient.",
