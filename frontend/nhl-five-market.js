@@ -9,33 +9,114 @@
    return x;
  };
  const pct=x=>typeof x==="number" && Number.isFinite(x)?(x*100).toFixed(1).replace(".",",")+"%":"—";
+ const normalizedGameId=value=>String(value||"").replace(/^nhl[-_:]/,"");
  function renderCalendarProbabilities(data){
   const date=document.getElementById("daily-date")?.value;
   document.querySelectorAll(".daily-match[data-nhl-id]").forEach(row=>{
-   row.querySelectorAll(".nhl-calendar-probability").forEach(item=>item.remove());
+   row.querySelectorAll(".nba-match-probability,.nhl-calendar-probability").forEach(item=>item.remove());
    if(!data||data.date!==date)return;
-   const id=String(row.dataset.nhlId||"").replace(/^nhl[-_:]/,"");
-   const game=data.games.find(item=>String(item.game_id).replace(/^nhl[-_:]/,"")===id&&item.status==="experimental_forecast"&&item.ml&&typeof item.ml.home==="number"&&typeof item.ml.away==="number");
+   const id=normalizedGameId(row.dataset.nhlId);
+   const game=data.games.find(item=>normalizedGameId(item.game_id)===id&&item.status==="experimental_forecast"&&item.ml&&typeof item.ml.home==="number"&&typeof item.ml.away==="number");
    if(!game)return;
    for(const [side,value] of [["away",game.ml.away],["home",game.ml.home]]){
     const team=row.querySelector(".daily-team-"+side);
     if(!team)continue;
     const name=team.querySelector(".daily-team-name")?.textContent||game[side];
-    const item=make("span",undefined,"nhl-calendar-probability");
-    item.append(make("strong",pct(value)));
+    const badge=make("span",Math.round(value*100)+"%","nba-match-probability is-experimental");
     const trend=game.ml_trend&&game.ml_trend[side];
     if(trend==="up"||trend==="down"){
      const arrow=make("span",trend==="up"?"↑":"↓","nhl-probability-trend "+(trend==="up"?"is-up":"is-down"));
-     arrow.setAttribute("aria-label",trend==="up"?"La probabilidad subió":"La probabilidad bajó");arrow.title=arrow.getAttribute("aria-label");item.append(arrow);
+     arrow.setAttribute("aria-label",trend==="up"?"La probabilidad subió":"La probabilidad bajó");
+     arrow.title=arrow.getAttribute("aria-label");badge.append(arrow);
     }
-    item.setAttribute("aria-label",name+": "+pct(value)+" probabilidad de victoria");
-    item.title=item.getAttribute("aria-label");
-    team.append(item);
+    badge.setAttribute("aria-label",name+": "+pct(value)+" probabilidad experimental de victoria");
+    badge.title="Probabilidad experimental: "+name+" "+pct(value);
+    team.append(badge);
    }
   });
  }
- let published=null,loadError=null;
- function render(){
+ function addDetailPanelContent(panel,card,selectors,emptyText){
+  panel.replaceChildren(make("h4",panel.dataset.title));
+  let count=0;
+  if(card){
+   for(const node of card.querySelectorAll(selectors)){
+    if(node.classList.contains("nhl-minute-adjusted-ml")&&!node.children.length&&!node.textContent.trim())continue;
+    panel.append(node.cloneNode(true));count++;
+   }
+  }
+  if(!count)panel.append(make("p",emptyText,"nba-game-disclosure__empty"));
+  return count;
+ }
+ function integrateCalendarDetails(data){
+  const selected=document.getElementById("daily-date")?.value;
+  const rows=[...document.querySelectorAll(".daily-match[data-nhl-id]")];
+  let attachedForecasts=0;
+  const cards=[...root.querySelectorAll(".nhl-forecast-card[data-game-id]")];
+  for(const original of rows){
+   let disclosure=original.closest("details.nhl-game-disclosure");
+   let summary=disclosure?.querySelector(":scope > summary.daily-match");
+   if(!disclosure){
+    const id=normalizedGameId(original.dataset.nhlId);
+    disclosure=make("details",undefined,"nba-game-disclosure nhl-game-disclosure");
+    disclosure.dataset.nhlId=id;
+    summary=make("summary",undefined,original.className+" nhl-game-summary");
+    for(const [key,value] of Object.entries(original.dataset||{}))summary.dataset[key]=value;
+    summary.setAttribute("aria-label","Ver pronóstico y detalles de "+original.textContent.trim());
+    while(original.firstChild)summary.append(original.firstChild);
+    disclosure.append(summary);
+    const content=make("div",undefined,"nba-game-disclosure__content");
+    const columns=make("div",undefined,"nba-game-disclosure__columns");
+    const left=make("section",undefined,"nba-game-disclosure__panel nba-game-disclosure__lineup-panel");
+    left.dataset.title="Alineaciones, porteros y bajas";
+    const right=make("section",undefined,"nba-game-disclosure__panel nba-game-disclosure__run-panel");
+    right.dataset.title="Corrida y probabilidades";
+    columns.append(left,right);content.append(columns);disclosure.append(content);
+    original.replaceWith(disclosure);
+   }
+   const id=normalizedGameId(summary?.dataset.nhlId||disclosure.dataset.nhlId);
+   const left=disclosure.querySelector(".nba-game-disclosure__lineup-panel");
+   const right=disclosure.querySelector(".nba-game-disclosure__run-panel");
+   const game=data&&data.date===selected&&Array.isArray(data.games)?data.games.find(item=>normalizedGameId(item.game_id)===id):null;
+   const card=game?.status==="experimental_forecast"?cards.find(item=>normalizedGameId(item.dataset.gameId)===id):null;
+   if(card)attachedForecasts++;
+   addDetailPanelContent(left,card,".nhl-goalie-comparison,.nhl-match-context,.nhl-absence-exposure","No hay una captura disponible de porteros, alineaciones o bajas para este partido.");
+   right.replaceChildren(make("h4","Corrida y probabilidades"));
+   if(game){
+    const runLabel=["Captura "+data.date,data.run_id?"corrida #"+data.run_id:null,"Experimental · sin calibrar"].filter(Boolean).join(" · ");
+    right.append(make("p",runLabel,"nba-game-disclosure__run-meta"));
+   }else{
+    right.append(make("p","No hay pronóstico publicado para la fecha seleccionada. No se muestra una captura de otra fecha.","nba-game-disclosure__run-meta"));
+   }
+   const rightCount=addDetailPanelContent(right,card,".nhl-market-label,.nhl-ml-grid,.nhl-minute-adjusted-ml,.nhl-forecast-card > .daily-source,.nhl-extra-markets","No hay porcentajes de pronóstico publicados para este partido.");
+   if(!rightCount&&game&&game.status!=="experimental_forecast"){
+    const status=game.status==="not_pregame_at_capture"?"La captura se realizó después del inicio; no se genera pronóstico pregame.":"No hubo evidencia suficiente para generar un pronóstico.";
+    right.append(make("p",status,"nba-game-disclosure__empty"));
+   }
+   const jointRoot=document.getElementById("nhl-joint-model");
+   const jointGame=jointRoot&&[...jointRoot.querySelectorAll(".nhl-joint-game[data-game-id]")].find(item=>normalizedGameId(item.dataset.gameId)===id);
+   right.querySelector(".nhl-inline-joint")?.remove();
+   if(jointGame){
+    const joint=make("details",undefined,"nhl-inline-joint");
+    joint.append(make("summary","Escenarios integrados por porteros · experimental"));
+    joint.append(jointGame);
+    right.append(joint);
+   }
+  }
+  const hasRows=rows.length>0;
+  root.hidden=Boolean(hasRows&&cards.length>0&&attachedForecasts===cards.length);
+  root.style.display=root.hidden?"none":"";
+  const jointRoot=document.getElementById("nhl-joint-model");
+  if(jointRoot){
+   const remaining=jointRoot.querySelectorAll(".nhl-joint-game").length;
+   const blocked=jointRoot.querySelector(".nhl-joint-blocked");
+   if(remaining===0&&!blocked&&hasRows&&jointRoot.dataset.publishedDate===selected){jointRoot.hidden=true;jointRoot.style.display="none";}
+   else{jointRoot.hidden=false;jointRoot.style.display="";}
+  }
+ }
+
+  let published=null,loadError=null;
+ function renderContent(){
+ root.hidden=false;root.style.display="";
  renderCalendarProbabilities(published);
  root.replaceChildren(make("h3","Pronósticos de la jornada"));
  const source=make("p","Cargando captura…","daily-source");
@@ -64,7 +145,7 @@
     row.append(make("strong",g.away+" — "+g.home),make("span",g.status==="not_pregame_at_capture"?"Ya había comenzado al capturar":"Sin evidencia suficiente"));
     archive.append(row);continue;
    }
-   const card=make("section",undefined,"nhl-forecast-card");
+   const card=make("section",undefined,"nhl-forecast-card");card.dataset.gameId=String(g.game_id);card.dataset.runId=String(data.run_id||"");
    const heading=make("div",undefined,"nhl-forecast-heading"),identity=make("div");
    identity.append(make("h4",g.away+" — "+g.home),make("p",new Date(g.start_utc).toLocaleString("es-CL",{timeZone:"America/Santiago",dateStyle:"medium",timeStyle:"short"})+" · Chile"));
    const pending=Date.parse(g.start_utc)>Date.now();
@@ -134,7 +215,9 @@
   publication.append(link);root.append(publication);
 
  }
+ function render(){renderContent();integrateCalendarDetails(published);}
  document.addEventListener("pulso:date-change",render);
+ document.addEventListener("pulso:nhl-joint-rendered",()=>integrateCalendarDetails(published));
  window.PulsoNhlContext.ready.then(render);
  window.PulsoNhlMinuteML.ready.then(render);
  window.PulsoNhlAbsenceExposure.ready.then(render);
