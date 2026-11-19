@@ -170,6 +170,7 @@
    const p=player.probability||{};
    row.append(make("span","Gol ≥1 "+pct(p.goal_at_least_one)+" · Asistencia ≥1 "+pct(p.assist_at_least_one)+" · Punto ≥1 "+pct(p.point_at_least_one)+" · 2+ puntos "+pct(p.point_two_or_more)));
    row.append(make("small","Proyección: "+(player.expected.goals??0).toFixed(2)+" G + "+(player.expected.assists==null?"s/d":player.expected.assists.toFixed(2)+" A")+" = "+(player.expected.points==null?"s/d":player.expected.points.toFixed(2)+" P")+" · escenario experimental, sin calibrar"));
+   const assistSplit=player.expected.assists_by_strength;if(assistSplit)row.append(make("small","Asistencias estimadas por uso · EV "+(finite(assistSplit.EV)?assistSplit.EV.toFixed(2):"—")+" · PP "+(finite(assistSplit.PP)?assistSplit.PP.toFixed(2):"—")+" · PK "+(finite(assistSplit.SH)?assistSplit.SH.toFixed(2):"—")));
    list.append(row);
   }
   details.append(list);parent.append(details);

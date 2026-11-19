@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v8"
+VERSION = "nhl-joint-match-320-v9"
 
 
 def _num(value, label, *, positive=False):
@@ -24,6 +24,12 @@ def _num(value, label, *, positive=False):
     if value < 0 or (positive and value <= 0):
         raise ValueError("Out-of-range " + label)
     return float(value)
+
+
+def _derived_assists(points, goals, label):
+    if points + 1e-8 < goals:
+        raise ValueError(label + " points below goal credits")
+    return max(0.0, points - goals)
 
 
 def _time(value):
@@ -378,6 +384,7 @@ def team_profile(team, team_code):
     minute_scenario, minute_audit = _apply_rotowire_power_play(team, minute_scenario, skaters, minute_audit)
     rates = {"ev_goals": 0.0, "pp_goals": 0.0, "sh_goals": 0.0,
              "ev_points": 0.0, "pp_points": 0.0, "sh_points": 0.0,
+             "ev_assists": 0.0, "pp_assists": 0.0, "sh_assists": 0.0,
              "assists": 0.0, "shots": 0.0, "ev_shots": 0.0,
              "pim": 0.0, "ev_minutes": 0.0, "pp_minutes": 0.0,
              "pk_minutes": 0.0}
@@ -397,8 +404,15 @@ def team_profile(team, team_code):
         if ev + pp + pk > total_toi + 1.5:
             raise ValueError("Situation TOI exceeds total TOI for " + player["name"])
         goals = _num(prod.get("goals"), "goals")
+        ev_goals = _num(prod.get("evGoals"), "EV goals")
         pp_goals = _num(prod.get("ppGoals"), "PP goals")
         sh_goals = _num(prod.get("shGoals"), "shorthanded goals")
+        ev_points = _num(prod.get("evPoints"), "EV points")
+        pp_points = _num(prod.get("ppPoints"), "PP points")
+        sh_points = _num(prod.get("shPoints"), "shorthanded points")
+        ev_assists = _derived_assists(ev_points, ev_goals, "EV")
+        pp_assists = _derived_assists(pp_points, pp_goals, "PP")
+        sh_assists = _derived_assists(sh_points, sh_goals, "SH")
         shots = _num(prod.get("shots"), "shots")
         scenario = minute_scenario[player["player_id"]]
         historical_ev_total = ev * gp
@@ -409,15 +423,22 @@ def team_profile(team, team_code):
         pp_rate = pp_goals / historical_pp_total if historical_pp_total else 0
         sh_rate = sh_goals / historical_pk_total if historical_pk_total else 0
         total_shots_rate = shots / historical_total_toi if historical_total_toi else 0
-        total_assists_rate = _num(prod.get("assists"), "assists") / historical_total_toi if historical_total_toi else 0
+        ev_assist_rate = ev_assists / historical_ev_total if historical_ev_total else 0
+        pp_assist_rate = pp_assists / historical_pp_total if historical_pp_total else 0
+        sh_assist_rate = sh_assists / historical_pk_total if historical_pk_total else 0
         total_pim_rate = _num(prod.get("penaltyMinutes"), "penalty minutes") / historical_total_toi if historical_total_toi else 0
         rates["ev_goals"] += ev_rate * scenario["EV"]
         rates["pp_goals"] += pp_rate * scenario["PP"]
         rates["sh_goals"] += sh_rate * scenario["PK"]
-        rates["ev_points"] += _num(prod.get("evPoints"), "EV points") / historical_ev_total * scenario["EV"] if historical_ev_total else 0
-        rates["pp_points"] += _num(prod.get("ppPoints"), "PP points") / historical_pp_total * scenario["PP"] if historical_pp_total else 0
-        rates["sh_points"] += _num(prod.get("shPoints"), "shorthanded points") / historical_pk_total * scenario["PK"] if historical_pk_total else 0
-        rates["assists"] += total_assists_rate * scenario["total"]
+        rates["ev_points"] += ev_points / historical_ev_total * scenario["EV"] if historical_ev_total else 0
+        rates["pp_points"] += pp_points / historical_pp_total * scenario["PP"] if historical_pp_total else 0
+        rates["sh_points"] += sh_points / historical_pk_total * scenario["PK"] if historical_pk_total else 0
+        rates["ev_assists"] += ev_assist_rate * scenario["EV"]
+        rates["pp_assists"] += pp_assist_rate * scenario["PP"]
+        rates["sh_assists"] += sh_assist_rate * scenario["PK"]
+        rates["assists"] += (ev_assist_rate * scenario["EV"] +
+                             pp_assist_rate * scenario["PP"] +
+                             sh_assist_rate * scenario["PK"])
         rates["shots"] += total_shots_rate * scenario["total"]
         rates["ev_shots"] += total_shots_rate * scenario["EV"]
         rates["pim"] += total_pim_rate * scenario["total"]
@@ -429,13 +450,19 @@ def team_profile(team, team_code):
                     "assists": _num(prod.get("assists"), "assists") / gp,
                     "shots": shots / gp,
                     "pim": _num(prod.get("penaltyMinutes"), "penalty minutes") / gp}
+        projected_ev_assists = ev_assist_rate * scenario["EV"]
+        projected_pp_assists = pp_assist_rate * scenario["PP"]
+        projected_sh_assists = sh_assist_rate * scenario["PK"]
         projected = {"minutes": scenario["total"], "EV": scenario["EV"],
                      "PP": scenario["PP"], "PK": scenario["PK"],
                      "EV_goals": ev_rate * scenario["EV"],
                      "PP_goals": pp_rate * scenario["PP"],
                      "SH_goals": sh_rate * scenario["PK"],
                      "goals": ev_rate * scenario["EV"] + pp_rate * scenario["PP"] + sh_rate * scenario["PK"],
-                     "assists": total_assists_rate * scenario["total"],
+                     "EV_assists": projected_ev_assists,
+                     "PP_assists": projected_pp_assists,
+                     "SH_assists": projected_sh_assists,
+                     "assists": projected_ev_assists + projected_pp_assists + projected_sh_assists,
                      "shots": total_shots_rate * scenario["total"],
                      "pim": total_pim_rate * scenario["total"]}
         line = next(line for line in roster if player in line["players"])
@@ -478,8 +505,15 @@ def team_profile(team, team_code):
         partial_ledger=_partial_roster_ledger(team,skaters,full_totals,team_games)
         for rate_key,stat_key in (("ev_goals","evGoals"),("pp_goals","ppGoals"),("sh_goals","shGoals"),
             ("ev_points","evPoints"),("pp_points","ppPoints"),("sh_points","shPoints"),
-            ("assists","assists"),("shots","shots"),("pim","penaltyMinutes")):
+            ("shots","shots"),("pim","penaltyMinutes")):
             rates[rate_key]+=partial_ledger["residual"][stat_key]
+        residual=partial_ledger["residual"]
+        residual_assists = 0.0
+        for phase,points_key,goals_key in (("ev","evPoints","evGoals"),("pp","ppPoints","ppGoals"),("sh","shPoints","shGoals")):
+            phase_residual = _derived_assists(residual[points_key],residual[goals_key],"Residual "+phase.upper())
+            rates[phase+"_assists"] += phase_residual
+            residual_assists += phase_residual
+        rates["assists"] += residual_assists
         modeled=rates["ev_minutes"]+rates["pp_minutes"]+rates["pk_minutes"]
         reserved=minute_audit["unresolved_reserved_minutes"]
         if modeled>0 and reserved>0:
@@ -747,10 +781,12 @@ def _player_probabilities(team, scoring):
                    "PP": team["rates"]["pp_goals"],
                    "SH": team["rates"]["sh_goals"]}
     phase_means = scoring["expected_goals_by_strength"]
-    assist_rate = team["rates"]["assists"]
-    assist_goal_ratio = team["historical_assists_per_goal"]
-    assist_mean = (scoring["expected_goals"] * assist_goal_ratio
-                   if assist_goal_ratio is not None else None)
+    team_assists_by_strength = {}
+    for phase, credit_key in (("EV","EV"),("PP","PP"),("SH","PK")):
+        ratio = team["credit_ratios"][credit_key]
+        team_assists_by_strength[phase] = (
+            phase_means[phase] * max(0.0, ratio - 1.0) if ratio is not None else 0.0
+        )
     rows = []
     for item in team["player_contributions"]:
         projected = item["projected"]
@@ -759,10 +795,16 @@ def _player_probabilities(team, scoring):
             denominator = phase_rates[phase]
             if denominator > 0:
                 goal_mean += phase_means[phase] * projected[phase + "_goals"] / denominator
-        player_assists = (assist_mean * projected["assists"] / assist_rate
-                          if assist_mean is not None and assist_rate > 0
-                          else 0.0 if assist_mean is not None else None)
-        point_mean = goal_mean + player_assists if player_assists is not None else None
+        assists_by_strength = {}
+        for phase in ("EV","PP","SH"):
+            denominator = team["rates"][phase.lower()+"_assists"]
+            player_assists_in_phase = projected[phase+"_assists"]
+            assists_by_strength[phase] = (
+                team_assists_by_strength[phase] * player_assists_in_phase / denominator
+                if denominator > 0 else 0.0
+            )
+        player_assists = sum(assists_by_strength.values())
+        point_mean = goal_mean + player_assists
         probability = {
             "goal_at_least_one": _poisson_probability_at_least_one(goal_mean),
             "assist_at_least_one": (_poisson_probability_at_least_one(player_assists)
@@ -776,10 +818,11 @@ def _player_probabilities(team, scoring):
             "player_id": item["player_id"], "name": item["name"],
             "unit": item["unit"], "line": item["line"],
             "status": "experimental_probability",
-            "expected": {"goals": goal_mean, "assists": player_assists, "points": point_mean},
+            "expected": {"goals": goal_mean, "assists": player_assists,
+                         "assists_by_strength": assists_by_strength, "points": point_mean},
             "probability": probability,
             "points_identity": "expected_points = expected_goals + expected_assists",
-            "probability_model": "independent Poisson player goal and assist counts",
+            "probability_model": "independent Poisson player goal and assist counts; assists allocated by EV/PP/SH-specific historical credits and projected deployment",
         })
     return rows
 
@@ -912,7 +955,7 @@ def run(inputs):
                                  away_code: away["player_contributions"]},
         "player_scoring_model": {
             "team_score_influence": "player goal rates by EV/PP/SH deployment feed team expected goals and game outcome probabilities",
-            "assists_role": "assists estimate individual A and G+A point probabilities; they are not counted as additional team goals",
+            "assists_role": "individual assists are distributed by EV/PP/SH historical points-minus-goals rates and projected minutes; assists contribute to individual points but not extra team goals",
             "point_identity": "points = goals + assists",
             "player_probabilities_vary_by_goalie_scenario": True,
             "calibrated": False,
@@ -932,7 +975,7 @@ def run(inputs):
             "Individual defender on-ice suppression and line-pair effects are unavailable; team shots-against is used.",
             "For partial projected lineups, only identified skaters are minute-adjusted; unresolved roster contribution stays at its aggregate team baseline.",
             "Player-level anytime goal, assist, and point probabilities are exploratory independent-Poisson estimates and require walk-forward calibration.",
-            "Player goal projections feed expected team goals by EV/PP/SH deployment; assists are allocated as player points and are not extra team goals.",
+            "Player goals feed expected team goals by EV/PP/SH deployment. Assists are allocated by situation-specific historical player points-minus-goals per minute and projected deployment; PP1/PP2 reallocations therefore change individual assist and point shares without adding assists to team goals.",
             "Division/rivalry shifts expected goal differential using a bounded, shrunk split of strictly prior two-year regulation goal results; it is experimental, not calibrated, and is omitted when history is insufficient.",
             "Comeback probability means falling behind by at least two regulation goals and still winning the illustrative ML outcome; a regulation tie receives the same 50/50 overtime split as that market.",
             "PIM affects opportunity volume through an observed roster-to-team exposure ratio, not a fixed minutes-to-power-play conversion.",
