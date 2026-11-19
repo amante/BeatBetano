@@ -76,6 +76,7 @@
  const marketPanel=(game,modelHome=null,score=game.point_projection)=>{
   const m=game.market_context;if(!validMarket(m,game.tipoff_utc))return null;
   const lines=[],tags=[];
+  const scoreCanSignal=Boolean(score&&score.calibrated===true&&score.experimental!==true);
   const modelSide=marketModelSide(game,modelHome);
   const ml=m.moneyline;
   if(ml&&[game.home_team,game.away_team].includes(ml.team)&&Number.isFinite(ml.american_odds)&&ml.american_odds!==0){
@@ -87,7 +88,7 @@
    lines.push("Spread: "+teamName(m.spread.team)+" "+(m.spread.points>0?"+":"")+m.spread.points.toFixed(1));
    if(score&&Number.isFinite(score.home_points)&&Number.isFinite(score.away_points)){
     const margin=m.spread.team===game.home_team?score.home_points-score.away_points:score.away_points-score.home_points;
-    if(margin+m.spread.points<0)tags.push("GOLDEN TICKET · SPREAD");
+    if(scoreCanSignal&&margin+m.spread.points<0)tags.push("GOLDEN TICKET · SPREAD");
    }
   }else lines.push("Spread: sin dato");
   if(Number.isFinite(m.total_points)){
@@ -95,11 +96,12 @@
    if(score&&Number.isFinite(score.home_points)&&Number.isFinite(score.away_points)){
     const projected=score.home_points+score.away_points,diff=projected-m.total_points;
     lines.push("Puntos proyectados: "+projected.toFixed(1)+" · "+(diff>0?"sobre":"bajo")+" la línea por "+Math.abs(diff).toFixed(1));
-    if(diff!==0)tags.push("GOLDEN TICKET · "+(diff>0?"OVER":"UNDER"));
+    if(scoreCanSignal&&diff!==0)tags.push("GOLDEN TICKET · "+(diff>0?"OVER":"UNDER"));
    }
   }else lines.push("Total O/U: sin dato");
   if(!score)lines.push("La proyección exploratoria de puntos aún no está disponible; no se genera señal de Spread ni Total.");
-  else lines.push("Proyección exploratoria, no calibrada y separada de los porcentajes del modelo.");
+  else if(!scoreCanSignal)lines.push("Puntos exploratorios, sin calibración; se muestran como referencia y no generan GOLDEN TICKET para Spread ni Total.");
+  else lines.push("Proyección calibrada disponible para comparación informativa; no altera los porcentajes del modelo.");
   lines.push((Array.isArray(m.referees)&&m.referees.length?"Árbitros: "+m.referees.join(", "):"Árbitros: sin informar"),"RotoWire · captura "+local(m.observed_at_utc));
   const details=el("details","");details.className="nba-market-context";
   details.append(el("summary",tags.length?"Mercado informativo · "+tags.join(" · "):"Mercado informativo · ML / Spread / Total"));
