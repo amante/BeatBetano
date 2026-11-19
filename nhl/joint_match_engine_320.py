@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v9"
+VERSION = "nhl-joint-match-320-v8"
 
 
 def _num(value, label, *, positive=False):
