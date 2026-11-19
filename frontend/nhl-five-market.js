@@ -9,8 +9,32 @@
    return x;
  };
  const pct=x=>typeof x==="number" && Number.isFinite(x)?(x*100).toFixed(1).replace(".",",")+"%":"—";
+ function renderCalendarProbabilities(data){
+  const date=document.getElementById("daily-date")?.value;
+  document.querySelectorAll(".daily-match[data-nhl-id]").forEach(row=>{
+   row.querySelector(".nhl-calendar-probabilities")?.remove();
+   if(!data||data.date!==date)return;
+   const id=String(row.dataset.nhlId||"").replace(/^nhl[-_:]/,"");
+   const game=data.games.find(item=>String(item.game_id).replace(/^nhl[-_:]/,"")===id&&item.status==="experimental_forecast"&&item.ml&&typeof item.ml.home==="number"&&typeof item.ml.away==="number");
+   if(!game)return;
+   const strip=make("span",undefined,"nhl-calendar-probabilities");
+   for(const [side,label,value] of [["away",row.dataset.away||game.away,game.ml.away],["home",row.dataset.home||game.home,game.ml.home]]){
+    const item=make("span",undefined,"nhl-calendar-probability");
+    item.append(make("strong",label+" "+pct(value)));
+    const trend=game.ml_trend&&game.ml_trend[side];
+    if(trend==="up"||trend==="down"){
+     const arrow=make("span",trend==="up"?"↑":"↓","nhl-probability-trend "+(trend==="up"?"is-up":"is-down"));
+     arrow.setAttribute("aria-label",trend==="up"?"La probabilidad subió":"La probabilidad bajó");arrow.title=arrow.getAttribute("aria-label");item.append(arrow);
+    }
+    strip.append(item);
+   }
+   strip.setAttribute("aria-label","Probabilidad pregame de victoria por equipo");
+   const state=row.querySelector(".daily-state");if(state)row.insertBefore(strip,state);else row.append(strip);
+  });
+ }
  let published=null,loadError=null;
  function render(){
+ renderCalendarProbabilities(published);
  root.replaceChildren(make("h3","Pronósticos de la jornada"));
  const source=make("p","Cargando captura…","daily-source");
  const meta=make("div",undefined,"nhl-market-meta");
