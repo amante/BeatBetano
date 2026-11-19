@@ -533,6 +533,7 @@ jobs:
             --special-teams "results/pulso/nhl/$DAY/special_teams_counts.json" \
             --cutoff "$DAY" \
             --return-to-play "results/pulso/nhl/$DAY/return_to_play.json" \
+            --rotowire "results/pulso/nhl/$DAY/rotowire_evidence_475.json" \
             --output "results/pulso/nhl/$DAY/joint_match_inputs_321.json"
           RUN_DAY="$DAY" python - <<'PY'
           import json, os
