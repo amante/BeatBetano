@@ -106,3 +106,17 @@
 .nba-lineup-court__injury.is-questionable{background:#674d20;color:#fff1c7;border:1px solid #f5cd71}
 @media(max-width:700px){.nba-lineup-court__surface{min-height:185px;padding:14px}.nba-lineup-court__players{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.nba-lineup-court__player{min-height:48px}.nba-lineup-court__player:last-child:nth-child(odd){grid-column:1/-1;width:calc(50% - 4px);justify-self:center}}
 @media(prefers-reduced-motion:reduce){.nba-lineup-court__player{scroll-behavior:auto}}
+
+/* Side-by-side injury availability summary */
+.nba-availability-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:13px}
+.nba-availability-grid__column{min-width:0;padding:12px;border:1px solid #31536a;border-radius:12px;background:#102b40}
+.nba-availability-grid__column--out{border-color:#75414b;background:linear-gradient(145deg,#321f2b,#102b40 75%)}
+.nba-availability-grid__column--unknown{border-color:#31566b}
+.nba-availability-grid__heading{margin:0 0 9px;padding-bottom:8px;border-bottom:1px solid rgba(190,214,225,.16);color:#eaf4f8;font-size:12px;line-height:1.35}
+.nba-availability-grid__column--out .nba-availability-grid__heading{color:#ffb4b8}
+.nba-availability-grid__list{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.nba-availability-grid__row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;min-width:0;padding:5px 7px;border-radius:7px;background:rgba(6,22,34,.32)}
+.nba-availability-grid__name{min-width:0;color:#dce9f0;font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+.nba-availability-grid__badge{flex:none;padding:2px 6px;border-radius:999px;background:#682b38;color:#ffe9eb;font-size:9px;font-weight:850;letter-spacing:.04em}
+.nba-availability-grid__empty{margin:0;color:#b9ccd7;font-size:11px;line-height:1.5}
+@media(max-width:500px){.nba-availability-grid{grid-template-columns:1fr}}
