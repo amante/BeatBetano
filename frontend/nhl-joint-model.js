@@ -58,6 +58,46 @@
  const make=(tag,text,cls)=>{const el=doc.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;};
  const pct=x=>inRange(x)?(x*100).toFixed(1).replace(".",",")+"%":"—";
  let feed=null,error=null,dateInput=doc.getElementById("daily-date");
+ let rotowireFeed=null;
+ function rotowirePlayerText(player){
+  if(!player||!player.name)return "";
+  const identity=player.player_id?"ID NHL "+player.player_id:"identidad pendiente";
+  const status=player.reported_status?" · "+player.reported_status:"";
+  return player.name+" · "+identity+status;
+ }
+ function rotowireSectionText(section){
+  if(!section||!Array.isArray(section.players)||!section.players.length)return "Sin nombres identificados";
+  return section.players.map(rotowirePlayerText).join(" · ");
+ }
+ function addRotowireEvidence(parent,game){
+  const embedded=game&&game.rotowire_pregame;
+  const record=embedded?{
+   game_id:game.game_id,home:game.home,away:game.away,status:embedded.status,
+   teams:embedded.teams,market_observation:embedded.market_observation,source:embedded.source
+  }:(rotowireFeed&&Array.isArray(rotowireFeed.games)?rotowireFeed.games.find(x=>String(x.game_id)===String(game.game_id)):null);
+  if(!record)return;
+  const details=make("details",undefined,"nhl-joint-context");
+  details.append(make("summary","RotoWire · evidencia pregame"));
+  if(record.status!=="observed"){
+   details.append(make("p","Captura RotoWire no disponible para este partido."));
+   if(record.source_error||record.reason)details.append(make("small",record.source_error||record.reason));
+   parent.append(details);return;
+  }
+  for(const team of [record.home,record.away]){
+   const evidence=record.teams&&record.teams[team];
+   if(!evidence)continue;
+   details.append(make("strong",team));
+   details.append(make("p","Portero · "+(evidence.goalie?rotowirePlayerText({...evidence.goalie,reported_status:evidence.goalie.reported_status}):"sin identificación")));
+   details.append(make("p","PP1 · "+rotowireSectionText(evidence.power_play_1)));
+   details.append(make("p","PP2 · "+rotowireSectionText(evidence.power_play_2)));
+   details.append(make("p","Lesiones · "+rotowireSectionText(evidence.injuries)));
+  }
+  const market=record.market_observation||{};
+  const ml=market.moneyline||{},total=market.total_goals||{};
+  details.append(make("p","Mercado RotoWire · ML "+(ml.raw||"s/d")+" · Total "+(total.line??"s/d")));
+  details.append(make("small","Capturado "+(record.source&&record.source.captured_at_utc||rotowireFeed.captured_at_utc||"s/d")+" · Fuente informativa; no altera porcentajes ni certifica disponibilidad."));
+  parent.append(details);
+ }
  function addPlayerProbabilities(parent,team,players){
   if(!Array.isArray(players)||!players.length)return;
   const details=make("details",undefined,"nhl-joint-player-props");
@@ -121,7 +161,7 @@
   status.textContent="Última captura: "+feed.date+" · "+feed.games.length+" partidos con escenarios integrados · "+lineupPending+" alineaciones por confirmar · "+otherPending+" pendientes por otros datos · publicada "+new Date(feed.published_at_utc).toLocaleString("es-CL",{timeZone:"America/Santiago",dateStyle:"short",timeStyle:"short"})+" (Chile)";
   if(date!==feed.date){root.append(make("p","No hay escenarios publicados para "+date+". La última captura es del "+feed.date+". No mostramos datos de otra fecha.","daily-empty"));return;}
   if(!feed.games.length&&!feed.blocked_games.length)root.append(make("p","La captura no encontró partidos elegibles para esta fecha.","daily-empty"));
-  feed.games.forEach(game=>{const match=make("section",undefined,"nhl-joint-game");match.append(make("h4",game.away+" @ "+game.home));match.append(make("p",new Date(game.start_utc).toLocaleString("es-CL",{timeZone:"America/Santiago",dateStyle:"medium",timeStyle:"short"})+" · "+game.scenario_count+" combinaciones de arqueros","nhl-joint-kicker"));for(const team of [game.home,game.away]){const info=game.minute_distribution&&game.minute_distribution[team]&&game.minute_distribution[team].return_to_play;const returns=info&&info.players;if(Array.isArray(returns)&&returns.length){const details=make("details",undefined,"nhl-joint-return");details.append(make("summary","Retorno tras lesión · "+team+" · "+returns.length+" jugador"+(returns.length===1?"":"es")));for(const player of returns){const applied=player.status==="adjustment_applied";const change=applied?"Ajuste experimental aplicado · "+player.minutes_before.toFixed(1)+" → "+player.minutes_after.toFixed(1)+" min":player.status==="insufficient_return_history"?"Sin ajuste · muestra histórica insuficiente ("+player.historical_players+" jugadores)":player.status==="minutes_reallocation_unavailable"?"Sin ajuste · no se pudieron redistribuir minutos":"Sin ajuste · "+player.status;details.append(make("p",player.name+" · "+change+" · "+player.days_out+" días desde el reporte"));}match.append(details);}}const mix=weighted(game);if(mix){const card=make("article",undefined,"nhl-joint-scenario");card.append(make("h5","Estimación combinada · titularidades históricas"));card.append(make("p","Goles esperados · "+game.home+" "+mix.expected_goals.home.toFixed(2)+" — "+mix.expected_goals.away.toFixed(2)+" "+game.away,"nhl-joint-goals"));const m=mix.markets;card.append(make("p","Ganador ilustrativo · "+game.home+" "+pct(m.illustrative_ml.home)+" · "+game.away+" "+pct(m.illustrative_ml.away)));card.append(make("p","Tiempo regular · "+game.home+" "+pct(m.regulation.home)+" · Empate "+pct(m.regulation.draw)+" · "+game.away+" "+pct(m.regulation.away)));card.append(make("p","Alcanza ventaja de +3 · "+game.home+" "+pct(m.three_goal_lead.home)+" · "+game.away+" "+pct(m.three_goal_lead.away)));card.append(make("p","Primero en +3 · "+game.home+" "+pct(m.first_to_three_goal_lead.home)+" · "+game.away+" "+pct(m.first_to_three_goal_lead.away)));if(m.strong_win_regulation)card.append(make("p","FUERTE · gana por 2+ en 60 min · "+game.home+" "+pct(m.strong_win_regulation.home)+" · "+game.away+" "+pct(m.strong_win_regulation.away)));if(m.double_chance_regulation)card.append(make("p","DUAL · gana o empata en 60 min · local 1X "+pct(m.double_chance_regulation.home)+" · visita X2 "+pct(m.double_chance_regulation.away)));if(m.comeback_after_two_goal_deficit)card.append(make("p","Remontada: cae por 2 y gana · "+game.home+" "+pct(m.comeback_after_two_goal_deficit.home)+" · "+game.away+" "+pct(m.comeback_after_two_goal_deficit.away)));match.append(card);}else{match.append(make("p","Sin estimación combinada: las titularidades históricas no cubren todos los partidos previos del equipo.","nhl-joint-footnote"));}game.scenarios.forEach((s,i)=>match.append(addScenario(game,s,i)));root.append(match);});
+  feed.games.forEach(game=>{const match=make("section",undefined,"nhl-joint-game");match.append(make("h4",game.away+" @ "+game.home));match.append(make("p",new Date(game.start_utc).toLocaleString("es-CL",{timeZone:"America/Santiago",dateStyle:"medium",timeStyle:"short"})+" · "+game.scenario_count+" combinaciones de arqueros","nhl-joint-kicker"));addRotowireEvidence(match,game);for(const team of [game.home,game.away]){const info=game.minute_distribution&&game.minute_distribution[team]&&game.minute_distribution[team].return_to_play;const returns=info&&info.players;if(Array.isArray(returns)&&returns.length){const details=make("details",undefined,"nhl-joint-return");details.append(make("summary","Retorno tras lesión · "+team+" · "+returns.length+" jugador"+(returns.length===1?"":"es")));for(const player of returns){const applied=player.status==="adjustment_applied";const change=applied?"Ajuste experimental aplicado · "+player.minutes_before.toFixed(1)+" → "+player.minutes_after.toFixed(1)+" min":player.status==="insufficient_return_history"?"Sin ajuste · muestra histórica insuficiente ("+player.historical_players+" jugadores)":player.status==="minutes_reallocation_unavailable"?"Sin ajuste · no se pudieron redistribuir minutos":"Sin ajuste · "+player.status;details.append(make("p",player.name+" · "+change+" · "+player.days_out+" días desde el reporte"));}match.append(details);}}const mix=weighted(game);if(mix){const card=make("article",undefined,"nhl-joint-scenario");card.append(make("h5","Estimación combinada · titularidades históricas"));card.append(make("p","Goles esperados · "+game.home+" "+mix.expected_goals.home.toFixed(2)+" — "+mix.expected_goals.away.toFixed(2)+" "+game.away,"nhl-joint-goals"));const m=mix.markets;card.append(make("p","Ganador ilustrativo · "+game.home+" "+pct(m.illustrative_ml.home)+" · "+game.away+" "+pct(m.illustrative_ml.away)));card.append(make("p","Tiempo regular · "+game.home+" "+pct(m.regulation.home)+" · Empate "+pct(m.regulation.draw)+" · "+game.away+" "+pct(m.regulation.away)));card.append(make("p","Alcanza ventaja de +3 · "+game.home+" "+pct(m.three_goal_lead.home)+" · "+game.away+" "+pct(m.three_goal_lead.away)));card.append(make("p","Primero en +3 · "+game.home+" "+pct(m.first_to_three_goal_lead.home)+" · "+game.away+" "+pct(m.first_to_three_goal_lead.away)));if(m.strong_win_regulation)card.append(make("p","FUERTE · gana por 2+ en 60 min · "+game.home+" "+pct(m.strong_win_regulation.home)+" · "+game.away+" "+pct(m.strong_win_regulation.away)));if(m.double_chance_regulation)card.append(make("p","DUAL · gana o empata en 60 min · local 1X "+pct(m.double_chance_regulation.home)+" · visita X2 "+pct(m.double_chance_regulation.away)));if(m.comeback_after_two_goal_deficit)card.append(make("p","Remontada: cae por 2 y gana · "+game.home+" "+pct(m.comeback_after_two_goal_deficit.home)+" · "+game.away+" "+pct(m.comeback_after_two_goal_deficit.away)));match.append(card);}else{match.append(make("p","Sin estimación combinada: las titularidades históricas no cubren todos los partidos previos del equipo.","nhl-joint-footnote"));}game.scenarios.forEach((s,i)=>match.append(addScenario(game,s,i)));root.append(match);});
   if(feed.blocked_games.length){
    const pending=feed.blocked_games.filter(g=>g.category==="lineup_not_confirmed");
    if(pending.length){
@@ -135,5 +175,6 @@
   root.append(make("p","La estimación combinada usa la proporción de partidos iniciados por cada candidato en la temporada actual. Solo aparece si el historial de candidatos cubre todos los partidos previos del equipo. Es una frecuencia descriptiva sin calibración; el modelo sigue siendo experimental y no oficial.","nhl-joint-footnote"));
  }
  doc.addEventListener("pulso:date-change",render);if(dateInput)dateInput.addEventListener("change",render);render();
+ fetch("./data/nhl-rotowire-pregame-latest.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json();}).then(data=>{if(data&&data.kind==="nhl_rotowire_reconciled_pregame_v475"&&data.official===false&&data.probabilities_modified===false)rotowireFeed=data;render();}).catch(()=>{rotowireFeed=null;});
  fetch("./data/nhl-joint-model-latest.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.json();}).then(data=>{if(!validate(data))throw new Error("formato no válido");feed=data;error=null;render();}).catch(e=>{error=e.message;render();});
 })(typeof window!=="undefined"?window:globalThis);
