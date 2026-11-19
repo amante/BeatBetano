@@ -800,6 +800,16 @@ def run(inputs):
     league_pk_rate = _num(inputs["league_context"].get("powerplay_goals_allowed_per_opportunity"),
                           "league PK rate", positive=True)
     unknowns = list(inputs.get("unknowns", []))
+    rotowire_pp_applied = any(
+        profile.get("minute_distribution", {}).get("rotowire_power_play", {}).get("applied") is True
+        for profile in (home, away)
+    )
+    base_home = base_away = None
+    if rotowire_pp_applied:
+        home_without_rotowire = dict(inputs["teams"][home_code], rotowire_pregame=None)
+        away_without_rotowire = dict(inputs["teams"][away_code], rotowire_pregame=None)
+        base_home = team_profile(home_without_rotowire, home_code)
+        base_away = team_profile(away_without_rotowire, away_code)
     for team in (home, away):
         for player in inputs["teams"][team["team"]].get("unavailable_players", []):
             if player.get("availability") == "injury" and player.get("player_id") is None:
@@ -814,12 +824,36 @@ def run(inputs):
             a = _scoring_rate(away, home, hg, league_pk_rate)
             division_rivalry = _apply_division_rivalry(h, a, inputs.get("division_rivalry"))
             markets = calculate(h["expected_goals"], a["expected_goals"])
+            pp_impact = None
+            if rotowire_pp_applied:
+                base_h = _scoring_rate(base_home, base_away, ag, league_pk_rate)
+                base_a = _scoring_rate(base_away, base_home, hg, league_pk_rate)
+                base_markets = calculate(base_h["expected_goals"], base_a["expected_goals"])
+
+                def difference(after, before):
+                    if isinstance(after, dict) and isinstance(before, dict):
+                        return {key: difference(value, before[key]) for key, value in after.items()
+                                if key in before}
+                    if type(after) in (int, float) and type(before) in (int, float):
+                        return after - before
+                    return None
+
+                pp_impact = {
+                    "status": "applied_unvalidated_scenario_delta",
+                    "home_expected_goals_without_PP1_PP2": base_h["expected_goals"],
+                    "away_expected_goals_without_PP1_PP2": base_a["expected_goals"],
+                    "markets_without_PP1_PP2": base_markets,
+                    "market_probability_delta": difference(markets, base_markets),
+                    "official": False,
+                    "calibrated": False,
+                }
             home_player_probabilities = _player_probabilities(home, h)
             away_player_probabilities = _player_probabilities(away, a)
             weight=(hg["starter_probability"]*ag["starter_probability"]
                     if hg["starter_probability"] is not None and ag["starter_probability"] is not None else None)
             scenarios.append({"home_goalie": hg, "away_goalie": ag, "scenario_weight": weight,
                               "expected_goals": {"home": h["expected_goals"], "away": a["expected_goals"]},
+                              "rotowire_pp_impact": pp_impact,
                               "division_rivalry": division_rivalry,
                               "home_components": h["components"], "away_components": a["components"],
                               "player_probabilities": {home_code: home_player_probabilities,
