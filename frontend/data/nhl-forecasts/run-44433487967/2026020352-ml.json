@@ -1,0 +1,38 @@
+{
+  "record": {
+    "game_id": "2026020352",
+    "home": "CAR",
+    "away": "MTL",
+    "start_utc": "2026-11-20T00:00:00Z",
+    "game_date": "2026-11-19",
+    "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
+    "source_asof_utc": "2026-11-19T01:00:52.257611+00:00",
+    "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+    "model_version": "outcome-only-206-frozen-params",
+    "market": "ml",
+    "probabilities": {
+      "home": 0.5771626585704083,
+      "away": 0.4228373414295917
+    },
+    "module_effects": {
+      "rest": {
+        "module": "schedule_rest",
+        "status": "unavailable",
+        "reason": "away_previous_game_not_confirmed_complete"
+      },
+      "lineup_availability": {
+        "module": "crs_lineup_availability",
+        "status": "unavailable",
+        "reason": "scenario_incomplete:No complete team exposure scenario"
+      }
+    },
+    "odds_used_in_model": false,
+    "point_in_time_sources_verified": true,
+    "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+    "historical_prior_date_games": 2811,
+    "official": false
+  },
+  "sha256": "82a2ed56f9394cfb3c15afd02995a843718a44979752cdb8b69f68493302a21f",
+  "frozen": true,
+  "note": "Evidence signature only; immutable storage must be provided externally."
+}
