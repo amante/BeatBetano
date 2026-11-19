@@ -87,7 +87,7 @@ def toi(value, *, allow_missing=False, label="TOI"):
             return numeric/60 if numeric>100 else float(numeric)
     raise ValueError("Invalid NHL time-on-ice value for " + label + ": " + repr(value))
 
-def build(report, context, changes, goalies, special, cutoff, division_history=None, division_history_source=None, return_to_play=None):
+def build(report, context, changes, goalies, special, cutoff, division_history=None, division_history_source=None, return_to_play=None, rotowire=None):
     fixtures={str(g["game_id"]):g for g in report.get("games",[])}
     if len(fixtures)!=len(report.get("games",[])): raise ValueError("Duplicate schedule fixture")
     if context.get("kind")!="nhl_pregame_player_evidence_v1" or changes.get("kind")!="nhl_projected_lineup_changes_v1": raise ValueError("Wrong lineup evidence contract")
@@ -98,6 +98,16 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
             and return_to_play.get("date")==cutoff):
         return_by_game={str(item.get("game_id")):item for item in return_to_play.get("games",[])
                         if isinstance(item,dict) and item.get("game_id") is not None}
+    rotowire_by_game={}
+    if rotowire is not None:
+        if (rotowire.get("kind")!="nhl_rotowire_reconciled_pregame_v475"
+                or rotowire.get("official") is not False
+                or rotowire.get("probabilities_modified") is not False):
+            raise ValueError("Wrong RotoWire evidence contract")
+        rotowire_by_game={str(item.get("game_id")):item for item in rotowire.get("games",[])
+                          if isinstance(item,dict) and item.get("game_id") is not None}
+        if len(rotowire_by_game)!=len(rotowire.get("games",[])):
+            raise ValueError("Duplicate RotoWire fixture")
     if division_history is None:
         history_path=Path(__file__).resolve().parents[1]/"reports/nhl/goalie-candidate-2026-11-02/evidence/labels.csv"
         if history_path.is_file():
@@ -161,9 +171,14 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
         for captured_at in (context.get("as_of_utc"), changes.get("as_of_utc", report["generated_at_utc"]), goalies.get("as_of_utc"), special.get("as_of_utc")):
             if captured_at and utc(captured_at) >= start: raise ValueError("Pregame evidence captured after puck drop")
         try:
-            cg=context_games.get(gid); lg=change_games.get(gid); gg=goalie_games.get(gid)
+            cg=context_games.get(gid); lg=change_games.get(gid); gg=goalie_games.get(gid); rg=rotowire_by_game.get(gid)
             if not cg or (cg["home"],cg["away"])!=(f["home"],f["away"]): raise ValueError("missing/mismatched projected fixture")
             if not gg: raise ValueError("missing goalie-history fixture")
+            if rg and ((rg.get("home"),rg.get("away"))!=(f["home"],f["away"])
+                       or rg.get("start_utc")!=f["start_utc"]):
+                raise ValueError("RotoWire fixture identity mismatch")
+            if rg and rg.get("source",{}).get("captured_at_utc") and utc(rg["source"]["captured_at_utc"])>=start:
+                raise ValueError("late RotoWire evidence")
             change_teams=(lg or {}).get("teams",{})
             sides={};unknown=[]
             for code in (f["home"],f["away"]):
@@ -261,6 +276,9 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                     "team_summary":teamrow,"special_teams":{"games_played":sp["games_played"],"powerplay_goals":sp["powerplay_goals"],"powerplay_opportunities":sp["powerplay_opportunities"],"opponent_powerplay_goals":sp["opponent_powerplay_goals"],"times_shorthanded":sp["times_shorthanded"]},
                     "team_roster_penalty_minutes":{"total":totals["penaltyMinutes"],"games_played":gp,"unattributed_multi_team_players":0},
                     "team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":0},
+                    "rotowire_pregame":(rg.get("teams",{}).get(code) if rg else None),
+                    "rotowire_market_observation":(rg.get("market_observation") if rg else None),
+                    "rotowire_source":(rg.get("source") if rg else None),
                     "schedule":{},"_unknown":unknown}
             return_game=return_by_game.get(gid,{})
             return_teams=return_game.get("teams",{}) if isinstance(return_game,dict) else {}
@@ -274,6 +292,10 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
             captured=datetime.now(timezone.utc)
             if captured>=start: raise ValueError("Assembly completed after puck drop")
             manifest=s1+s2+s3+s4+s5+s6
+            if rg and rg.get("source",{}).get("url") and rg.get("source",{}).get("page_sha256"):
+                stamp=utc(rg["source"].get("captured_at_utc"))
+                if stamp>=start: raise ValueError("late RotoWire source")
+                manifest.append({"url":rg["source"]["url"],"sha256":rg["source"]["page_sha256"],"retrieved_at_utc":stamp.isoformat(),"provider":"RotoWire","source_role":"primary_pregame_observation"})
             for code in (f["home"],f["away"]):
                 for source in sides[code].get("return_to_play",{}).get("source_manifest",[]):
                     stamp=source.get("retrieved_at_utc") or source.get("retrieved_at")
@@ -327,11 +349,12 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
 def main():
     p=argparse.ArgumentParser()
     for key in ("report","context","changes","goalies","special-teams","output"):p.add_argument("--"+key,required=True)
-    p.add_argument("--cutoff",required=True);p.add_argument("--return-to-play");a=p.parse_args()
+    p.add_argument("--cutoff",required=True);p.add_argument("--return-to-play");p.add_argument("--rotowire");a=p.parse_args()
     def read(path):return json.loads(Path(path).read_text())
     return_data=read(a.return_to_play) if a.return_to_play else None
+    rotowire_data=read(a.rotowire) if a.rotowire else None
     result=build(read(a.report),read(a.context),read(a.changes),read(a.goalies),read(a.special_teams),a.cutoff,
-                 return_to_play=return_data)
+                 return_to_play=return_data,rotowire=rotowire_data)
     out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(result,indent=2)+"\n")
     print(json.dumps({"inputs":len(result["games"]),"blocked":len(result["blocked_games"]),"calibrated":False}))
 if __name__=="__main__":main()
