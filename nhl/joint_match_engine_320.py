@@ -508,9 +508,12 @@ def team_profile(team, team_code):
             ("shots","shots"),("pim","penaltyMinutes")):
             rates[rate_key]+=partial_ledger["residual"][stat_key]
         residual=partial_ledger["residual"]
+        residual_assists = 0.0
         for phase,points_key,goals_key in (("ev","evPoints","evGoals"),("pp","ppPoints","ppGoals"),("sh","shPoints","shGoals")):
-            rates[phase+"_assists"]+=_derived_assists(residual[points_key],residual[goals_key],"Residual "+phase.upper())
-        rates["assists"]+=sum(rates[key] for key in ("ev_assists","pp_assists","sh_assists"))
+            phase_residual = _derived_assists(residual[points_key],residual[goals_key],"Residual "+phase.upper())
+            rates[phase+"_assists"] += phase_residual
+            residual_assists += phase_residual
+        rates["assists"] += residual_assists
         modeled=rates["ev_minutes"]+rates["pp_minutes"]+rates["pk_minutes"]
         reserved=minute_audit["unresolved_reserved_minutes"]
         if modeled>0 and reserved>0:
@@ -778,10 +781,6 @@ def _player_probabilities(team, scoring):
                    "PP": team["rates"]["pp_goals"],
                    "SH": team["rates"]["sh_goals"]}
     phase_means = scoring["expected_goals_by_strength"]
-    assist_rate = team["rates"]["assists"]
-    assist_goal_ratio = team["historical_assists_per_goal"]
-    assist_mean = (scoring["expected_goals"] * assist_goal_ratio
-                   if assist_goal_ratio is not None else None)
     team_assists_by_strength = {}
     for phase, credit_key in (("EV","EV"),("PP","PP"),("SH","PK")):
         ratio = team["credit_ratios"][credit_key]
@@ -956,7 +955,7 @@ def run(inputs):
                                  away_code: away["player_contributions"]},
         "player_scoring_model": {
             "team_score_influence": "player goal rates by EV/PP/SH deployment feed team expected goals and game outcome probabilities",
-            "assists_role": "assists estimate individual A and G+A point probabilities; they are not counted as additional team goals",
+            "assists_role": "individual assists are distributed by EV/PP/SH historical points-minus-goals rates and projected minutes; assists contribute to individual points but not extra team goals",
             "point_identity": "points = goals + assists",
             "player_probabilities_vary_by_goalie_scenario": True,
             "calibrated": False,
@@ -976,7 +975,7 @@ def run(inputs):
             "Individual defender on-ice suppression and line-pair effects are unavailable; team shots-against is used.",
             "For partial projected lineups, only identified skaters are minute-adjusted; unresolved roster contribution stays at its aggregate team baseline.",
             "Player-level anytime goal, assist, and point probabilities are exploratory independent-Poisson estimates and require walk-forward calibration.",
-            "Player goal projections feed expected team goals by EV/PP/SH deployment; assists are allocated as player points and are not extra team goals.",
+            "Player goals feed expected team goals by EV/PP/SH deployment. Assists are allocated by situation-specific historical player points-minus-goals per minute and projected deployment; PP1/PP2 reallocations therefore change individual assist and point shares without adding assists to team goals.",
             "Division/rivalry shifts expected goal differential using a bounded, shrunk split of strictly prior two-year regulation goal results; it is experimental, not calibrated, and is omitted when history is insufficient.",
             "Comeback probability means falling behind by at least two regulation goals and still winning the illustrative ML outcome; a regulation tie receives the same 50/50 overtime split as that market.",
             "PIM affects opportunity volume through an observed roster-to-team exposure ratio, not a fixed minutes-to-power-play conversion.",
