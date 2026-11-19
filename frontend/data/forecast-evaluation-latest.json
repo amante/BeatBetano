@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "kind": "sealed_forecast_outcome_evaluation",
-  "generated_at_utc": "2026-11-18T23:01:30.535887+00:00",
+  "generated_at_utc": "2026-11-19T02:33:26.259779+00:00",
   "inputs": {
-    "forecast_snapshot_count": 455,
-    "forecast_snapshot_manifest_sha256": "b118abeaf7bc1553489798a2dd6d5ed7003d3eb91079c5e54ce75605f5a9fbbf",
+    "forecast_snapshot_count": 457,
+    "forecast_snapshot_manifest_sha256": "e1d5ce1f94f891da2ca19bc3f96d3e811c68899e85795f578ea5d0672ee9d984",
     "settled_history_row_count": 300,
-    "settled_history_sha256": "64aac2eb848cefd01f3d35686c1a97cabb605250a6543138444aefefb62452a0"
+    "settled_history_sha256": "399f2e1c5d3a31b1234784ee39a159ff6013b9c4fbb1c79ea0d2ad8d5f3fb0e4"
   },
   "coverage": {
     "verified_chains": 211,
     "latest_pregame_forecasts": 228,
     "forecasts_bound_to_history": 227,
-    "pending_forecasts": 14,
+    "pending_forecasts": 13,
     "scored_forecast_groups": 24,
     "legacy_source_output_digest_scope_unverified": 423
   },
@@ -1638,10 +1638,10 @@
       "model_code_sha256": "1cee1bd0884eaf344cf35a37b8de4f78c5388816a04a4811b22a11e4c8c2cda3",
       "stage": "update",
       "metrics": {
-        "n": 19,
-        "brier": 0.1905915587292016,
-        "log_loss": 0.5573314256520207,
-        "accuracy": 0.6842105263157895,
+        "n": 20,
+        "brier": 0.18389317383973486,
+        "log_loss": 0.5430525141866616,
+        "accuracy": 0.7,
         "reliability_bins": {
           "home": [
             {
@@ -1661,9 +1661,9 @@
             {
               "lower": 0.2,
               "upper": 0.3,
-              "n": 3,
-              "forecast_mean": 0.24906009457955833,
-              "observed_rate": 0.3333333333333333
+              "n": 4,
+              "forecast_mean": 0.24628449275688552,
+              "observed_rate": 0.25
             },
             {
               "lower": 0.3,
@@ -1768,9 +1768,9 @@
             {
               "lower": 0.7,
               "upper": 0.8,
-              "n": 3,
-              "forecast_mean": 0.7509399054204416,
-              "observed_rate": 0.6666666666666666
+              "n": 4,
+              "forecast_mean": 0.7537155072431145,
+              "observed_rate": 0.75
             },
             {
               "lower": 0.8,
@@ -1791,10 +1791,10 @@
       },
       "by_season": {
         "2026-27": {
-          "n": 19,
-          "brier": 0.1905915587292016,
-          "log_loss": 0.5573314256520207,
-          "accuracy": 0.6842105263157895,
+          "n": 20,
+          "brier": 0.18389317383973486,
+          "log_loss": 0.5430525141866616,
+          "accuracy": 0.7,
           "reliability_bins": {
             "home": [
               {
@@ -1814,9 +1814,9 @@
               {
                 "lower": 0.2,
                 "upper": 0.3,
-                "n": 3,
-                "forecast_mean": 0.24906009457955833,
-                "observed_rate": 0.3333333333333333
+                "n": 4,
+                "forecast_mean": 0.24628449275688552,
+                "observed_rate": 0.25
               },
               {
                 "lower": 0.3,
@@ -1921,9 +1921,9 @@
               {
                 "lower": 0.7,
                 "upper": 0.8,
-                "n": 3,
-                "forecast_mean": 0.7509399054204416,
-                "observed_rate": 0.6666666666666666
+                "n": 4,
+                "forecast_mean": 0.7537155072431145,
+                "observed_rate": 0.75
               },
               {
                 "lower": 0.8,
@@ -1944,15 +1944,15 @@
         }
       },
       "lineage_coverage": {
-        "scored_forecasts": 19,
-        "with_model_code_revision": 19,
-        "with_model_code_sha256": 19,
-        "with_training_data_sha256": 19,
-        "with_training_cutoff_utc": 19,
+        "scored_forecasts": 20,
+        "with_model_code_revision": 20,
+        "with_model_code_sha256": 20,
+        "with_training_data_sha256": 20,
+        "with_training_cutoff_utc": 20,
         "with_predictor_input_sha256": 0,
         "with_predictor_input_as_of_utc": 0,
-        "with_any_data_cutoff": 19,
-        "with_any_data_fingerprint": 19
+        "with_any_data_cutoff": 20,
+        "with_any_data_fingerprint": 20
       }
     },
     {
