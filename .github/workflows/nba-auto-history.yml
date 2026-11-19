@@ -37,7 +37,7 @@ jobs:
   generate:
     permissions:
       contents: write
-      actions: read
+      actions: write
     if: github.event_name == 'workflow_dispatch'
     needs: tests
     runs-on: ubuntu-24.04
@@ -434,3 +434,7 @@ jobs:
           git commit -m 'data(nba): publish frozen pregame comparison'
           git pull --rebase origin main
           git push origin HEAD:main
+      - name: Dispatch GitHub Pages deployment after NBA data publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages-deploy.yml --repo amante/BeatBetano --ref main
