@@ -15,7 +15,7 @@ from pathlib import Path
 from nhl.goal_process import calculate
 
 
-VERSION = "nhl-joint-match-320-v8"
+VERSION = "nhl-joint-match-320-v9"
 
 
 def _num(value, label, *, positive=False):
@@ -842,6 +842,8 @@ def run(inputs):
                     "status": "applied_unvalidated_scenario_delta",
                     "home_expected_goals_without_PP1_PP2": base_h["expected_goals"],
                     "away_expected_goals_without_PP1_PP2": base_a["expected_goals"],
+                    "current_home_expected_goals": h["expected_goals"],
+                    "current_away_expected_goals": a["expected_goals"],
                     "markets_without_PP1_PP2": base_markets,
                     "market_probability_delta": difference(markets, base_markets),
                     "official": False,
@@ -897,7 +899,8 @@ def run(inputs):
             "teams": {code: inputs["teams"][code].get("rotowire_pregame") for code in (home_code, away_code)},
             "market_observation": inputs["teams"][home_code].get("rotowire_market_observation"),
             "source": inputs["teams"][home_code].get("rotowire_source") or inputs["teams"][away_code].get("rotowire_source"),
-            "probabilities_modified": False,
+            "probabilities_modified": rotowire_pp_applied,
+            "power_play_adjustment_applied": rotowire_pp_applied,
         },
         "scenario_weighted_summary": weighted_summary,
         "scenarios": scenarios,
