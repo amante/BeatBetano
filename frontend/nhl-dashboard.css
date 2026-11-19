@@ -121,3 +121,13 @@
 .nhl-joint-blocked summary{cursor:pointer;color:#7fdcf1}
 .nhl-joint-blocked p{margin:7px 0}
 @media(max-width:520px){.nhl-dashboard .nhl-calendar-probabilities{grid-column:2;flex-basis:auto;gap:6px 10px}.nhl-dashboard .nhl-calendar-probability{white-space:normal}}
+
+/* Compact win-probability badges stay inside the corresponding team cell. */
+.nhl-dashboard .daily-match-card .nhl-calendar-probability{display:inline-flex;align-items:center;justify-content:center;gap:3px;flex:none;margin-left:auto;padding:4px 7px;border:1px solid #38627a;border-radius:999px;background:#14384d;color:#d9f4fa;font-size:11px;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nhl-dashboard .daily-match-card .nhl-calendar-probability strong{font-size:11px;font-weight:800;letter-spacing:0}
+.nhl-dashboard .daily-match-card .nhl-probability-trend{font-size:13px;font-weight:900;line-height:1}
+.nhl-dashboard .daily-match-card .nhl-probability-trend.is-up{color:#83e3a2}
+.nhl-dashboard .daily-match-card .nhl-probability-trend.is-down{color:#ff8585}
+.nhl-dashboard .daily-match-card .daily-team-name{flex:1 1 auto}
+@media(max-width:700px){.nhl-dashboard .daily-match-card .nhl-calendar-probability{padding:3px 5px;font-size:10px}.nhl-dashboard .daily-match-card .nhl-calendar-probability strong{font-size:10px}}
+@media(max-width:420px){.nhl-dashboard .daily-match-card .daily-team{gap:5px}.nhl-dashboard .daily-match-card .nhl-calendar-probability{padding:2px 4px}}
