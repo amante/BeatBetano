@@ -35,6 +35,30 @@
      forecast.append(make("span",binary?(row.actual==="yes"?"SÍ alcanzó +3":"NO alcanzó +3"):actualTeam?"":label(row.actual)));
     }
     card.append(p);}
+   const playerRows=(data.player_props?.players||[]).filter(row=>String(row.game_id)===String(game.game_id));
+   if(playerRows.length){
+    const detail=make("details");detail.className="postmortem-player-props";
+    const graded=playerRows.filter(row=>row.participation==="played").length;
+    detail.append(make("summary","Pronósticos individuales · "+graded+"/"+playerRows.length+" jugadores con minutos"));
+    const table=make("table");const head=make("thead"),header=make("tr");
+    for(const label of ["Jugador","Proyección G · A · P","Real G · A · P","Probabilidad"]){const th=make("th",label);th.scope="col";header.append(th);}
+    head.append(header);table.append(head);const body=make("tbody");
+    for(const row of playerRows){
+     const tr=make("tr"),name=make("th");name.scope="row";name.textContent=(row.player||("Jugador "+row.player_id))+" · "+(teamNames[row.team]||row.team);
+     const projected=row.projected||{},projection=make("td");
+     projection.textContent=["goals","assists","points"].map(key=>Number.isFinite(projected[key])?projected[key].toFixed(2):"—").join(" · ");
+     const actual=make("td");
+     if(row.participation==="played")actual.textContent=[row.actual.goals,row.actual.assists,row.actual.points].join(" · ");
+     else actual.textContent=({did_not_play:"DNP",not_in_boxscore:"No figura en el boxscore",boxscore_unavailable:"Boxscore no disponible",participation_unconfirmed:"Participación sin confirmar"})[row.participation]||"Pendiente";
+     const odds=make("td"),prob=row.probabilities;
+     odds.textContent=prob?["goal_at_least_one","assist_at_least_one","point_at_least_one"].map(key=>Number.isFinite(prob[key])?(prob[key]*100).toFixed(0)+"%":"—").join(" · "):"Arqueros sin resolver";
+     for(const cell of [name,projection,actual,odds])tr.append(cell);
+     body.append(tr);
+    }
+    table.append(body);detail.append(table);
+    detail.append(make("p","Orden: goles · asistencias · puntos. La probabilidad se muestra solo cuando los arqueros reales coinciden con un escenario guardado."));
+    card.append(detail);
+   }
    list.append(card);
   }return list;
  }
@@ -50,7 +74,8 @@
   select.addEventListener("change",()=>{selected=select.value;render();});root.append(select);
   if(!report){root.append(make("p","Todavía no está publicado el cierre de esta fecha. Se revisan las últimas siete jornadas dos veces al día."));return;}
   const state={complete:"Cierre completo",pending_results:"Esperando resultados finales",needs_review:"Hay fuentes que requieren revisión",no_forecasts:"No hubo pronósticos guardados"}[report.status]||report.status;
-  root.append(make("p",state+" · "+report.graded_games+" partidos evaluados · "+report.market_forecasts_scored+" predicciones de mercado."));
+  const playerCount=report.player_props?.graded_players;
+  root.append(make("p",state+" · "+report.graded_games+" partidos evaluados · "+report.market_forecasts_scored+" predicciones de mercado."+(Number.isInteger(playerCount)?" · "+playerCount+" jugadores evaluados":"")));
   const detail=reports.get(report.date);
   if(!detail){void loadDay(report.date);root.append(make("p","Cargando partidos y pronósticos…"));}
   else if(detail.error)root.append(make("p","No se pudieron cargar los partidos. Recarga la página para volver a intentarlo."));

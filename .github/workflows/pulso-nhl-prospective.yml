@@ -588,7 +588,7 @@ jobs:
           SOURCE="$(find . -type f -path "*/$DAY/joint_match_runs_322.json" -print -quit)"
           test -n "$SOURCE" && test -s "$SOURCE"
           python - "$SOURCE" frontend/data/nhl-joint-model-latest.json "$DAY" "$RUN_ID" <<'PY'
-          import json, sys
+          import hashlib, json, sys
           from datetime import datetime, timezone
           from pathlib import Path
           source, destination, day, run_id = map(str, sys.argv[1:])
@@ -598,18 +598,76 @@ jobs:
           assert data.get("official") is False and data.get("calibrated") is False
           assert data.get("odds_used") is False and data.get("public_base_replaced") is False
           assert isinstance(data.get("games"), list) and isinstance(data.get("blocked_games"), list)
+          forecast_root = Path("frontend/data/nhl-player-props-forecasts")
+          forecast_root.mkdir(parents=True, exist_ok=True)
+          archived = 0
+          def canonical_sha(value):
+              raw = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+              return hashlib.sha256(raw).hexdigest()
+          def instant(value):
+              parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+              if parsed.tzinfo is None:
+                  raise ValueError("Forecast timestamps must include timezone")
+              return parsed
           for game in data["games"]:
               assert game.get("publishable") is False and game.get("calibrated") is False
               assert game.get("status") == "conditional_unvalidated_scenarios"
+              if instant(game["captured_at_utc"]) >= instant(game["start_utc"]):
+                  continue
+              players = {}
+              for team, contributions in game.get("player_contributions", {}).items():
+                  players[team] = [{
+                      "player_id": row["player_id"], "name": row["name"],
+                      "unit": row.get("unit"), "line": row.get("line"),
+                      "projected": {key: row["projected"].get(key) for key in ("goals", "assists", "points")}
+                  } for row in contributions]
+              scenarios = []
+              for scenario in game.get("scenarios", []):
+                  by_team = {}
+                  for team, entries in scenario.get("player_probabilities", {}).items():
+                      by_team[team] = [{
+                          "player_id": row["player_id"], "expected": row.get("expected"),
+                          "probability": row.get("probability")
+                      } for row in entries]
+                  scenarios.append({
+                      "home_goalie": {key: (scenario.get("home_goalie") or {}).get(key) for key in ("id", "name")},
+                      "away_goalie": {key: (scenario.get("away_goalie") or {}).get(key) for key in ("id", "name")},
+                      "scenario_weight": scenario.get("scenario_weight"),
+                      "player_probabilities": by_team
+                  })
+              frozen = {
+                  "kind": "nhl_player_props_forecast_v1",
+                  "game_id": str(game["game_id"]), "home": game["home"], "away": game["away"],
+                  "start_utc": game["start_utc"], "captured_at_utc": game["captured_at_utc"],
+                  "source_cutoff_exclusive": game.get("source_cutoff_exclusive"),
+                  "model_version": game.get("model_version"), "run_id": run_id,
+                  "players": players, "scenarios": scenarios,
+                  "official": False, "calibrated": False, "odds_used": False
+              }
+              frozen["sha256"] = canonical_sha(frozen)
+              path = forecast_root / (str(game["game_id"]) + ".json")
+              if path.exists():
+                  previous = json.loads(path.read_text())
+                  prior_sha = previous.pop("sha256", None)
+                  if not prior_sha or canonical_sha(previous) != prior_sha:
+                      raise ValueError("Existing frozen player forecast hash mismatch")
+                  if instant(previous["captured_at_utc"]) > instant(frozen["captured_at_utc"]):
+                      continue
+              path.write_text(json.dumps(frozen, indent=2, ensure_ascii=False) + "\n")
+              archived += 1
           data["published_at_utc"] = datetime.now(timezone.utc).isoformat()
           data["run_id"] = run_id
           Path(destination).write_text(json.dumps(data, indent=2) + "\n")
           print(json.dumps({"date": day, "games": len(data["games"]),
+              "player_forecast_snapshots_updated": archived,
               "blocked": len(data["blocked_games"]), "official": False, "calibrated": False}))
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -f frontend/data/nhl-joint-model-latest.json
+          if find frontend/data/nhl-player-props-forecasts -name '*.json' -print -quit | grep -q .; then
+            git add -f frontend/data/nhl-player-props-forecasts
+          fi
           if ! git diff --cached --quiet; then
             git commit -m "data: publish NHL joint model scenarios"
             git pull --rebase origin main
