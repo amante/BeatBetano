@@ -1248,6 +1248,83 @@
         "graded_players": 0,
         "metrics": []
       }
+    },
+    {
+      "date": "2026-11-19",
+      "status": "needs_review",
+      "complete": false,
+      "official_games": 12,
+      "forecast_games": 12,
+      "graded_games": 11,
+      "market_forecasts_scored": 62,
+      "metrics": [
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "away3",
+          "n": 11,
+          "modal_correct": 8,
+          "brier": 0.199022,
+          "log_loss": 0.587418
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "first3",
+          "n": 11,
+          "modal_correct": 3,
+          "brier": 0.241743,
+          "log_loss": 1.174116
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "home3",
+          "n": 11,
+          "modal_correct": 6,
+          "brier": 0.277744,
+          "log_loss": 0.757588
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "ml",
+          "n": 2,
+          "modal_correct": 1,
+          "brier": 0.255089,
+          "log_loss": 0.703425
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "rt",
+          "n": 11,
+          "modal_correct": 3,
+          "brier": 0.219799,
+          "log_loss": 1.084484
+        },
+        {
+          "model_version": "outcome-only-206-rest-context-v1",
+          "market": "ml",
+          "n": 9,
+          "modal_correct": 4,
+          "brier": 0.255788,
+          "log_loss": 0.704945
+        },
+        {
+          "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+          "market": "ml",
+          "n": 7,
+          "modal_correct": 2,
+          "brier": 0.286861,
+          "log_loss": 0.76781
+        }
+      ],
+      "revision_sha256": "82f2e210f83018067d0c31b7eb211ebb402162c9d4ed40e424981523b0b37d76",
+      "generated_at_utc": "2026-11-20T17:43:15.529099+00:00",
+      "player_props": {
+        "status": "no_frozen_player_forecasts",
+        "forecast_games": 0,
+        "graded_games": 0,
+        "forecast_players": 0,
+        "graded_players": 0,
+        "metrics": []
+      }
     }
   ]
 }
