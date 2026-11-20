@@ -14,19 +14,25 @@ def label_from_pbp(payload):
  # NHL event snapshots include cumulative homeScore / awayScore per goal event.
  goals=[p for p in payload.get("plays",[]) if p.get("typeDescKey")=="goal"]
  if not goals:raise ValueError("Final game without audited scoring events")
- # NHL can return scoring plays out of chronological order. Order by official
- # period and clock before validating the cumulative score snapshots.
+ # NHL can return scoring plays out of chronological order. Sort only when
+ # every goal has an official period and clock; older/minimal payloads keep
+ # their source order and still pass through cumulative-score validation.
  def chronology(item):
   ordinal,play=item
   period=play.get("periodDescriptor",{}).get("number")
   clock=play.get("timeInPeriod")
-  if type(period) is not int or period<1 or not isinstance(clock,str) or ":" not in clock:
-   raise ValueError("Incomplete official goal chronology")
+  if type(period) is not int or period<1 or not isinstance(clock,str):
+   return None
+  if ":" not in clock:
+   raise ValueError("Invalid official goal clock")
   minutes,seconds=clock.split(":",1)
   if not minutes.isdigit() or not seconds.isdigit() or int(seconds)>=60:
    raise ValueError("Invalid official goal clock")
   return period,int(minutes)*60+int(seconds),ordinal
- goals=[play for _,play in sorted(enumerate(goals),key=chronology)]
+ indexed=list(enumerate(goals))
+ order=[chronology(item) for item in indexed]
+ if all(key is not None for key in order):
+  goals=[play for _,play in sorted(zip(order,goals),key=lambda item:item[0])]
  events=[];prev=(0,0)
  for p in goals:
   period=p.get("periodDescriptor",{}).get("number")
