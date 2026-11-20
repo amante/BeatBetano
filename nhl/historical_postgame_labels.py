@@ -20,12 +20,29 @@ def labels(game):
     if hg==ag:raise ValueError("NHL completed game cannot finish level")
     raw=game.get("goal_events")
     if not isinstance(raw,list) or not raw:raise ValueError("Missing goal PBP")
-    def chronology(item):
-        idx,event=item
-        if event.get("period") is None:raise ValueError(f"Goal ordinal {idx}: official period is missing")
-        if event.get("time_in_period") is None:raise ValueError(f"Goal ordinal {idx}: official clock is missing")
-        return (int(event["period"]),seconds(event["time_in_period"]),idx)
-    ordered=sorted(enumerate(raw),key=chronology)
+    indexed=list(enumerate(raw))
+    # When available, the NHL's cumulative score snapshot is the strongest
+    # chronology key: each played goal raises the combined score by exactly 1.
+    snapshots=[]
+    for idx,event in indexed:
+        if event.get("period") is None:
+            raise ValueError(f"Goal ordinal {idx}: official period is missing")
+        h=event.get("home_score");a=event.get("away_score")
+        if h is None or a is None:
+            snapshots.append(None);continue
+        if type(h) is not int or type(a) is not int or h<0 or a<0:
+            raise ValueError(f"Goal ordinal {idx}: invalid official score snapshot")
+        snapshots.append((h+a,idx))
+    if all(key is not None for key in snapshots):
+        ordered=sorted(zip(indexed,snapshots),key=lambda item:item[1])
+        ordered=[pair[0] for pair in ordered]
+    else:
+        def chronology(item):
+            idx,event=item
+            if event.get("period") is None:raise ValueError(f"Goal ordinal {idx}: official period is missing")
+            if event.get("time_in_period") is None:raise ValueError(f"Goal ordinal {idx}: official clock is missing")
+            return (int(event["period"]),seconds(event["time_in_period"]),idx)
+        ordered=sorted(indexed,key=chronology)
     seen=set();h=a=0;reg_h=reg_a=0
     h3=a3=False;first=None;first_event=None
     regulation=0;shootout_goals=0
