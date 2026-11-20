@@ -37,6 +37,13 @@ class DailyPostmortem(unittest.TestCase):
   core,_,_=analyze(self.repo,DAY,self.get,NOW)
   self.assertEqual(core['status'],'complete')
   self.assertEqual(core['graded_games'],1)
+ def test_goal_events_are_sorted_by_official_score_snapshots_without_clocks(self):
+  goals=self.pbp['plays']
+  for play in goals:play.pop('timeInPeriod',None)
+  self.pbp['plays']=[goals[2],goals[3],goals[0],goals[1]]
+  core,_,_=analyze(self.repo,DAY,self.get,NOW)
+  self.assertEqual(core['status'],'complete')
+  self.assertEqual(core['graded_games'],1)
  def test_bad_goal_sequence_and_cross_source_mismatch_not_scored(self):
   self.pbp['plays'][0]['details']['homeScore']=3
   core,_,_=analyze(self.repo,DAY,self.get,NOW);self.assertEqual(core['status'],'needs_review');self.assertEqual(core['graded_games'],0)
