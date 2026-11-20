@@ -32,6 +32,11 @@ class DailyPostmortem(unittest.TestCase):
   pending=read(self.repo/'frontend/data/nhl-postmortems'/(DAY+'.json'));self.assertEqual(pending['status'],'pending_results');self.assertEqual(pending['metrics'],[])
   self.final['gameState']=self.pbp['gameState']='OFF';run(self.repo,[DAY],self.get,NOW)
   complete=read(self.repo/'frontend/data/nhl-postmortems'/(DAY+'.json'));self.assertEqual(complete['graded_games'],1);self.assertEqual(len(list((self.repo/'reports/nhl/daily'/DAY/'revisions').iterdir())),2)
+ def test_goal_events_are_sorted_by_official_period_and_clock(self):
+  self.pbp['plays']=[self.pbp['plays'][2],self.pbp['plays'][0],self.pbp['plays'][1]]
+  core,_,_=analyze(self.repo,DAY,self.get,NOW)
+  self.assertEqual(core['status'],'complete')
+  self.assertEqual(core['graded_games'],1)
  def test_bad_goal_sequence_and_cross_source_mismatch_not_scored(self):
   self.pbp['plays'][0]['details']['homeScore']=3
   core,_,_=analyze(self.repo,DAY,self.get,NOW);self.assertEqual(core['status'],'needs_review');self.assertEqual(core['graded_games'],0)
