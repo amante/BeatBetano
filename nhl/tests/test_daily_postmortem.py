@@ -38,6 +38,7 @@ class DailyPostmortem(unittest.TestCase):
   self.assertEqual(core['status'],'complete')
   self.assertEqual(core['graded_games'],1)
  def test_goal_events_are_sorted_by_official_score_snapshots_without_clocks(self):
+  self.pbp=payload(scores=(3,1));self.final=copy.deepcopy(self.pbp);self.final.pop('plays')
   goals=self.pbp['plays']
   for play in goals:play.pop('timeInPeriod',None)
   self.pbp['plays']=[goals[2],goals[3],goals[0],goals[1]]
