@@ -14,6 +14,19 @@ def label_from_pbp(payload):
  # NHL event snapshots include cumulative homeScore / awayScore per goal event.
  goals=[p for p in payload.get("plays",[]) if p.get("typeDescKey")=="goal"]
  if not goals:raise ValueError("Final game without audited scoring events")
+ # NHL can return scoring plays out of chronological order. Order by official
+ # period and clock before validating the cumulative score snapshots.
+ def chronology(item):
+  ordinal,play=item
+  period=play.get("periodDescriptor",{}).get("number")
+  clock=play.get("timeInPeriod")
+  if type(period) is not int or period<1 or not isinstance(clock,str) or ":" not in clock:
+   raise ValueError("Incomplete official goal chronology")
+  minutes,seconds=clock.split(":",1)
+  if not minutes.isdigit() or not seconds.isdigit() or int(seconds)>=60:
+   raise ValueError("Invalid official goal clock")
+  return period,int(minutes)*60+int(seconds),ordinal
+ goals=[play for _,play in sorted(enumerate(goals),key=chronology)]
  events=[];prev=(0,0)
  for p in goals:
   period=p.get("periodDescriptor",{}).get("number")
