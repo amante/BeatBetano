@@ -21,6 +21,13 @@ class LabelTests(unittest.TestCase):
   x=labels(game([("home",1,"REG"),("home",1,"REG"),("home",2,"REG"),("away",3,"REG")]))
   self.assertEqual((x["rt_result"],x["ml_winner"],x["first_to_plus3"]),("home","home","home"))
   self.assertEqual((x["rt_home_goals"],x["rt_away_goals"]),(3,1))
+ def test_out_of_order_events_use_official_cumulative_score_without_clock(self):
+  g=game([("home",1,"REG"),("home",1,"REG"),("home",2,"REG"),("away",3,"REG")])
+  g["goal_events"]=[g["goal_events"][2],g["goal_events"][3],g["goal_events"][0],g["goal_events"][1]]
+  for event in g["goal_events"]:event["time_in_period"]=None
+  r=labels(g)
+  self.assertEqual((r["rt_result"],r["first_to_plus3"],r["rt_home_goals"],r["rt_away_goals"]),
+                   ("home","home",3,1))
  def test_ot_after_tie(self):
   x=labels(game([("home",1,"REG"),("away",2,"REG"),("away",4,"OT")]))
   self.assertEqual((x["rt_result"],x["ml_winner"],x["overtime_or_shootout"]),("draw","away",True))
