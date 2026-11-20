@@ -25,6 +25,8 @@ def labels(game):
     # chronology key: each played goal raises the combined score by exactly 1.
     snapshots=[]
     for idx,event in indexed:
+        if event.get("period") is None:
+            raise ValueError(f"Goal ordinal {idx}: official period is missing")
         h=event.get("home_score");a=event.get("away_score")
         if h is None or a is None:
             snapshots.append(None);continue
