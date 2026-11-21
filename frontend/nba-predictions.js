@@ -308,21 +308,27 @@
     card.append(el("h4",teamName(prediction.away_team)+" — "+teamName(prediction.home_team)));
     const injury=prediction.injury_probability_scenario;
     const baseline=prediction.statistical_baseline_p_home??prediction.hybrid_p_home;
-    const modelHome=prediction.model_p_home??baseline;
+    const researchHome=prediction.model_p_home??baseline;
     const adjustedStatus=["injury_adjusted_research_candidate","matchup_adjusted_research_candidate","travel_adjusted_research_candidate","combined_research_candidate"].includes(prediction.model_probability_status);
     const probabilityCalibrated=currentRun.calibrated===true&&prediction.model_probability_calibrated===true;
-    const probabilityLabel=adjustedStatus?"Candidato experimental no calibrado":probabilityCalibrated?"Modelo base calibrado":"Modelo base sin calibración certificada";
+    const hasUnvalidatedScenario=adjustedStatus&&!probabilityCalibrated;
+    // Keep the baseline in the headline until an adjusted candidate is calibrated.
+    const modelHome=hasUnvalidatedScenario?baseline:researchHome;
+    const probabilityLabel=hasUnvalidatedScenario?"Modelo base; escenario experimental aparte":probabilityCalibrated?"Modelo base calibrado":"Modelo base sin calibración certificada";
     if(typeof modelHome==="number"){
      if(card.dataset&&Number.isFinite(modelHome)&&modelHome>0&&modelHome<1){card.dataset.awayProbability=String(1-modelHome);card.dataset.homeProbability=String(modelHome);card.dataset.probabilityLabel=probabilityLabel;}
-     card.append(el("p",(adjustedStatus?"Candidato experimental (no calibrado): ":probabilityCalibrated?"Modelo base calibrado: ":"Modelo base (sin calibración certificada): ")+teamName(prediction.away_team)+" "+((1-modelHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(modelHome*100).toFixed(1)+"%","nba-model-probability"));
+     card.append(el("p",(hasUnvalidatedScenario?"Probabilidad base · Elo/Challenger: ":probabilityCalibrated?"Modelo base calibrado: ":"Modelo base (sin calibración certificada): ")+teamName(prediction.away_team)+" "+((1-modelHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(modelHome*100).toFixed(1)+"%","nba-model-probability"));
     }
     const market=marketPanel(prediction,modelHome,prediction.point_projection);if(market)card.append(market);
-    if(adjustedStatus&&typeof baseline==="number")card.append(el("p","Referencia estadística sin ajustes: "+teamName(prediction.away_team)+" "+((1-baseline)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(baseline*100).toFixed(1)+"%"));
+
     if(["research_scenario","partial_research_scenario"].includes(injury?.status)){
      const partial=injury.status==="partial_research_scenario";
      const delta=Number(injury.home_probability_delta_pp||0);
-     const direction=delta>0?"+" :"";
-     card.append(el("p",(partial?"Ajuste parcial por bajas: ":"Cambio aplicado por bajas: ")+direction+delta.toFixed(1)+" puntos porcentuales para "+teamName(prediction.home_team)+". El candidato mostrado ya incorpora este cambio.","nba-injury-scenario"));
+     const scenarioHome=Number.isFinite(prediction.model_p_home)?prediction.model_p_home:injury.injury_adjusted_home_probability;
+     if(hasUnvalidatedScenario&&typeof baseline==="number"&&Number.isFinite(scenarioHome)&&scenarioHome>0&&scenarioHome<1){
+      const direction=delta>0?"+":"";
+      card.append(el("p",(partial?"Escenario experimental parcial por lesiones (no validado): ":"Escenario experimental por lesiones (no validado): ")+teamName(prediction.away_team)+" "+((1-scenarioHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(scenarioHome*100).toFixed(1)+"% · cambio "+direction+delta.toFixed(1)+" pp para "+teamName(prediction.home_team)+". No reemplaza la probabilidad base mostrada arriba.","nba-injury-scenario"));
+     }
      const evidence=el("details","");evidence.className="nba-module-run-status";
      evidence.append(el("summary",partial?"Bajas incluidas y excluidas por falta de historial":"Bajas y redistribución estimada"));
      for(const team of [prediction.away_team,prediction.home_team]){
