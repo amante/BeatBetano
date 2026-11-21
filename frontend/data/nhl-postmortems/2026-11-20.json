@@ -1,0 +1,87 @@
+{
+  "kind": "nhl_daily_postmortem",
+  "date": "2026-11-20",
+  "timezone": "America/Santiago",
+  "pipeline_code_sha256": "2e36ff109bb00d16aabb80c15f594eec5e5a8395c2a38911d2dc6f2c1441c620",
+  "status": "needs_review",
+  "complete": false,
+  "official_games": 1,
+  "forecast_games": 1,
+  "graded_games": 0,
+  "market_forecasts_scored": 0,
+  "player_props": {
+    "kind": "nhl_player_props_postmortem_v1",
+    "status": "no_frozen_player_forecasts",
+    "forecast_games": 0,
+    "graded_games": 0,
+    "forecast_players": 0,
+    "graded_players": 0,
+    "selection_policy": "latest valid pregame player forecast captured before puck drop; postgame revisions are rejected",
+    "scenario_policy": "grade scenario probabilities only when both official starters match a recorded goalie scenario; otherwise retain alternatives without blending them",
+    "metrics": [],
+    "players": [],
+    "source_errors": {},
+    "automatic_parameter_updates": false,
+    "calibration_status": "observations_only_pending_independent_validation",
+    "limitations": [
+      "Players absent from the official boxscore are not assigned zero statistics.",
+      "DNP rows are excluded from accuracy metrics.",
+      "Unmatched goalie scenarios are retained but not averaged."
+    ]
+  },
+  "unpredicted_games": [],
+  "source_forecast_files": 15,
+  "unique_forecast_issuances": 5,
+  "selection_policy": "earliest valid pregame issuance per game/model/market",
+  "pending_game_ids": [],
+  "source_errors": {
+    "https://api-web.nhle.com/v1/gamecenter/2026020358/play-by-play": "ValueError: Inconsistent chronological goal sequence"
+  },
+  "games": [
+    {
+      "game_id": "2026020358",
+      "home": "VGK",
+      "away": "DAL",
+      "start_utc": "2026-11-20T03:00:00Z",
+      "state": "OFF",
+      "home_score": 3,
+      "away_score": 4,
+      "prediction_available": true,
+      "outcomes": null
+    }
+  ],
+  "market_scores": [],
+  "metrics": [],
+  "paired_ml_comparison": {
+    "status": "prospective_paired_ml_evaluation",
+    "paired_completed": 0,
+    "paired_awaiting_official_final": [
+      "2026020358"
+    ],
+    "unpaired_baseline_only": [],
+    "unpaired_challenger_only": [],
+    "metrics": null,
+    "games": [],
+    "source": "NHL official score API; final only",
+    "odds_used": false,
+    "automatic_promotion": false,
+    "limitations": "Matching pregame snapshots; provenance is repository run-specific filenames, not independent trusted timestamp attestation."
+  },
+  "source_hashes": {
+    "https://api-web.nhle.com/v1/gamecenter/2026020358/play-by-play": "26aab3efdf13998fc53ee40fb0e596e9330e6ee81a43d91b1c8c7f82db6ceffe",
+    "https://api-web.nhle.com/v1/score/2026-11-19": "a2727b6310aab05dd99c53c8e8c700841e25d4e2c5ed8353e6d77a86f645b7b7",
+    "https://api-web.nhle.com/v1/score/2026-11-20": "8e27ac23ce045dbea43fae4dfcf87f3b970469d01faeac8b042a71c6027bc46d",
+    "https://api-web.nhle.com/v1/score/2026-11-21": "f97764d30502901460bb88d75765419036ad2f401860654f600e6a183df28879"
+  },
+  "automatic_promotion": false,
+  "parameters_changed": false,
+  "learning_state": "observations_only_pending_independent_validation",
+  "limitations": [
+    "Markets from the same game are correlated.",
+    "No parameter changes or promotion from daily results.",
+    "Hashes verify content, not independent original capture time."
+  ],
+  "revision_sha256": "e6b09208df7a46456711c8de7a09f0b5846244cf08bb735d93e045c1a3054324",
+  "generated_at_utc": "2026-11-21T19:22:05.239362+00:00",
+  "archive_path": "reports/nhl/daily/2026-11-20/revisions/e6b09208df7a46456711c8de7a09f0b5846244cf08bb735d93e045c1a3054324"
+}
