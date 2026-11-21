@@ -323,11 +323,11 @@
 
     if(["research_scenario","partial_research_scenario"].includes(injury?.status)){
      const partial=injury.status==="partial_research_scenario";
-     const delta=Number(injury.home_probability_delta_pp||0);
      const scenarioHome=Number.isFinite(prediction.model_p_home)?prediction.model_p_home:injury.injury_adjusted_home_probability;
      if(hasUnvalidatedScenario&&typeof baseline==="number"&&Number.isFinite(scenarioHome)&&scenarioHome>0&&scenarioHome<1){
-      const direction=delta>0?"+":"";
-      card.append(el("p",(partial?"Escenario experimental parcial por lesiones (no validado): ":"Escenario experimental por lesiones (no validado): ")+teamName(prediction.away_team)+" "+((1-scenarioHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(scenarioHome*100).toFixed(1)+"% · cambio "+direction+delta.toFixed(1)+" pp para "+teamName(prediction.home_team)+". No reemplaza la probabilidad base mostrada arriba.","nba-injury-scenario"));
+      const delta=(scenarioHome-baseline)*100,direction=delta>0?"+":"";
+      const scenarioLabel=prediction.model_probability_status==="injury_adjusted_research_candidate"?"Escenario experimental por lesiones":"Candidato deportivo experimental";
+      card.append(el("p",(partial?scenarioLabel+" parcial (no validado): ":scenarioLabel+" (no validado): ")+teamName(prediction.away_team)+" "+((1-scenarioHome)*100).toFixed(1)+"% · "+teamName(prediction.home_team)+" "+(scenarioHome*100).toFixed(1)+"% · cambio "+direction+delta.toFixed(1)+" pp para "+teamName(prediction.home_team)+". No reemplaza la probabilidad base mostrada arriba.","nba-injury-scenario"));
      }
      const evidence=el("details","");evidence.className="nba-module-run-status";
      evidence.append(el("summary",partial?"Bajas incluidas y excluidas por falta de historial":"Bajas y redistribución estimada"));
