@@ -982,7 +982,13 @@ def run(inputs):
             weight=(hg["starter_probability"]*ag["starter_probability"]
                     if hg["starter_probability"] is not None and ag["starter_probability"] is not None else None)
             scenarios.append({"home_goalie": hg, "away_goalie": ag, "scenario_weight": weight,
-                              "expected_goals": {"home": h["expected_goals"], "away": a["expected_goals"]},
+                              "expected_goals": {"home": h["expected_goals"], "away": a["expected_goals"],
+                                                 "total": h["expected_goals"] + a["expected_goals"]},
+                              "expected_goals_by_strength": (
+                                  {home_code: h["expected_goals_by_strength"],
+                                   away_code: a["expected_goals_by_strength"]}
+                                  if h["expected_goals_by_strength"] is not None
+                                  and a["expected_goals_by_strength"] is not None else None),
                               "rotowire_pp_impact": pp_impact,
                               "forecast_basis": "team_aggregate_fallback" if aggregate_fallback else "projected_skaters_and_goalie_scenarios",
                               "division_rivalry": division_rivalry,
@@ -1005,7 +1011,16 @@ def run(inputs):
                 "method":"independent home/away candidate starter shares from season-to-date gamesStarted divided by team games played",
                 "scenario_weight_sum":weight_total,
                 "expected_goals":{"home":sum(s["scenario_weight"]*s["expected_goals"]["home"] for s in scenarios),
-                                  "away":sum(s["scenario_weight"]*s["expected_goals"]["away"] for s in scenarios)},
+                                  "away":sum(s["scenario_weight"]*s["expected_goals"]["away"] for s in scenarios),
+                                  "total":sum(s["scenario_weight"]*s["expected_goals"]["total"] for s in scenarios)},
+                "expected_goals_by_strength":{
+                    team:{strength:sum(s["scenario_weight"]*s["expected_goals_by_strength"][team][strength]
+                                       for s in scenarios)
+                          for strength in ("EV","PP","SH")}
+                    for team in (home_code,away_code)
+                } if all(isinstance(s.get("expected_goals_by_strength"),dict)
+                         and all(isinstance(s["expected_goals_by_strength"].get(team),dict)
+                                 for team in (home_code,away_code)) for s in scenarios) else None,
                 "markets":weighted_markets,
                 "calibrated":False,"official":False}
     reconstruction = bool(inputs.get("poststart_reconstruction")) or captured >= start
@@ -1072,6 +1087,9 @@ def run(inputs):
         "limitations": [
             "Poisson rates use observed per-game player production and shot rates, not fitted coefficients.",
             "Individual defender on-ice suppression and line-pair effects are unavailable; team shots-against is used.",
+            "Projected trios/pairs identify personnel and deployment, but no line-chemistry or pair-specific matchup coefficient is estimated.",
+            "Referee assignments do not change this goal projection; historical penalty-opportunity rates by assigned referee crew are not connected.",
+            "Schedule, travel and back-to-back context have no estimated coefficient in the goal-rate calculation.",
             "For partial projected lineups, only identified skaters are minute-adjusted; unresolved roster contribution stays at its aggregate team baseline.",
             "If either team has no identified projected lineup, the matchup falls back symmetrically to official team-season goals-for/goals-against rates and goalie scenarios; no player props, lineup, injury-replacement, or PP-unit effects are issued for that matchup.",
             "Player-level anytime goal, assist, and point probabilities are exploratory independent-Poisson estimates and require walk-forward calibration.",
