@@ -14,7 +14,22 @@ class ChangesTests(unittest.TestCase):
   e,r,h=self.inputs();e['games'][0]['teams']['BOS']['projected_skaters_identity_complete']=False
   self.assertEqual(build(e,r,h)['games'][0]['teams']['BOS']['status'],'blocked')
  def test_late_history_rejected(self):
-  e,r,h=self.inputs();h['players']['1']=dict(cutoff_exclusive='2026-11-02',source=dict(retrieved_at='2026-11-03T00:00:00Z'))
+  e,r,h=self.inputs();h['players']['1']=dict(cutoff_exclusive='2026-11-03',source=dict(retrieved_at='2026-11-03T00:00:00Z'))
+  with self.assertRaises(ValueError):build(e,r,h)
+ def test_same_utc_day_cutoff_is_valid_before_later_puck_drop(self):
+  e,r,h=self.inputs()
+  e['games'][0]['start_utc']='2026-11-03T20:00:00Z'
+  e['games'][0]['feature_as_of_utc']='2026-11-03T18:00:00Z'
+  h['cutoff_exclusive']='2026-11-03'
+  h['players']['1']=dict(cutoff_exclusive='2026-11-03',source=dict(retrieved_at='2026-11-03T19:00:00Z'))
+  result=build(e,r,h)['games'][0]['teams']['BOS']
+  self.assertEqual(result['new_in_projection'][0]['history']['cutoff_exclusive'],'2026-11-03')
+ def test_cutoff_after_puck_drop_rejected(self):
+  e,r,h=self.inputs()
+  e['games'][0]['start_utc']='2026-11-02T23:00:00Z'
+  e['games'][0]['feature_as_of_utc']='2026-11-02T20:00:00Z'
+  h['cutoff_exclusive']='2026-11-03'
+  h['players']['1']=dict(cutoff_exclusive='2026-11-03',source=dict(retrieved_at='2026-11-02T21:00:00Z'))
   with self.assertRaises(ValueError):build(e,r,h)
  def test_duplicate_projected_player_rejected(self):
   e,r,h=self.inputs();e['games'][0]['teams']['BOS']['projected']['defense'][0][0]['player_id']=1
