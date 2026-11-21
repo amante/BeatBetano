@@ -1,0 +1,554 @@
+{
+  "baseline_snapshot_sha256": "cf94d9260cd8e55a2c15ea0886c02019af4cf5b87f28281e9070859566128aff",
+  "team_metrics_sha256": "68249a05b2839fd169652e5161c6d40907b0103d620885650d3528da618177ed",
+  "emitted_at_utc": "2026-11-21T16:46:31.044537+00:00",
+  "model_version": "NBA_LIVEDATA_TEAM_ML_RESEARCH_V1",
+  "games": [
+    {
+      "game_id": "401910023",
+      "home_team": "PHI",
+      "away_team": "MIL",
+      "tipoff_utc": "2026-11-21T18:00:00Z",
+      "base_home_ml": 0.8593521123093913,
+      "candidate": null,
+      "home_plus20": null,
+      "away_plus20": null,
+      "status": "PASS_insufficient_opponent_sample"
+    },
+    {
+      "game_id": "401910024",
+      "home_team": "NY",
+      "away_team": "POR",
+      "tipoff_utc": "2026-11-22T00:30:00Z",
+      "base_home_ml": 0.6543914506344441,
+      "candidate": {
+        "score_margin_home": 0.877,
+        "score_model_p_home": 0.525909,
+        "experimental_p_home": 0.622271,
+        "uncertainty_sigma_points": 13.5,
+        "blend_weight": 0.25,
+        "production_approved": false
+      },
+      "home_plus20": null,
+      "away_plus20": null,
+      "status": "research_team_ml",
+      "projected_points": {
+        "NY": 111.83128510120616,
+        "POR": 110.95390539958663
+      },
+      "estimated_possessions": 100.15,
+      "home_ml": 0.622271,
+      "away_ml": 0.377729,
+      "home_ml_delta_vs_hybrid": -0.03212045063444413
+    },
+    {
+      "game_id": "401910025",
+      "home_team": "DAL",
+      "away_team": "LAC",
+      "tipoff_utc": "2026-11-22T01:00:00Z",
+      "base_home_ml": 0.5882064321607496,
+      "candidate": null,
+      "home_plus20": null,
+      "away_plus20": null,
+      "status": "PASS_insufficient_opponent_sample"
+    },
+    {
+      "game_id": "401910026",
+      "home_team": "MIN",
+      "away_team": "MEM",
+      "tipoff_utc": "2026-11-22T01:00:00Z",
+      "base_home_ml": 0.741312390651455,
+      "candidate": null,
+      "home_plus20": null,
+      "away_plus20": null,
+      "status": "PASS_insufficient_opponent_sample"
+    },
+    {
+      "game_id": "401910027",
+      "home_team": "SA",
+      "away_team": "NO",
+      "tipoff_utc": "2026-11-22T01:00:00Z",
+      "base_home_ml": 0.8907480349493573,
+      "candidate": null,
+      "home_plus20": null,
+      "away_plus20": null,
+      "status": "PASS_insufficient_opponent_sample"
+    },
+    {
+      "game_id": "401910028",
+      "home_team": "SAC",
+      "away_team": "BOS",
+      "tipoff_utc": "2026-11-22T03:00:00Z",
+      "base_home_ml": 0.18252929434219267,
+      "candidate": null,
+      "home_plus20": null,
+      "away_plus20": null,
+      "status": "PASS_insufficient_opponent_sample"
+    }
+  ],
+  "ratings": {
+    "ATL": {
+      "sample_games": 1,
+      "adjustable_games": 1,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 106.66414951859544,
+      "raw_drtg": 100.05663583160279,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 105.94,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600243"
+      ]
+    },
+    "BKN": {
+      "sample_games": 2,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 115.65571329296138,
+      "raw_drtg": 131.04338330189614,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 100.73,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600248",
+        "0022600234"
+      ]
+    },
+    "BOS": {
+      "sample_games": 4,
+      "adjustable_games": 3,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 110.7885085574572,
+      "raw_drtg": 103.65729421352891,
+      "opponent_adjusted_ortg": 111.17389098434758,
+      "opponent_adjusted_drtg": 105.26030812818465,
+      "historical_possessions_per_game": 98.16000000000001,
+      "status": "descriptive_schedule_adjusted",
+      "game_ids": [
+        "0022600266",
+        "0022600245",
+        "0022600240",
+        "0022600219"
+      ]
+    },
+    "CHA": {
+      "sample_games": 1,
+      "adjustable_games": 1,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 107.42786985880907,
+      "raw_drtg": 115.61285041948024,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 97.74000000000001,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600238"
+      ]
+    },
+    "CHI": {
+      "sample_games": 1,
+      "adjustable_games": 1,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 110.77447453133875,
+      "raw_drtg": 100.35978034463169,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 105.62,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600235"
+      ]
+    },
+    "CLE": {
+      "sample_games": 2,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 124.89927477840452,
+      "raw_drtg": 121.37389202256244,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 99.28,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600258",
+        "0022600232"
+      ]
+    },
+    "DAL": {
+      "sample_games": 4,
+      "adjustable_games": 3,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 103.38392023967388,
+      "raw_drtg": 119.10024065615637,
+      "opponent_adjusted_ortg": 101.57447153201079,
+      "opponent_adjusted_drtg": 130.33284541917456,
+      "historical_possessions_per_game": 101.805,
+      "status": "descriptive_schedule_adjusted",
+      "game_ids": [
+        "0022600267",
+        "0022600240",
+        "0022600232",
+        "0022600229"
+      ]
+    },
+    "DEN": {
+      "sample_games": 2,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 108.37583366025892,
+      "raw_drtg": 102.49117300902314,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 101.96000000000001,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600266",
+        "0022600231"
+      ]
+    },
+    "DET": {
+      "sample_games": 2,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 118.0324459234609,
+      "raw_drtg": 105.03327787021631,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 96.16,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600264",
+        "0022600255"
+      ]
+    },
+    "GS": {
+      "sample_games": 4,
+      "adjustable_games": 4,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 92.38968024703655,
+      "raw_drtg": 119.53381810937344,
+      "opponent_adjusted_ortg": 86.16369751298981,
+      "opponent_adjusted_drtg": 118.86827731499864,
+      "historical_possessions_per_game": 100.39,
+      "status": "descriptive_schedule_adjusted",
+      "game_ids": [
+        "0022600270",
+        "0022600267",
+        "0022600251",
+        "0022600040"
+      ]
+    },
+    "IND": {
+      "sample_games": 2,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 111.42331169460323,
+      "raw_drtg": 113.84555760100764,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 103.21000000000001,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600236",
+        "0022600034"
+      ]
+    },
+    "LAC": {
+      "sample_games": 4,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 110.083118939244,
+      "raw_drtg": 117.00969720957845,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 101.06000000000002,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600273",
+        "0022600257",
+        "0022600238",
+        "0022600042"
+      ]
+    },
+    "LAL": {
+      "sample_games": 1,
+      "adjustable_games": 1,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 111.60244261949883,
+      "raw_drtg": 109.49673615497998,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 94.98,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600051"
+      ]
+    },
+    "MEM": {
+      "sample_games": 4,
+      "adjustable_games": 1,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 129.12446093671647,
+      "raw_drtg": 112.57647176812756,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 99.71000000000001,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600270",
+        "0022600258",
+        "0022600247",
+        "0022600234"
+      ]
+    },
+    "MIA": {
+      "sample_games": 1,
+      "adjustable_games": 1,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 125.96542846634793,
+      "raw_drtg": 119.52923869069512,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 108.75999999999999,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600260"
+      ]
+    },
+    "MIL": {
+      "sample_games": 4,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 106.94040870766446,
+      "raw_drtg": 114.56199685609488,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 104.965,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600271",
+        "0022600260",
+        "0022600243",
+        "0022600035"
+      ]
+    },
+    "MIN": {
+      "sample_games": 5,
+      "adjustable_games": 4,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 105.74889444337627,
+      "raw_drtg": 99.21169005960392,
+      "opponent_adjusted_ortg": 110.54557857066268,
+      "opponent_adjusted_drtg": 97.94576993937484,
+      "historical_possessions_per_game": 104.02000000000001,
+      "status": "descriptive_schedule_adjusted",
+      "game_ids": [
+        "0022600272",
+        "0022600254",
+        "0022600250",
+        "0022600235",
+        "0022600229"
+      ]
+    },
+    "NO": {
+      "sample_games": 4,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 112.28139904610494,
+      "raw_drtg": 113.77186009538953,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 100.63999999999999,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600048",
+        "0022600264",
+        "0022600251",
+        "0022600231"
+      ]
+    },
+    "NY": {
+      "sample_games": 4,
+      "adjustable_games": 3,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 108.88324873096447,
+      "raw_drtg": 105.32994923857868,
+      "opponent_adjusted_ortg": 114.31754506896671,
+      "opponent_adjusted_drtg": 111.07773049658218,
+      "historical_possessions_per_game": 98.5,
+      "status": "descriptive_schedule_adjusted",
+      "game_ids": [
+        "0022600272",
+        "0022600253",
+        "0022600241",
+        "0022600034"
+      ]
+    },
+    "OKC": {
+      "sample_games": 3,
+      "adjustable_games": 3,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 118.03342654614033,
+      "raw_drtg": 109.25408076998113,
+      "opponent_adjusted_ortg": 113.22935551531839,
+      "opponent_adjusted_drtg": 111.68576209340998,
+      "historical_possessions_per_game": 102.51333333333334,
+      "status": "descriptive_schedule_adjusted",
+      "game_ids": [
+        "0022600048",
+        "0022600244",
+        "0022600042"
+      ]
+    },
+    "ORL": {
+      "sample_games": 3,
+      "adjustable_games": 3,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 115.31900375298532,
+      "raw_drtg": 110.88365745479358,
+      "opponent_adjusted_ortg": 115.83798448025256,
+      "opponent_adjusted_drtg": 106.39205586452272,
+      "historical_possessions_per_game": 97.7,
+      "status": "descriptive_schedule_adjusted",
+      "game_ids": [
+        "0022600261",
+        "0022600245",
+        "0022600035"
+      ]
+    },
+    "PHI": {
+      "sample_games": 4,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 127.75551102204408,
+      "raw_drtg": 118.98797595190379,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 99.80000000000001,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600261",
+        "0022600248",
+        "0022600236",
+        "0022600227"
+      ]
+    },
+    "PHX": {
+      "sample_games": 1,
+      "adjustable_games": 1,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 129.11034900141215,
+      "raw_drtg": 107.92818236836797,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 99.14,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600269"
+      ]
+    },
+    "POR": {
+      "sample_games": 4,
+      "adjustable_games": 4,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 107.14285714285714,
+      "raw_drtg": 103.78715244487057,
+      "opponent_adjusted_ortg": 110.49771713114946,
+      "opponent_adjusted_drtg": 109.01003376519435,
+      "historical_possessions_per_game": 104.3,
+      "status": "descriptive_schedule_adjusted",
+      "game_ids": [
+        "0022600271",
+        "0022600254",
+        "0022600250",
+        "0022600041"
+      ]
+    },
+    "SA": {
+      "sample_games": 4,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 112.57880516361452,
+      "raw_drtg": 101.07074952466726,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 99.93,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600273",
+        "0022600255",
+        "0022600239",
+        "0022600040"
+      ]
+    },
+    "SAC": {
+      "sample_games": 4,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 105.63026896828583,
+      "raw_drtg": 120.18265756724207,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 99.64,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600051",
+        "0022600269",
+        "0022600244",
+        "0022600041"
+      ]
+    },
+    "TOR": {
+      "sample_games": 4,
+      "adjustable_games": 4,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 107.39053928164785,
+      "raw_drtg": 114.89493841217264,
+      "opponent_adjusted_ortg": 110.3084910242364,
+      "opponent_adjusted_drtg": 112.55458738602633,
+      "historical_possessions_per_game": 96.61000000000001,
+      "status": "descriptive_schedule_adjusted",
+      "game_ids": [
+        "0022600253",
+        "0022600241",
+        "0022600227",
+        "0022600219"
+      ]
+    },
+    "UTAH": {
+      "sample_games": 2,
+      "adjustable_games": 2,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 120.54399340614053,
+      "raw_drtg": 111.78652379971152,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 97.06,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600257",
+        "0022600239"
+      ]
+    },
+    "WSH": {
+      "sample_games": 1,
+      "adjustable_games": 1,
+      "league_rating": 111.79856393957309,
+      "raw_ortg": 115.20737327188941,
+      "raw_drtg": 130.568356374808,
+      "opponent_adjusted_ortg": null,
+      "opponent_adjusted_drtg": null,
+      "historical_possessions_per_game": 104.16,
+      "status": "PASS_insufficient_opponent_sample",
+      "game_ids": [
+        "0022600247"
+      ]
+    }
+  },
+  "production_approved": false,
+  "calibrated": false,
+  "no_odds_input": true,
+  "content_sha256": "40ac2fcd4771362d73396ca92c8e6f8848fca917e08e50b01eded6c79237570a"
+}
