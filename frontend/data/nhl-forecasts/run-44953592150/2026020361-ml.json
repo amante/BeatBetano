@@ -1,0 +1,61 @@
+{
+  "record": {
+    "game_id": "2026020361",
+    "home": "FLA",
+    "away": "BUF",
+    "start_utc": "2026-11-21T23:00:00Z",
+    "game_date": "2026-11-21",
+    "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+    "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+    "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+    "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+    "market": "ml",
+    "probabilities": {
+      "home": 0.59672287,
+      "away": 0.40327713
+    },
+    "module_effects": {
+      "rest": {
+        "module": "schedule_rest",
+        "status": "applied",
+        "feature": "home_rest_days_minus_away_rest_days",
+        "home_rest_days": 3,
+        "away_rest_days": 1,
+        "rest_differential_days": 2,
+        "coefficient_logit_per_day": 0.06,
+        "logit_adjustment": 0.12,
+        "source_as_of_utc": "2026-11-21T21:50:51.865293+00:00",
+        "probability_before": 0.56685291,
+        "probability_after": 0.59604736,
+        "probability_delta_percentage_points": 2.9194
+      },
+      "lineup_availability": {
+        "module": "crs_lineup_availability",
+        "status": "applied_experimental",
+        "source_as_of_utc": "2026-11-21T21:51:09.947951+00:00",
+        "baseline_probability_home": 0.59604736,
+        "scenario_probability_home": 0.59672287,
+        "scenario_probability_away": 0.40327713,
+        "probability_delta_home_percentage_points": 0.0676,
+        "adjusted_goal_expectations": {
+          "home": 3.5866886336646306,
+          "away": 2.9487880540512115
+        },
+        "validated": false,
+        "assumptions": [
+          "Historical goals/minute held constant under redistributed minutes.",
+          "Independent Poisson goals; home rate anchored to preceding model probability.",
+          "Out of projection is not treated as confirmed injury."
+        ]
+      }
+    },
+    "odds_used_in_model": false,
+    "point_in_time_sources_verified": true,
+    "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+    "historical_prior_date_games": 2811,
+    "official": false
+  },
+  "sha256": "5f7007ac0ed4a6674cb119d586912dd2b07f843976b1ba994be8961a4d376d08",
+  "frozen": true,
+  "note": "Evidence signature only; immutable storage must be provided externally."
+}
