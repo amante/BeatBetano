@@ -30,7 +30,7 @@ def build(evidence,reference,history):
     # Nov 21 game whose puck drop occurs later that day.
     cutoff=parse_utc(rec['cutoff_exclusive']+'T00:00:00Z')
     history_cutoff=parse_utc(history['cutoff_exclusive']+'T00:00:00Z')
-    if cutoff>history_cutoff or cutoff>=start:raise ValueError('Invalid historical cutoff')
+    if cutoff>history_cutoff or cutoff>start:raise ValueError('Invalid historical cutoff')
     if parse_utc(rec['source']['retrieved_at'])>=start:raise ValueError('Late player history')
     return rec
    roles={p["player_id"]:role for role in ("forwards","defense") for line in side["projected"][role] for p in line}
