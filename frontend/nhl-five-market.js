@@ -162,6 +162,7 @@
    card.append(window.PulsoNhlGoalieComparison.create(data,g));
    card.append(window.PulsoNhlContext.create(g));
    card.append(window.PulsoNhlAbsenceExposure.create(g));
+   if(window.PulsoNhlInputs)card.append(window.PulsoNhlInputs.create(g));
    const rest=g.module_effects?.rest;
    if(rest){
     let message="Descanso no ajustado: falta evidencia pregame verificada; el porcentaje quedó sin este ajuste.";
@@ -222,6 +223,7 @@
  window.PulsoNhlMinuteML.ready.then(render);
  window.PulsoNhlAbsenceExposure.ready.then(render);
  window.PulsoNhlGoalieComparison.ready.then(render);
+ if(window.PulsoNhlInputs)window.PulsoNhlInputs.ready.then(render);
  render();
  try{
   const response=await fetch("./data/nhl-daily-predictions-latest.json",{cache:"no-store"});

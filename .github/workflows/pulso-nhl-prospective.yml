@@ -15,6 +15,8 @@ on:
       - 'nhl/lineup_features.py'
       - 'nhl/absence_exposure.py'
       - 'nhl/minute_adjusted_ml.py'
+      - 'nhl/pregame_input_inventory.py'
+      - 'frontend/nhl-pregame-inputs.js'
       - 'nhl/joint_goal_model.py'
       - 'nhl/goal_process.py'
       - 'nhl/joint_match_input_builder_321.py'
@@ -446,6 +448,28 @@ jobs:
             --out frontend/data/nhl-daily-predictions-latest.json
       - name: Calculate explicit minute-based Poisson ML sensitivity
         run: python -m nhl.minute_adjusted_ml --publication frontend/data/nhl-daily-predictions-latest.json --exposure frontend/data/nhl-absence-exposure.json --output frontend/data/nhl-minute-adjusted-ml.json
+      - name: Build per-game pregame inputs and missing-data checklist
+        env:
+          REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
+        run: |
+          DAY="${REQUESTED_DAY:-$(date -u +%F)}"
+          mkdir -p frontend/data/nhl-pregame-inputs
+          python -m nhl.pregame_input_inventory \
+            --report "results/pulso/nhl/$DAY/report.json" \
+            --schedule "results/pulso/nhl/$DAY/schedule_evidence.json" \
+            --pregame "nhl/learning/pregame/run-${{ github.run_id }}.json" \
+            --lineups "nhl/learning/lineups/run-${{ github.run_id }}.json" \
+            --schedule-context "results/pulso/nhl/$DAY/schedule_context.json" \
+            --team-form "results/pulso/nhl/$DAY/live_sporting_246.json" \
+            --special-teams "results/pulso/nhl/$DAY/special_teams_counts.json" \
+            --exposure frontend/data/nhl-absence-exposure.json \
+            --minute-ml frontend/data/nhl-minute-adjusted-ml.json \
+            --publication frontend/data/nhl-daily-predictions-latest.json \
+            --forecast-dir "frontend/data/nhl-forecasts/run-${{ github.run_id }}" \
+            --rotowire "results/pulso/nhl/$DAY/rotowire_evidence_475.json" \
+            --run-id "${{ github.run_id }}" \
+            --output "frontend/data/nhl-pregame-inputs/run-${{ github.run_id }}.json"
+          cp "frontend/data/nhl-pregame-inputs/run-${{ github.run_id }}.json" frontend/data/nhl-pregame-inputs-latest.json
       - name: Execute compatible goalie ML candidate or record explicit unavailability
         env:
           REQUESTED_DAY: ${{ inputs.day || needs.schedule-window.outputs.day }}
@@ -472,6 +496,7 @@ jobs:
             results/pulso/nhl/
             nhl/learning/pregame/
             nhl/learning/goalie-predictions/
+            frontend/data/nhl-pregame-inputs/
             frontend/data/nhl-forecasts/run-${{ github.run_id }}/
           retention-days: 90
       - name: Publish source readiness only, no predictions
@@ -482,6 +507,7 @@ jobs:
           git add -f nhl/learning/lineups/run-${{ github.run_id }}.json nhl/learning/lineups/run-${{ github.run_id }}.sources.json.gz
           git add -f nhl/learning/pregame/run-${{ github.run_id }}.json nhl/learning/pregame/run-${{ github.run_id }}.sources.json.gz
           git add -f frontend/data/nhl-minute-adjusted-ml.json frontend/data/nhl-absence-exposure.json frontend/data/pulso-nhl-research.json frontend/data/nhl-daily-predictions-latest.json frontend/data/nhl-complete-slate-latest.json frontend/data/nhl-ledger/run-${{ github.run_id }}.json frontend/data/nhl-baseline-latest.json frontend/data/nhl-rotowire-pregame-latest.json
+          git add -f frontend/data/nhl-pregame-inputs/run-${{ github.run_id }}.json frontend/data/nhl-pregame-inputs-latest.json
           git add -f frontend/data/nhl-coverage/run-${{ github.run_id }}-collective_coverage.json frontend/data/nhl-prediction-snapshots/run-${{ github.run_id }}.json
           if compgen -G 'frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json' > /dev/null; then
             git add -f frontend/data/nhl-forecasts/run-${{ github.run_id }}/*.json
