@@ -25,7 +25,12 @@ def build(evidence,reference,history):
    def observed(pid):
     rec=history['players'].get(str(pid))
     if rec is None:return None
-    if rec['cutoff_exclusive']>history['cutoff_exclusive'] or rec['cutoff_exclusive']>=start.date().isoformat():raise ValueError('Invalid historical cutoff')
+    # cutoff_exclusive is a UTC date boundary, not a whole-day exclusion:
+    # Nov 21 data excludes Nov 21 game logs, so it is still valid for a
+    # Nov 21 game whose puck drop occurs later that day.
+    cutoff=parse_utc(rec['cutoff_exclusive']+'T00:00:00Z')
+    history_cutoff=parse_utc(history['cutoff_exclusive']+'T00:00:00Z')
+    if cutoff>history_cutoff or cutoff>start:raise ValueError('Invalid historical cutoff')
     if parse_utc(rec['source']['retrieved_at'])>=start:raise ValueError('Late player history')
     return rec
    roles={p["player_id"]:role for role in ("forwards","defense") for line in side["projected"][role] for p in line}
