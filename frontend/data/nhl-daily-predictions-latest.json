@@ -2,7 +2,7 @@
   "kind": "nhl_research_daily_presentation_275",
   "date": "2026-11-22",
   "source_schedule": "https://api-web.nhle.com/v1/score/2026-11-22",
-  "run_id": "44979775813",
+  "run_id": "44997629089",
   "official_schedule_games": 5,
   "experimental_predicted_games": 5,
   "games": [
@@ -16,9 +16,18 @@
         "home": 0.5602794001836298,
         "away": 0.43972059981637024
       },
-      "previous_ml": null,
-      "ml_change": null,
-      "ml_trend": null,
+      "previous_ml": {
+        "home": 0.5602794001836298,
+        "away": 0.43972059981637024
+      },
+      "ml_change": {
+        "home": 0.0,
+        "away": 0.0
+      },
+      "ml_trend": {
+        "home": "unchanged",
+        "away": "unchanged"
+      },
       "rt": {
         "home": 0.3913520632133451,
         "draw": 0.21601864626447592,
@@ -45,7 +54,7 @@
           "rest_differential_days": 4,
           "coefficient_logit_per_day": 0.06,
           "logit_adjustment": 0.24,
-          "source_as_of_utc": "2026-11-22T03:15:39.407465+00:00",
+          "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
           "probability_before": 0.50057402,
           "probability_after": 0.5602794,
           "probability_delta_percentage_points": 5.9705
@@ -69,9 +78,18 @@
         "home": 0.6161577747848158,
         "away": 0.3838422252151842
       },
-      "previous_ml": null,
-      "ml_change": null,
-      "ml_trend": null,
+      "previous_ml": {
+        "home": 0.6161577747848158,
+        "away": 0.3838422252151842
+      },
+      "ml_change": {
+        "home": 0.0,
+        "away": 0.0
+      },
+      "ml_trend": {
+        "home": "unchanged",
+        "away": "unchanged"
+      },
       "rt": {
         "home": 0.46724461524711774,
         "draw": 0.2079231728440773,
@@ -98,7 +116,7 @@
           "rest_differential_days": 2,
           "coefficient_logit_per_day": 0.06,
           "logit_adjustment": 0.12,
-          "source_as_of_utc": "2026-11-22T03:15:39.407465+00:00",
+          "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
           "probability_before": 0.58741067,
           "probability_after": 0.61615777,
           "probability_delta_percentage_points": 2.8747
@@ -122,9 +140,18 @@
         "home": 0.5215424110896586,
         "away": 0.4784575889103414
       },
-      "previous_ml": null,
-      "ml_change": null,
-      "ml_trend": null,
+      "previous_ml": {
+        "home": 0.5215424110896586,
+        "away": 0.4784575889103414
+      },
+      "ml_change": {
+        "home": 0.0,
+        "away": 0.0
+      },
+      "ml_trend": {
+        "home": "unchanged",
+        "away": "unchanged"
+      },
       "rt": {
         "home": 0.4133523996782555,
         "draw": 0.21989922074826893,
@@ -151,7 +178,7 @@
           "rest_differential_days": 0,
           "coefficient_logit_per_day": 0.06,
           "logit_adjustment": 0.0,
-          "source_as_of_utc": "2026-11-22T03:15:39.407465+00:00",
+          "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
           "probability_before": 0.52154241,
           "probability_after": 0.52154241,
           "probability_delta_percentage_points": 0.0
@@ -175,9 +202,18 @@
         "home": 0.6197404301984685,
         "away": 0.3802595698015315
       },
-      "previous_ml": null,
-      "ml_change": null,
-      "ml_trend": null,
+      "previous_ml": {
+        "home": 0.6197404301984685,
+        "away": 0.3802595698015315
+      },
+      "ml_change": {
+        "home": 0.0,
+        "away": 0.0
+      },
+      "ml_trend": {
+        "home": "unchanged",
+        "away": "unchanged"
+      },
       "rt": {
         "home": 0.4423136542805262,
         "draw": 0.23574581522231994,
@@ -204,7 +240,7 @@
           "rest_differential_days": 2,
           "coefficient_logit_per_day": 0.06,
           "logit_adjustment": 0.12,
-          "source_as_of_utc": "2026-11-22T03:15:39.407465+00:00",
+          "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
           "probability_before": 0.59108358,
           "probability_after": 0.61974043,
           "probability_delta_percentage_points": 2.8657
@@ -228,9 +264,18 @@
         "home": 0.5245364230657065,
         "away": 0.47546357693429353
       },
-      "previous_ml": null,
-      "ml_change": null,
-      "ml_trend": null,
+      "previous_ml": {
+        "home": 0.5245364230657065,
+        "away": 0.47546357693429353
+      },
+      "ml_change": {
+        "home": 0.0,
+        "away": 0.0
+      },
+      "ml_trend": {
+        "home": "unchanged",
+        "away": "unchanged"
+      },
       "rt": {
         "home": 0.42233443560639916,
         "draw": 0.2139111967961731,
@@ -250,8 +295,17 @@
       "module_effects": {
         "rest": {
           "module": "schedule_rest",
-          "status": "unavailable",
-          "reason": "home_previous_game_not_confirmed_complete"
+          "status": "applied",
+          "feature": "home_rest_days_minus_away_rest_days",
+          "home_rest_days": 0,
+          "away_rest_days": 0,
+          "rest_differential_days": 0,
+          "coefficient_logit_per_day": 0.06,
+          "logit_adjustment": 0.0,
+          "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
+          "probability_before": 0.52453642,
+          "probability_after": 0.52453642,
+          "probability_delta_percentage_points": 0.0
         },
         "lineup_availability": {
           "module": "crs_lineup_availability",
@@ -259,7 +313,7 @@
           "reason": "scenario_incomplete:No complete team exposure scenario"
         }
       },
-      "model": "outcome-only-206-frozen-params",
+      "model": "outcome-only-206-rest-context-v1",
       "probability_status": "research_experimental_not_official"
     }
   ],
