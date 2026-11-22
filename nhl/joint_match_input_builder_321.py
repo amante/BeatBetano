@@ -310,6 +310,57 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                             continue
                         p=safe_player_record(person,field+" player history")
                         if p: p["availability"]="injury" if field=="injuries" else "scratch";absent.append(p)
+                # Add only explicit RotoWire OUT/IR statuses after identity and team-history reconciliation.
+                # Absence from a provider list is never interpreted as availability.
+                rw_side=(rg or {}).get("teams",{}).get(code,{})
+                rw_injuries=rw_side.get("injuries") or {}
+                rw_out_ids=set()
+                if rw_side.get("capture_status")=="captured" and rw_injuries.get("status")=="observed":
+                    for report_row in rw_injuries.get("players",[]):
+                        if not isinstance(report_row,dict):
+                            continue
+                        reported=str(report_row.get("reported_status") or "").strip().upper()
+                        if reported not in ("OUT","IR","IR-LT","IR-NR"):
+                            continue
+                        report_name=report_row.get("resolved_name") or report_row.get("name") or "Jugador sin nombre"
+                        identity_status=report_row.get("identity_status")
+                        pid=report_row.get("player_id")
+                        if type(pid) is not int or identity_status not in ("exact","unique_initial_and_surname"):
+                            fallback_reasons.append("RotoWire reportó una baja sin identidad reconciliada para "+str(report_name)+".")
+                            unknown.append(code+" RotoWire unavailable player unresolved: "+str(report_name)+" ("+reported+")")
+                            continue
+                        position=str(report_row.get("position_group") or report_row.get("position_observation") or "").strip().upper()
+                        if position in ("G","GOALIE","GOALIE"):
+                            injured_goalie_ids.add(str(pid))
+                            unknown.append(code+" RotoWire goalie injury tracked in goalie scenarios, not skater availability: "+str(report_name))
+                            continue
+                        record=safe_player_record({"player_id":pid,"name":report_name},"RotoWire unavailable player")
+                        if not record:
+                            continue
+                        record["availability"]="injury"
+                        record["availability_source"]="RotoWire explicit "+reported
+                        record["reported_status"]=reported
+                        rw_out_ids.add(pid)
+                        if not any(item.get("player_id")==pid for item in absent):
+                            absent.append(record)
+                if rw_out_ids:
+                    removed_from_projection=[]
+                    for line in lines:
+                        retained=[]
+                        for player_row in line["players"]:
+                            if player_row["player_id"] in rw_out_ids:
+                                removed_from_projection.append(player_row)
+                            else:
+                                retained.append(player_row)
+                        line["players"]=retained
+                    existing_out={item.get("player_id") for item in outgoing}
+                    for player_row in removed_from_projection:
+                        player_row["position"]="D" if player_row.get("position")=="D" else "F"
+                        if player_row.get("player_id") not in existing_out:
+                            outgoing.append(player_row)
+                            existing_out.add(player_row.get("player_id"))
+                    if removed_from_projection:
+                        unknown.append(code+" RotoWire explicit OUT/IR removed from projected skaters; unfilled minutes remain in team baseline: "+", ".join(item["name"] for item in removed_from_projection))
                 candidates=gg.get("teams",{}).get(code,[]);glist=[]
                 team_games=number(teamrow,"gamesPlayed",True)
                 for g in candidates:
