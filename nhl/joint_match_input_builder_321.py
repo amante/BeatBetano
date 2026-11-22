@@ -347,6 +347,18 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                     fallback_reasons.append("Hay estadísticas de jugadores transferidos que no se pueden atribuir al equipo actual.")
                     unknown.append(code+" multi-team player statistics excluded from individual attribution")
                 totals={k:sum(number(r,k) for r in exact) for k in ("goals","assists","shots","penaltyMinutes","evGoals","evPoints","ppGoals","ppPoints","shGoals","shPoints")}
+                # Keep a full, identity-safe team skater pool for the aggregate
+                # fallback. RotoWire's PP units can then affect the experimental
+                # goal rate even when 5v5 line combinations are unavailable.
+                team_roster_skaters=[]
+                for stats_row in skaters:
+                    if stats_row.get("teamAbbrevs")!=code or str(stats_row.get("positionCode","")).upper()=="G":
+                        continue
+                    person={"player_id":stats_row.get("playerId"),"name":stats_row.get("skaterFullName")}
+                    try:
+                        team_roster_skaters.append(player_record(person,code))
+                    except (KeyError,TypeError,ValueError):
+                        continue
                 gp=number(teamrow,"gamesPlayed",True)
                 modeled_count=sum(len(line["players"]) for line in lines)
                 projected_slots=sum(item["expected"] for item in coverage_counts.values())
@@ -362,7 +374,7 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                     "unavailable_players":absent,"goalie_candidates":glist,"goalie_start_distribution":goalie_start_distribution,
                     "team_summary":teamrow,"special_teams":{"games_played":sp["games_played"],"powerplay_goals":sp["powerplay_goals"],"powerplay_opportunities":sp["powerplay_opportunities"],"opponent_powerplay_goals":sp["opponent_powerplay_goals"],"times_shorthanded":sp["times_shorthanded"]},
                     "team_roster_penalty_minutes":{"total":totals["penaltyMinutes"],"games_played":gp,"unattributed_multi_team_players":len(multi)},
-                    "team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":len(multi)},
+                    "team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":len(multi)},"team_roster_skaters":team_roster_skaters,
                     "rotowire_pregame":(rg.get("teams",{}).get(code) if rg else None),
                     "rotowire_market_observation":(rg.get("market_observation") if rg else None),
                     "rotowire_source":(rg.get("source") if rg else None),
