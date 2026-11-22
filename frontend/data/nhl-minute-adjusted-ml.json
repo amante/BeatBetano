@@ -1,60 +1,7 @@
 {
   "kind": "nhl_minute_adjusted_ml_v1",
-  "as_of_utc": "2026-11-22T16:55:54.521831+00:00",
+  "as_of_utc": "2026-11-22T22:14:33.464276+00:00",
   "games": [
-    {
-      "game_id": "2026020373",
-      "home": "NYR",
-      "away": "CAR",
-      "start_utc": "2026-11-22T17:30:00Z",
-      "baseline_ml_home": 0.53991708,
-      "scenario_ml_home": 0.5196560688188457,
-      "scenario_ml_away": 0.48034393118115426,
-      "delta_home_pp": -2.026101118115431,
-      "anchored_goals": {
-        "home": 4.702263808465915,
-        "away": 4.395692789285467
-      },
-      "adjusted_goals": {
-        "home": 4.610580682601102,
-        "away": 4.460014323268372
-      },
-      "adjusted_sides": [
-        "NYR",
-        "CAR"
-      ],
-      "excluded_sides": [],
-      "partial": false,
-      "validated": false,
-      "status": "experimental_minute_scenario"
-    },
-    {
-      "game_id": "2026020374",
-      "home": "TBL",
-      "away": "BUF",
-      "start_utc": "2026-11-22T22:00:00Z",
-      "baseline_ml_home": 0.61615777,
-      "scenario_ml_home": 0.61615777,
-      "scenario_ml_away": 0.38384222999999995,
-      "delta_home_pp": 0.0,
-      "anchored_goals": {
-        "home": 3.741968166901813,
-        "away": 2.9632787502352724
-      },
-      "adjusted_goals": {
-        "home": 3.741968166901813,
-        "away": 2.9632787502352724
-      },
-      "adjusted_sides": [
-        "BUF"
-      ],
-      "excluded_sides": [
-        "TBL"
-      ],
-      "partial": true,
-      "validated": false,
-      "status": "experimental_minute_scenario"
-    },
     {
       "game_id": "2026020375",
       "home": "STL",
@@ -86,16 +33,53 @@
       "home": "DAL",
       "away": "PIT",
       "start_utc": "2026-11-23T00:00:00Z",
-      "status": "blocked",
-      "reason": "No complete team exposure scenario"
+      "baseline_ml_home": 0.64313812,
+      "scenario_ml_home": 0.6660115497222842,
+      "scenario_ml_away": 0.33398845027771584,
+      "delta_home_pp": 2.287342972228412,
+      "anchored_goals": {
+        "home": 3.194469209383648,
+        "away": 2.3151769111521436
+      },
+      "adjusted_goals": {
+        "home": 3.194469209383648,
+        "away": 2.179697114510758
+      },
+      "adjusted_sides": [
+        "DAL",
+        "PIT"
+      ],
+      "excluded_sides": [],
+      "partial": false,
+      "validated": false,
+      "status": "experimental_minute_scenario"
     },
     {
       "game_id": "2026020377",
       "home": "VAN",
       "away": "CHI",
       "start_utc": "2026-11-23T01:00:00Z",
-      "status": "blocked",
-      "reason": "No complete team exposure scenario"
+      "baseline_ml_home": 0.52453642,
+      "scenario_ml_home": 0.52453642,
+      "scenario_ml_away": 0.47546358,
+      "delta_home_pp": 0.0,
+      "anchored_goals": {
+        "home": 2.56036231884058,
+        "away": 2.4193454510791055
+      },
+      "adjusted_goals": {
+        "home": 2.56036231884058,
+        "away": 2.4193454510791055
+      },
+      "adjusted_sides": [
+        "VAN"
+      ],
+      "excluded_sides": [
+        "CHI"
+      ],
+      "partial": true,
+      "validated": false,
+      "status": "experimental_minute_scenario"
     }
   ],
   "validated": false,
