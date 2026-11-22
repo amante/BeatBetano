@@ -1,7 +1,7 @@
 {
   "kind": "nhl_joint_match_daily_runs_v322",
   "date": "2026-11-22",
-  "generated_at_utc": "2026-11-22T03:16:08.574617+00:00",
+  "generated_at_utc": "2026-11-22T07:19:38.892162+00:00",
   "games": [
     {
       "kind": "nhl_joint_match_scenarios_v1",
@@ -23,7 +23,7 @@
         ]
       },
       "source_cutoff_exclusive": "2026-11-22",
-      "captured_at_utc": "2026-11-22T03:16:08.568840+00:00",
+      "captured_at_utc": "2026-11-22T07:19:38.885215+00:00",
       "status": "conditional_unvalidated_scenarios",
       "publishable": false,
       "scenario_count": 1,
@@ -31,7 +31,7 @@
         "STL": {
           "status": "incomplete_candidate_coverage",
           "method": "candidate_games_started_divided_by_team_games_played",
-          "team_games_played": 22,
+          "team_games_played": 23,
           "candidate_starts": 16,
           "probabilities_sum_to_one": false
         },
@@ -93,8 +93,8 @@
         "source": {
           "provider": "RotoWire",
           "url": "https://www.rotowire.com/hockey/nhl-lineups.php",
-          "captured_at_utc": "2026-11-22T03:15:37.575298+00:00",
-          "page_sha256": "da165e70042413fcc2cbe163b49be35094278a74261223f42e87690481e0ff94",
+          "captured_at_utc": "2026-11-22T07:19:01.239840+00:00",
+          "page_sha256": "da13d45c598af202e0a55e9543fd4e675e5c07afc94dce0ba671341a2651c11c",
           "card_sha256": null,
           "official": false
         },
@@ -124,9 +124,9 @@
           },
           "scenario_weight": null,
           "expected_goals": {
-            "home": 2.1796813450757964,
-            "away": 2.532938922910819,
-            "total": 4.712620267986615
+            "home": 2.270437933999267,
+            "away": 2.5324805326056334,
+            "total": 4.8029184666049005
           },
           "expected_goals_by_strength": null,
           "rotowire_pp_impact": null,
@@ -159,9 +159,9 @@
           },
           "home_components": {
             "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
-            "attacking_goals_for_per_game": 3.04545,
+            "attacking_goals_for_per_game": 3.30434,
             "opponent_goals_against_per_game": 2.8,
-            "team_aggregate_baseline": 2.9201472565608744,
+            "team_aggregate_baseline": 3.041735031195189,
             "rotowire_PP1_PP2_adjustment": {
               "applied": false,
               "reason": "rotowire_observation_unavailable"
@@ -183,8 +183,8 @@
           "away_components": {
             "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
             "attacking_goals_for_per_game": 3.84,
-            "opponent_goals_against_per_game": 3.04545,
-            "team_aggregate_baseline": 3.419726304837859,
+            "opponent_goals_against_per_game": 3.17391,
+            "team_aggregate_baseline": 3.491105039955114,
             "rotowire_PP1_PP2_adjustment": {
               "applied": false,
               "reason": "rotowire_observation_unavailable"
@@ -198,7 +198,7 @@
             },
             "aggregate_baseline_PP_goal_delta": 0.0,
             "opponent_goalie_save_pct": 0.9225806451612903,
-            "opponent_goalie_factor": 0.7406846914408006,
+            "opponent_goalie_factor": 0.7254094344403325,
             "individual_lineup_adjustment": "omitted_projected_lineup_unavailable",
             "special_teams_personnel_adjustment": "omitted_projected_lineup_unavailable",
             "division_rivalry_goal_rate_factor": 1.0
@@ -208,37 +208,37 @@
             "EDM": []
           },
           "markets": {
-            "lambda_home": 2.1797,
-            "lambda_away": 2.5329,
+            "lambda_home": 2.2704,
+            "lambda_away": 2.5325,
             "regulation": {
-              "home": 0.34349,
-              "draw": 0.18723,
-              "away": 0.46928
+              "home": 0.36052,
+              "draw": 0.18634,
+              "away": 0.45315
             },
             "strong_win_regulation": {
-              "home": 0.18963,
-              "away": 0.29048
+              "home": 0.20377,
+              "away": 0.27831
             },
             "double_chance_regulation": {
-              "home": 0.53072,
-              "away": 0.65651
+              "home": 0.54685,
+              "away": 0.63948
             },
             "strong_dual_definition": "FUERTE = ganar por 2+ goles en 60 minutos; DUAL = ganar o empatar en 60 minutos (1X/X2)",
             "illustrative_ml": {
-              "home": 0.43711,
-              "away": 0.56289
+              "home": 0.45369,
+              "away": 0.54631
             },
             "three_goal_lead": {
-              "home": 0.13483,
-              "away": 0.21158
+              "home": 0.1474,
+              "away": 0.20455
             },
             "first_to_three_goal_lead": {
-              "home": 0.13472,
-              "away": 0.2114
+              "home": 0.14726,
+              "away": 0.20436
             },
             "comeback_after_two_goal_deficit": {
-              "home": 0.03294,
-              "away": 0.03715
+              "home": 0.03488,
+              "away": 0.03813
             },
             "comeback_definition": "falls behind by at least two regulation goals, then wins illustrative ML; a regulation tie is split 50/50 for overtime",
             "model": "unfitted_independent_poisson_shrunken_goals",
@@ -273,7 +273,6 @@
             "No hay procedencia editorial fechada para validar l\u00edneas.",
             "No hay alineaci\u00f3n proyectada identificable.",
             "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para STL.",
             "La proyecci\u00f3n de forwards est\u00e1 incompleta.",
             "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
             "La proyecci\u00f3n de defense est\u00e1 incompleta.",
@@ -281,7 +280,6 @@
             "Falta la captura de injuries para confirmar disponibilidad.",
             "Falta la captura de scratches para confirmar disponibilidad.",
             "El reporte de disponibilidad est\u00e1 incompleto.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para EDM.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual."
           ],
           "expected_skaters": 18,
@@ -311,7 +309,6 @@
             "No hay procedencia editorial fechada para validar l\u00edneas.",
             "No hay alineaci\u00f3n proyectada identificable.",
             "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para STL.",
             "La proyecci\u00f3n de forwards est\u00e1 incompleta.",
             "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
             "La proyecci\u00f3n de defense est\u00e1 incompleta.",
@@ -319,7 +316,6 @@
             "Falta la captura de injuries para confirmar disponibilidad.",
             "Falta la captura de scratches para confirmar disponibilidad.",
             "El reporte de disponibilidad est\u00e1 incompleto.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para EDM.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual."
           ],
           "expected_skaters": 18,
@@ -389,7 +385,7 @@
       },
       "possession_context": {
         "STL": {
-          "faceoff_win_pct": 0.488687,
+          "faceoff_win_pct": 0.489177,
           "probability_effect": "embedded in observed shot and scoring rates"
         },
         "EDM": {
@@ -408,8 +404,6 @@
         "El reporte de disponibilidad est\u00e1 incompleto.",
         "Falta la captura de injuries para confirmar disponibilidad.",
         "Falta la captura de scratches para confirmar disponibilidad.",
-        "Faltan estad\u00edsticas oficiales de PP/PK para EDM.",
-        "Faltan estad\u00edsticas oficiales de PP/PK para STL.",
         "Faltan plazas de defense en la alineaci\u00f3n capturada.",
         "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
         "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual.",
@@ -466,7 +460,7 @@
         ]
       },
       "source_cutoff_exclusive": "2026-11-22",
-      "captured_at_utc": "2026-11-22T03:16:08.571437+00:00",
+      "captured_at_utc": "2026-11-22T07:19:38.888121+00:00",
       "status": "conditional_unvalidated_scenarios",
       "publishable": false,
       "scenario_count": 1,
@@ -536,8 +530,8 @@
         "source": {
           "provider": "RotoWire",
           "url": "https://www.rotowire.com/hockey/nhl-lineups.php",
-          "captured_at_utc": "2026-11-22T03:15:37.575298+00:00",
-          "page_sha256": "da165e70042413fcc2cbe163b49be35094278a74261223f42e87690481e0ff94",
+          "captured_at_utc": "2026-11-22T07:19:01.239840+00:00",
+          "page_sha256": "da13d45c598af202e0a55e9543fd4e675e5c07afc94dce0ba671341a2651c11c",
           "card_sha256": null,
           "official": false
         },
@@ -716,7 +710,6 @@
             "No hay procedencia editorial fechada para validar l\u00edneas.",
             "No hay alineaci\u00f3n proyectada identificable.",
             "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para DAL.",
             "La proyecci\u00f3n de forwards est\u00e1 incompleta.",
             "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
             "La proyecci\u00f3n de defense est\u00e1 incompleta.",
@@ -724,7 +717,6 @@
             "Falta la captura de injuries para confirmar disponibilidad.",
             "Falta la captura de scratches para confirmar disponibilidad.",
             "El reporte de disponibilidad est\u00e1 incompleto.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para PIT.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual."
           ],
           "expected_skaters": 18,
@@ -754,7 +746,6 @@
             "No hay procedencia editorial fechada para validar l\u00edneas.",
             "No hay alineaci\u00f3n proyectada identificable.",
             "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para DAL.",
             "La proyecci\u00f3n de forwards est\u00e1 incompleta.",
             "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
             "La proyecci\u00f3n de defense est\u00e1 incompleta.",
@@ -762,7 +753,6 @@
             "Falta la captura de injuries para confirmar disponibilidad.",
             "Falta la captura de scratches para confirmar disponibilidad.",
             "El reporte de disponibilidad est\u00e1 incompleto.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para PIT.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual."
           ],
           "expected_skaters": 18,
@@ -850,8 +840,6 @@
         "El reporte de disponibilidad est\u00e1 incompleto.",
         "Falta la captura de injuries para confirmar disponibilidad.",
         "Falta la captura de scratches para confirmar disponibilidad.",
-        "Faltan estad\u00edsticas oficiales de PP/PK para DAL.",
-        "Faltan estad\u00edsticas oficiales de PP/PK para PIT.",
         "Faltan plazas de defense en la alineaci\u00f3n capturada.",
         "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
         "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual.",
@@ -909,7 +897,7 @@
         ]
       },
       "source_cutoff_exclusive": "2026-11-22",
-      "captured_at_utc": "2026-11-22T03:16:08.573361+00:00",
+      "captured_at_utc": "2026-11-22T07:19:38.890573+00:00",
       "status": "conditional_unvalidated_scenarios",
       "publishable": false,
       "scenario_count": 1,
@@ -917,7 +905,7 @@
         "VAN": {
           "status": "incomplete_candidate_coverage",
           "method": "candidate_games_started_divided_by_team_games_played",
-          "team_games_played": 24,
+          "team_games_played": 25,
           "candidate_starts": 1,
           "probabilities_sum_to_one": false
         },
@@ -979,8 +967,8 @@
         "source": {
           "provider": "RotoWire",
           "url": "https://www.rotowire.com/hockey/nhl-lineups.php",
-          "captured_at_utc": "2026-11-22T03:15:37.575298+00:00",
-          "page_sha256": "da165e70042413fcc2cbe163b49be35094278a74261223f42e87690481e0ff94",
+          "captured_at_utc": "2026-11-22T07:19:01.239840+00:00",
+          "page_sha256": "da13d45c598af202e0a55e9543fd4e675e5c07afc94dce0ba671341a2651c11c",
           "card_sha256": null,
           "official": false
         },
@@ -1010,9 +998,9 @@
           },
           "scenario_weight": null,
           "expected_goals": {
-            "home": 3.3416522859208446,
-            "away": 1.294413642243056,
-            "total": 4.636065928163901
+            "home": 3.346640106136303,
+            "away": 1.291821282333727,
+            "total": 4.63846138847003
           },
           "expected_goals_by_strength": null,
           "rotowire_pp_impact": null,
@@ -1045,9 +1033,9 @@
           },
           "home_components": {
             "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
-            "attacking_goals_for_per_game": 2.79166,
+            "attacking_goals_for_per_game": 2.8,
             "opponent_goals_against_per_game": 4.0,
-            "team_aggregate_baseline": 3.3416522859208437,
+            "team_aggregate_baseline": 3.3466401061363023,
             "rotowire_PP1_PP2_adjustment": {
               "applied": false,
               "reason": "rotowire_observation_unavailable"
@@ -1069,8 +1057,8 @@
           "away_components": {
             "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
             "attacking_goals_for_per_game": 2.52173,
-            "opponent_goals_against_per_game": 4.375,
-            "team_aggregate_baseline": 3.321531085207543,
+            "opponent_goals_against_per_game": 4.32,
+            "team_aggregate_baseline": 3.3005868569089345,
             "rotowire_PP1_PP2_adjustment": {
               "applied": false,
               "reason": "rotowire_observation_unavailable"
@@ -1084,7 +1072,7 @@
             },
             "aggregate_baseline_PP_goal_delta": 0.0,
             "opponent_goalie_save_pct": 0.9459459459459459,
-            "opponent_goalie_factor": 0.3897039073359074,
+            "opponent_goalie_factor": 0.39139139139139134,
             "individual_lineup_adjustment": "omitted_projected_lineup_unavailable",
             "special_teams_personnel_adjustment": "omitted_projected_lineup_unavailable",
             "division_rivalry_goal_rate_factor": 1.0
@@ -1094,37 +1082,37 @@
             "CHI": []
           },
           "markets": {
-            "lambda_home": 3.3417,
-            "lambda_away": 1.2944,
+            "lambda_home": 3.3466,
+            "lambda_away": 1.2918,
             "regulation": {
-              "home": 0.76505,
-              "draw": 0.12583,
-              "away": 0.10912
+              "home": 0.76613,
+              "draw": 0.12541,
+              "away": 0.10846
             },
             "strong_win_regulation": {
-              "home": 0.58928,
-              "away": 0.04104
+              "home": 0.59065,
+              "away": 0.04072
             },
             "double_chance_regulation": {
-              "home": 0.89088,
-              "away": 0.23495
+              "home": 0.89154,
+              "away": 0.23387
             },
             "strong_dual_definition": "FUERTE = ganar por 2+ goles en 60 minutos; DUAL = ganar o empatar en 60 minutos (1X/X2)",
             "illustrative_ml": {
-              "home": 0.82796,
-              "away": 0.17204
+              "home": 0.82884,
+              "away": 0.17116
             },
             "three_goal_lead": {
-              "home": 0.45658,
-              "away": 0.02654
+              "home": 0.4579,
+              "away": 0.02634
             },
             "first_to_three_goal_lead": {
-              "home": 0.45638,
-              "away": 0.02653
+              "home": 0.4577,
+              "away": 0.02632
             },
             "comeback_after_two_goal_deficit": {
-              "home": 0.02729,
-              "away": 0.01332
+              "home": 0.02724,
+              "away": 0.01326
             },
             "comeback_definition": "falls behind by at least two regulation goals, then wins illustrative ML; a regulation tie is split 50/50 for overtime",
             "model": "unfitted_independent_poisson_shrunken_goals",
@@ -1159,7 +1147,6 @@
             "No hay procedencia editorial fechada para validar l\u00edneas.",
             "No hay alineaci\u00f3n proyectada identificable.",
             "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para VAN.",
             "La proyecci\u00f3n de forwards est\u00e1 incompleta.",
             "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
             "La proyecci\u00f3n de defense est\u00e1 incompleta.",
@@ -1168,7 +1155,6 @@
             "Falta la captura de scratches para confirmar disponibilidad.",
             "El reporte de disponibilidad est\u00e1 incompleto.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para CHI.",
             "Falta historial individual verificable de un portero.",
             "Se usa la tasa defensiva oficial como referencia de porter\u00eda, sin atribuirla a un jugador."
           ],
@@ -1199,7 +1185,6 @@
             "No hay procedencia editorial fechada para validar l\u00edneas.",
             "No hay alineaci\u00f3n proyectada identificable.",
             "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para VAN.",
             "La proyecci\u00f3n de forwards est\u00e1 incompleta.",
             "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
             "La proyecci\u00f3n de defense est\u00e1 incompleta.",
@@ -1208,7 +1193,6 @@
             "Falta la captura de scratches para confirmar disponibilidad.",
             "El reporte de disponibilidad est\u00e1 incompleto.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual.",
-            "Faltan estad\u00edsticas oficiales de PP/PK para CHI.",
             "Falta historial individual verificable de un portero.",
             "Se usa la tasa defensiva oficial como referencia de porter\u00eda, sin atribuirla a un jugador."
           ],
@@ -1279,7 +1263,7 @@
       },
       "possession_context": {
         "VAN": {
-          "faceoff_win_pct": 0.47477,
+          "faceoff_win_pct": 0.482129,
           "probability_effect": "embedded in observed shot and scoring rates"
         },
         "CHI": {
@@ -1299,8 +1283,6 @@
         "Falta historial individual verificable de un portero.",
         "Falta la captura de injuries para confirmar disponibilidad.",
         "Falta la captura de scratches para confirmar disponibilidad.",
-        "Faltan estad\u00edsticas oficiales de PP/PK para CHI.",
-        "Faltan estad\u00edsticas oficiales de PP/PK para VAN.",
         "Faltan plazas de defense en la alineaci\u00f3n capturada.",
         "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
         "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual.",
@@ -1363,6 +1345,6 @@
   "odds_used": false,
   "public_base_replaced": false,
   "note": "Internal execution evidence only; not the public PULSO forecast feed.",
-  "published_at_utc": "2026-11-22T03:16:25.114150+00:00",
-  "run_id": "44979775813"
+  "published_at_utc": "2026-11-22T07:19:57.103928+00:00",
+  "run_id": "44997629089"
 }
