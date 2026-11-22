@@ -30,8 +30,12 @@ def fixtures(payload,as_of):
         if e.get("season",{}).get("type") not in (2,"2"):continue
         eid=str(e.get("id",""))
         tip=utc(e.get("date"))
-        home=teams["home"].get("team",{}).get("abbreviation")
-        away=teams["away"].get("team",{}).get("abbreviation")
+        home_team=teams["home"].get("team",{})
+        away_team=teams["away"].get("team",{})
+        home=home_team.get("abbreviation")
+        away=away_team.get("abbreviation")
+        venue=c[0].get("venue") or {}
+        address=venue.get("address") or {}
         if not eid or eid in seen or not home or not away or home==away:raise ValueError("Bad or duplicate NFL fixture")
         seen.add(eid)
         if status.get("completed") is True:counts["completed"]+=1
@@ -39,7 +43,11 @@ def fixtures(payload,as_of):
         else:
             counts["scheduled"]+=1
             rows.append({"event_id":eid,"start_utc":tip.isoformat(),"participants":[home,away],
-                         "home_team":home,"away_team":away})
+                         "home_team":home,"away_team":away,
+                         "home_name":home_team.get("displayName") or home,
+                         "away_name":away_team.get("displayName") or away,
+                         "venue":venue.get("fullName"),"city":address.get("city"),
+                         "neutral_site":c[0].get("neutralSite") is True})
     return sorted(rows,key=lambda x:(x["start_utc"],x["event_id"])),counts
 
 def _prepared_history(games,cutoff):

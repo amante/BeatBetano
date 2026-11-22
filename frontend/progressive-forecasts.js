@@ -157,10 +157,12 @@
     card.append(pending);
    }
    if(first.model_version!==last.model_version)card.append(el("p","La versión del modelo cambió entre estas corridas.","forecast-notice"));
-   const info=el("details"),summary=el("summary","Supuestos e información pendiente");info.append(summary);
+   const info=el("details"),summary=el("summary",sport==="nfl"?"Datos de la corrida · entradas y pendientes":"Supuestos e información pendiente");info.append(summary);
    info.append(el("p","Supuestos","forecast-detail-label"));for(const value of last.assumptions)info.append(el("p",textMap[value]||value));
    info.append(el("p","Pendiente","forecast-detail-label"));if(!last.unresolved_inputs.length)info.append(el("p","No se declararon pendientes en esta corrida."));for(const value of last.unresolved_inputs)info.append(el("p",textMap[value]||value));
-   info.append(el("p","Versión: "+last.model_version),el("p","Campo de probabilidad: "+(last.source_probability_field||"no declarado")),el("p","Corte de datos: "+local(last.cutoff_utc)));card.append(info);
+   info.append(el("p","Versión: "+last.model_version),el("p","Campo de probabilidad: "+(last.source_probability_field||"no declarado")),el("p","Corte de datos: "+local(last.cutoff_utc)));
+    if(sport==="nfl")window.PulsoNflInputs?.append(info,e);
+    card.append(info);
    const history=el("details");history.append(el("summary","Ver "+e.history.length+" corridas"));
    for(const [index,r] of [...e.history].reverse().entries()){
     const previous=r.revision>1?e.history.find(revision=>revision.revision===r.revision-1):null;
@@ -181,6 +183,7 @@
   if(!valid)throw Error("Invalid forecast source");data=payload;
  }catch(e){error=e.message;}
   if(sport==="nhl")try{const response=await fetch("./data/nhl-minute-adjusted-ml.json",{cache:"no-store"});if(response.ok){const scenario=await response.json();if(scenario.kind==="nhl_minute_adjusted_ml_v1"&&Array.isArray(scenario.games)&&date(scenario.as_of_utc))lineupScenarioData=scenario;}}catch{}
+  if(sport==="nfl")await window.PulsoNflInputs?.ready;
   render();})();
  document.getElementById("daily-date")?.addEventListener("change",render);
  window.PulsoProgressiveForecasts={ready,render};
