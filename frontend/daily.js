@@ -166,8 +166,10 @@ function renderGames(){
   }root.append(sec);
  }
  const errors=(source?.errors||[]).filter(x=>x.sport===sport);
+ const feedSource=sport==="nfl"&&nflPublication?"NFL · corrida #"+nflPublication.run_id:source?.source;
+ const feedAsOf=sport==="nfl"&&nflPublication?nflPublication.generated_at_utc:source?.as_of_utc;
  $("feed-message").textContent=source
- ? "Fuente: "+(source.source?source.source+" · ":"")+source.as_of_utc+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario obtenido de las fuentes configuradas.")
+ ? "Fuente: "+(feedSource?feedSource+" · ":"")+feedAsOf+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario de la corrida. NHL/NBA y demás feeds conservan su captura propia.")+(sport==="nfl"?" · Elo exploratorio; no certificado ni ajustado por lesiones.":"")
  : "No se pudo cargar el calendario. "+feedFailure;
  nhlSummary(games);renderSelection(games);stats();
  if(sport==="nhl"){
