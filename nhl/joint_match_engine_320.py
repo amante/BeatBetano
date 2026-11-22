@@ -482,6 +482,77 @@ def _rotowire_aggregate_pp_adjustment(team):
     }
 
 
+
+def _rotowire_aggregate_availability_adjustment(team, *, pp_adjustment_applied=False):
+    """Subtract only traceable historical scoring from explicitly unavailable skaters."""
+    evidence = team.get("rotowire_pregame") or {}
+    injuries = evidence.get("injuries") or {}
+    if evidence.get("capture_status") != "captured" or injuries.get("status") != "observed":
+        return {"applied": False, "reason": "rotowire_injury_report_unavailable",
+                "excluded_goal_rate": 0.0, "players": [], "unresolved": []}
+    roster_rows = team.get("team_roster_skaters") or []
+    roster = {row.get("player_id"): row for row in roster_rows
+              if type(row.get("player_id")) is int}
+    team_games = _num(team.get("team_summary", {}).get("gamesPlayed"),
+                      "team games for availability", positive=True)
+    confirmed = {}
+    unresolved = []
+    for row in injuries.get("players", []):
+        if not isinstance(row, dict):
+            continue
+        status = str(row.get("reported_status") or "").strip().upper()
+        if status not in {"OUT", "IR", "IR-LT", "IR-NR"}:
+            continue
+        name = row.get("resolved_name") or row.get("name") or "Jugador sin nombre"
+        pid = row.get("player_id")
+        if (type(pid) is not int or row.get("identity_status") not in
+                {"exact", "unique_initial_and_surname"} or pid not in roster):
+            unresolved.append({"name": name, "status": status})
+            continue
+        pos = str(row.get("position_group") or "").lower()
+        if pos in {"goalie", "goaltender"} or str(row.get("position_observation") or "").upper() == "G":
+            continue
+        confirmed[pid] = {"name": name, "status": status, "player": roster[pid]}
+    if not confirmed:
+        return {"applied": False, "reason": "no_identity_resolved_confirmed_skater_absences",
+                "excluded_goal_rate": 0.0, "players": [], "unresolved": unresolved}
+
+    pp_goals = 0.0
+    non_pp_goals = 0.0
+    rows = []
+    for pid, item in confirmed.items():
+        player = item["player"]
+        production = player.get("production", {})
+        goals = sum(_num(production.get(key), "unavailable player " + key)
+                    for key in ("evGoals", "ppGoals", "shGoals"))
+        player_pp_goals = _num(production.get("ppGoals"), "unavailable player PP goals")
+        pp_goals += player_pp_goals
+        non_pp_goals += goals - player_pp_goals
+        rows.append({"player_id": pid, "name": item["name"], "status": item["status"],
+                     "historical_goals": goals, "historical_PP_goals": player_pp_goals,
+                     "historical_goals_per_team_game": goals / team_games})
+    removed_pp = 0.0 if pp_adjustment_applied else pp_goals / team_games
+    removed_non_pp = non_pp_goals / team_games
+    excluded_goal_rate = removed_pp + removed_non_pp
+    team_goal_rate = _num(team.get("team_summary", {}).get("goalsForPerGame"),
+                          "team goals for before availability", positive=True)
+    if excluded_goal_rate >= team_goal_rate:
+        return {"applied": False, "reason": "reported_absence_contribution_exceeds_team_baseline",
+                "excluded_goal_rate": 0.0, "players": rows, "unresolved": unresolved}
+    return {
+        "applied": excluded_goal_rate > 0,
+        "reason": None if excluded_goal_rate > 0 else "no_historical_scoring_to_remove",
+        "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+        "excluded_goal_rate": excluded_goal_rate,
+        "excluded_PP_goal_rate": removed_pp,
+        "excluded_non_PP_goal_rate": removed_non_pp,
+        "team_games_reference": team_games,
+        "power_play_overlap_handled_by_PP1_PP2_adjustment": bool(pp_adjustment_applied),
+        "players": rows, "unresolved": unresolved,
+        "replacement_effect": "not_estimated_without_identified_active_replacement",
+        "calibrated": False,
+    }
+
 def team_profile(team, team_code):
     summary = team["team_summary"]
     st = team["special_teams"]
@@ -499,9 +570,12 @@ def team_profile(team, team_code):
     if coverage.get("mode") == "team_aggregate_fallback":
         gp = _num(summary.get("gamesPlayed"), "team games", positive=True)
         rotowire_pp_adjustment = _rotowire_aggregate_pp_adjustment(team)
+        rotowire_availability_adjustment = _rotowire_aggregate_availability_adjustment(
+            team, pp_adjustment_applied=rotowire_pp_adjustment.get("applied") is True)
         shots_for = _num(summary.get("shotsForPerGame"), "team shots for", positive=True)
         shots_against = _num(summary.get("shotsAgainstPerGame"), "team shots against", positive=True)
-        goals_for = _num(summary.get("goalsForPerGame"), "team goals for", positive=True)
+        raw_goals_for = _num(summary.get("goalsForPerGame"), "team goals for", positive=True)
+        goals_for = max(0.01, raw_goals_for - rotowire_availability_adjustment.get("excluded_goal_rate", 0.0))
         goals_against = _num(summary.get("goalsAgainstPerGame"), "team goals against", positive=True)
         goalies = team.get("goalie_candidates", [])
         if not goalies:
@@ -521,7 +595,8 @@ def team_profile(team, team_code):
             "season": {"games": gp, "shots_for_per_game": shots_for,
                        "shots_against_per_game": shots_against,
                        "goals_for_per_game": goals_for,
-                       "goals_against_per_game": goals_against},
+                       "goals_against_per_game": goals_against,
+                       "goals_for_per_game_before_availability": raw_goals_for},
             "special": {"games": 0, "pp_per_game": 0.0, "pp_goal_rate": None,
                         "pk_opportunities_per_game": 0.0, "pk_goals_allowed_rate": None,
                         "pp_goals_per_game": 0.0},
@@ -533,8 +608,10 @@ def team_profile(team, team_code):
             "minute_distribution": {"status": "omitted_team_aggregate_fallback",
                                     "rotowire_power_play": rotowire_pp_adjustment},
             "rotowire_pp_adjustment": rotowire_pp_adjustment,
+            "rotowire_availability_adjustment": rotowire_availability_adjustment,
             "player_contributions": [],
-            "lineup_impact": {"status": "omitted_team_aggregate_fallback"},
+            "lineup_impact": {"status": "team_aggregate_availability_only",
+                              "availability": rotowire_availability_adjustment},
         }
 
     minute_scenario, minute_audit = _minutes_scenario(team)
