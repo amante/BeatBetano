@@ -15,8 +15,9 @@ function harness(response){
  // Load definitions without invoking page initialization or data loading.
  vm.runInContext(source.slice(0,source.indexOf('$("daily-date").addEventListener')),context);
  const config=JSON.parse(fs.readFileSync('frontend/data/runtime-config.json','utf8'));
- vm.runInContext(`runtime=${JSON.stringify(config)}; snapshot={games:[{sport:'nhl',id:'2026020227',start_utc:new Date(Date.now()+60000).toISOString(),home:'Home',away:'Away'}]};`,context);
- node('daily-date').value=vm.runInContext('localDay()',context);
+ const runDate=vm.runInContext('(()=>{const d=new Date(localDay()+"T12:00:00Z");d.setUTCDate(d.getUTCDate()+2);return d.toISOString().slice(0,10)})()',context);
+ vm.runInContext(`runtime=${JSON.stringify(config)}; runDate=${JSON.stringify(runDate)}; snapshot={games:[{sport:'nhl',id:'2026020227',start_utc:runDate+'T22:00:00Z',home:'Home',away:'Away'}]};`,context);
+ node('daily-date').value=runDate;
  return {context,node,calls};
 }
 test('runtime config contains only public endpoint settings',()=>{
