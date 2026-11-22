@@ -1,0 +1,135 @@
+{
+  "sport": "nfl",
+  "as_of_utc": "2026-11-22T04:33:05.222998Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401873071",
+      "start_utc": "2026-11-22T18:00:00Z",
+      "participants": [
+        "CHI",
+        "NO"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.73825,
+          "away": 0.26175000000000004
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nfl-historical-elo",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_model_output": {
+    "event_id": "401873071",
+    "start_utc": "2026-11-22T18:00:00+00:00",
+    "participants": [
+      "CHI",
+      "NO"
+    ],
+    "home_team": "CHI",
+    "away_team": "NO",
+    "home_name": "Chicago Bears",
+    "away_name": "New Orleans Saints",
+    "venue": "Soldier Field",
+    "city": "Chicago",
+    "neutral_site": false,
+    "official_baseline": null,
+    "historical_elo_candidate": 0.73825,
+    "challenger": null,
+    "final_probability": null,
+    "away_probability": null,
+    "all_inputs_verified": false,
+    "independent_validation_passed": false,
+    "starting_lineups_verified": false,
+    "injury_report_verified": false,
+    "weather_verified": false,
+    "props": null,
+    "missing_evidence": [
+      "confirmed_inactives",
+      "starters",
+      "weather",
+      "matchups",
+      "independent_calibration"
+    ]
+  },
+  "source_output_sha256": "706783c31b303530485d0023390f3024b57428b0558783259fbf7105d18391ed",
+  "source_output_sha256_scope": "event",
+  "model_provenance": {
+    "model_code_sha256": "812913d702db5ccfec8bee55baa6aa21b5d52f3d4a13ff7d28337af0adab1657",
+    "data_role": "historical_elo_training_history",
+    "training_data_sha256": "cdd6244fc752da5615f5da8802b8cbd13dc84eee36be76fa475d5c7d98899692",
+    "training_cutoff_utc": "2026-11-19T00:00:00+00:00",
+    "model_code_revision": "cded5fbfa06242ca78758f32a1eaddf6d4773808",
+    "model_family": "nfl-historical-elo",
+    "forecast_model_version": "nfl-historical-elo",
+    "source_output_sha256": "706783c31b303530485d0023390f3024b57428b0558783259fbf7105d18391ed"
+  },
+  "revision": 2,
+  "parent_snapshot_sha256": "b51cc002c331e0dc7d22252902548d1d05a71ae158d1eefd2e65e9e35eaa2243",
+  "changes": [
+    {
+      "event_id": "401873071",
+      "before": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.73825,
+          "away": 0.26175000000000004
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "after": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.73825,
+          "away": 0.26175000000000004
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "previous_start_utc": "2026-11-22T18:00:00Z",
+      "start_utc": "2026-11-22T18:00:00Z"
+    }
+  ],
+  "emitted_at_utc": "2026-11-22T04:33:05.368741+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "43865f33bd222a28d55ba978ca017956d0331b62398eb2f07ff0a7fd33d6b3ce"
+}
