@@ -62,6 +62,17 @@ jobs:
         run: python nfl/pregame_evidence.py --slate results/nfl/nfl_hoy.json --output results/nfl/pregame_evidence.json
       - name: Reconcile verified NFL availability, secondary and weather inputs
         run: python nfl/matchup_reconciliation.py --slate results/nfl/nfl_hoy.json --supplement results/nfl/pregame_evidence.json --output results/nfl/matchup_verified.json
+      - name: Build the per-game NFL pregame input inventory
+        run: python -m nfl.pregame_inventory --slate results/nfl/nfl_hoy.json --evidence results/nfl/pregame_evidence.json --reconciled results/nfl/matchup_verified.json --run-id "${{ github.run_id }}" --output frontend/data/nfl-pregame-inputs-latest.json
+      - name: Publish latest NFL input inventory
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f frontend/data/nfl-pregame-inputs-latest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: publish NFL pregame input inventory"
+            git push origin HEAD:main
+          fi
       - uses: actions/upload-artifact@v6
         if: always()
         with:
@@ -72,4 +83,5 @@ jobs:
             frontend/data/forecast_archive
             results/nfl/pregame_evidence.json
             results/nfl/matchup_verified.json
+            frontend/data/nfl-pregame-inputs-latest.json
           retention-days: 30
