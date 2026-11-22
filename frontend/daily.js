@@ -33,7 +33,7 @@ function teamInfo(raw,league=sport){
  }
  return {code:"",name:value,logo:""};
 }
-function appendTeam(row,raw,side,league,providedLogo){
+function appendTeam(row,raw,side,league,providedLogo,probability){
  const info=teamInfo(raw,league),team=make("span",undefined,"daily-team daily-team-"+side);
  team.setAttribute?.("aria-label",info.name);
  const mark=make("span",undefined,"daily-team-logo");
@@ -44,7 +44,9 @@ function appendTeam(row,raw,side,league,providedLogo){
   const img=document.createElement("img");img.src=source;img.alt="";img.loading="lazy";img.decoding="async";
   img.addEventListener?.("error",()=>img.remove(),{once:true});mark.append(img);
  }
- team.append(mark,make("span",info.name,"daily-team-name"));row.append(team);return info;
+ team.append(mark,make("span",info.name,"daily-team-name"));
+ if(league==="nfl"&&probability!=null&&Number.isFinite(Number(probability)))team.append(make("span",(Number(probability)*100).toFixed(1).replace(".",",")+"%","daily-probability"));
+ row.append(team);return info;
 }
 function matchState(g,options={}){
  const status=String(g.status||"").toUpperCase(),hasScore=g.away_score!=null&&g.home_score!=null;
@@ -62,9 +64,9 @@ function makeMatchRow(g,options={}){
  if(row.dataset)row.dataset.sport=league;
  const time=Number.isFinite(Date.parse(g.start_utc))?new Intl.DateTimeFormat("es-CL",{timeZone:"America/Santiago",hour:"2-digit",minute:"2-digit"}).format(new Date(g.start_utc)):"Hora no disponible";
  row.append(make("time",time,"daily-time"));
- const away=appendTeam(row,g.away,"away",league,g.away_logo||g.awayLogo||g.away_badge);
+ const away=appendTeam(row,g.away,"away",league,g.away_logo||g.awayLogo||g.away_badge,g.away_probability);
  row.append(make("span","—","daily-match-versus"));
- const home=appendTeam(row,g.home,"home",league,g.home_logo||g.homeLogo||g.home_badge);
+ const home=appendTeam(row,g.home,"home",league,g.home_logo||g.homeLogo||g.home_badge,g.home_probability);
  const state=make("span",matchState(g,options),"daily-state");
  const text=state.textContent.toLowerCase();if(text.includes("en juego")||text.includes("entretiempo"))state.classList?.add("is-live");if(text.includes("final")||g.completed)state.classList?.add("is-final");
  row.append(state);
@@ -77,7 +79,7 @@ const localDay=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",
 const previousDay=d=>{const x=new Date(d+"T12:00:00Z");x.setUTCDate(x.getUTCDate()-1);return x.toISOString().slice(0,10);};
 const dayOf=utc=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Santiago",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(utc));
 const make=(tag,content,cls)=>{const el=document.createElement(tag);if(content!==undefined)el.textContent=content;if(cls)el.className=cls;return el;};
-let snapshot=null,history=[],predictions=[],runtime={},feedFailure="",nhlCalendar=null,nbaPublication=null;
+let snapshot=null,history=[],predictions=[],runtime={},feedFailure="",nhlCalendar=null,nbaPublication=null,nflPublication=null;
 function isGame(g){return g&&g.sport===sport&&g.id!=null&&g.start_utc&&g.home&&g.away;}
 function result(g){if(!g.completed)return null;const a=Number(g.away_score),h=Number(g.home_score);if(g.home_score==null||g.away_score==null||!Number.isFinite(a)||!Number.isFinite(h))return null;return h>a?"home":h<a?"away":"draw";}
 function checkPick(p,g){
@@ -119,6 +121,18 @@ function selectedSnapshot(){
   }
   return {...(snapshot||{}),games:[...games.values()]};
  }
+ if(sport==="nfl"&&nflPublication?.kind==="nfl_pregame_input_inventory_v1"&&Array.isArray(nflPublication.games)){
+  const games=new Map((snapshot?.games||[]).map(g=>[String(g.id),g]));
+  for(const p of nflPublication.games){
+   const id=String(p.event_id),current=games.get(id);
+   const elo=(p.groups||[]).flatMap(group=>group.rows||[]).find(row=>row.label==="Elo histórico")?.value||{};
+   const homeName=p.home_name||teamInfo(p.home,"nfl").name||p.home;
+   const awayName=p.away_name||teamInfo(p.away,"nfl").name||p.away;
+   games.set(id,{...(current||{}),id,sport:"nfl",home:homeName,away:awayName,home_code:p.home,away_code:p.away,start_utc:p.start_utc,status:current?.completed?current.status:current?.status||"STATUS_SCHEDULED",completed:Boolean(current?.completed),home_probability:elo.home_probability,away_probability:elo.away_probability,source:"Corrida NFL · "+nflPublication.run_id,source_event_id:id});
+  }
+  const included_dates=[...new Set([...(snapshot?.included_dates||[]),...nflPublication.games.map(game=>dayOf(game.start_utc))])];
+  return {...(snapshot||{}),games:[...games.values()],included_dates};
+ }
  return snapshot;
 }
 function selectedDateKnown(){const source=selectedSnapshot();return Boolean(source?.included_dates?.includes($("daily-date").value)||(source?.games||[]).some(g=>isGame(g)&&dayOf(g.start_utc)===$("daily-date").value));}
@@ -145,12 +159,17 @@ function renderGames(){
   const sec=make("section",undefined,"daily-group");if(group!=="Partidos")sec.append(make("h3",group));
   for(const g of items){
    const row=makeMatchRow(g);
-   sec.append(row);
+   if(sport==="nfl"&&window.PulsoNflInputs){
+    const card=make("div",undefined,"nfl-calendar-match");card.append(row);
+    window.PulsoNflInputs.append(card,{event_id:g.id,participants:[g.home_code,g.away_code],start_utc:g.start_utc});sec.append(card);
+   }else sec.append(row);
   }root.append(sec);
  }
  const errors=(source?.errors||[]).filter(x=>x.sport===sport);
+ const feedSource=sport==="nfl"&&nflPublication?"NFL · corrida #"+nflPublication.run_id:source?.source;
+ const feedAsOf=sport==="nfl"&&nflPublication?nflPublication.generated_at_utc:source?.as_of_utc;
  $("feed-message").textContent=source
- ? "Fuente: "+(source.source?source.source+" · ":"")+source.as_of_utc+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario obtenido de las fuentes configuradas.")
+ ? "Fuente: "+(feedSource?feedSource+" · ":"")+feedAsOf+(errors.length?" · "+errors.length+" errores en fuentes. Cobertura posiblemente incompleta.":" · Calendario de la corrida. NHL/NBA y demás feeds conservan su captura propia.")+(sport==="nfl"?" · Elo exploratorio; no certificado ni ajustado por lesiones.":"")
  : "No se pudo cargar el calendario. "+feedFailure;
  nhlSummary(games);renderSelection(games);stats();
  if(sport==="nhl"){
@@ -255,7 +274,7 @@ async function load(){
  $("daily-date").value=localDay();
  // NBA has a separate frozen-cohort source; do not load the legacy shared feed.
  if(sport==="nba"){fetch("./data/certification-readiness-latest.json",{cache:"no-store"}).then(response=>response.ok?response.json():null).then(renderCertificationReadiness).catch(()=>renderCertificationReadiness(null));return;}
- const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json","./data/nhl-complete-slate-latest.json","./data/nhl-schedule.json","./data/certification-readiness-latest.json"].map(async path=>{
+ const entries=await Promise.allSettled(["./data/daily.json","./data/history.json","./data/predictions.json","./data/runtime-config.json","./data/nhl-complete-slate-latest.json","./data/nhl-schedule.json","./data/certification-readiness-latest.json","./data/nfl-pregame-inputs-latest.json"].map(async path=>{
   const response=await fetch(path,{cache:"no-store"});if(!response.ok)throw Error(path+" "+response.status);return response.json();
  }));
  const got=i=>entries[i].status==="fulfilled"?entries[i].value:null;
@@ -263,9 +282,10 @@ async function load(){
  feedFailure=[0,...(sport==="nhl"?[4]:[])].map(i=>entries[i].status==="rejected"?entries[i].reason.message:"").filter(Boolean).join(" · ");
  nhlCalendar=got(5)?.kind==="nhl_calendar"&&Array.isArray(got(5).games)&&Array.isArray(got(5).included_dates)?got(5):null;
  snapshot=got(0)||nhlScheduleSnapshot(got(4));history=Array.isArray(got(1))?got(1):[];const p=got(2);
- predictions=Array.isArray(p)?p:Array.isArray(p?.predictions)?p.predictions:[];runtime=got(3)||{};
+ predictions=Array.isArray(p)?p:Array.isArray(p?.predictions)?p.predictions:[];runtime=got(3)||{};nflPublication=got(7);
  renderCertificationReadiness(readiness);
  nbaPublication=sport==="nba"?got(7):null;
+ if(sport==="nfl")await window.PulsoNflInputs?.ready;
  renderGames();
 }
 function changeDate(){
