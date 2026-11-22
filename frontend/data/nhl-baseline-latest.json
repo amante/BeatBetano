@@ -6,10 +6,10 @@
       "home": "NYR",
       "away": "CAR",
       "start_utc": "2026-11-22T17:30:00Z",
-      "prediction_as_of_utc": "2026-11-22T07:19:14.031775+00:00",
-      "p_home_ml": 0.5602794001836298,
-      "p_away_ml": 0.43972059981637024,
-      "model_version": "outcome-only-206-rest-context-v1",
+      "prediction_as_of_utc": "2026-11-22T16:55:54.282098+00:00",
+      "p_home_ml": 0.53991708,
+      "p_away_ml": 0.46008291999999995,
+      "model_version": "outcome-only-206-rest-lineup-scenario-v1",
       "module_effects": {
         "rest": {
           "module": "schedule_rest",
@@ -20,15 +20,29 @@
           "rest_differential_days": 4,
           "coefficient_logit_per_day": 0.06,
           "logit_adjustment": 0.24,
-          "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
+          "source_as_of_utc": "2026-11-22T16:55:42.855351+00:00",
           "probability_before": 0.50057402,
           "probability_after": 0.5602794,
           "probability_delta_percentage_points": 5.9705
         },
         "lineup_availability": {
           "module": "crs_lineup_availability",
-          "status": "unavailable",
-          "reason": "scenario_incomplete:No complete team exposure scenario"
+          "status": "applied_experimental",
+          "source_as_of_utc": "2026-11-22T16:55:54.115639+00:00",
+          "baseline_probability_home": 0.5602794,
+          "scenario_probability_home": 0.53991708,
+          "scenario_probability_away": 0.46008292,
+          "probability_delta_home_percentage_points": -2.0362,
+          "adjusted_goal_expectations": {
+            "home": 4.76871761120052,
+            "away": 4.460014323268372
+          },
+          "validated": false,
+          "assumptions": [
+            "Historical goals/minute held constant under redistributed minutes.",
+            "Independent Poisson goals; home rate anchored to preceding model probability.",
+            "Out of projection is not treated as confirmed injury."
+          ]
         }
       }
     },
@@ -37,10 +51,10 @@
       "home": "TBL",
       "away": "BUF",
       "start_utc": "2026-11-22T22:00:00Z",
-      "prediction_as_of_utc": "2026-11-22T07:19:14.031775+00:00",
-      "p_home_ml": 0.6161577747848158,
-      "p_away_ml": 0.3838422252151842,
-      "model_version": "outcome-only-206-rest-context-v1",
+      "prediction_as_of_utc": "2026-11-22T16:55:54.282098+00:00",
+      "p_home_ml": 0.61615777,
+      "p_away_ml": 0.38384222999999995,
+      "model_version": "outcome-only-206-rest-lineup-scenario-v1",
       "module_effects": {
         "rest": {
           "module": "schedule_rest",
@@ -51,15 +65,29 @@
           "rest_differential_days": 2,
           "coefficient_logit_per_day": 0.06,
           "logit_adjustment": 0.12,
-          "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
+          "source_as_of_utc": "2026-11-22T16:55:42.855351+00:00",
           "probability_before": 0.58741067,
           "probability_after": 0.61615777,
           "probability_delta_percentage_points": 2.8747
         },
         "lineup_availability": {
           "module": "crs_lineup_availability",
-          "status": "unavailable",
-          "reason": "scenario_incomplete:No complete team exposure scenario"
+          "status": "applied_experimental",
+          "source_as_of_utc": "2026-11-22T16:55:54.115639+00:00",
+          "baseline_probability_home": 0.61615777,
+          "scenario_probability_home": 0.61615777,
+          "scenario_probability_away": 0.38384223,
+          "probability_delta_home_percentage_points": 0.0,
+          "adjusted_goal_expectations": {
+            "home": 3.74196820177107,
+            "away": 2.9632787502352724
+          },
+          "validated": false,
+          "assumptions": [
+            "Historical goals/minute held constant under redistributed minutes.",
+            "Independent Poisson goals; home rate anchored to preceding model probability.",
+            "Out of projection is not treated as confirmed injury."
+          ]
         }
       }
     },
@@ -68,10 +96,10 @@
       "home": "STL",
       "away": "EDM",
       "start_utc": "2026-11-23T00:00:00Z",
-      "prediction_as_of_utc": "2026-11-22T07:19:14.031775+00:00",
-      "p_home_ml": 0.5215424110896586,
-      "p_away_ml": 0.4784575889103414,
-      "model_version": "outcome-only-206-rest-context-v1",
+      "prediction_as_of_utc": "2026-11-22T16:55:54.282098+00:00",
+      "p_home_ml": 0.52154241,
+      "p_away_ml": 0.47845759,
+      "model_version": "outcome-only-206-rest-lineup-scenario-v1",
       "module_effects": {
         "rest": {
           "module": "schedule_rest",
@@ -82,15 +110,29 @@
           "rest_differential_days": 0,
           "coefficient_logit_per_day": 0.06,
           "logit_adjustment": 0.0,
-          "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
+          "source_as_of_utc": "2026-11-22T16:55:42.855351+00:00",
           "probability_before": 0.52154241,
           "probability_after": 0.52154241,
           "probability_delta_percentage_points": 0.0
         },
         "lineup_availability": {
           "module": "crs_lineup_availability",
-          "status": "unavailable",
-          "reason": "scenario_incomplete:No complete team exposure scenario"
+          "status": "applied_experimental",
+          "source_as_of_utc": "2026-11-22T16:55:54.115639+00:00",
+          "baseline_probability_home": 0.52154241,
+          "scenario_probability_home": 0.52154241,
+          "scenario_probability_away": 0.47845759,
+          "probability_delta_home_percentage_points": 0.0,
+          "adjusted_goal_expectations": {
+            "home": 4.10967860048998,
+            "away": 3.9537965962336674
+          },
+          "validated": false,
+          "assumptions": [
+            "Historical goals/minute held constant under redistributed minutes.",
+            "Independent Poisson goals; home rate anchored to preceding model probability.",
+            "Out of projection is not treated as confirmed injury."
+          ]
         }
       }
     },
@@ -99,7 +141,7 @@
       "home": "DAL",
       "away": "PIT",
       "start_utc": "2026-11-23T00:00:00Z",
-      "prediction_as_of_utc": "2026-11-22T07:19:14.031775+00:00",
+      "prediction_as_of_utc": "2026-11-22T16:55:54.282098+00:00",
       "p_home_ml": 0.6197404301984685,
       "p_away_ml": 0.3802595698015315,
       "model_version": "outcome-only-206-rest-context-v1",
@@ -113,7 +155,7 @@
           "rest_differential_days": 2,
           "coefficient_logit_per_day": 0.06,
           "logit_adjustment": 0.12,
-          "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
+          "source_as_of_utc": "2026-11-22T16:55:42.855351+00:00",
           "probability_before": 0.59108358,
           "probability_after": 0.61974043,
           "probability_delta_percentage_points": 2.8657
@@ -130,7 +172,7 @@
       "home": "VAN",
       "away": "CHI",
       "start_utc": "2026-11-23T01:00:00Z",
-      "prediction_as_of_utc": "2026-11-22T07:19:14.031775+00:00",
+      "prediction_as_of_utc": "2026-11-22T16:55:54.282098+00:00",
       "p_home_ml": 0.5245364230657065,
       "p_away_ml": 0.47546357693429353,
       "model_version": "outcome-only-206-rest-context-v1",
@@ -144,7 +186,7 @@
           "rest_differential_days": 0,
           "coefficient_logit_per_day": 0.06,
           "logit_adjustment": 0.0,
-          "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
+          "source_as_of_utc": "2026-11-22T16:55:42.855351+00:00",
           "probability_before": 0.52453642,
           "probability_after": 0.52453642,
           "probability_delta_percentage_points": 0.0
