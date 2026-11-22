@@ -157,7 +157,7 @@ def build(report, schedule, pregame, lineups, schedule_context, team_form,
                 use_rw_roster = bool(rw_players)
                 use_rw_forwards, use_rw_defense = bool(rw_forwards), bool(rw_defense)
                 forwards, defense = proj.get("forwards"), proj.get("defense")
-                editorial = (pregame_game or {}).get("editorial_source", {})
+                editorial = (pregame_game or {}).get("editorial_source") or {}
                 source_url = rw_source.get("url") if use_rw_roster else editorial.get("url")
                 source_at = rw_source.get("captured_at_utc") if use_rw_roster else (pregame_game or {}).get("feature_as_of_utc")
                 goalie = rw_side.get("goalie") if rw_side.get("capture_status") == "captured" else None

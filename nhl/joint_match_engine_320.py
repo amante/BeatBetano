@@ -365,6 +365,194 @@ def _apply_rotowire_power_play(team, minute_scenario, skaters, minute_audit):
     return minute_scenario, minute_audit
 
 
+def _rotowire_aggregate_pp_adjustment(team):
+    """Use only fully identified RotoWire PP1/PP2 in the team-aggregate fallback."""
+    def skipped(reason):
+        return {"applied": False, "reason": reason}
+
+    evidence = team.get("rotowire_pregame") or {}
+    if evidence.get("status") != "observed" or evidence.get("capture_status") != "captured":
+        return skipped("rotowire_observation_unavailable")
+    units = {}
+    for key in ("power_play_1", "power_play_2"):
+        section = evidence.get(key) or {}
+        if section.get("status") != "observed":
+            return skipped(key + "_not_observed")
+        rows = section.get("players")
+        if not isinstance(rows, list) or len(rows) != 5:
+            return skipped(key + "_does_not_have_five_resolved_players")
+        if any(type(row.get("player_id")) is not int for row in rows):
+            return skipped(key + "_contains_unresolved_player_identity")
+        units[key] = rows
+    ids = [row["player_id"] for rows in units.values() for row in rows]
+    if len(set(ids)) != 10:
+        return skipped("player_appears_in_both_power_play_units")
+
+    roster_rows = team.get("team_roster_skaters") or []
+    roster = {}
+    for row in roster_rows:
+        pid = row.get("player_id")
+        if type(pid) is not int or pid in roster:
+            return skipped("aggregate_roster_identity_invalid")
+        roster[pid] = row
+    if not roster:
+        return skipped("aggregate_roster_history_unavailable")
+    missing = [str(pid) for pid in ids if pid not in roster]
+    if missing:
+        return skipped("power_play_player_not_in_team_roster:" + ",".join(missing))
+
+    confirmed_out = set()
+    uncertain = set()
+    injury_section = evidence.get("injuries") or {}
+    for row in injury_section.get("players", []) if isinstance(injury_section, dict) else []:
+        pid = row.get("player_id")
+        status = str(row.get("reported_status") or "").upper()
+        if type(pid) is int and status in {"OUT", "IR", "IR-LT", "IR-NR"}:
+            confirmed_out.add(pid)
+        elif type(pid) is int and status in {"DTD", "DAY-TO-DAY", "QUESTIONABLE", "LIKELY"}:
+            uncertain.add(pid)
+    if set(ids) & confirmed_out:
+        return skipped("power_play_unit_conflicts_with_reported_unavailable_player")
+    if set(ids) & uncertain:
+        return skipped("power_play_unit_has_uncertain_availability")
+
+    team_games = _num(team.get("team_summary", {}).get("gamesPlayed"), "team games", positive=True)
+    total_pp_minutes = 0.0
+    historical_pp_goals = 0.0
+    unit_pp_minutes = {}
+    unit_pp_goals = {}
+    for pid, row in roster.items():
+        gp = _num(row.get("games_played"), "roster player games", positive=True)
+        minutes = _num(row.get("minutes_per_game", {}).get("PP"), "roster player PP minutes")
+        goals = _num(row.get("production", {}).get("ppGoals"), "roster player PP goals")
+        historical_minutes = minutes * gp
+        total_pp_minutes += historical_minutes
+        historical_pp_goals += goals
+        if pid in ids:
+            unit_pp_minutes[pid] = historical_minutes
+            unit_pp_goals[pid] = goals
+    unit_minutes_total = sum(unit_pp_minutes.values())
+    if total_pp_minutes <= 0 or unit_minutes_total <= 0:
+        return skipped("no_historical_PP_minutes_for_RotoWire_units")
+
+    pp_budget = total_pp_minutes / team_games
+    projected_goals = 0.0
+    projected_minutes = {}
+    for pid in ids:
+        allocation = pp_budget * unit_pp_minutes[pid] / unit_minutes_total
+        projected_minutes[pid] = allocation
+        rate = unit_pp_goals[pid] / unit_pp_minutes[pid] if unit_pp_minutes[pid] else 0.0
+        projected_goals += rate * allocation
+    baseline_goals = historical_pp_goals / team_games
+    delta = projected_goals - baseline_goals
+    if not all(math.isfinite(value) for value in (pp_budget, projected_goals, baseline_goals, delta)):
+        return skipped("invalid_aggregate_PP_projection")
+
+    return {
+        "applied": True,
+        "method": "reallocate_observed_team_PP_skater_minutes_to_exact_RotoWire_PP1_PP2_by_historical_PP_TOI",
+        "team_PP_minutes_before": pp_budget,
+        "team_PP_minutes_after": sum(projected_minutes.values()),
+        "projected_PP_goals_before": baseline_goals,
+        "projected_PP_goals_after": projected_goals,
+        "projected_PP_goal_delta": delta,
+        "units": {
+            key.replace("power_play_", "PP"): [
+                {"player_id": row["player_id"],
+                 "name": row.get("resolved_name") or row.get("name"),
+                 "historical_PP_minutes_per_game": (
+                     unit_pp_minutes[row["player_id"]] /
+                     _num(roster[row["player_id"]].get("games_played"), "PP player games", positive=True)
+                 ),
+                 "projected_PP_minutes": projected_minutes[row["player_id"]]}
+                for row in rows
+            ]
+            for key, rows in units.items()
+        },
+        "confirmed_unavailable_players": [
+            {"player_id": row.get("player_id"),
+             "name": row.get("resolved_name") or row.get("name"),
+             "status": row.get("reported_status")}
+            for row in injury_section.get("players", [])
+            if isinstance(injury_section, dict) and isinstance(row, dict)
+            and row.get("player_id") in confirmed_out
+        ],
+        "official": False,
+        "calibrated": False,
+    }
+
+
+
+def _rotowire_aggregate_availability_adjustment(team, *, pp_adjustment_applied=False):
+    """Subtract only traceable historical scoring from explicitly unavailable skaters."""
+    evidence = team.get("rotowire_pregame") or {}
+    injuries = evidence.get("injuries") or {}
+    if evidence.get("capture_status") != "captured" or injuries.get("status") != "observed":
+        return {"applied": False, "reason": "rotowire_injury_report_unavailable",
+                "excluded_goal_rate": 0.0, "players": [], "unresolved": []}
+    roster_rows = team.get("team_roster_skaters") or []
+    roster = {row.get("player_id"): row for row in roster_rows
+              if type(row.get("player_id")) is int}
+    team_games = _num(team.get("team_summary", {}).get("gamesPlayed"),
+                      "team games for availability", positive=True)
+    confirmed = {}
+    unresolved = []
+    for row in injuries.get("players", []):
+        if not isinstance(row, dict):
+            continue
+        status = str(row.get("reported_status") or "").strip().upper()
+        if status not in {"OUT", "IR", "IR-LT", "IR-NR"}:
+            continue
+        name = row.get("resolved_name") or row.get("name") or "Jugador sin nombre"
+        pid = row.get("player_id")
+        if (type(pid) is not int or row.get("identity_status") not in
+                {"exact", "unique_initial_and_surname"} or pid not in roster):
+            unresolved.append({"name": name, "status": status})
+            continue
+        pos = str(row.get("position_group") or "").lower()
+        if pos in {"goalie", "goaltender"} or str(row.get("position_observation") or "").upper() == "G":
+            continue
+        confirmed[pid] = {"name": name, "status": status, "player": roster[pid]}
+    if not confirmed:
+        return {"applied": False, "reason": "no_identity_resolved_confirmed_skater_absences",
+                "excluded_goal_rate": 0.0, "players": [], "unresolved": unresolved}
+
+    pp_goals = 0.0
+    non_pp_goals = 0.0
+    rows = []
+    for pid, item in confirmed.items():
+        player = item["player"]
+        production = player.get("production", {})
+        goals = sum(_num(production.get(key), "unavailable player " + key)
+                    for key in ("evGoals", "ppGoals", "shGoals"))
+        player_pp_goals = _num(production.get("ppGoals"), "unavailable player PP goals")
+        pp_goals += player_pp_goals
+        non_pp_goals += goals - player_pp_goals
+        rows.append({"player_id": pid, "name": item["name"], "status": item["status"],
+                     "historical_goals": goals, "historical_PP_goals": player_pp_goals,
+                     "historical_goals_per_team_game": goals / team_games})
+    removed_pp = 0.0 if pp_adjustment_applied else pp_goals / team_games
+    removed_non_pp = non_pp_goals / team_games
+    excluded_goal_rate = removed_pp + removed_non_pp
+    team_goal_rate = _num(team.get("team_summary", {}).get("goalsForPerGame"),
+                          "team goals for before availability", positive=True)
+    if excluded_goal_rate >= team_goal_rate:
+        return {"applied": False, "reason": "reported_absence_contribution_exceeds_team_baseline",
+                "excluded_goal_rate": 0.0, "players": rows, "unresolved": unresolved}
+    return {
+        "applied": excluded_goal_rate > 0,
+        "reason": None if excluded_goal_rate > 0 else "no_historical_scoring_to_remove",
+        "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+        "excluded_goal_rate": excluded_goal_rate,
+        "excluded_PP_goal_rate": removed_pp,
+        "excluded_non_PP_goal_rate": removed_non_pp,
+        "team_games_reference": team_games,
+        "power_play_overlap_handled_by_PP1_PP2_adjustment": bool(pp_adjustment_applied),
+        "players": rows, "unresolved": unresolved,
+        "replacement_effect": "not_estimated_without_identified_active_replacement",
+        "calibrated": False,
+    }
+
 def team_profile(team, team_code):
     summary = team["team_summary"]
     st = team["special_teams"]
@@ -381,9 +569,13 @@ def team_profile(team, team_code):
 
     if coverage.get("mode") == "team_aggregate_fallback":
         gp = _num(summary.get("gamesPlayed"), "team games", positive=True)
+        rotowire_pp_adjustment = _rotowire_aggregate_pp_adjustment(team)
+        rotowire_availability_adjustment = _rotowire_aggregate_availability_adjustment(
+            team, pp_adjustment_applied=rotowire_pp_adjustment.get("applied") is True)
         shots_for = _num(summary.get("shotsForPerGame"), "team shots for", positive=True)
         shots_against = _num(summary.get("shotsAgainstPerGame"), "team shots against", positive=True)
-        goals_for = _num(summary.get("goalsForPerGame"), "team goals for", positive=True)
+        raw_goals_for = _num(summary.get("goalsForPerGame"), "team goals for", positive=True)
+        goals_for = max(0.01, raw_goals_for - rotowire_availability_adjustment.get("excluded_goal_rate", 0.0))
         goals_against = _num(summary.get("goalsAgainstPerGame"), "team goals against", positive=True)
         goalies = team.get("goalie_candidates", [])
         if not goalies:
@@ -403,7 +595,8 @@ def team_profile(team, team_code):
             "season": {"games": gp, "shots_for_per_game": shots_for,
                        "shots_against_per_game": shots_against,
                        "goals_for_per_game": goals_for,
-                       "goals_against_per_game": goals_against},
+                       "goals_against_per_game": goals_against,
+                       "goals_for_per_game_before_availability": raw_goals_for},
             "special": {"games": 0, "pp_per_game": 0.0, "pp_goal_rate": None,
                         "pk_opportunities_per_game": 0.0, "pk_goals_allowed_rate": None,
                         "pp_goals_per_game": 0.0},
@@ -412,9 +605,13 @@ def team_profile(team, team_code):
             "projected_pp_minutes_per_game": 0.0,
             "faceoff_win_pct": summary.get("faceoffWinPct"), "ev_share": 0.0,
             "goalies": goalies, "schedule": team.get("schedule", {}),
-            "minute_distribution": {"status": "omitted_team_aggregate_fallback"},
+            "minute_distribution": {"status": "omitted_team_aggregate_fallback",
+                                    "rotowire_power_play": rotowire_pp_adjustment},
+            "rotowire_pp_adjustment": rotowire_pp_adjustment,
+            "rotowire_availability_adjustment": rotowire_availability_adjustment,
             "player_contributions": [],
-            "lineup_impact": {"status": "omitted_team_aggregate_fallback"},
+            "lineup_impact": {"status": "team_aggregate_availability_only",
+                              "availability": rotowire_availability_adjustment},
         }
 
     minute_scenario, minute_audit = _minutes_scenario(team)
@@ -788,7 +985,13 @@ def _aggregate_scoring_rate(attacking, defending, goalie):
     if save_pct >= 1:
         raise ValueError("Invalid goalie save percentage")
     goalie_factor = (1 - save_pct) / baseline_goal_rate
-    expected = math.sqrt(attack * allow) * goalie_factor
+    pp_adjustment = attacking.get("rotowire_pp_adjustment") or {}
+    pp_delta = (pp_adjustment.get("projected_PP_goal_delta", 0.0)
+                if pp_adjustment.get("applied") is True else 0.0)
+    aggregate_rate = math.sqrt(attack * allow) + pp_delta
+    if not math.isfinite(aggregate_rate) or aggregate_rate <= 0:
+        raise ValueError("RotoWire PP adjustment yields an invalid aggregate goal rate")
+    expected = aggregate_rate * goalie_factor
     if not math.isfinite(expected) or expected <= 0 or expected >= 10:
         raise ValueError("Unsupported aggregate fallback goal rate")
     return {
@@ -799,6 +1002,9 @@ def _aggregate_scoring_rate(attacking, defending, goalie):
             "attacking_goals_for_per_game": attack,
             "opponent_goals_against_per_game": allow,
             "team_aggregate_baseline": math.sqrt(attack * allow),
+            "rotowire_PP1_PP2_adjustment": pp_adjustment,
+            "rotowire_confirmed_availability_adjustment": attacking.get("rotowire_availability_adjustment"),
+            "aggregate_baseline_PP_goal_delta": pp_delta,
             "opponent_goalie_save_pct": save_pct,
             "opponent_goalie_factor": goalie_factor,
             "individual_lineup_adjustment": "omitted_projected_lineup_unavailable",
@@ -914,20 +1120,16 @@ def run(inputs):
         original_team_inputs[code].get("lineup_coverage", {}).get("mode") == "team_aggregate_fallback"
         for code in (home_code, away_code)
     )
+    # Keep source-attested RotoWire PP units available in aggregate mode.
+    # The aggregate profile applies only a separate PP personnel delta; it does
+    # not infer 5v5 lines or promote a partial roster to a confirmed lineup.
     profile_inputs = original_team_inputs
-    if aggregate_fallback:
-        # Do not apply an isolated team's player/PP deployment when the matchup
-        # must use the team-aggregate fallback for both sides.
-        profile_inputs = {
-            code: dict(team, rotowire_pregame=None)
-            for code, team in original_team_inputs.items()
-        }
     home = team_profile(profile_inputs[home_code], home_code)
     away = team_profile(profile_inputs[away_code], away_code)
     league_pk_rate = _num(inputs["league_context"].get("powerplay_goals_allowed_per_opportunity"),
                           "league PK rate", positive=True)
     unknowns = list(inputs.get("unknowns", []))
-    rotowire_pp_applied = (not aggregate_fallback) and any(
+    rotowire_pp_applied = any(
         profile.get("minute_distribution", {}).get("rotowire_power_play", {}).get("applied") is True
         for profile in (home, away)
     )
@@ -954,8 +1156,9 @@ def run(inputs):
             markets = calculate(h["expected_goals"], a["expected_goals"])
             pp_impact = None
             if rotowire_pp_applied:
-                base_h = _scoring_rate(base_home, base_away, ag, league_pk_rate)
-                base_a = _scoring_rate(base_away, base_home, hg, league_pk_rate)
+                base_rate = _aggregate_scoring_rate if aggregate_fallback else None
+                base_h = base_rate(base_home, base_away, ag) if base_rate else _scoring_rate(base_home, base_away, ag, league_pk_rate)
+                base_a = base_rate(base_away, base_home, hg) if base_rate else _scoring_rate(base_away, base_home, hg, league_pk_rate)
                 base_markets = calculate(base_h["expected_goals"], base_a["expected_goals"])
 
                 def difference(after, before):
@@ -1036,7 +1239,8 @@ def run(inputs):
             "applied": aggregate_fallback,
             "player_props_available": not aggregate_fallback,
             "reason": "At least one team has no identified projected skaters; team-season goal rates and goalie scenarios used for both teams." if aggregate_fallback else None,
-            "omitted_factors": ["projected lines", "player-level props", "lineup-driven absence and replacement effects", "RotoWire PP1/PP2 deployment"] if aggregate_fallback else [],
+            "omitted_factors": (["projected 5v5 lines", "player-level props", "5v5 absence and replacement effects"] +
+                                ([] if rotowire_pp_applied else ["RotoWire PP1/PP2 deployment"])) if aggregate_fallback else [],
         },
         "source_cutoff_exclusive": cutoff,
         "captured_at_utc": inputs["captured_at_utc"],
@@ -1058,12 +1262,10 @@ def run(inputs):
         "minute_distribution": {home_code: home["minute_distribution"],
                                 away_code: away["minute_distribution"]},
         "lineup_coverage": {home_code: home["lineup_coverage"], away_code: away["lineup_coverage"]},
-        "lineup_impact": (
-            {home_code: {"status": "not_applied_missing_projected_lineup"},
-             away_code: {"status": "not_applied_missing_projected_lineup"}}
-            if aggregate_fallback else
-            {home_code: home["lineup_impact"], away_code: away["lineup_impact"]}
-        ),
+        "lineup_impact": {
+            home_code: home["lineup_impact"],
+            away_code: away["lineup_impact"],
+        },
         "player_contributions": {home_code: [] if aggregate_fallback else home["player_contributions"],
                                  away_code: [] if aggregate_fallback else away["player_contributions"]},
         "player_scoring_model": {

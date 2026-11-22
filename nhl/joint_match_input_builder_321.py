@@ -310,6 +310,57 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                             continue
                         p=safe_player_record(person,field+" player history")
                         if p: p["availability"]="injury" if field=="injuries" else "scratch";absent.append(p)
+                # Add only explicit RotoWire OUT/IR statuses after identity and team-history reconciliation.
+                # Absence from a provider list is never interpreted as availability.
+                rw_side=(rg or {}).get("teams",{}).get(code,{})
+                rw_injuries=rw_side.get("injuries") or {}
+                rw_out_ids=set()
+                if rw_side.get("capture_status")=="captured" and rw_injuries.get("status")=="observed":
+                    for report_row in rw_injuries.get("players",[]):
+                        if not isinstance(report_row,dict):
+                            continue
+                        reported=str(report_row.get("reported_status") or "").strip().upper()
+                        if reported not in ("OUT","IR","IR-LT","IR-NR"):
+                            continue
+                        report_name=report_row.get("resolved_name") or report_row.get("name") or "Jugador sin nombre"
+                        identity_status=report_row.get("identity_status")
+                        pid=report_row.get("player_id")
+                        if type(pid) is not int or identity_status not in ("exact","unique_initial_and_surname"):
+                            fallback_reasons.append("RotoWire reportó una baja sin identidad reconciliada para "+str(report_name)+".")
+                            unknown.append(code+" RotoWire unavailable player unresolved: "+str(report_name)+" ("+reported+")")
+                            continue
+                        position=str(report_row.get("position_group") or report_row.get("position_observation") or "").strip().upper()
+                        if position in ("G","GOALIE","GOALIE"):
+                            injured_goalie_ids.add(str(pid))
+                            unknown.append(code+" RotoWire goalie injury tracked in goalie scenarios, not skater availability: "+str(report_name))
+                            continue
+                        record=safe_player_record({"player_id":pid,"name":report_name},"RotoWire unavailable player")
+                        if not record:
+                            continue
+                        record["availability"]="injury"
+                        record["availability_source"]="RotoWire explicit "+reported
+                        record["reported_status"]=reported
+                        rw_out_ids.add(pid)
+                        if not any(item.get("player_id")==pid for item in absent):
+                            absent.append(record)
+                if rw_out_ids:
+                    removed_from_projection=[]
+                    for line in lines:
+                        retained=[]
+                        for player_row in line["players"]:
+                            if player_row["player_id"] in rw_out_ids:
+                                removed_from_projection.append(player_row)
+                            else:
+                                retained.append(player_row)
+                        line["players"]=retained
+                    existing_out={item.get("player_id") for item in outgoing}
+                    for player_row in removed_from_projection:
+                        player_row["position"]="D" if player_row.get("position")=="D" else "F"
+                        if player_row.get("player_id") not in existing_out:
+                            outgoing.append(player_row)
+                            existing_out.add(player_row.get("player_id"))
+                    if removed_from_projection:
+                        unknown.append(code+" RotoWire explicit OUT/IR removed from projected skaters; unfilled minutes remain in team baseline: "+", ".join(item["name"] for item in removed_from_projection))
                 candidates=gg.get("teams",{}).get(code,[]);glist=[]
                 team_games=number(teamrow,"gamesPlayed",True)
                 for g in candidates:
@@ -347,6 +398,18 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                     fallback_reasons.append("Hay estadísticas de jugadores transferidos que no se pueden atribuir al equipo actual.")
                     unknown.append(code+" multi-team player statistics excluded from individual attribution")
                 totals={k:sum(number(r,k) for r in exact) for k in ("goals","assists","shots","penaltyMinutes","evGoals","evPoints","ppGoals","ppPoints","shGoals","shPoints")}
+                # Keep a full, identity-safe team skater pool for the aggregate
+                # fallback. RotoWire's PP units can then affect the experimental
+                # goal rate even when 5v5 line combinations are unavailable.
+                team_roster_skaters=[]
+                for stats_row in skaters:
+                    if stats_row.get("teamAbbrevs")!=code or str(stats_row.get("positionCode","")).upper()=="G":
+                        continue
+                    person={"player_id":stats_row.get("playerId"),"name":stats_row.get("skaterFullName")}
+                    try:
+                        team_roster_skaters.append(player_record(person,code))
+                    except (KeyError,TypeError,ValueError):
+                        continue
                 gp=number(teamrow,"gamesPlayed",True)
                 modeled_count=sum(len(line["players"]) for line in lines)
                 projected_slots=sum(item["expected"] for item in coverage_counts.values())
@@ -362,7 +425,7 @@ def build(report, context, changes, goalies, special, cutoff, division_history=N
                     "unavailable_players":absent,"goalie_candidates":glist,"goalie_start_distribution":goalie_start_distribution,
                     "team_summary":teamrow,"special_teams":{"games_played":sp["games_played"],"powerplay_goals":sp["powerplay_goals"],"powerplay_opportunities":sp["powerplay_opportunities"],"opponent_powerplay_goals":sp["opponent_powerplay_goals"],"times_shorthanded":sp["times_shorthanded"]},
                     "team_roster_penalty_minutes":{"total":totals["penaltyMinutes"],"games_played":gp,"unattributed_multi_team_players":len(multi)},
-                    "team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":len(multi)},
+                    "team_roster_production":{"player_rows":len(exact),"games_played":gp,"totals":totals,"unattributed_multi_team_players":len(multi)},"team_roster_skaters":team_roster_skaters,
                     "rotowire_pregame":(rg.get("teams",{}).get(code) if rg else None),
                     "rotowire_market_observation":(rg.get("market_observation") if rg else None),
                     "rotowire_source":(rg.get("source") if rg else None),
