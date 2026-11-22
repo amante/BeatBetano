@@ -1,0 +1,135 @@
+{
+  "sport": "nfl",
+  "as_of_utc": "2026-11-22T17:08:49.013561Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401873075",
+      "start_utc": "2026-11-22T21:25:00Z",
+      "participants": [
+        "DEN",
+        "LV"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.807897,
+          "away": 0.19210300000000002
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nfl-historical-elo",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_model_output": {
+    "event_id": "401873075",
+    "start_utc": "2026-11-22T21:25:00+00:00",
+    "participants": [
+      "DEN",
+      "LV"
+    ],
+    "home_team": "DEN",
+    "away_team": "LV",
+    "home_name": "Denver Broncos",
+    "away_name": "Las Vegas Raiders",
+    "venue": "Empower Field at Mile High",
+    "city": "Denver",
+    "neutral_site": false,
+    "official_baseline": null,
+    "historical_elo_candidate": 0.807897,
+    "challenger": null,
+    "final_probability": null,
+    "away_probability": null,
+    "all_inputs_verified": false,
+    "independent_validation_passed": false,
+    "starting_lineups_verified": false,
+    "injury_report_verified": false,
+    "weather_verified": false,
+    "props": null,
+    "missing_evidence": [
+      "confirmed_inactives",
+      "starters",
+      "weather",
+      "matchups",
+      "independent_calibration"
+    ]
+  },
+  "source_output_sha256": "563f93694494bf4b5e84d615e59cff41a6039c235c7b7a29fdee11f9bf01e903",
+  "source_output_sha256_scope": "event",
+  "model_provenance": {
+    "model_code_sha256": "812913d702db5ccfec8bee55baa6aa21b5d52f3d4a13ff7d28337af0adab1657",
+    "data_role": "historical_elo_training_history",
+    "training_data_sha256": "cdd6244fc752da5615f5da8802b8cbd13dc84eee36be76fa475d5c7d98899692",
+    "training_cutoff_utc": "2026-11-19T00:00:00+00:00",
+    "model_code_revision": "ed841df260aa3635e376c6a40ed67f04191b84cd",
+    "model_family": "nfl-historical-elo",
+    "forecast_model_version": "nfl-historical-elo",
+    "source_output_sha256": "563f93694494bf4b5e84d615e59cff41a6039c235c7b7a29fdee11f9bf01e903"
+  },
+  "revision": 3,
+  "parent_snapshot_sha256": "6af7a12a671c07c1eeb3be8e9a5e5b00562e35836c2db283b1760c0f22eed56e",
+  "changes": [
+    {
+      "event_id": "401873075",
+      "before": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.807897,
+          "away": 0.19210300000000002
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "after": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.807897,
+          "away": 0.19210300000000002
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "previous_start_utc": "2026-11-22T21:25:00Z",
+      "start_utc": "2026-11-22T21:25:00Z"
+    }
+  ],
+  "emitted_at_utc": "2026-11-22T17:08:49.197159+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "eee1e32df065581143d18eeae9f8d97457a2ce936bd4f78af58f1bfb20df2f9e"
+}
