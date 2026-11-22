@@ -1,0 +1,2813 @@
+{
+  "kind": "nfl_pregame_input_inventory_v1",
+  "sport": "nfl",
+  "run_id": "44985484507",
+  "generated_at_utc": "2026-11-22T04:33:07.196899+00:00",
+  "as_of_utc": "2026-11-22T04:33:05.222998+00:00",
+  "official_prediction": false,
+  "odds_used_in_model": false,
+  "games": [
+    {
+      "event_id": "401873067",
+      "start_utc": "2026-11-22T18:00:00+00:00",
+      "home": "KC",
+      "away": "ARI",
+      "home_name": "Kansas City Chiefs",
+      "away_name": "Arizona Cardinals",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-22T18:00:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "Arrowhead Stadium",
+                "city": "Kansas City",
+                "neutral_site": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "Kansas City Chiefs",
+                "away": "Arizona Cardinals",
+                "home_probability": 0.771829,
+                "away_probability": 0.228171,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "partial",
+              "value": {
+                "reportados": [
+                  {
+                    "team": "ARI",
+                    "name": "Carson Beck",
+                    "position": "QB",
+                    "status": "Out",
+                    "confirmed_inactive": false
+                  },
+                  {
+                    "team": "ARI",
+                    "name": "Gardner Minshew II",
+                    "position": "QB",
+                    "status": "Injured Reserve",
+                    "confirmed_inactive": false
+                  }
+                ],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "KC",
+                  "name": "Omarr Norman-Lott",
+                  "position": "DT",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "KC",
+                  "name": "Jaylon Moore",
+                  "position": "OT",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "KC",
+                  "name": "Trey Smith",
+                  "position": "G",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "KC",
+                  "name": "Peter Woods",
+                  "position": "DT",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "KC",
+                  "name": "Kenneth Walker III",
+                  "position": "RB",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "ARI",
+                  "name": "Carson Beck",
+                  "position": "QB",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "ARI",
+                  "name": "Jon Gaines II",
+                  "position": "G",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "ARI",
+                  "name": "Zachary Carter",
+                  "position": "DT",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "ARI",
+                  "name": "James Conner",
+                  "position": "RB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "ARI",
+                  "name": "Gardner Minshew II",
+                  "position": "QB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "event_id": "401873068",
+      "start_utc": "2026-11-22T18:00:00+00:00",
+      "home": "CAR",
+      "away": "BAL",
+      "home_name": "Carolina Panthers",
+      "away_name": "Baltimore Ravens",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-22T18:00:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "Bank of America Stadium",
+                "city": "Charlotte",
+                "neutral_site": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "Carolina Panthers",
+                "away": "Baltimore Ravens",
+                "home_probability": 0.507105,
+                "away_probability": 0.49289499999999997,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "partial",
+              "value": {
+                "reportados": [
+                  {
+                    "team": "BAL",
+                    "name": "Lamar Jackson",
+                    "position": "QB",
+                    "status": "Injured Reserve",
+                    "confirmed_inactive": false
+                  }
+                ],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "CAR",
+                  "name": "Brady Christensen",
+                  "position": "G",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "CAR",
+                  "name": "Isaiah Simmons",
+                  "position": "S",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "CAR",
+                  "name": "Mike Jackson",
+                  "position": "CB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "CAR",
+                  "name": "Jonathon Brooks",
+                  "position": "RB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "CAR",
+                  "name": "Tommy Tremble",
+                  "position": "TE",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "BAL",
+                  "name": "Jaylinn Hawkins",
+                  "position": "S",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "BAL",
+                  "name": "Nnamdi Madubuike",
+                  "position": "DT",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "BAL",
+                  "name": "Marlon Humphrey",
+                  "position": "CB",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "BAL",
+                  "name": "Lamar Jackson",
+                  "position": "QB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "BAL",
+                  "name": "Adisa Isaac",
+                  "position": "LB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "event_id": "401873070",
+      "start_utc": "2026-11-22T18:00:00+00:00",
+      "home": "BUF",
+      "away": "MIA",
+      "home_name": "Buffalo Bills",
+      "away_name": "Miami Dolphins",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-22T18:00:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "Highmark Stadium",
+                "city": "Orchard Park",
+                "neutral_site": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "Buffalo Bills",
+                "away": "Miami Dolphins",
+                "home_probability": 0.819571,
+                "away_probability": 0.18042899999999995,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "missing",
+              "value": {
+                "reportados": [],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "BUF",
+                  "name": "Ed Oliver",
+                  "position": "DT",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "BUF",
+                  "name": "Damar Hamlin",
+                  "position": "S",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "BUF",
+                  "name": "Jackson Hawes",
+                  "position": "TE",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "BUF",
+                  "name": "Dorian Williams",
+                  "position": "LB",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "BUF",
+                  "name": "Christian Benford",
+                  "position": "CB",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "MIA",
+                  "name": "Darrell Baker Jr.",
+                  "position": "CB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "MIA",
+                  "name": "Jaylin Simpson",
+                  "position": "S",
+                  "status": "Doubtful",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "MIA",
+                  "name": "Bradley Pinion",
+                  "position": "P",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "MIA",
+                  "name": "Aaron Brewer",
+                  "position": "C",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "MIA",
+                  "name": "Marcellas Dial Jr.",
+                  "position": "CB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "event_id": "401873071",
+      "start_utc": "2026-11-22T18:00:00+00:00",
+      "home": "CHI",
+      "away": "NO",
+      "home_name": "Chicago Bears",
+      "away_name": "New Orleans Saints",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-22T18:00:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "Soldier Field",
+                "city": "Chicago",
+                "neutral_site": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "Chicago Bears",
+                "away": "New Orleans Saints",
+                "home_probability": 0.73825,
+                "away_probability": 0.26175000000000004,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "missing",
+              "value": {
+                "reportados": [],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "CHI",
+                  "name": "Kyler Gordon",
+                  "position": "CB",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "CHI",
+                  "name": "Zavion Thomas",
+                  "position": "WR",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "CHI",
+                  "name": "Zavier Scott",
+                  "position": "RB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "CHI",
+                  "name": "Kentavius Street",
+                  "position": "DT",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "CHI",
+                  "name": "Braxton Jones",
+                  "position": "OT",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NO",
+                  "name": "Asim Richards",
+                  "position": "OT",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NO",
+                  "name": "Erik McCoy",
+                  "position": "C",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NO",
+                  "name": "Taliese Fuaga",
+                  "position": "OT",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NO",
+                  "name": "Martin Emerson Jr.",
+                  "position": "CB",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NO",
+                  "name": "Pete Werner",
+                  "position": "LB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "event_id": "401873072",
+      "start_utc": "2026-11-22T18:00:00+00:00",
+      "home": "DET",
+      "away": "TB",
+      "home_name": "Detroit Lions",
+      "away_name": "Tampa Bay Buccaneers",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-22T18:00:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "Ford Field",
+                "city": "Detroit",
+                "neutral_site": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "Detroit Lions",
+                "away": "Tampa Bay Buccaneers",
+                "home_probability": 0.729212,
+                "away_probability": 0.27078800000000003,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "partial",
+              "value": {
+                "reportados": [
+                  {
+                    "team": "TB",
+                    "name": "Baker Mayfield",
+                    "position": "QB",
+                    "status": "Questionable",
+                    "confirmed_inactive": false
+                  }
+                ],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "DET",
+                  "name": "Cade Mays",
+                  "position": "C",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DET",
+                  "name": "D.J. Reed",
+                  "position": "CB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DET",
+                  "name": "Sione Vaki",
+                  "position": "RB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DET",
+                  "name": "Aidan Hutchinson",
+                  "position": "DE",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DET",
+                  "name": "Tyler Lacy",
+                  "position": "DT",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "TB",
+                  "name": "Baker Mayfield",
+                  "position": "QB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "TB",
+                  "name": "Josh Hayes",
+                  "position": "CB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "TB",
+                  "name": "Yaya Diaby",
+                  "position": "LB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "TB",
+                  "name": "Antoine Winfield Jr.",
+                  "position": "S",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "TB",
+                  "name": "Jalen McMillan",
+                  "position": "WR",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "event_id": "401873073",
+      "start_utc": "2026-11-22T18:00:00+00:00",
+      "home": "DAL",
+      "away": "TEN",
+      "home_name": "Dallas Cowboys",
+      "away_name": "Tennessee Titans",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-22T18:00:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "AT&T Stadium",
+                "city": "Arlington",
+                "neutral_site": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "Dallas Cowboys",
+                "away": "Tennessee Titans",
+                "home_probability": 0.736714,
+                "away_probability": 0.263286,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "missing",
+              "value": {
+                "reportados": [],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "DAL",
+                  "name": "Jalen Thompson",
+                  "position": "S",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DAL",
+                  "name": "DaRon Bland",
+                  "position": "CB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DAL",
+                  "name": "P.J. Locke",
+                  "position": "S",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DAL",
+                  "name": "Luke Schoonmaker",
+                  "position": "TE",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DAL",
+                  "name": "Jonathan Mingo",
+                  "position": "WR",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "TEN",
+                  "name": "Jaylen Harrell",
+                  "position": "LB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "TEN",
+                  "name": "Tyjae Spears",
+                  "position": "RB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "TEN",
+                  "name": "Carnell Tate",
+                  "position": "WR",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "TEN",
+                  "name": "Micah Robinson",
+                  "position": "CB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "TEN",
+                  "name": "Anthony Hill Jr.",
+                  "position": "LB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "event_id": "401873076",
+      "start_utc": "2026-11-22T18:00:00+00:00",
+      "home": "PHI",
+      "away": "PIT",
+      "home_name": "Philadelphia Eagles",
+      "away_name": "Pittsburgh Steelers",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-22T18:00:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "Lincoln Financial Field",
+                "city": "Philadelphia",
+                "neutral_site": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "Philadelphia Eagles",
+                "away": "Pittsburgh Steelers",
+                "home_probability": 0.519189,
+                "away_probability": 0.480811,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "partial",
+              "value": {
+                "reportados": [
+                  {
+                    "team": "PHI",
+                    "name": "Jalen Hurts",
+                    "position": "QB",
+                    "status": "Injured Reserve",
+                    "confirmed_inactive": false
+                  }
+                ],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "PHI",
+                  "name": "Zack Baun",
+                  "position": "LB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "PHI",
+                  "name": "Will Shipley",
+                  "position": "RB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "PHI",
+                  "name": "Dontayvion Wicks",
+                  "position": "WR",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "PHI",
+                  "name": "Smael Mondon Jr.",
+                  "position": "LB",
+                  "status": "Doubtful",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "PHI",
+                  "name": "Jalen Hurts",
+                  "position": "QB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "PIT",
+                  "name": "Michael Pittman Jr.",
+                  "position": "WR",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "PIT",
+                  "name": "Roman Wilson",
+                  "position": "WR",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "PIT",
+                  "name": "Nick Herbig",
+                  "position": "LB",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "PIT",
+                  "name": "DeShon Elliott",
+                  "position": "S",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "PIT",
+                  "name": "Patrick Queen",
+                  "position": "LB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "event_id": "401873074",
+      "start_utc": "2026-11-22T21:05:00+00:00",
+      "home": "LAC",
+      "away": "NYJ",
+      "home_name": "Los Angeles Chargers",
+      "away_name": "New York Jets",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-22T21:05:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "SoFi Stadium",
+                "city": "Inglewood",
+                "neutral_site": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "Los Angeles Chargers",
+                "away": "New York Jets",
+                "home_probability": 0.705356,
+                "away_probability": 0.294644,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "missing",
+              "value": {
+                "reportados": [],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "LAC",
+                  "name": "Rodney Shelley",
+                  "position": "CB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "LAC",
+                  "name": "Trey Pipkins III",
+                  "position": "OT",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "LAC",
+                  "name": "Isas Waxter",
+                  "position": "CB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "LAC",
+                  "name": "Kendall Williamson",
+                  "position": "S",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "LAC",
+                  "name": "Tarheeb Still",
+                  "position": "CB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NYJ",
+                  "name": "Dylan Parham",
+                  "position": "G",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NYJ",
+                  "name": "Harrison Phillips",
+                  "position": "DT",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NYJ",
+                  "name": "David Onyemata",
+                  "position": "DT",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NYJ",
+                  "name": "Trevin Wallace",
+                  "position": "LB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NYJ",
+                  "name": "Isaiah Williams",
+                  "position": "WR",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "event_id": "401873069",
+      "start_utc": "2026-11-22T21:25:00+00:00",
+      "home": "NYG",
+      "away": "JAX",
+      "home_name": "New York Giants",
+      "away_name": "Jacksonville Jaguars",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-22T21:25:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "MetLife Stadium",
+                "city": "East Rutherford",
+                "neutral_site": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "New York Giants",
+                "away": "Jacksonville Jaguars",
+                "home_probability": 0.413103,
+                "away_probability": 0.586897,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "partial",
+              "value": {
+                "reportados": [
+                  {
+                    "team": "NYG",
+                    "name": "Jaxson Dart",
+                    "position": "QB",
+                    "status": "Injured Reserve",
+                    "confirmed_inactive": false
+                  }
+                ],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "NYG",
+                  "name": "Tyrone Tracy Jr.",
+                  "position": "RB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NYG",
+                  "name": "Tremaine Edmunds",
+                  "position": "LB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NYG",
+                  "name": "Braxton Berrios",
+                  "position": "WR",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NYG",
+                  "name": "Chauncey Golston",
+                  "position": "DE",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "NYG",
+                  "name": "Jaxson Dart",
+                  "position": "QB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "JAX",
+                  "name": "Danny Striggow",
+                  "position": "DE",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "JAX",
+                  "name": "B.J. Green II",
+                  "position": "DE",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "JAX",
+                  "name": "Matt Dickerson",
+                  "position": "DE",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "JAX",
+                  "name": "Robert Hainsey",
+                  "position": "C",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "JAX",
+                  "name": "Eric Murray",
+                  "position": "S",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "event_id": "401873075",
+      "start_utc": "2026-11-22T21:25:00+00:00",
+      "home": "DEN",
+      "away": "LV",
+      "home_name": "Denver Broncos",
+      "away_name": "Las Vegas Raiders",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-22T21:25:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "Empower Field at Mile High",
+                "city": "Denver",
+                "neutral_site": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "Denver Broncos",
+                "away": "Las Vegas Raiders",
+                "home_probability": 0.807897,
+                "away_probability": 0.19210300000000002,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "missing",
+              "value": {
+                "reportados": [],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "DEN",
+                  "name": "Caleb Lohner",
+                  "position": "TE",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DEN",
+                  "name": "Brandon Jones",
+                  "position": "S",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DEN",
+                  "name": "Eyioma Uwazurike",
+                  "position": "DE",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DEN",
+                  "name": "RJ Harvey",
+                  "position": "RB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "DEN",
+                  "name": "Tyler Badie",
+                  "position": "RB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "LV",
+                  "name": "Folorunso Fatukasi",
+                  "position": "DT",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "LV",
+                  "name": "Tonka Hemingway",
+                  "position": "DT",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "LV",
+                  "name": "Brock Bowers",
+                  "position": "TE",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "LV",
+                  "name": "Matt Gay",
+                  "position": "PK",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "LV",
+                  "name": "Patrick Johnson",
+                  "position": "DE",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "event_id": "401873077",
+      "start_utc": "2026-11-23T01:20:00+00:00",
+      "home": "SF",
+      "away": "MIN",
+      "home_name": "San Francisco 49ers",
+      "away_name": "Minnesota Vikings",
+      "forecast_cutoff_utc": "2026-11-22T04:33:05.222998+00:00",
+      "supplement_captured_after_forecast_cutoff": true,
+      "groups": [
+        {
+          "title": "Partido y sede",
+          "rows": [
+            {
+              "label": "Inicio",
+              "status": "captured",
+              "value": "2026-11-23T01:20:00+00:00",
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            },
+            {
+              "label": "Estadio",
+              "status": "captured",
+              "value": {
+                "stadium": "Estadio Banorte",
+                "city": "Mexico City",
+                "neutral_site": true
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Probabilidad base",
+          "rows": [
+            {
+              "label": "Elo hist\u00f3rico",
+              "status": "captured",
+              "value": {
+                "model": "nfl-historical-elo",
+                "home": "San Francisco 49ers",
+                "away": "Minnesota Vikings",
+                "home_probability": 0.603131,
+                "away_probability": 0.396869,
+                "historical_games": 7411,
+                "training_cutoff_utc": "2026-11-19T00:00:00+00:00"
+              },
+              "source": {
+                "provider": "nflverse historical results",
+                "captured_at_utc": "2026-11-22T04:33:05.222998+00:00"
+              },
+              "used_in_base_probability": true,
+              "use_note": "\u00danico factor que determina este porcentaje candidato; Elo exploratorio, sin calibraci\u00f3n certificada.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "QB, lesiones e inactivos",
+          "rows": [
+            {
+              "label": "QB",
+              "status": "partial",
+              "value": {
+                "reportados": [
+                  {
+                    "team": "SF",
+                    "name": "Mac Jones",
+                    "position": "QB",
+                    "status": "Questionable",
+                    "confirmed_inactive": false
+                  },
+                  {
+                    "team": "MIN",
+                    "name": "Kyler Murray",
+                    "position": "QB",
+                    "status": "Out",
+                    "confirmed_inactive": false
+                  }
+                ],
+                "titular_confirmado": false
+              },
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": "El reporte no confirma el QB titular ni su disponibilidad oficial."
+            },
+            {
+              "label": "Inactivos oficiales",
+              "status": "missing",
+              "value": [],
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay inactivos oficiales reconciliados para el partido."
+            },
+            {
+              "label": "Lesiones del proveedor",
+              "status": "partial",
+              "value": [
+                {
+                  "team": "SF",
+                  "name": "Nate Hobbs",
+                  "position": "CB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "SF",
+                  "name": "Dre Greenlaw",
+                  "position": "LB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "SF",
+                  "name": "Jordan James",
+                  "position": "RB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "SF",
+                  "name": "Mac Jones",
+                  "position": "QB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "SF",
+                  "name": "Mike Evans",
+                  "position": "WR",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "MIN",
+                  "name": "Isaiah Rodgers",
+                  "position": "CB",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "MIN",
+                  "name": "Kyler Murray",
+                  "position": "QB",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "MIN",
+                  "name": "Bo Richter",
+                  "position": "LB",
+                  "status": "Injured Reserve",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "MIN",
+                  "name": "Jay Ward",
+                  "position": "S",
+                  "status": "Questionable",
+                  "confirmed_inactive": false
+                },
+                {
+                  "team": "MIN",
+                  "name": "Jordan Addison",
+                  "position": "WR",
+                  "status": "Out",
+                  "confirmed_inactive": false
+                }
+              ],
+              "source": {
+                "provider": "ESPN",
+                "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary",
+                "captured_at_utc": "2026-11-22T04:33:06.634249+00:00",
+                "available_after_forecast_cutoff": true
+              },
+              "used_in_base_probability": false,
+              "use_note": "Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje. Captura posterior al pron\u00f3stico inicial; aporta contexto, pero no form\u00f3 parte de ese porcentaje.",
+              "gap": null
+            }
+          ]
+        },
+        {
+          "title": "Matchups y condiciones",
+          "rows": [
+            {
+              "label": "L\u00ednea ofensiva y reemplazos",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay titulares, roles y reemplazos reconciliados."
+            },
+            {
+              "label": "Defensa rival y cobertura",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay asignaciones de matchup verificadas."
+            },
+            {
+              "label": "Clima",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin pron\u00f3stico pregame conectado al c\u00e1lculo."
+            },
+            {
+              "label": "Descanso y viaje",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "Sin descanso, viaje ni zona horaria capturados."
+            },
+            {
+              "label": "EPA challenger",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "EPA se eval\u00faa en hist\u00f3rico; a\u00fan no alimenta la corrida."
+            },
+            {
+              "label": "Props individuales",
+              "status": "missing",
+              "value": null,
+              "source": {},
+              "used_in_base_probability": false,
+              "use_note": "",
+              "gap": "No hay modelo de props validado; las cuotas no entran al modelo."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "note": "Evidencia y faltantes por encuentro; los campos pendientes no modifican los porcentajes."
+}
