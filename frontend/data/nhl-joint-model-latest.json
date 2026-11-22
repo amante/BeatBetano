@@ -1,7 +1,7 @@
 {
   "kind": "nhl_joint_match_daily_runs_v322",
   "date": "2026-11-22",
-  "generated_at_utc": "2026-11-22T07:19:38.892162+00:00",
+  "generated_at_utc": "2026-11-22T16:56:22.491244+00:00",
   "games": [
     {
       "kind": "nhl_joint_match_scenarios_v1",
@@ -23,79 +23,790 @@
         ]
       },
       "source_cutoff_exclusive": "2026-11-22",
-      "captured_at_utc": "2026-11-22T07:19:38.885215+00:00",
+      "captured_at_utc": "2026-11-22T16:56:22.483897+00:00",
       "status": "conditional_unvalidated_scenarios",
       "publishable": false,
-      "scenario_count": 1,
+      "scenario_count": 4,
       "goalie_start_distribution": {
         "STL": {
-          "status": "incomplete_candidate_coverage",
+          "status": "complete_empirical_share",
           "method": "candidate_games_started_divided_by_team_games_played",
           "team_games_played": 23,
-          "candidate_starts": 16,
-          "probabilities_sum_to_one": false
+          "candidate_starts": 23,
+          "probabilities_sum_to_one": true
         },
         "EDM": {
           "status": "incomplete_candidate_coverage",
           "method": "candidate_games_started_divided_by_team_games_played",
           "team_games_played": 25,
-          "candidate_starts": 10,
+          "candidate_starts": 23,
           "probabilities_sum_to_one": false
         }
       },
       "rotowire_pregame": {
-        "status": "unavailable",
+        "status": "observed",
         "teams": {
           "STL": {
-            "status": "unavailable",
-            "reason": "source_capture_missing",
-            "players": [],
-            "goalie": null,
+            "capture_status": "captured",
+            "players": [
+              {
+                "name": "Joel Hofer",
+                "player_id": 8480981,
+                "resolved_name": "Joel Hofer",
+                "identity_status": "exact",
+                "position_group": "goalie",
+                "position_observation": null,
+                "reported_status": "EXPECTED",
+                "row_text": "Joel Hofer Expected",
+                "source_href": "/hockey/player/joel-hofer-5945"
+              },
+              {
+                "name": "R. Thomas",
+                "player_id": 8480023,
+                "resolved_name": "Robert Thomas",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C R. Thomas",
+                "source_href": "/hockey/player/robert-thomas-5428"
+              },
+              {
+                "name": "J. Neighbours",
+                "player_id": 8482089,
+                "resolved_name": "Jake Neighbours",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW J. Neighbours",
+                "source_href": "/hockey/player/jake-neighbours-6209"
+              },
+              {
+                "name": "J. Snuggerud",
+                "player_id": 8483516,
+                "resolved_name": "Jimmy Snuggerud",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW J. Snuggerud",
+                "source_href": "/hockey/player/jimmy-snuggerud-6701"
+              },
+              {
+                "name": "P. Broberg",
+                "player_id": 8481598,
+                "resolved_name": "Philip Broberg",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD P. Broberg",
+                "source_href": "/hockey/player/philip-broberg-6010"
+              },
+              {
+                "name": "M. McTavish",
+                "player_id": 8482745,
+                "resolved_name": "Mason McTavish",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD M. McTavish",
+                "source_href": "/hockey/player/mason-mctavish-6462"
+              },
+              {
+                "name": "P. Buchnevich",
+                "player_id": 8477402,
+                "resolved_name": "Pavel Buchnevich",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C P. Buchnevich",
+                "source_href": "/hockey/player/pavel-buchnevich-4223"
+              },
+              {
+                "name": "D. Holloway",
+                "player_id": 8482077,
+                "resolved_name": "Dylan Holloway",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW D. Holloway",
+                "source_href": "/hockey/player/dylan-holloway-6197"
+              },
+              {
+                "name": "D. Dvorsky",
+                "player_id": 8484164,
+                "resolved_name": "Dalibor Dvorsky",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW D. Dvorsky",
+                "source_href": "/hockey/player/dalibor-dvorsky-6923"
+              },
+              {
+                "name": "Cam Fowler",
+                "player_id": 8475764,
+                "resolved_name": "Cam Fowler",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD Cam Fowler",
+                "source_href": "/hockey/player/cam-fowler-3505"
+              },
+              {
+                "name": "L. Mailloux",
+                "player_id": 8482733,
+                "resolved_name": "Logan Mailloux",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD L. Mailloux",
+                "source_href": "/hockey/player/logan-mailloux-6498"
+              },
+              {
+                "name": "C. McMichael",
+                "player_id": 8481580,
+                "resolved_name": "Connor McMichael",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": "DTD",
+                "row_text": "C C. McMichael DTD",
+                "source_href": "/hockey/player/connor-mcmichael-5986"
+              },
+              {
+                "name": "Dillon Dube",
+                "player_id": 8479346,
+                "resolved_name": "Dillon Dube",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": "IR",
+                "row_text": "C Dillon Dube IR",
+                "source_href": "/hockey/player/dillon-dube-5166"
+              },
+              {
+                "name": "Torey Krug",
+                "player_id": null,
+                "identity_status": "unresolved",
+                "position_observation": null,
+                "reported_status": "IR-LT",
+                "row_text": "D Torey Krug IR-LT",
+                "source_href": "/hockey/player/torey-krug-3929"
+              },
+              {
+                "name": "Tyler Tucker",
+                "player_id": 8481006,
+                "resolved_name": "Tyler Tucker",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": null,
+                "reported_status": "IR",
+                "row_text": "D Tyler Tucker IR",
+                "source_href": "/hockey/player/tyler-tucker-6166"
+              }
+            ],
+            "goalie": {
+              "name": "Joel Hofer",
+              "player_id": 8480981,
+              "resolved_name": "Joel Hofer",
+              "identity_status": "exact",
+              "position_group": "goalie",
+              "reported_status": "EXPECTED",
+              "source_text": "Joel Hofer Expected",
+              "officially_confirmed": false
+            },
             "power_play_1": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "R. Thomas",
+                  "player_id": 8480023,
+                  "resolved_name": "Robert Thomas",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": null,
+                  "row_text": "C R. Thomas",
+                  "source_href": "/hockey/player/robert-thomas-5428"
+                },
+                {
+                  "name": "J. Neighbours",
+                  "player_id": 8482089,
+                  "resolved_name": "Jake Neighbours",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": null,
+                  "row_text": "LW J. Neighbours",
+                  "source_href": "/hockey/player/jake-neighbours-6209"
+                },
+                {
+                  "name": "J. Snuggerud",
+                  "player_id": 8483516,
+                  "resolved_name": "Jimmy Snuggerud",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": null,
+                  "row_text": "RW J. Snuggerud",
+                  "source_href": "/hockey/player/jimmy-snuggerud-6701"
+                },
+                {
+                  "name": "P. Broberg",
+                  "player_id": 8481598,
+                  "resolved_name": "Philip Broberg",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD P. Broberg",
+                  "source_href": "/hockey/player/philip-broberg-6010"
+                },
+                {
+                  "name": "M. McTavish",
+                  "player_id": 8482745,
+                  "resolved_name": "Mason McTavish",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD M. McTavish",
+                  "source_href": "/hockey/player/mason-mctavish-6462"
+                }
+              ],
+              "text": "C R. Thomas LW J. Neighbours RW J. Snuggerud LD P. Broberg RD M. McTavish"
             },
             "power_play_2": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "P. Buchnevich",
+                  "player_id": 8477402,
+                  "resolved_name": "Pavel Buchnevich",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": null,
+                  "row_text": "C P. Buchnevich",
+                  "source_href": "/hockey/player/pavel-buchnevich-4223"
+                },
+                {
+                  "name": "D. Holloway",
+                  "player_id": 8482077,
+                  "resolved_name": "Dylan Holloway",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": null,
+                  "row_text": "LW D. Holloway",
+                  "source_href": "/hockey/player/dylan-holloway-6197"
+                },
+                {
+                  "name": "D. Dvorsky",
+                  "player_id": 8484164,
+                  "resolved_name": "Dalibor Dvorsky",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": null,
+                  "row_text": "RW D. Dvorsky",
+                  "source_href": "/hockey/player/dalibor-dvorsky-6923"
+                },
+                {
+                  "name": "Cam Fowler",
+                  "player_id": 8475764,
+                  "resolved_name": "Cam Fowler",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD Cam Fowler",
+                  "source_href": "/hockey/player/cam-fowler-3505"
+                },
+                {
+                  "name": "L. Mailloux",
+                  "player_id": 8482733,
+                  "resolved_name": "Logan Mailloux",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD L. Mailloux",
+                  "source_href": "/hockey/player/logan-mailloux-6498"
+                }
+              ],
+              "text": "C P. Buchnevich LW D. Holloway RW D. Dvorsky LD Cam Fowler RD L. Mailloux"
             },
             "injuries": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "C. McMichael",
+                  "player_id": 8481580,
+                  "resolved_name": "Connor McMichael",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "DTD",
+                  "row_text": "C C. McMichael DTD",
+                  "source_href": "/hockey/player/connor-mcmichael-5986"
+                },
+                {
+                  "name": "Dillon Dube",
+                  "player_id": 8479346,
+                  "resolved_name": "Dillon Dube",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "IR",
+                  "row_text": "C Dillon Dube IR",
+                  "source_href": "/hockey/player/dillon-dube-5166"
+                },
+                {
+                  "name": "Torey Krug",
+                  "player_id": null,
+                  "identity_status": "unresolved",
+                  "position_observation": "C",
+                  "reported_status": "IR-LT",
+                  "row_text": "D Torey Krug IR-LT",
+                  "source_href": "/hockey/player/torey-krug-3929"
+                },
+                {
+                  "name": "Tyler Tucker",
+                  "player_id": 8481006,
+                  "resolved_name": "Tyler Tucker",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": null,
+                  "reported_status": "IR",
+                  "row_text": "D Tyler Tucker IR",
+                  "source_href": "/hockey/player/tyler-tucker-6166"
+                }
+              ],
+              "text": "C C. McMichael DTD C Dillon Dube IR D Torey Krug IR-LT D Tyler Tucker IR"
+            },
+            "status": "observed",
+            "identity_coverage": {
+              "players": 14,
+              "player_observations": 15
             }
           },
           "EDM": {
-            "status": "unavailable",
-            "reason": "source_capture_missing",
-            "players": [],
-            "goalie": null,
+            "capture_status": "captured",
+            "players": [
+              {
+                "name": "Tristan Jarry",
+                "player_id": 8477465,
+                "resolved_name": "Tristan Jarry",
+                "identity_status": "exact",
+                "position_group": "goalie",
+                "position_observation": null,
+                "reported_status": "EXPECTED",
+                "row_text": "Tristan Jarry Expected",
+                "source_href": "/hockey/player/tristan-jarry-4198"
+              },
+              {
+                "name": "C. McDavid",
+                "player_id": 8478402,
+                "resolved_name": "Connor McDavid",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C C. McDavid",
+                "source_href": "/hockey/player/connor-mcdavid-4712"
+              },
+              {
+                "name": "V. Podkolzin",
+                "player_id": 8481617,
+                "resolved_name": "Vasily Podkolzin",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW V. Podkolzin",
+                "source_href": "/hockey/player/vasily-podkolzin-6009"
+              },
+              {
+                "name": "L. Draisaitl",
+                "player_id": 8477934,
+                "resolved_name": "Leon Draisaitl",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW L. Draisaitl",
+                "source_href": "/hockey/player/leon-draisaitl-4386"
+              },
+              {
+                "name": "K. Kapanen",
+                "player_id": 8477953,
+                "resolved_name": "Kasperi Kapanen",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD K. Kapanen",
+                "source_href": "/hockey/player/kasperi-kapanen-4392"
+              },
+              {
+                "name": "E. Bouchard",
+                "player_id": 8480803,
+                "resolved_name": "Evan Bouchard",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD E. Bouchard",
+                "source_href": "/hockey/player/evan-bouchard-5694"
+              },
+              {
+                "name": "Colton Dach",
+                "player_id": 8482703,
+                "resolved_name": "Colton Dach",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C Colton Dach",
+                "source_href": "/hockey/player/colton-dach-6535"
+              },
+              {
+                "name": "T. Frederic",
+                "player_id": 8479365,
+                "resolved_name": "Trent Frederic",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW T. Frederic",
+                "source_href": "/hockey/player/trent-frederic-5171"
+              },
+              {
+                "name": "Zach Hyman",
+                "player_id": 8475786,
+                "resolved_name": "Zach Hyman",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": "DTD",
+                "row_text": "RW Zach Hyman DTD",
+                "source_href": "/hockey/player/zach-hyman-4964"
+              },
+              {
+                "name": "Ryan Shea",
+                "player_id": 8478854,
+                "resolved_name": "Ryan Shea",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD Ryan Shea",
+                "source_href": "/hockey/player/ryan-shea-6357"
+              },
+              {
+                "name": "M. Ekholm",
+                "player_id": 8475218,
+                "resolved_name": "Mattias Ekholm",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD M. Ekholm",
+                "source_href": "/hockey/player/mattias-ekholm-3733"
+              },
+              {
+                "name": "R. Nugent-Hopkins",
+                "player_id": 8476454,
+                "resolved_name": "Ryan Nugent-Hopkins",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": "OUT",
+                "row_text": "C R. Nugent-Hopkins OUT",
+                "source_href": "/hockey/player/ryan-nugent-hopkins-3743"
+              },
+              {
+                "name": "F. Andersen",
+                "player_id": 8475883,
+                "resolved_name": "Frederik Andersen",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "goalie",
+                "position_observation": "G",
+                "reported_status": "IR-NR",
+                "row_text": "G F. Andersen IR-NR",
+                "source_href": "/hockey/player/frederik-andersen-4054"
+              },
+              {
+                "name": "M. Janmark",
+                "player_id": 8477406,
+                "resolved_name": "Mattias Janmark",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": "IR",
+                "row_text": "C M. Janmark IR",
+                "source_href": "/hockey/player/mattias-janmark-4227"
+              },
+              {
+                "name": "Alec Regula",
+                "player_id": 8480831,
+                "resolved_name": "Alec Regula",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": null,
+                "reported_status": "IR-LT",
+                "row_text": "D Alec Regula IR-LT",
+                "source_href": "/hockey/player/alec-regula-5783"
+              },
+              {
+                "name": "Matt Savoie",
+                "player_id": 8483512,
+                "resolved_name": "Matt Savoie",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": "IR-LT",
+                "row_text": "C Matt Savoie IR-LT",
+                "source_href": "/hockey/player/matt-savoie-6682"
+              }
+            ],
+            "goalie": {
+              "name": "Tristan Jarry",
+              "player_id": 8477465,
+              "resolved_name": "Tristan Jarry",
+              "identity_status": "exact",
+              "position_group": "goalie",
+              "reported_status": "EXPECTED",
+              "source_text": "Tristan Jarry Expected",
+              "officially_confirmed": false
+            },
             "power_play_1": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "C. McDavid",
+                  "player_id": 8478402,
+                  "resolved_name": "Connor McDavid",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": null,
+                  "row_text": "C C. McDavid",
+                  "source_href": "/hockey/player/connor-mcdavid-4712"
+                },
+                {
+                  "name": "V. Podkolzin",
+                  "player_id": 8481617,
+                  "resolved_name": "Vasily Podkolzin",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": null,
+                  "row_text": "LW V. Podkolzin",
+                  "source_href": "/hockey/player/vasily-podkolzin-6009"
+                },
+                {
+                  "name": "L. Draisaitl",
+                  "player_id": 8477934,
+                  "resolved_name": "Leon Draisaitl",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": null,
+                  "row_text": "RW L. Draisaitl",
+                  "source_href": "/hockey/player/leon-draisaitl-4386"
+                },
+                {
+                  "name": "K. Kapanen",
+                  "player_id": 8477953,
+                  "resolved_name": "Kasperi Kapanen",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD K. Kapanen",
+                  "source_href": "/hockey/player/kasperi-kapanen-4392"
+                },
+                {
+                  "name": "E. Bouchard",
+                  "player_id": 8480803,
+                  "resolved_name": "Evan Bouchard",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD E. Bouchard",
+                  "source_href": "/hockey/player/evan-bouchard-5694"
+                }
+              ],
+              "text": "C C. McDavid LW V. Podkolzin RW L. Draisaitl LD K. Kapanen RD E. Bouchard"
             },
             "power_play_2": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "Colton Dach",
+                  "player_id": 8482703,
+                  "resolved_name": "Colton Dach",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "DTD",
+                  "row_text": "C Colton Dach",
+                  "source_href": "/hockey/player/colton-dach-6535"
+                },
+                {
+                  "name": "T. Frederic",
+                  "player_id": 8479365,
+                  "resolved_name": "Trent Frederic",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": "DTD",
+                  "row_text": "LW T. Frederic",
+                  "source_href": "/hockey/player/trent-frederic-5171"
+                },
+                {
+                  "name": "Zach Hyman",
+                  "player_id": 8475786,
+                  "resolved_name": "Zach Hyman",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": "DTD",
+                  "row_text": "RW Zach Hyman DTD",
+                  "source_href": "/hockey/player/zach-hyman-4964"
+                },
+                {
+                  "name": "Ryan Shea",
+                  "player_id": 8478854,
+                  "resolved_name": "Ryan Shea",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": "LD",
+                  "reported_status": "DTD",
+                  "row_text": "LD Ryan Shea",
+                  "source_href": "/hockey/player/ryan-shea-6357"
+                },
+                {
+                  "name": "M. Ekholm",
+                  "player_id": 8475218,
+                  "resolved_name": "Mattias Ekholm",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "RD",
+                  "reported_status": "DTD",
+                  "row_text": "RD M. Ekholm",
+                  "source_href": "/hockey/player/mattias-ekholm-3733"
+                }
+              ],
+              "text": "C Colton Dach LW T. Frederic RW Zach Hyman DTD LD Ryan Shea RD M. Ekholm"
             },
             "injuries": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "Zach Hyman",
+                  "player_id": 8475786,
+                  "resolved_name": "Zach Hyman",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": "DTD",
+                  "row_text": "RW Zach Hyman DTD",
+                  "source_href": "/hockey/player/zach-hyman-4964"
+                },
+                {
+                  "name": "R. Nugent-Hopkins",
+                  "player_id": 8476454,
+                  "resolved_name": "Ryan Nugent-Hopkins",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "OUT",
+                  "row_text": "C R. Nugent-Hopkins OUT",
+                  "source_href": "/hockey/player/ryan-nugent-hopkins-3743"
+                },
+                {
+                  "name": "F. Andersen",
+                  "player_id": 8475883,
+                  "resolved_name": "Frederik Andersen",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "goalie",
+                  "position_observation": "G",
+                  "reported_status": "IR-NR",
+                  "row_text": "G F. Andersen IR-NR",
+                  "source_href": "/hockey/player/frederik-andersen-4054"
+                },
+                {
+                  "name": "M. Janmark",
+                  "player_id": 8477406,
+                  "resolved_name": "Mattias Janmark",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "IR",
+                  "row_text": "C M. Janmark IR",
+                  "source_href": "/hockey/player/mattias-janmark-4227"
+                },
+                {
+                  "name": "Alec Regula",
+                  "player_id": 8480831,
+                  "resolved_name": "Alec Regula",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": "C",
+                  "reported_status": "IR-LT",
+                  "row_text": "D Alec Regula IR-LT",
+                  "source_href": "/hockey/player/alec-regula-5783"
+                },
+                {
+                  "name": "Matt Savoie",
+                  "player_id": 8483512,
+                  "resolved_name": "Matt Savoie",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "IR-LT",
+                  "row_text": "C Matt Savoie IR-LT",
+                  "source_href": "/hockey/player/matt-savoie-6682"
+                }
+              ],
+              "text": "RW Zach Hyman DTD C R. Nugent-Hopkins OUT G F. Andersen IR-NR C M. Janmark IR D Alec Regula IR-LT C Matt Savoie IR-LT"
+            },
+            "status": "observed",
+            "identity_coverage": {
+              "players": 16,
+              "player_observations": 16
             }
           }
         },
-        "market_observation": null,
+        "market_observation": {
+          "moneyline": {
+            "team": "STL",
+            "american_odds": "-125",
+            "raw": "LINE STL -125"
+          },
+          "total_goals": {
+            "line": 6.0,
+            "raw": "O/U 6.0 Goals"
+          }
+        },
         "source": {
           "provider": "RotoWire",
           "url": "https://www.rotowire.com/hockey/nhl-lineups.php",
-          "captured_at_utc": "2026-11-22T07:19:01.239840+00:00",
-          "page_sha256": "da13d45c598af202e0a55e9543fd4e675e5c07afc94dce0ba671341a2651c11c",
-          "card_sha256": null,
+          "captured_at_utc": "2026-11-22T16:55:40.321127+00:00",
+          "page_sha256": "8ad11abef51a15b0dbe89e5b09d662dceb3d8ae15c45b429e5c22916cac40e99",
+          "card_sha256": "70f18afdf9c5d37441d760b4a4b3a6655a4dab1e780f4bc6b04e6f8c67e61dd0",
           "official": false
         },
         "probabilities_modified": false,
@@ -109,24 +820,24 @@
             "name": "Joel Hofer",
             "save_pct": 0.9225806451612903,
             "shots_faced": 465.0,
-            "source_status": "candidate",
+            "source_status": "confirmed",
             "starter_confirmed": false,
-            "starter_probability": null
+            "starter_probability": 0.6956521739130435
           },
           "away_goalie": {
             "id": 8477465,
             "name": "Tristan Jarry",
             "save_pct": 0.9221311475409836,
             "shots_faced": 244.0,
-            "source_status": "candidate",
+            "source_status": "unconfirmed",
             "starter_confirmed": false,
             "starter_probability": null
           },
           "scenario_weight": null,
           "expected_goals": {
-            "home": 2.270437933999267,
-            "away": 2.5324805326056334,
-            "total": 4.8029184666049005
+            "home": 2.2554513456049783,
+            "away": 2.4791591812599303,
+            "total": 4.734610526864909
           },
           "expected_goals_by_strength": null,
           "rotowire_pp_impact": null,
@@ -159,19 +870,44 @@
           },
           "home_components": {
             "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
-            "attacking_goals_for_per_game": 3.30434,
+            "attacking_goals_for_per_game": 3.2608617391304344,
             "opponent_goals_against_per_game": 2.8,
-            "team_aggregate_baseline": 3.041735031195189,
+            "team_aggregate_baseline": 3.021657305116716,
             "rotowire_PP1_PP2_adjustment": {
               "applied": false,
-              "reason": "rotowire_observation_unavailable"
+              "reason": "no_historical_PP_minutes_for_RotoWire_units"
             },
             "rotowire_confirmed_availability_adjustment": {
-              "applied": false,
-              "reason": "rotowire_injury_report_unavailable",
-              "excluded_goal_rate": 0.0,
-              "players": [],
-              "unresolved": []
+              "applied": true,
+              "reason": null,
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+              "excluded_goal_rate": 0.043478260869565216,
+              "excluded_PP_goal_rate": 0.0,
+              "excluded_non_PP_goal_rate": 0.043478260869565216,
+              "team_games_reference": 23.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8479346,
+                  "name": "Dillon Dube",
+                  "status": "IR",
+                  "historical_goals": 1.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.043478260869565216
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Torey Krug",
+                  "status": "IR-LT"
+                },
+                {
+                  "name": "Tyler Tucker",
+                  "status": "IR"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
             },
             "aggregate_baseline_PP_goal_delta": 0.0,
             "opponent_goalie_save_pct": 0.9221311475409836,
@@ -182,19 +918,52 @@
           },
           "away_components": {
             "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
-            "attacking_goals_for_per_game": 3.84,
+            "attacking_goals_for_per_game": 3.6799999999999997,
             "opponent_goals_against_per_game": 3.17391,
-            "team_aggregate_baseline": 3.491105039955114,
+            "team_aggregate_baseline": 3.417599859550559,
             "rotowire_PP1_PP2_adjustment": {
               "applied": false,
-              "reason": "rotowire_observation_unavailable"
+              "reason": "power_play_unit_has_uncertain_availability"
             },
             "rotowire_confirmed_availability_adjustment": {
-              "applied": false,
-              "reason": "rotowire_injury_report_unavailable",
-              "excluded_goal_rate": 0.0,
-              "players": [],
-              "unresolved": []
+              "applied": true,
+              "reason": null,
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+              "excluded_goal_rate": 0.16,
+              "excluded_PP_goal_rate": 0.12,
+              "excluded_non_PP_goal_rate": 0.04,
+              "team_games_reference": 25.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8476454,
+                  "name": "Ryan Nugent-Hopkins",
+                  "status": "OUT",
+                  "historical_goals": 4.0,
+                  "historical_PP_goals": 3.0,
+                  "historical_goals_per_team_game": 0.16
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Frederik Andersen",
+                  "status": "IR-NR"
+                },
+                {
+                  "name": "Mattias Janmark",
+                  "status": "IR"
+                },
+                {
+                  "name": "Alec Regula",
+                  "status": "IR-LT"
+                },
+                {
+                  "name": "Matt Savoie",
+                  "status": "IR-LT"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
             },
             "aggregate_baseline_PP_goal_delta": 0.0,
             "opponent_goalie_save_pct": 0.9225806451612903,
@@ -208,37 +977,646 @@
             "EDM": []
           },
           "markets": {
-            "lambda_home": 2.2704,
-            "lambda_away": 2.5325,
+            "lambda_home": 2.2555,
+            "lambda_away": 2.4792,
             "regulation": {
-              "home": 0.36052,
-              "draw": 0.18634,
-              "away": 0.45315
+              "home": 0.36613,
+              "draw": 0.18808,
+              "away": 0.44578
             },
             "strong_win_regulation": {
-              "home": 0.20377,
-              "away": 0.27831
+              "home": 0.20706,
+              "away": 0.27093
             },
             "double_chance_regulation": {
-              "home": 0.54685,
-              "away": 0.63948
+              "home": 0.55422,
+              "away": 0.63387
             },
             "strong_dual_definition": "FUERTE = ganar por 2+ goles en 60 minutos; DUAL = ganar o empatar en 60 minutos (1X/X2)",
             "illustrative_ml": {
-              "home": 0.45369,
-              "away": 0.54631
+              "home": 0.46017,
+              "away": 0.53983
             },
             "three_goal_lead": {
-              "home": 0.1474,
-              "away": 0.20455
+              "home": 0.14838,
+              "away": 0.19705
             },
             "first_to_three_goal_lead": {
-              "home": 0.14726,
-              "away": 0.20436
+              "home": 0.14825,
+              "away": 0.19688
             },
             "comeback_after_two_goal_deficit": {
-              "home": 0.03488,
-              "away": 0.03813
+              "home": 0.03429,
+              "away": 0.037
+            },
+            "comeback_definition": "falls behind by at least two regulation goals, then wins illustrative ML; a regulation tie is split 50/50 for overtime",
+            "model": "unfitted_independent_poisson_shrunken_goals",
+            "calibrated": false,
+            "official": false,
+            "challenger": false,
+            "bet_authorized": false
+          }
+        },
+        {
+          "home_goalie": {
+            "id": 8480981,
+            "name": "Joel Hofer",
+            "save_pct": 0.9225806451612903,
+            "shots_faced": 465.0,
+            "source_status": "confirmed",
+            "starter_confirmed": false,
+            "starter_probability": 0.6956521739130435
+          },
+          "away_goalie": {
+            "id": 8482221,
+            "name": "Devon Levi",
+            "save_pct": 0.8953846153846153,
+            "shots_faced": 325.0,
+            "source_status": "projected",
+            "starter_confirmed": false,
+            "starter_probability": null
+          },
+          "scenario_weight": null,
+          "expected_goals": {
+            "home": 3.0301577916014417,
+            "away": 2.4791591812599303,
+            "total": 5.509316972861372
+          },
+          "expected_goals_by_strength": null,
+          "rotowire_pp_impact": null,
+          "forecast_basis": "team_aggregate_fallback",
+          "division_rivalry": {
+            "status": "context_only",
+            "divisional": false,
+            "rivalry": false,
+            "rivalry_tier": null,
+            "history_window_days": 730,
+            "cutoff_exclusive": "2026-11-22",
+            "historical_games_eligible": 2497,
+            "expected_goal_differential_delta": 0.0,
+            "home_expected_goals_delta": 0.0,
+            "away_expected_goals_delta": -0.0,
+            "applied_to_percentages": false,
+            "calibrated": false,
+            "source": {
+              "path": "reports/nhl/goalie-candidate-2026-11-02/evidence/labels.csv",
+              "sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+              "rows": 2811,
+              "first_label_date": "2024-10-04",
+              "latest_label_date": "2026-10-26",
+              "source": "NHL official Gamecenter labels, regulation scores"
+            },
+            "evidence": {},
+            "reason": "teams_are_not_in_the_same_division",
+            "requested_goal_differential_delta": 0.0,
+            "applied_goal_differential_delta": 0.0
+          },
+          "home_components": {
+            "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
+            "attacking_goals_for_per_game": 3.2608617391304344,
+            "opponent_goals_against_per_game": 2.8,
+            "team_aggregate_baseline": 3.021657305116716,
+            "rotowire_PP1_PP2_adjustment": {
+              "applied": false,
+              "reason": "no_historical_PP_minutes_for_RotoWire_units"
+            },
+            "rotowire_confirmed_availability_adjustment": {
+              "applied": true,
+              "reason": null,
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+              "excluded_goal_rate": 0.043478260869565216,
+              "excluded_PP_goal_rate": 0.0,
+              "excluded_non_PP_goal_rate": 0.043478260869565216,
+              "team_games_reference": 23.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8479346,
+                  "name": "Dillon Dube",
+                  "status": "IR",
+                  "historical_goals": 1.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.043478260869565216
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Torey Krug",
+                  "status": "IR-LT"
+                },
+                {
+                  "name": "Tyler Tucker",
+                  "status": "IR"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
+            },
+            "aggregate_baseline_PP_goal_delta": 0.0,
+            "opponent_goalie_save_pct": 0.8953846153846153,
+            "opponent_goalie_factor": 1.0028131868131873,
+            "individual_lineup_adjustment": "omitted_projected_lineup_unavailable",
+            "special_teams_personnel_adjustment": "omitted_projected_lineup_unavailable",
+            "division_rivalry_goal_rate_factor": 1.0
+          },
+          "away_components": {
+            "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
+            "attacking_goals_for_per_game": 3.6799999999999997,
+            "opponent_goals_against_per_game": 3.17391,
+            "team_aggregate_baseline": 3.417599859550559,
+            "rotowire_PP1_PP2_adjustment": {
+              "applied": false,
+              "reason": "power_play_unit_has_uncertain_availability"
+            },
+            "rotowire_confirmed_availability_adjustment": {
+              "applied": true,
+              "reason": null,
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+              "excluded_goal_rate": 0.16,
+              "excluded_PP_goal_rate": 0.12,
+              "excluded_non_PP_goal_rate": 0.04,
+              "team_games_reference": 25.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8476454,
+                  "name": "Ryan Nugent-Hopkins",
+                  "status": "OUT",
+                  "historical_goals": 4.0,
+                  "historical_PP_goals": 3.0,
+                  "historical_goals_per_team_game": 0.16
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Frederik Andersen",
+                  "status": "IR-NR"
+                },
+                {
+                  "name": "Mattias Janmark",
+                  "status": "IR"
+                },
+                {
+                  "name": "Alec Regula",
+                  "status": "IR-LT"
+                },
+                {
+                  "name": "Matt Savoie",
+                  "status": "IR-LT"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
+            },
+            "aggregate_baseline_PP_goal_delta": 0.0,
+            "opponent_goalie_save_pct": 0.9225806451612903,
+            "opponent_goalie_factor": 0.7254094344403325,
+            "individual_lineup_adjustment": "omitted_projected_lineup_unavailable",
+            "special_teams_personnel_adjustment": "omitted_projected_lineup_unavailable",
+            "division_rivalry_goal_rate_factor": 1.0
+          },
+          "player_probabilities": {
+            "STL": [],
+            "EDM": []
+          },
+          "markets": {
+            "lambda_home": 3.0302,
+            "lambda_away": 2.4792,
+            "regulation": {
+              "home": 0.50574,
+              "draw": 0.17003,
+              "away": 0.32423
+            },
+            "strong_win_regulation": {
+              "home": 0.33591,
+              "away": 0.18528
+            },
+            "double_chance_regulation": {
+              "home": 0.67577,
+              "away": 0.49426
+            },
+            "strong_dual_definition": "FUERTE = ganar por 2+ goles en 60 minutos; DUAL = ganar o empatar en 60 minutos (1X/X2)",
+            "illustrative_ml": {
+              "home": 0.59075,
+              "away": 0.40925
+            },
+            "three_goal_lead": {
+              "home": 0.26944,
+              "away": 0.14756
+            },
+            "first_to_three_goal_lead": {
+              "home": 0.26898,
+              "away": 0.14731
+            },
+            "comeback_after_two_goal_deficit": {
+              "home": 0.04944,
+              "away": 0.04116
+            },
+            "comeback_definition": "falls behind by at least two regulation goals, then wins illustrative ML; a regulation tie is split 50/50 for overtime",
+            "model": "unfitted_independent_poisson_shrunken_goals",
+            "calibrated": false,
+            "official": false,
+            "challenger": false,
+            "bet_authorized": false
+          }
+        },
+        {
+          "home_goalie": {
+            "id": 8476412,
+            "name": "Jordan Binnington",
+            "save_pct": 0.8465116279069768,
+            "shots_faced": 215.0,
+            "source_status": "projected",
+            "starter_confirmed": false,
+            "starter_probability": 0.30434782608695654
+          },
+          "away_goalie": {
+            "id": 8477465,
+            "name": "Tristan Jarry",
+            "save_pct": 0.9221311475409836,
+            "shots_faced": 244.0,
+            "source_status": "unconfirmed",
+            "starter_confirmed": false,
+            "starter_probability": null
+          },
+          "scenario_weight": null,
+          "expected_goals": {
+            "home": 2.2554513456049783,
+            "away": 4.915077214009514,
+            "total": 7.1705285596144925
+          },
+          "expected_goals_by_strength": null,
+          "rotowire_pp_impact": null,
+          "forecast_basis": "team_aggregate_fallback",
+          "division_rivalry": {
+            "status": "context_only",
+            "divisional": false,
+            "rivalry": false,
+            "rivalry_tier": null,
+            "history_window_days": 730,
+            "cutoff_exclusive": "2026-11-22",
+            "historical_games_eligible": 2497,
+            "expected_goal_differential_delta": 0.0,
+            "home_expected_goals_delta": 0.0,
+            "away_expected_goals_delta": -0.0,
+            "applied_to_percentages": false,
+            "calibrated": false,
+            "source": {
+              "path": "reports/nhl/goalie-candidate-2026-11-02/evidence/labels.csv",
+              "sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+              "rows": 2811,
+              "first_label_date": "2024-10-04",
+              "latest_label_date": "2026-10-26",
+              "source": "NHL official Gamecenter labels, regulation scores"
+            },
+            "evidence": {},
+            "reason": "teams_are_not_in_the_same_division",
+            "requested_goal_differential_delta": 0.0,
+            "applied_goal_differential_delta": 0.0
+          },
+          "home_components": {
+            "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
+            "attacking_goals_for_per_game": 3.2608617391304344,
+            "opponent_goals_against_per_game": 2.8,
+            "team_aggregate_baseline": 3.021657305116716,
+            "rotowire_PP1_PP2_adjustment": {
+              "applied": false,
+              "reason": "no_historical_PP_minutes_for_RotoWire_units"
+            },
+            "rotowire_confirmed_availability_adjustment": {
+              "applied": true,
+              "reason": null,
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+              "excluded_goal_rate": 0.043478260869565216,
+              "excluded_PP_goal_rate": 0.0,
+              "excluded_non_PP_goal_rate": 0.043478260869565216,
+              "team_games_reference": 23.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8479346,
+                  "name": "Dillon Dube",
+                  "status": "IR",
+                  "historical_goals": 1.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.043478260869565216
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Torey Krug",
+                  "status": "IR-LT"
+                },
+                {
+                  "name": "Tyler Tucker",
+                  "status": "IR"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
+            },
+            "aggregate_baseline_PP_goal_delta": 0.0,
+            "opponent_goalie_save_pct": 0.9221311475409836,
+            "opponent_goalie_factor": 0.7464285714285718,
+            "individual_lineup_adjustment": "omitted_projected_lineup_unavailable",
+            "special_teams_personnel_adjustment": "omitted_projected_lineup_unavailable",
+            "division_rivalry_goal_rate_factor": 1.0
+          },
+          "away_components": {
+            "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
+            "attacking_goals_for_per_game": 3.6799999999999997,
+            "opponent_goals_against_per_game": 3.17391,
+            "team_aggregate_baseline": 3.417599859550559,
+            "rotowire_PP1_PP2_adjustment": {
+              "applied": false,
+              "reason": "power_play_unit_has_uncertain_availability"
+            },
+            "rotowire_confirmed_availability_adjustment": {
+              "applied": true,
+              "reason": null,
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+              "excluded_goal_rate": 0.16,
+              "excluded_PP_goal_rate": 0.12,
+              "excluded_non_PP_goal_rate": 0.04,
+              "team_games_reference": 25.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8476454,
+                  "name": "Ryan Nugent-Hopkins",
+                  "status": "OUT",
+                  "historical_goals": 4.0,
+                  "historical_PP_goals": 3.0,
+                  "historical_goals_per_team_game": 0.16
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Frederik Andersen",
+                  "status": "IR-NR"
+                },
+                {
+                  "name": "Mattias Janmark",
+                  "status": "IR"
+                },
+                {
+                  "name": "Alec Regula",
+                  "status": "IR-LT"
+                },
+                {
+                  "name": "Matt Savoie",
+                  "status": "IR-LT"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
+            },
+            "aggregate_baseline_PP_goal_delta": 0.0,
+            "opponent_goalie_save_pct": 0.8465116279069768,
+            "opponent_goalie_factor": 1.438166378745078,
+            "individual_lineup_adjustment": "omitted_projected_lineup_unavailable",
+            "special_teams_personnel_adjustment": "omitted_projected_lineup_unavailable",
+            "division_rivalry_goal_rate_factor": 1.0
+          },
+          "player_probabilities": {
+            "STL": [],
+            "EDM": []
+          },
+          "markets": {
+            "lambda_home": 2.2555,
+            "lambda_away": 4.9151,
+            "regulation": {
+              "home": 0.11324,
+              "draw": 0.09462,
+              "away": 0.79214
+            },
+            "strong_win_regulation": {
+              "home": 0.05418,
+              "away": 0.66343
+            },
+            "double_chance_regulation": {
+              "home": 0.20786,
+              "away": 0.88676
+            },
+            "strong_dual_definition": "FUERTE = ganar por 2+ goles en 60 minutos; DUAL = ganar o empatar en 60 minutos (1X/X2)",
+            "illustrative_ml": {
+              "home": 0.16055,
+              "away": 0.83945
+            },
+            "three_goal_lead": {
+              "home": 0.05815,
+              "away": 0.60175
+            },
+            "first_to_three_goal_lead": {
+              "home": 0.05796,
+              "away": 0.59978
+            },
+            "comeback_after_two_goal_deficit": {
+              "home": 0.02667,
+              "away": 0.06363
+            },
+            "comeback_definition": "falls behind by at least two regulation goals, then wins illustrative ML; a regulation tie is split 50/50 for overtime",
+            "model": "unfitted_independent_poisson_shrunken_goals",
+            "calibrated": false,
+            "official": false,
+            "challenger": false,
+            "bet_authorized": false
+          }
+        },
+        {
+          "home_goalie": {
+            "id": 8476412,
+            "name": "Jordan Binnington",
+            "save_pct": 0.8465116279069768,
+            "shots_faced": 215.0,
+            "source_status": "projected",
+            "starter_confirmed": false,
+            "starter_probability": 0.30434782608695654
+          },
+          "away_goalie": {
+            "id": 8482221,
+            "name": "Devon Levi",
+            "save_pct": 0.8953846153846153,
+            "shots_faced": 325.0,
+            "source_status": "projected",
+            "starter_confirmed": false,
+            "starter_probability": null
+          },
+          "scenario_weight": null,
+          "expected_goals": {
+            "home": 3.0301577916014417,
+            "away": 4.915077214009514,
+            "total": 7.9452350056109555
+          },
+          "expected_goals_by_strength": null,
+          "rotowire_pp_impact": null,
+          "forecast_basis": "team_aggregate_fallback",
+          "division_rivalry": {
+            "status": "context_only",
+            "divisional": false,
+            "rivalry": false,
+            "rivalry_tier": null,
+            "history_window_days": 730,
+            "cutoff_exclusive": "2026-11-22",
+            "historical_games_eligible": 2497,
+            "expected_goal_differential_delta": 0.0,
+            "home_expected_goals_delta": 0.0,
+            "away_expected_goals_delta": -0.0,
+            "applied_to_percentages": false,
+            "calibrated": false,
+            "source": {
+              "path": "reports/nhl/goalie-candidate-2026-11-02/evidence/labels.csv",
+              "sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+              "rows": 2811,
+              "first_label_date": "2024-10-04",
+              "latest_label_date": "2026-10-26",
+              "source": "NHL official Gamecenter labels, regulation scores"
+            },
+            "evidence": {},
+            "reason": "teams_are_not_in_the_same_division",
+            "requested_goal_differential_delta": 0.0,
+            "applied_goal_differential_delta": 0.0
+          },
+          "home_components": {
+            "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
+            "attacking_goals_for_per_game": 3.2608617391304344,
+            "opponent_goals_against_per_game": 2.8,
+            "team_aggregate_baseline": 3.021657305116716,
+            "rotowire_PP1_PP2_adjustment": {
+              "applied": false,
+              "reason": "no_historical_PP_minutes_for_RotoWire_units"
+            },
+            "rotowire_confirmed_availability_adjustment": {
+              "applied": true,
+              "reason": null,
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+              "excluded_goal_rate": 0.043478260869565216,
+              "excluded_PP_goal_rate": 0.0,
+              "excluded_non_PP_goal_rate": 0.043478260869565216,
+              "team_games_reference": 23.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8479346,
+                  "name": "Dillon Dube",
+                  "status": "IR",
+                  "historical_goals": 1.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.043478260869565216
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Torey Krug",
+                  "status": "IR-LT"
+                },
+                {
+                  "name": "Tyler Tucker",
+                  "status": "IR"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
+            },
+            "aggregate_baseline_PP_goal_delta": 0.0,
+            "opponent_goalie_save_pct": 0.8953846153846153,
+            "opponent_goalie_factor": 1.0028131868131873,
+            "individual_lineup_adjustment": "omitted_projected_lineup_unavailable",
+            "special_teams_personnel_adjustment": "omitted_projected_lineup_unavailable",
+            "division_rivalry_goal_rate_factor": 1.0
+          },
+          "away_components": {
+            "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
+            "attacking_goals_for_per_game": 3.6799999999999997,
+            "opponent_goals_against_per_game": 3.17391,
+            "team_aggregate_baseline": 3.417599859550559,
+            "rotowire_PP1_PP2_adjustment": {
+              "applied": false,
+              "reason": "power_play_unit_has_uncertain_availability"
+            },
+            "rotowire_confirmed_availability_adjustment": {
+              "applied": true,
+              "reason": null,
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+              "excluded_goal_rate": 0.16,
+              "excluded_PP_goal_rate": 0.12,
+              "excluded_non_PP_goal_rate": 0.04,
+              "team_games_reference": 25.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8476454,
+                  "name": "Ryan Nugent-Hopkins",
+                  "status": "OUT",
+                  "historical_goals": 4.0,
+                  "historical_PP_goals": 3.0,
+                  "historical_goals_per_team_game": 0.16
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Frederik Andersen",
+                  "status": "IR-NR"
+                },
+                {
+                  "name": "Mattias Janmark",
+                  "status": "IR"
+                },
+                {
+                  "name": "Alec Regula",
+                  "status": "IR-LT"
+                },
+                {
+                  "name": "Matt Savoie",
+                  "status": "IR-LT"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
+            },
+            "aggregate_baseline_PP_goal_delta": 0.0,
+            "opponent_goalie_save_pct": 0.8465116279069768,
+            "opponent_goalie_factor": 1.438166378745078,
+            "individual_lineup_adjustment": "omitted_projected_lineup_unavailable",
+            "special_teams_personnel_adjustment": "omitted_projected_lineup_unavailable",
+            "division_rivalry_goal_rate_factor": 1.0
+          },
+          "player_probabilities": {
+            "STL": [],
+            "EDM": []
+          },
+          "markets": {
+            "lambda_home": 3.0302,
+            "lambda_away": 4.9151,
+            "regulation": {
+              "home": 0.19562,
+              "draw": 0.11647,
+              "away": 0.68792
+            },
+            "strong_win_regulation": {
+              "home": 0.11032,
+              "away": 0.54955
+            },
+            "double_chance_regulation": {
+              "home": 0.31208,
+              "away": 0.80438
+            },
+            "strong_dual_definition": "FUERTE = ganar por 2+ goles en 60 minutos; DUAL = ganar o empatar en 60 minutos (1X/X2)",
+            "illustrative_ml": {
+              "home": 0.25385,
+              "away": 0.74615
+            },
+            "three_goal_lead": {
+              "home": 0.12064,
+              "away": 0.51486
+            },
+            "first_to_three_goal_lead": {
+              "home": 0.11988,
+              "away": 0.51163
+            },
+            "comeback_after_two_goal_deficit": {
+              "home": 0.0472,
+              "away": 0.08534
             },
             "comeback_definition": "falls behind by at least two regulation goals, then wins illustrative ML; a regulation tie is split 50/50 for overtime",
             "model": "unfitted_independent_poisson_shrunken_goals",
@@ -254,14 +1632,14 @@
           "status": "omitted_team_aggregate_fallback",
           "rotowire_power_play": {
             "applied": false,
-            "reason": "rotowire_observation_unavailable"
+            "reason": "no_historical_PP_minutes_for_RotoWire_units"
           }
         },
         "EDM": {
           "status": "omitted_team_aggregate_fallback",
           "rotowire_power_play": {
             "applied": false,
-            "reason": "rotowire_observation_unavailable"
+            "reason": "power_play_unit_has_uncertain_availability"
           }
         }
       },
@@ -270,35 +1648,27 @@
           "partial": true,
           "mode": "team_aggregate_fallback",
           "fallback_reasons": [
-            "No hay procedencia editorial fechada para validar l\u00edneas.",
-            "No hay alineaci\u00f3n proyectada identificable.",
-            "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
-            "La proyecci\u00f3n de forwards est\u00e1 incompleta.",
-            "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
-            "La proyecci\u00f3n de defense est\u00e1 incompleta.",
-            "Faltan plazas de defense en la alineaci\u00f3n capturada.",
-            "Falta la captura de injuries para confirmar disponibilidad.",
-            "Falta la captura de scratches para confirmar disponibilidad.",
-            "El reporte de disponibilidad est\u00e1 incompleto.",
+            "Hay jugadores sin estad\u00edsticas individuales atribuibles con certeza.",
+            "RotoWire report\u00f3 una baja sin identidad reconciliada para Torey Krug.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual."
           ],
           "expected_skaters": 18,
-          "captured_skaters": 0,
+          "captured_skaters": 18,
           "modeled_skaters": 0,
-          "ev_toi_derived_player_count": 0,
+          "ev_toi_derived_player_count": 18,
           "excluded_names": [],
           "by_unit": {
             "forwards": {
               "expected": 12,
-              "captured": 0,
-              "resolved": 0,
-              "ev_toi_derived": 0
+              "captured": 12,
+              "resolved": 12,
+              "ev_toi_derived": 12
             },
             "defense": {
               "expected": 6,
-              "captured": 0,
-              "resolved": 0,
-              "ev_toi_derived": 0
+              "captured": 6,
+              "resolved": 6,
+              "ev_toi_derived": 6
             }
           }
         },
@@ -306,35 +1676,27 @@
           "partial": true,
           "mode": "team_aggregate_fallback",
           "fallback_reasons": [
-            "No hay procedencia editorial fechada para validar l\u00edneas.",
-            "No hay alineaci\u00f3n proyectada identificable.",
-            "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
-            "La proyecci\u00f3n de forwards est\u00e1 incompleta.",
-            "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
-            "La proyecci\u00f3n de defense est\u00e1 incompleta.",
-            "Faltan plazas de defense en la alineaci\u00f3n capturada.",
-            "Falta la captura de injuries para confirmar disponibilidad.",
-            "Falta la captura de scratches para confirmar disponibilidad.",
-            "El reporte de disponibilidad est\u00e1 incompleto.",
+            "Hay jugadores sin estad\u00edsticas individuales atribuibles con certeza.",
+            "RotoWire report\u00f3 una baja sin identidad reconciliada para Torey Krug.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual."
           ],
           "expected_skaters": 18,
-          "captured_skaters": 0,
+          "captured_skaters": 18,
           "modeled_skaters": 0,
-          "ev_toi_derived_player_count": 0,
+          "ev_toi_derived_player_count": 18,
           "excluded_names": [],
           "by_unit": {
             "forwards": {
               "expected": 12,
-              "captured": 0,
-              "resolved": 0,
-              "ev_toi_derived": 0
+              "captured": 12,
+              "resolved": 12,
+              "ev_toi_derived": 12
             },
             "defense": {
               "expected": 6,
-              "captured": 0,
-              "resolved": 0,
-              "ev_toi_derived": 0
+              "captured": 6,
+              "resolved": 6,
+              "ev_toi_derived": 6
             }
           }
         }
@@ -343,21 +1705,79 @@
         "STL": {
           "status": "team_aggregate_availability_only",
           "availability": {
-            "applied": false,
-            "reason": "rotowire_injury_report_unavailable",
-            "excluded_goal_rate": 0.0,
-            "players": [],
-            "unresolved": []
+            "applied": true,
+            "reason": null,
+            "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+            "excluded_goal_rate": 0.043478260869565216,
+            "excluded_PP_goal_rate": 0.0,
+            "excluded_non_PP_goal_rate": 0.043478260869565216,
+            "team_games_reference": 23.0,
+            "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+            "players": [
+              {
+                "player_id": 8479346,
+                "name": "Dillon Dube",
+                "status": "IR",
+                "historical_goals": 1.0,
+                "historical_PP_goals": 0.0,
+                "historical_goals_per_team_game": 0.043478260869565216
+              }
+            ],
+            "unresolved": [
+              {
+                "name": "Torey Krug",
+                "status": "IR-LT"
+              },
+              {
+                "name": "Tyler Tucker",
+                "status": "IR"
+              }
+            ],
+            "replacement_effect": "not_estimated_without_identified_active_replacement",
+            "calibrated": false
           }
         },
         "EDM": {
           "status": "team_aggregate_availability_only",
           "availability": {
-            "applied": false,
-            "reason": "rotowire_injury_report_unavailable",
-            "excluded_goal_rate": 0.0,
-            "players": [],
-            "unresolved": []
+            "applied": true,
+            "reason": null,
+            "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+            "excluded_goal_rate": 0.16,
+            "excluded_PP_goal_rate": 0.12,
+            "excluded_non_PP_goal_rate": 0.04,
+            "team_games_reference": 25.0,
+            "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+            "players": [
+              {
+                "player_id": 8476454,
+                "name": "Ryan Nugent-Hopkins",
+                "status": "OUT",
+                "historical_goals": 4.0,
+                "historical_PP_goals": 3.0,
+                "historical_goals_per_team_game": 0.16
+              }
+            ],
+            "unresolved": [
+              {
+                "name": "Frederik Andersen",
+                "status": "IR-NR"
+              },
+              {
+                "name": "Mattias Janmark",
+                "status": "IR"
+              },
+              {
+                "name": "Alec Regula",
+                "status": "IR-LT"
+              },
+              {
+                "name": "Matt Savoie",
+                "status": "IR-LT"
+              }
+            ],
+            "replacement_effect": "not_estimated_without_identified_active_replacement",
+            "calibrated": false
           }
         }
       },
@@ -394,30 +1814,24 @@
         }
       },
       "unresolved": [
-        "EDM defense projected slots not captured: 6",
-        "EDM forwards projected slots not captured: 12",
-        "EDM incomplete availability report",
-        "EDM injuries source missing",
+        "EDM RotoWire goalie injury tracked in goalie scenarios, not skater availability: Frederik Andersen",
+        "EDM RotoWire unavailable player excluded for Alec Regula: EDM missing official prior player/TOI stats for Alec Regula",
+        "EDM RotoWire unavailable player excluded for Matt Savoie: EDM missing official prior player/TOI stats for Matt Savoie",
+        "EDM RotoWire unavailable player excluded for Mattias Janmark: EDM missing official prior player/TOI stats for Mattias Janmark",
+        "EDM injuries player history excluded for Alec Regula (undisclosed): EDM missing official prior player/TOI stats for Alec Regula (undisclosed)",
+        "EDM injuries player history excluded for Frederik Andersen (knee): EDM missing official prior player/TOI stats for Frederik Andersen (knee)",
+        "EDM injuries player history excluded for Matt Savoie (lower body): EDM missing official prior player/TOI stats for Matt Savoie (lower body)",
+        "EDM injuries player history excluded for Mattias Janmark (shoulder): EDM missing official prior player/TOI stats for Mattias Janmark (shoulder)",
         "EDM multi-team player statistics excluded from individual attribution",
-        "EDM projected lineup missing or contradictory; team aggregate fallback; player props and lineup effects omitted",
-        "EDM scratches source missing",
-        "El reporte de disponibilidad est\u00e1 incompleto.",
-        "Falta la captura de injuries para confirmar disponibilidad.",
-        "Falta la captura de scratches para confirmar disponibilidad.",
-        "Faltan plazas de defense en la alineaci\u00f3n capturada.",
-        "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
+        "EDM projected player history excluded for Filip Hallander: EDM player season stats are multi-team or wrong-team: Filip Hallander",
         "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual.",
-        "La proyecci\u00f3n de defense est\u00e1 incompleta.",
-        "La proyecci\u00f3n de forwards est\u00e1 incompleta.",
-        "No hay alineaci\u00f3n proyectada identificable.",
-        "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
-        "No hay procedencia editorial fechada para validar l\u00edneas.",
-        "STL defense projected slots not captured: 6",
-        "STL forwards projected slots not captured: 12",
-        "STL incomplete availability report",
-        "STL injuries source missing",
-        "STL projected lineup missing or contradictory; team aggregate fallback; player props and lineup effects omitted",
-        "STL scratches source missing"
+        "Hay jugadores sin estad\u00edsticas individuales atribuibles con certeza.",
+        "RotoWire report\u00f3 una baja sin identidad reconciliada para Torey Krug.",
+        "STL RotoWire unavailable player excluded for Tyler Tucker: STL missing official prior player/TOI stats for Tyler Tucker",
+        "STL RotoWire unavailable player unresolved: Torey Krug (IR-LT)",
+        "STL injuries player history excluded for Tyler Tucker (knee): STL missing official prior player/TOI stats for Tyler Tucker (knee)",
+        "STL scratches player history excluded for Calle Rosen: STL missing official prior player/TOI stats for Calle Rosen",
+        "STL scratches player history excluded for Nathan Walker: STL missing official prior player/TOI stats for Nathan Walker"
       ],
       "calibrated": false,
       "official": false,
@@ -460,7 +1874,7 @@
         ]
       },
       "source_cutoff_exclusive": "2026-11-22",
-      "captured_at_utc": "2026-11-22T07:19:38.888121+00:00",
+      "captured_at_utc": "2026-11-22T16:56:22.487321+00:00",
       "status": "conditional_unvalidated_scenarios",
       "publishable": false,
       "scenario_count": 1,
@@ -481,58 +1895,780 @@
         }
       },
       "rotowire_pregame": {
-        "status": "unavailable",
+        "status": "observed",
         "teams": {
           "DAL": {
-            "status": "unavailable",
-            "reason": "source_capture_missing",
-            "players": [],
-            "goalie": null,
+            "capture_status": "captured",
+            "players": [
+              {
+                "name": "Jake Oettinger",
+                "player_id": 8479979,
+                "resolved_name": "Jake Oettinger",
+                "identity_status": "exact",
+                "position_group": "goalie",
+                "position_observation": null,
+                "reported_status": "CONFIRMED",
+                "row_text": "Jake Oettinger Confirmed",
+                "source_href": "/hockey/player/jake-oettinger-5514"
+              },
+              {
+                "name": "W. Johnston",
+                "player_id": 8482740,
+                "resolved_name": "Wyatt Johnston",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C W. Johnston",
+                "source_href": "/hockey/player/wyatt-johnston-6542"
+              },
+              {
+                "name": "J. Robertson",
+                "player_id": 8480027,
+                "resolved_name": "Jason Robertson",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW J. Robertson",
+                "source_href": "/hockey/player/jason-robertson-5503"
+              },
+              {
+                "name": "M. Rantanen",
+                "player_id": 8478420,
+                "resolved_name": "Mikko Rantanen",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW M. Rantanen",
+                "source_href": "/hockey/player/mikko-rantanen-4883"
+              },
+              {
+                "name": "Roope Hintz",
+                "player_id": 8478449,
+                "resolved_name": "Roope Hintz",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD Roope Hintz",
+                "source_href": "/hockey/player/roope-hintz-4885"
+              },
+              {
+                "name": "M. Heiskanen",
+                "player_id": 8480036,
+                "resolved_name": "Miro Heiskanen",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD M. Heiskanen",
+                "source_href": "/hockey/player/miro-heiskanen-5534"
+              },
+              {
+                "name": "J. Hryckowian",
+                "player_id": 8484829,
+                "resolved_name": "Justin Hryckowian",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C J. Hryckowian",
+                "source_href": "/hockey/player/justin-hryckowian-7090"
+              },
+              {
+                "name": "Jamie Benn",
+                "player_id": 8473994,
+                "resolved_name": "Jamie Benn",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW Jamie Benn",
+                "source_href": "/hockey/player/jamie-benn-3113"
+              },
+              {
+                "name": "Tyler Seguin",
+                "player_id": 8475794,
+                "resolved_name": "Tyler Seguin",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW Tyler Seguin",
+                "source_href": "/hockey/player/tyler-seguin-3476"
+              },
+              {
+                "name": "T. Harley",
+                "player_id": 8481581,
+                "resolved_name": "Thomas Harley",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD T. Harley",
+                "source_href": "/hockey/player/thomas-harley-5971"
+              },
+              {
+                "name": "David Perron",
+                "player_id": 8474102,
+                "resolved_name": "David Perron",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD David Perron",
+                "source_href": "/hockey/player/david-perron-2801"
+              },
+              {
+                "name": "Tyler Myers",
+                "player_id": 8474574,
+                "resolved_name": "Tyler Myers",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": null,
+                "reported_status": "OUT",
+                "row_text": "D Tyler Myers OUT",
+                "source_href": "/hockey/player/tyler-myers-3000"
+              },
+              {
+                "name": "Oskar Back",
+                "player_id": 8480840,
+                "resolved_name": "Oskar B\u00e4ck",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": "IR-LT",
+                "row_text": "C Oskar Back IR-LT",
+                "source_href": "/hockey/player/oskar-back-5763"
+              },
+              {
+                "name": "Lian Bichsel",
+                "player_id": 8483425,
+                "resolved_name": "Lian Bichsel",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": null,
+                "reported_status": "IR",
+                "row_text": "D Lian Bichsel IR",
+                "source_href": "/hockey/player/lian-bichsel-6689"
+              },
+              {
+                "name": "K. Capobianco",
+                "player_id": 8478476,
+                "resolved_name": "Kyle Capobianco",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": null,
+                "reported_status": "IR-LT",
+                "row_text": "D K. Capobianco IR-LT",
+                "source_href": "/hockey/player/kyle-capobianco-4970"
+              },
+              {
+                "name": "Matt Duchene",
+                "player_id": 8475168,
+                "resolved_name": "Matt Duchene",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": "IR-LT",
+                "row_text": "C Matt Duchene IR-LT",
+                "source_href": "/hockey/player/matt-duchene-3249"
+              }
+            ],
+            "goalie": {
+              "name": "Jake Oettinger",
+              "player_id": 8479979,
+              "resolved_name": "Jake Oettinger",
+              "identity_status": "exact",
+              "position_group": "goalie",
+              "reported_status": "CONFIRMED",
+              "source_text": "Jake Oettinger Confirmed",
+              "officially_confirmed": false
+            },
             "power_play_1": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "W. Johnston",
+                  "player_id": 8482740,
+                  "resolved_name": "Wyatt Johnston",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": null,
+                  "row_text": "C W. Johnston",
+                  "source_href": "/hockey/player/wyatt-johnston-6542"
+                },
+                {
+                  "name": "J. Robertson",
+                  "player_id": 8480027,
+                  "resolved_name": "Jason Robertson",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": null,
+                  "row_text": "LW J. Robertson",
+                  "source_href": "/hockey/player/jason-robertson-5503"
+                },
+                {
+                  "name": "M. Rantanen",
+                  "player_id": 8478420,
+                  "resolved_name": "Mikko Rantanen",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": null,
+                  "row_text": "RW M. Rantanen",
+                  "source_href": "/hockey/player/mikko-rantanen-4883"
+                },
+                {
+                  "name": "Roope Hintz",
+                  "player_id": 8478449,
+                  "resolved_name": "Roope Hintz",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD Roope Hintz",
+                  "source_href": "/hockey/player/roope-hintz-4885"
+                },
+                {
+                  "name": "M. Heiskanen",
+                  "player_id": 8480036,
+                  "resolved_name": "Miro Heiskanen",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD M. Heiskanen",
+                  "source_href": "/hockey/player/miro-heiskanen-5534"
+                }
+              ],
+              "text": "C W. Johnston LW J. Robertson RW M. Rantanen LD Roope Hintz RD M. Heiskanen"
             },
             "power_play_2": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "J. Hryckowian",
+                  "player_id": 8484829,
+                  "resolved_name": "Justin Hryckowian",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": null,
+                  "row_text": "C J. Hryckowian",
+                  "source_href": "/hockey/player/justin-hryckowian-7090"
+                },
+                {
+                  "name": "Jamie Benn",
+                  "player_id": 8473994,
+                  "resolved_name": "Jamie Benn",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": null,
+                  "row_text": "LW Jamie Benn",
+                  "source_href": "/hockey/player/jamie-benn-3113"
+                },
+                {
+                  "name": "Tyler Seguin",
+                  "player_id": 8475794,
+                  "resolved_name": "Tyler Seguin",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": null,
+                  "row_text": "RW Tyler Seguin",
+                  "source_href": "/hockey/player/tyler-seguin-3476"
+                },
+                {
+                  "name": "T. Harley",
+                  "player_id": 8481581,
+                  "resolved_name": "Thomas Harley",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD T. Harley",
+                  "source_href": "/hockey/player/thomas-harley-5971"
+                },
+                {
+                  "name": "David Perron",
+                  "player_id": 8474102,
+                  "resolved_name": "David Perron",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD David Perron",
+                  "source_href": "/hockey/player/david-perron-2801"
+                }
+              ],
+              "text": "C J. Hryckowian LW Jamie Benn RW Tyler Seguin LD T. Harley RD David Perron"
             },
             "injuries": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "Tyler Myers",
+                  "player_id": 8474574,
+                  "resolved_name": "Tyler Myers",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": "C",
+                  "reported_status": "OUT",
+                  "row_text": "D Tyler Myers OUT",
+                  "source_href": "/hockey/player/tyler-myers-3000"
+                },
+                {
+                  "name": "Oskar Back",
+                  "player_id": 8480840,
+                  "resolved_name": "Oskar B\u00e4ck",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "IR-LT",
+                  "row_text": "C Oskar Back IR-LT",
+                  "source_href": "/hockey/player/oskar-back-5763"
+                },
+                {
+                  "name": "Lian Bichsel",
+                  "player_id": 8483425,
+                  "resolved_name": "Lian Bichsel",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": "C",
+                  "reported_status": "IR",
+                  "row_text": "D Lian Bichsel IR",
+                  "source_href": "/hockey/player/lian-bichsel-6689"
+                },
+                {
+                  "name": "K. Capobianco",
+                  "player_id": 8478476,
+                  "resolved_name": "Kyle Capobianco",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "C",
+                  "reported_status": "IR-LT",
+                  "row_text": "D K. Capobianco IR-LT",
+                  "source_href": "/hockey/player/kyle-capobianco-4970"
+                },
+                {
+                  "name": "Matt Duchene",
+                  "player_id": 8475168,
+                  "resolved_name": "Matt Duchene",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "IR-LT",
+                  "row_text": "C Matt Duchene IR-LT",
+                  "source_href": "/hockey/player/matt-duchene-3249"
+                }
+              ],
+              "text": "D Tyler Myers OUT C Oskar Back IR-LT D Lian Bichsel IR D K. Capobianco IR-LT C Matt Duchene IR-LT"
+            },
+            "status": "observed",
+            "identity_coverage": {
+              "players": 16,
+              "player_observations": 16
             }
           },
           "PIT": {
-            "status": "unavailable",
-            "reason": "source_capture_missing",
-            "players": [],
-            "goalie": null,
+            "capture_status": "captured",
+            "players": [
+              {
+                "name": "Arturs Silovs",
+                "player_id": 8481668,
+                "resolved_name": "Arturs Silovs",
+                "identity_status": "exact",
+                "position_group": "goalie",
+                "position_observation": null,
+                "reported_status": "EXPECTED",
+                "row_text": "Arturs Silovs Expected",
+                "source_href": "/hockey/player/arturs-silovs-6177"
+              },
+              {
+                "name": "S. Crosby",
+                "player_id": 8471675,
+                "resolved_name": "Sidney Crosby",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C S. Crosby",
+                "source_href": "/hockey/player/sidney-crosby-2086"
+              },
+              {
+                "name": "Tommy Novak",
+                "player_id": 8478438,
+                "resolved_name": "Tommy Novak",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW Tommy Novak",
+                "source_href": "/hockey/player/tommy-novak-4798"
+              },
+              {
+                "name": "R. Rakell",
+                "player_id": 8476483,
+                "resolved_name": "Rickard Rakell",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW R. Rakell",
+                "source_href": "/hockey/player/rickard-rakell-3766"
+              },
+              {
+                "name": "E. Karlsson",
+                "player_id": 8474578,
+                "resolved_name": "Erik Karlsson",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD E. Karlsson",
+                "source_href": "/hockey/player/erik-karlsson-3049"
+              },
+              {
+                "name": "Ben Kindel",
+                "player_id": 8485414,
+                "resolved_name": "Ben Kindel",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD Ben Kindel",
+                "source_href": "/hockey/player/ben-kindel-7403"
+              },
+              {
+                "name": "H. Lapierre",
+                "player_id": 8482148,
+                "resolved_name": "Hendrix Lapierre",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C H. Lapierre",
+                "source_href": "/hockey/player/hendrix-lapierre-6199"
+              },
+              {
+                "name": "A. Kuzmenko",
+                "player_id": 8483808,
+                "resolved_name": "Andrei Kuzmenko",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW A. Kuzmenko",
+                "source_href": "/hockey/player/andrei-kuzmenko-6654"
+              },
+              {
+                "name": "E. Chinakhov",
+                "player_id": 8482475,
+                "resolved_name": "Egor Chinakhov",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW E. Chinakhov",
+                "source_href": "/hockey/player/egor-chinakhov-6361"
+              },
+              {
+                "name": "S. Girard",
+                "player_id": 8479398,
+                "resolved_name": "Samuel Girard",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD S. Girard",
+                "source_href": "/hockey/player/samuel-girard-5181"
+              },
+              {
+                "name": "Kris Letang",
+                "player_id": 8471724,
+                "resolved_name": "Kris Letang",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD Kris Letang",
+                "source_href": "/hockey/player/kris-letang-2682"
+              },
+              {
+                "name": "E. Malkin",
+                "player_id": 8471215,
+                "resolved_name": "Evgeni Malkin",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": "OUT",
+                "row_text": "C E. Malkin OUT",
+                "source_href": "/hockey/player/evgeni-malkin-2160"
+              },
+              {
+                "name": "Ryan Graves",
+                "player_id": null,
+                "identity_status": "unresolved",
+                "position_observation": null,
+                "reported_status": "IR",
+                "row_text": "D Ryan Graves IR",
+                "source_href": "/hockey/player/ryan-graves-4551"
+              },
+              {
+                "name": "N. Robertson",
+                "player_id": 8481582,
+                "resolved_name": "Nick Robertson",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": "IR",
+                "row_text": "LW N. Robertson IR",
+                "source_href": "/hockey/player/nicholas-robertson-5988"
+              },
+              {
+                "name": "Bryan Rust",
+                "player_id": 8475810,
+                "resolved_name": "Bryan Rust",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": "IR",
+                "row_text": "RW Bryan Rust IR",
+                "source_href": "/hockey/player/bryan-rust-4717"
+              },
+              {
+                "name": "E. Soderblom",
+                "player_id": 8481725,
+                "resolved_name": "Elmer Soderblom",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": "IR",
+                "row_text": "LW E. Soderblom IR",
+                "source_href": "/hockey/player/elmer-soderblom-6719"
+              }
+            ],
+            "goalie": {
+              "name": "Arturs Silovs",
+              "player_id": 8481668,
+              "resolved_name": "Arturs Silovs",
+              "identity_status": "exact",
+              "position_group": "goalie",
+              "reported_status": "EXPECTED",
+              "source_text": "Arturs Silovs Expected",
+              "officially_confirmed": false
+            },
             "power_play_1": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "S. Crosby",
+                  "player_id": 8471675,
+                  "resolved_name": "Sidney Crosby",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": null,
+                  "row_text": "C S. Crosby",
+                  "source_href": "/hockey/player/sidney-crosby-2086"
+                },
+                {
+                  "name": "Tommy Novak",
+                  "player_id": 8478438,
+                  "resolved_name": "Tommy Novak",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": null,
+                  "row_text": "LW Tommy Novak",
+                  "source_href": "/hockey/player/tommy-novak-4798"
+                },
+                {
+                  "name": "R. Rakell",
+                  "player_id": 8476483,
+                  "resolved_name": "Rickard Rakell",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": null,
+                  "row_text": "RW R. Rakell",
+                  "source_href": "/hockey/player/rickard-rakell-3766"
+                },
+                {
+                  "name": "E. Karlsson",
+                  "player_id": 8474578,
+                  "resolved_name": "Erik Karlsson",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD E. Karlsson",
+                  "source_href": "/hockey/player/erik-karlsson-3049"
+                },
+                {
+                  "name": "Ben Kindel",
+                  "player_id": 8485414,
+                  "resolved_name": "Ben Kindel",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD Ben Kindel",
+                  "source_href": "/hockey/player/ben-kindel-7403"
+                }
+              ],
+              "text": "C S. Crosby LW Tommy Novak RW R. Rakell LD E. Karlsson RD Ben Kindel"
             },
             "power_play_2": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "H. Lapierre",
+                  "player_id": 8482148,
+                  "resolved_name": "Hendrix Lapierre",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": null,
+                  "row_text": "C H. Lapierre",
+                  "source_href": "/hockey/player/hendrix-lapierre-6199"
+                },
+                {
+                  "name": "A. Kuzmenko",
+                  "player_id": 8483808,
+                  "resolved_name": "Andrei Kuzmenko",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": null,
+                  "row_text": "LW A. Kuzmenko",
+                  "source_href": "/hockey/player/andrei-kuzmenko-6654"
+                },
+                {
+                  "name": "E. Chinakhov",
+                  "player_id": 8482475,
+                  "resolved_name": "Egor Chinakhov",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": null,
+                  "row_text": "RW E. Chinakhov",
+                  "source_href": "/hockey/player/egor-chinakhov-6361"
+                },
+                {
+                  "name": "S. Girard",
+                  "player_id": 8479398,
+                  "resolved_name": "Samuel Girard",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD S. Girard",
+                  "source_href": "/hockey/player/samuel-girard-5181"
+                },
+                {
+                  "name": "Kris Letang",
+                  "player_id": 8471724,
+                  "resolved_name": "Kris Letang",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD Kris Letang",
+                  "source_href": "/hockey/player/kris-letang-2682"
+                }
+              ],
+              "text": "C H. Lapierre LW A. Kuzmenko RW E. Chinakhov LD S. Girard RD Kris Letang"
             },
             "injuries": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "E. Malkin",
+                  "player_id": 8471215,
+                  "resolved_name": "Evgeni Malkin",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "OUT",
+                  "row_text": "C E. Malkin OUT",
+                  "source_href": "/hockey/player/evgeni-malkin-2160"
+                },
+                {
+                  "name": "Ryan Graves",
+                  "player_id": null,
+                  "identity_status": "unresolved",
+                  "position_observation": "C",
+                  "reported_status": "IR",
+                  "row_text": "D Ryan Graves IR",
+                  "source_href": "/hockey/player/ryan-graves-4551"
+                },
+                {
+                  "name": "N. Robertson",
+                  "player_id": 8481582,
+                  "resolved_name": "Nick Robertson",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": "IR",
+                  "row_text": "LW N. Robertson IR",
+                  "source_href": "/hockey/player/nicholas-robertson-5988"
+                },
+                {
+                  "name": "Bryan Rust",
+                  "player_id": 8475810,
+                  "resolved_name": "Bryan Rust",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": "IR",
+                  "row_text": "RW Bryan Rust IR",
+                  "source_href": "/hockey/player/bryan-rust-4717"
+                },
+                {
+                  "name": "E. Soderblom",
+                  "player_id": 8481725,
+                  "resolved_name": "Elmer Soderblom",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": "IR",
+                  "row_text": "LW E. Soderblom IR",
+                  "source_href": "/hockey/player/elmer-soderblom-6719"
+                }
+              ],
+              "text": "C E. Malkin OUT D Ryan Graves IR LW N. Robertson IR RW Bryan Rust IR LW E. Soderblom IR"
+            },
+            "status": "observed",
+            "identity_coverage": {
+              "players": 15,
+              "player_observations": 16
             }
           }
         },
-        "market_observation": null,
+        "market_observation": {
+          "moneyline": {
+            "team": "DAL",
+            "american_odds": "-235",
+            "raw": "LINE DAL -235"
+          },
+          "total_goals": {
+            "line": 6.0,
+            "raw": "O/U 6.0 Goals"
+          }
+        },
         "source": {
           "provider": "RotoWire",
           "url": "https://www.rotowire.com/hockey/nhl-lineups.php",
-          "captured_at_utc": "2026-11-22T07:19:01.239840+00:00",
-          "page_sha256": "da13d45c598af202e0a55e9543fd4e675e5c07afc94dce0ba671341a2651c11c",
-          "card_sha256": null,
+          "captured_at_utc": "2026-11-22T16:55:40.321127+00:00",
+          "page_sha256": "8ad11abef51a15b0dbe89e5b09d662dceb3d8ae15c45b429e5c22916cac40e99",
+          "card_sha256": "45310072e95fc5112d27735048e2df9f87f1cf28fd5a87810856b75f8c1bab58",
           "official": false
         },
         "probabilities_modified": false,
@@ -546,7 +2682,7 @@
             "name": "Jake Oettinger",
             "save_pct": 0.9007832898172323,
             "shots_faced": 383.0,
-            "source_status": "candidate",
+            "source_status": "confirmed",
             "starter_confirmed": false,
             "starter_probability": null
           },
@@ -555,15 +2691,15 @@
             "name": "Arturs Silovs",
             "save_pct": 0.8731988472622478,
             "shots_faced": 347.0,
-            "source_status": "candidate",
+            "source_status": "unconfirmed",
             "starter_confirmed": false,
             "starter_probability": null
           },
           "scenario_weight": null,
           "expected_goals": {
             "home": 3.1912676741762733,
-            "away": 2.5976534357950545,
-            "total": 5.788921109971328
+            "away": 2.2553941014387173,
+            "total": 5.446661775614991
           },
           "expected_goals_by_strength": null,
           "rotowire_pp_impact": null,
@@ -601,14 +2737,59 @@
             "team_aggregate_baseline": 3.1811637119142424,
             "rotowire_PP1_PP2_adjustment": {
               "applied": false,
-              "reason": "rotowire_observation_unavailable"
+              "reason": "no_historical_PP_minutes_for_RotoWire_units"
             },
             "rotowire_confirmed_availability_adjustment": {
               "applied": false,
-              "reason": "rotowire_injury_report_unavailable",
+              "reason": "no_historical_scoring_to_remove",
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
               "excluded_goal_rate": 0.0,
-              "players": [],
-              "unresolved": []
+              "excluded_PP_goal_rate": 0.0,
+              "excluded_non_PP_goal_rate": 0.0,
+              "team_games_reference": 22.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8474574,
+                  "name": "Tyler Myers",
+                  "status": "OUT",
+                  "historical_goals": 0.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.0
+                },
+                {
+                  "player_id": 8480840,
+                  "name": "Oskar B\u00e4ck",
+                  "status": "IR-LT",
+                  "historical_goals": 0.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.0
+                },
+                {
+                  "player_id": 8483425,
+                  "name": "Lian Bichsel",
+                  "status": "IR",
+                  "historical_goals": 0.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.0
+                },
+                {
+                  "player_id": 8478476,
+                  "name": "Kyle Capobianco",
+                  "status": "IR-LT",
+                  "historical_goals": 0.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.0
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Matt Duchene",
+                  "status": "IR-LT"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
             },
             "aggregate_baseline_PP_goal_delta": 0.0,
             "opponent_goalie_save_pct": 0.8731988472622478,
@@ -619,19 +2800,64 @@
           },
           "away_components": {
             "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
-            "attacking_goals_for_per_game": 2.95454,
+            "attacking_goals_for_per_game": 2.227267272727273,
             "opponent_goals_against_per_game": 2.45454,
-            "team_aggregate_baseline": 2.692960566291308,
+            "team_aggregate_baseline": 2.338143838945757,
             "rotowire_PP1_PP2_adjustment": {
               "applied": false,
-              "reason": "rotowire_observation_unavailable"
+              "reason": "no_historical_PP_minutes_for_RotoWire_units"
             },
             "rotowire_confirmed_availability_adjustment": {
-              "applied": false,
-              "reason": "rotowire_injury_report_unavailable",
-              "excluded_goal_rate": 0.0,
-              "players": [],
-              "unresolved": []
+              "applied": true,
+              "reason": null,
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+              "excluded_goal_rate": 0.7272727272727273,
+              "excluded_PP_goal_rate": 0.09090909090909091,
+              "excluded_non_PP_goal_rate": 0.6363636363636364,
+              "team_games_reference": 22.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8471215,
+                  "name": "Evgeni Malkin",
+                  "status": "OUT",
+                  "historical_goals": 6.0,
+                  "historical_PP_goals": 2.0,
+                  "historical_goals_per_team_game": 0.2727272727272727
+                },
+                {
+                  "player_id": 8481582,
+                  "name": "Nick Robertson",
+                  "status": "IR",
+                  "historical_goals": 7.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.3181818181818182
+                },
+                {
+                  "player_id": 8475810,
+                  "name": "Bryan Rust",
+                  "status": "IR",
+                  "historical_goals": 3.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.13636363636363635
+                },
+                {
+                  "player_id": 8481725,
+                  "name": "Elmer Soderblom",
+                  "status": "IR",
+                  "historical_goals": 0.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.0
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Ryan Graves",
+                  "status": "IR"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
             },
             "aggregate_baseline_PP_goal_delta": 0.0,
             "opponent_goalie_save_pct": 0.9007832898172323,
@@ -646,36 +2872,36 @@
           },
           "markets": {
             "lambda_home": 3.1913,
-            "lambda_away": 2.5977,
+            "lambda_away": 2.2554,
             "regulation": {
-              "home": 0.51282,
-              "draw": 0.16518,
-              "away": 0.32199
+              "home": 0.57125,
+              "draw": 0.16303,
+              "away": 0.26572
             },
             "strong_win_regulation": {
-              "home": 0.3465,
-              "away": 0.18661
+              "home": 0.39648,
+              "away": 0.14221
             },
             "double_chance_regulation": {
-              "home": 0.67801,
-              "away": 0.48718
+              "home": 0.73428,
+              "away": 0.42875
             },
             "strong_dual_definition": "FUERTE = ganar por 2+ goles en 60 minutos; DUAL = ganar o empatar en 60 minutos (1X/X2)",
             "illustrative_ml": {
-              "home": 0.59541,
-              "away": 0.40459
+              "home": 0.65276,
+              "away": 0.34724
             },
             "three_goal_lead": {
-              "home": 0.28556,
-              "away": 0.15401
+              "home": 0.31795,
+              "away": 0.11224
             },
             "first_to_three_goal_lead": {
-              "home": 0.28496,
-              "away": 0.15369
+              "home": 0.31746,
+              "away": 0.11207
             },
             "comeback_after_two_goal_deficit": {
-              "home": 0.05375,
-              "away": 0.04419
+              "home": 0.04875,
+              "away": 0.03565
             },
             "comeback_definition": "falls behind by at least two regulation goals, then wins illustrative ML; a regulation tie is split 50/50 for overtime",
             "model": "unfitted_independent_poisson_shrunken_goals",
@@ -691,14 +2917,14 @@
           "status": "omitted_team_aggregate_fallback",
           "rotowire_power_play": {
             "applied": false,
-            "reason": "rotowire_observation_unavailable"
+            "reason": "no_historical_PP_minutes_for_RotoWire_units"
           }
         },
         "PIT": {
           "status": "omitted_team_aggregate_fallback",
           "rotowire_power_play": {
             "applied": false,
-            "reason": "rotowire_observation_unavailable"
+            "reason": "no_historical_PP_minutes_for_RotoWire_units"
           }
         }
       },
@@ -716,7 +2942,9 @@
             "Faltan plazas de defense en la alineaci\u00f3n capturada.",
             "Falta la captura de injuries para confirmar disponibilidad.",
             "Falta la captura de scratches para confirmar disponibilidad.",
+            "Hay jugadores sin estad\u00edsticas individuales atribuibles con certeza.",
             "El reporte de disponibilidad est\u00e1 incompleto.",
+            "RotoWire report\u00f3 una baja sin identidad reconciliada para Ryan Graves.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual."
           ],
           "expected_skaters": 18,
@@ -752,7 +2980,9 @@
             "Faltan plazas de defense en la alineaci\u00f3n capturada.",
             "Falta la captura de injuries para confirmar disponibilidad.",
             "Falta la captura de scratches para confirmar disponibilidad.",
+            "Hay jugadores sin estad\u00edsticas individuales atribuibles con certeza.",
             "El reporte de disponibilidad est\u00e1 incompleto.",
+            "RotoWire report\u00f3 una baja sin identidad reconciliada para Ryan Graves.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual."
           ],
           "expected_skaters": 18,
@@ -781,20 +3011,110 @@
           "status": "team_aggregate_availability_only",
           "availability": {
             "applied": false,
-            "reason": "rotowire_injury_report_unavailable",
+            "reason": "no_historical_scoring_to_remove",
+            "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
             "excluded_goal_rate": 0.0,
-            "players": [],
-            "unresolved": []
+            "excluded_PP_goal_rate": 0.0,
+            "excluded_non_PP_goal_rate": 0.0,
+            "team_games_reference": 22.0,
+            "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+            "players": [
+              {
+                "player_id": 8474574,
+                "name": "Tyler Myers",
+                "status": "OUT",
+                "historical_goals": 0.0,
+                "historical_PP_goals": 0.0,
+                "historical_goals_per_team_game": 0.0
+              },
+              {
+                "player_id": 8480840,
+                "name": "Oskar B\u00e4ck",
+                "status": "IR-LT",
+                "historical_goals": 0.0,
+                "historical_PP_goals": 0.0,
+                "historical_goals_per_team_game": 0.0
+              },
+              {
+                "player_id": 8483425,
+                "name": "Lian Bichsel",
+                "status": "IR",
+                "historical_goals": 0.0,
+                "historical_PP_goals": 0.0,
+                "historical_goals_per_team_game": 0.0
+              },
+              {
+                "player_id": 8478476,
+                "name": "Kyle Capobianco",
+                "status": "IR-LT",
+                "historical_goals": 0.0,
+                "historical_PP_goals": 0.0,
+                "historical_goals_per_team_game": 0.0
+              }
+            ],
+            "unresolved": [
+              {
+                "name": "Matt Duchene",
+                "status": "IR-LT"
+              }
+            ],
+            "replacement_effect": "not_estimated_without_identified_active_replacement",
+            "calibrated": false
           }
         },
         "PIT": {
           "status": "team_aggregate_availability_only",
           "availability": {
-            "applied": false,
-            "reason": "rotowire_injury_report_unavailable",
-            "excluded_goal_rate": 0.0,
-            "players": [],
-            "unresolved": []
+            "applied": true,
+            "reason": null,
+            "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+            "excluded_goal_rate": 0.7272727272727273,
+            "excluded_PP_goal_rate": 0.09090909090909091,
+            "excluded_non_PP_goal_rate": 0.6363636363636364,
+            "team_games_reference": 22.0,
+            "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+            "players": [
+              {
+                "player_id": 8471215,
+                "name": "Evgeni Malkin",
+                "status": "OUT",
+                "historical_goals": 6.0,
+                "historical_PP_goals": 2.0,
+                "historical_goals_per_team_game": 0.2727272727272727
+              },
+              {
+                "player_id": 8481582,
+                "name": "Nick Robertson",
+                "status": "IR",
+                "historical_goals": 7.0,
+                "historical_PP_goals": 0.0,
+                "historical_goals_per_team_game": 0.3181818181818182
+              },
+              {
+                "player_id": 8475810,
+                "name": "Bryan Rust",
+                "status": "IR",
+                "historical_goals": 3.0,
+                "historical_PP_goals": 0.0,
+                "historical_goals_per_team_game": 0.13636363636363635
+              },
+              {
+                "player_id": 8481725,
+                "name": "Elmer Soderblom",
+                "status": "IR",
+                "historical_goals": 0.0,
+                "historical_PP_goals": 0.0,
+                "historical_goals_per_team_game": 0.0
+              }
+            ],
+            "unresolved": [
+              {
+                "name": "Ryan Graves",
+                "status": "IR"
+              }
+            ],
+            "replacement_effect": "not_estimated_without_identified_active_replacement",
+            "calibrated": false
           }
         }
       },
@@ -831,6 +3151,7 @@
         }
       },
       "unresolved": [
+        "DAL RotoWire unavailable player excluded for Matt Duchene: DAL missing official prior player/TOI stats for Matt Duchene",
         "DAL defense projected slots not captured: 6",
         "DAL forwards projected slots not captured: 12",
         "DAL incomplete availability report",
@@ -843,18 +3164,21 @@
         "Faltan plazas de defense en la alineaci\u00f3n capturada.",
         "Faltan plazas de forwards en la alineaci\u00f3n capturada.",
         "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual.",
+        "Hay jugadores sin estad\u00edsticas individuales atribuibles con certeza.",
         "La proyecci\u00f3n de defense est\u00e1 incompleta.",
         "La proyecci\u00f3n de forwards est\u00e1 incompleta.",
         "No hay alineaci\u00f3n proyectada identificable.",
         "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
         "No hay procedencia editorial fechada para validar l\u00edneas.",
+        "PIT RotoWire unavailable player unresolved: Ryan Graves (IR)",
         "PIT defense projected slots not captured: 6",
         "PIT forwards projected slots not captured: 12",
         "PIT incomplete availability report",
         "PIT injuries source missing",
         "PIT multi-team player statistics excluded from individual attribution",
         "PIT projected lineup missing or contradictory; team aggregate fallback; player props and lineup effects omitted",
-        "PIT scratches source missing"
+        "PIT scratches source missing",
+        "RotoWire report\u00f3 una baja sin identidad reconciliada para Ryan Graves."
       ],
       "calibrated": false,
       "official": false,
@@ -897,7 +3221,7 @@
         ]
       },
       "source_cutoff_exclusive": "2026-11-22",
-      "captured_at_utc": "2026-11-22T07:19:38.890573+00:00",
+      "captured_at_utc": "2026-11-22T16:56:22.489581+00:00",
       "status": "conditional_unvalidated_scenarios",
       "publishable": false,
       "scenario_count": 1,
@@ -918,58 +3242,739 @@
         }
       },
       "rotowire_pregame": {
-        "status": "unavailable",
+        "status": "observed",
         "teams": {
           "VAN": {
-            "status": "unavailable",
-            "reason": "source_capture_missing",
-            "players": [],
-            "goalie": null,
+            "capture_status": "captured",
+            "players": [
+              {
+                "name": "Nikita Tolopilo",
+                "player_id": 8484268,
+                "resolved_name": "Nikita Tolopilo",
+                "identity_status": "exact",
+                "position_group": "goalie",
+                "position_observation": null,
+                "reported_status": "EXPECTED",
+                "row_text": "Nikita Tolopilo Expected",
+                "source_href": "/hockey/player/nikita-tolopilo-6888"
+              },
+              {
+                "name": "Marco Rossi",
+                "player_id": 8482079,
+                "resolved_name": "Marco Rossi",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C Marco Rossi",
+                "source_href": "/hockey/player/marco-rossi-6190"
+              },
+              {
+                "name": "Jake DeBrusk",
+                "player_id": 8478498,
+                "resolved_name": "Jake DeBrusk",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW Jake DeBrusk",
+                "source_href": "/hockey/player/jake-debrusk-4793"
+              },
+              {
+                "name": "Brock Boeser",
+                "player_id": 8478444,
+                "resolved_name": "Brock Boeser",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW Brock Boeser",
+                "source_href": "/hockey/player/brock-boeser-4797"
+              },
+              {
+                "name": "J. Lekkerimaki",
+                "player_id": 8483476,
+                "resolved_name": "Jonathan Lekkerim\u00e4ki",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD J. Lekkerimaki",
+                "source_href": "/hockey/player/jonathan-lekkerimaki-6685"
+              },
+              {
+                "name": "Filip Hronek",
+                "player_id": 8479425,
+                "resolved_name": "Filip Hronek",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD Filip Hronek",
+                "source_href": "/hockey/player/filip-hronek-5204"
+              },
+              {
+                "name": "Filip Chytil",
+                "player_id": 8480078,
+                "resolved_name": "Filip Chytil",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C Filip Chytil",
+                "source_href": "/hockey/player/filip-chytil-5510"
+              },
+              {
+                "name": "D. O'Connor",
+                "player_id": 8482055,
+                "resolved_name": "Drew O'Connor",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW D. O'Connor",
+                "source_href": "/hockey/player/drew-oconnor-6226"
+              },
+              {
+                "name": "L. Karlsson",
+                "player_id": 8481024,
+                "resolved_name": "Linus Karlsson",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW L. Karlsson",
+                "source_href": "/hockey/player/linus-karlsson-5776"
+              },
+              {
+                "name": "Zeev Buium",
+                "player_id": 8484798,
+                "resolved_name": "Zeev Buium",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD Zeev Buium",
+                "source_href": "/hockey/player/zeev-buium-7136"
+              },
+              {
+                "name": "T. Willander",
+                "player_id": 8484240,
+                "resolved_name": "Tom Willander",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD T. Willander",
+                "source_href": "/hockey/player/tom-willander-6930"
+              },
+              {
+                "name": "E. Pettersson",
+                "player_id": null,
+                "identity_status": "ambiguous",
+                "position_observation": "C",
+                "reported_status": "OUT",
+                "row_text": "C E. Pettersson OUT",
+                "source_href": "/hockey/player/elias-pettersson-5418"
+              },
+              {
+                "name": "G. Brisebois",
+                "player_id": 8478465,
+                "resolved_name": "Guillaume Brisebois",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "G",
+                "reported_status": "IR",
+                "row_text": "D G. Brisebois IR",
+                "source_href": "/hockey/player/guillaume-brisebois-4799"
+              },
+              {
+                "name": "T. Demko",
+                "player_id": 8477967,
+                "resolved_name": "Thatcher Demko",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "goalie",
+                "position_observation": "G",
+                "reported_status": "IR",
+                "row_text": "G T. Demko IR",
+                "source_href": "/hockey/player/thatcher-demko-4410"
+              },
+              {
+                "name": "B. Gallagher",
+                "player_id": 8475848,
+                "resolved_name": "Brendan Gallagher",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": "IR",
+                "row_text": "RW B. Gallagher IR",
+                "source_href": "/hockey/player/brendan-gallagher-3684"
+              },
+              {
+                "name": "M. MacEachern",
+                "player_id": null,
+                "identity_status": "unresolved",
+                "position_observation": "LW",
+                "reported_status": "IR-NR",
+                "row_text": "LW M. MacEachern IR-NR",
+                "source_href": "/hockey/player/mackenzie-maceachern-5865"
+              }
+            ],
+            "goalie": {
+              "name": "Nikita Tolopilo",
+              "player_id": 8484268,
+              "resolved_name": "Nikita Tolopilo",
+              "identity_status": "exact",
+              "position_group": "goalie",
+              "reported_status": "EXPECTED",
+              "source_text": "Nikita Tolopilo Expected",
+              "officially_confirmed": false
+            },
             "power_play_1": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "Marco Rossi",
+                  "player_id": 8482079,
+                  "resolved_name": "Marco Rossi",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": null,
+                  "row_text": "C Marco Rossi",
+                  "source_href": "/hockey/player/marco-rossi-6190"
+                },
+                {
+                  "name": "Jake DeBrusk",
+                  "player_id": 8478498,
+                  "resolved_name": "Jake DeBrusk",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": null,
+                  "row_text": "LW Jake DeBrusk",
+                  "source_href": "/hockey/player/jake-debrusk-4793"
+                },
+                {
+                  "name": "Brock Boeser",
+                  "player_id": 8478444,
+                  "resolved_name": "Brock Boeser",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": null,
+                  "row_text": "RW Brock Boeser",
+                  "source_href": "/hockey/player/brock-boeser-4797"
+                },
+                {
+                  "name": "J. Lekkerimaki",
+                  "player_id": 8483476,
+                  "resolved_name": "Jonathan Lekkerim\u00e4ki",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD J. Lekkerimaki",
+                  "source_href": "/hockey/player/jonathan-lekkerimaki-6685"
+                },
+                {
+                  "name": "Filip Hronek",
+                  "player_id": 8479425,
+                  "resolved_name": "Filip Hronek",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD Filip Hronek",
+                  "source_href": "/hockey/player/filip-hronek-5204"
+                }
+              ],
+              "text": "C Marco Rossi LW Jake DeBrusk RW Brock Boeser LD J. Lekkerimaki RD Filip Hronek"
             },
             "power_play_2": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "Filip Chytil",
+                  "player_id": 8480078,
+                  "resolved_name": "Filip Chytil",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": null,
+                  "row_text": "C Filip Chytil",
+                  "source_href": "/hockey/player/filip-chytil-5510"
+                },
+                {
+                  "name": "D. O'Connor",
+                  "player_id": 8482055,
+                  "resolved_name": "Drew O'Connor",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": null,
+                  "row_text": "LW D. O'Connor",
+                  "source_href": "/hockey/player/drew-oconnor-6226"
+                },
+                {
+                  "name": "L. Karlsson",
+                  "player_id": 8481024,
+                  "resolved_name": "Linus Karlsson",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": null,
+                  "row_text": "RW L. Karlsson",
+                  "source_href": "/hockey/player/linus-karlsson-5776"
+                },
+                {
+                  "name": "Zeev Buium",
+                  "player_id": 8484798,
+                  "resolved_name": "Zeev Buium",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD Zeev Buium",
+                  "source_href": "/hockey/player/zeev-buium-7136"
+                },
+                {
+                  "name": "T. Willander",
+                  "player_id": 8484240,
+                  "resolved_name": "Tom Willander",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD T. Willander",
+                  "source_href": "/hockey/player/tom-willander-6930"
+                }
+              ],
+              "text": "C Filip Chytil LW D. O'Connor RW L. Karlsson LD Zeev Buium RD T. Willander"
             },
             "injuries": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "E. Pettersson",
+                  "player_id": null,
+                  "identity_status": "ambiguous",
+                  "position_observation": "C",
+                  "reported_status": "OUT",
+                  "row_text": "C E. Pettersson OUT",
+                  "source_href": "/hockey/player/elias-pettersson-5418"
+                },
+                {
+                  "name": "G. Brisebois",
+                  "player_id": 8478465,
+                  "resolved_name": "Guillaume Brisebois",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "G",
+                  "reported_status": "IR",
+                  "row_text": "D G. Brisebois IR",
+                  "source_href": "/hockey/player/guillaume-brisebois-4799"
+                },
+                {
+                  "name": "T. Demko",
+                  "player_id": 8477967,
+                  "resolved_name": "Thatcher Demko",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "goalie",
+                  "position_observation": "G",
+                  "reported_status": "IR",
+                  "row_text": "G T. Demko IR",
+                  "source_href": "/hockey/player/thatcher-demko-4410"
+                },
+                {
+                  "name": "B. Gallagher",
+                  "player_id": 8475848,
+                  "resolved_name": "Brendan Gallagher",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": "IR",
+                  "row_text": "RW B. Gallagher IR",
+                  "source_href": "/hockey/player/brendan-gallagher-3684"
+                },
+                {
+                  "name": "M. MacEachern",
+                  "player_id": null,
+                  "identity_status": "unresolved",
+                  "position_observation": "LW",
+                  "reported_status": "IR-NR",
+                  "row_text": "LW M. MacEachern IR-NR",
+                  "source_href": "/hockey/player/mackenzie-maceachern-5865"
+                }
+              ],
+              "text": "C E. Pettersson OUT D G. Brisebois IR G T. Demko IR RW B. Gallagher IR LW M. MacEachern IR-NR"
+            },
+            "status": "observed",
+            "identity_coverage": {
+              "players": 14,
+              "player_observations": 16
             }
           },
           "CHI": {
-            "status": "unavailable",
-            "reason": "source_capture_missing",
-            "players": [],
-            "goalie": null,
+            "capture_status": "captured",
+            "players": [
+              {
+                "name": "Drew Commesso",
+                "player_id": 8482123,
+                "resolved_name": "Drew Commesso",
+                "identity_status": "exact",
+                "position_group": "goalie",
+                "position_observation": null,
+                "reported_status": "EXPECTED",
+                "row_text": "Drew Commesso Expected",
+                "source_href": "/hockey/player/drew-commesso-6321"
+              },
+              {
+                "name": "R. Kantserov",
+                "player_id": 8484390,
+                "resolved_name": "Roman Kantserov",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": null,
+                "row_text": "C R. Kantserov",
+                "source_href": "/hockey/player/roman-kantserov-6987"
+              },
+              {
+                "name": "T. Bertuzzi",
+                "player_id": 8477479,
+                "resolved_name": "Tyler Bertuzzi",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW T. Bertuzzi",
+                "source_href": "/hockey/player/tyler-bertuzzi-4540"
+              },
+              {
+                "name": "Patrick Kane",
+                "player_id": 8474141,
+                "resolved_name": "Patrick Kane",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW Patrick Kane",
+                "source_href": "/hockey/player/patrick-kane-2756"
+              },
+              {
+                "name": "Frank Nazar",
+                "player_id": 8483493,
+                "resolved_name": "Frank Nazar",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD Frank Nazar",
+                "source_href": "/hockey/player/frank-nazar-6693"
+              },
+              {
+                "name": "Sam Rinzel",
+                "player_id": 8483506,
+                "resolved_name": "Sam Rinzel",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD Sam Rinzel",
+                "source_href": "/hockey/player/sam-rinzel-6733"
+              },
+              {
+                "name": "A. Frondell",
+                "player_id": 8485391,
+                "resolved_name": "Anton Frondell",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": "DTD",
+                "row_text": "C A. Frondell DTD",
+                "source_href": "/hockey/player/anton-frondell-7382"
+              },
+              {
+                "name": "Ryan Donato",
+                "player_id": 8477987,
+                "resolved_name": "Ryan Donato",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "LW",
+                "reported_status": null,
+                "row_text": "LW Ryan Donato",
+                "source_href": "/hockey/player/ryan-donato-4422"
+              },
+              {
+                "name": "T. Teravainen",
+                "player_id": 8476882,
+                "resolved_name": "Teuvo Teravainen",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "RW",
+                "reported_status": null,
+                "row_text": "RW T. Teravainen",
+                "source_href": "/hockey/player/teuvo-teravainen-3980"
+              },
+              {
+                "name": "Ryan Greene",
+                "player_id": 8483450,
+                "resolved_name": "Ryan Greene",
+                "identity_status": "exact",
+                "position_group": "forward",
+                "position_observation": "LD",
+                "reported_status": null,
+                "row_text": "LD Ryan Greene",
+                "source_href": "/hockey/player/ryan-greene-6750"
+              },
+              {
+                "name": "A. Levshunov",
+                "player_id": 8484783,
+                "resolved_name": "Artyom Levshunov",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "defense",
+                "position_observation": "RD",
+                "reported_status": null,
+                "row_text": "RD A. Levshunov",
+                "source_href": "/hockey/player/artyom-levshunov-7128"
+              },
+              {
+                "name": "C. Bedard",
+                "player_id": 8484144,
+                "resolved_name": "Connor Bedard",
+                "identity_status": "unique_initial_and_surname",
+                "position_group": "forward",
+                "position_observation": "C",
+                "reported_status": "IR",
+                "row_text": "C C. Bedard IR",
+                "source_href": "/hockey/player/connor-bedard-6916"
+              },
+              {
+                "name": "Bowen Byram",
+                "player_id": 8481524,
+                "resolved_name": "Bowen Byram",
+                "identity_status": "exact",
+                "position_group": "defense",
+                "position_observation": null,
+                "reported_status": "IR",
+                "row_text": "D Bowen Byram IR",
+                "source_href": "/hockey/player/bowen-byram-5966"
+              },
+              {
+                "name": "Ryan Ellis",
+                "player_id": null,
+                "identity_status": "unresolved",
+                "position_observation": null,
+                "reported_status": "IR",
+                "row_text": "D Ryan Ellis IR",
+                "source_href": "/hockey/player/ryan-ellis-3263"
+              }
+            ],
+            "goalie": {
+              "name": "Drew Commesso",
+              "player_id": 8482123,
+              "resolved_name": "Drew Commesso",
+              "identity_status": "exact",
+              "position_group": "goalie",
+              "reported_status": "EXPECTED",
+              "source_text": "Drew Commesso Expected",
+              "officially_confirmed": false
+            },
             "power_play_1": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "R. Kantserov",
+                  "player_id": 8484390,
+                  "resolved_name": "Roman Kantserov",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": null,
+                  "row_text": "C R. Kantserov",
+                  "source_href": "/hockey/player/roman-kantserov-6987"
+                },
+                {
+                  "name": "T. Bertuzzi",
+                  "player_id": 8477479,
+                  "resolved_name": "Tyler Bertuzzi",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": null,
+                  "row_text": "LW T. Bertuzzi",
+                  "source_href": "/hockey/player/tyler-bertuzzi-4540"
+                },
+                {
+                  "name": "Patrick Kane",
+                  "player_id": 8474141,
+                  "resolved_name": "Patrick Kane",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": null,
+                  "row_text": "RW Patrick Kane",
+                  "source_href": "/hockey/player/patrick-kane-2756"
+                },
+                {
+                  "name": "Frank Nazar",
+                  "player_id": 8483493,
+                  "resolved_name": "Frank Nazar",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD Frank Nazar",
+                  "source_href": "/hockey/player/frank-nazar-6693"
+                },
+                {
+                  "name": "Sam Rinzel",
+                  "player_id": 8483506,
+                  "resolved_name": "Sam Rinzel",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD Sam Rinzel",
+                  "source_href": "/hockey/player/sam-rinzel-6733"
+                }
+              ],
+              "text": "C R. Kantserov LW T. Bertuzzi RW Patrick Kane LD Frank Nazar RD Sam Rinzel"
             },
             "power_play_2": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "A. Frondell",
+                  "player_id": 8485391,
+                  "resolved_name": "Anton Frondell",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "DTD",
+                  "row_text": "C A. Frondell DTD",
+                  "source_href": "/hockey/player/anton-frondell-7382"
+                },
+                {
+                  "name": "Ryan Donato",
+                  "player_id": 8477987,
+                  "resolved_name": "Ryan Donato",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "LW",
+                  "reported_status": "DTD",
+                  "row_text": "LW Ryan Donato",
+                  "source_href": "/hockey/player/ryan-donato-4422"
+                },
+                {
+                  "name": "T. Teravainen",
+                  "player_id": 8476882,
+                  "resolved_name": "Teuvo Teravainen",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "RW",
+                  "reported_status": "DTD",
+                  "row_text": "RW T. Teravainen",
+                  "source_href": "/hockey/player/teuvo-teravainen-3980"
+                },
+                {
+                  "name": "Ryan Greene",
+                  "player_id": 8483450,
+                  "resolved_name": "Ryan Greene",
+                  "identity_status": "exact",
+                  "position_group": "forward",
+                  "position_observation": "LD",
+                  "reported_status": null,
+                  "row_text": "LD Ryan Greene",
+                  "source_href": "/hockey/player/ryan-greene-6750"
+                },
+                {
+                  "name": "A. Levshunov",
+                  "player_id": 8484783,
+                  "resolved_name": "Artyom Levshunov",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "defense",
+                  "position_observation": "RD",
+                  "reported_status": null,
+                  "row_text": "RD A. Levshunov",
+                  "source_href": "/hockey/player/artyom-levshunov-7128"
+                }
+              ],
+              "text": "C A. Frondell DTD LW Ryan Donato RW T. Teravainen LD Ryan Greene RD A. Levshunov"
             },
             "injuries": {
-              "status": "not_identified",
-              "players": [],
-              "text": null
+              "status": "observed",
+              "players": [
+                {
+                  "name": "A. Frondell",
+                  "player_id": 8485391,
+                  "resolved_name": "Anton Frondell",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "DTD",
+                  "row_text": "C A. Frondell DTD",
+                  "source_href": "/hockey/player/anton-frondell-7382"
+                },
+                {
+                  "name": "C. Bedard",
+                  "player_id": 8484144,
+                  "resolved_name": "Connor Bedard",
+                  "identity_status": "unique_initial_and_surname",
+                  "position_group": "forward",
+                  "position_observation": "C",
+                  "reported_status": "IR",
+                  "row_text": "C C. Bedard IR",
+                  "source_href": "/hockey/player/connor-bedard-6916"
+                },
+                {
+                  "name": "Bowen Byram",
+                  "player_id": 8481524,
+                  "resolved_name": "Bowen Byram",
+                  "identity_status": "exact",
+                  "position_group": "defense",
+                  "position_observation": "C",
+                  "reported_status": "IR",
+                  "row_text": "D Bowen Byram IR",
+                  "source_href": "/hockey/player/bowen-byram-5966"
+                },
+                {
+                  "name": "Ryan Ellis",
+                  "player_id": null,
+                  "identity_status": "unresolved",
+                  "position_observation": null,
+                  "reported_status": "IR",
+                  "row_text": "D Ryan Ellis IR",
+                  "source_href": "/hockey/player/ryan-ellis-3263"
+                }
+              ],
+              "text": "C A. Frondell DTD C C. Bedard IR D Bowen Byram IR D Ryan Ellis IR"
+            },
+            "status": "observed",
+            "identity_coverage": {
+              "players": 13,
+              "player_observations": 14
             }
           }
         },
-        "market_observation": null,
+        "market_observation": {
+          "moneyline": {
+            "team": "CHI",
+            "american_odds": "-115",
+            "raw": "LINE CHI -115"
+          },
+          "total_goals": {
+            "line": 6.5,
+            "raw": "O/U 6.5 Goals"
+          }
+        },
         "source": {
           "provider": "RotoWire",
           "url": "https://www.rotowire.com/hockey/nhl-lineups.php",
-          "captured_at_utc": "2026-11-22T07:19:01.239840+00:00",
-          "page_sha256": "da13d45c598af202e0a55e9543fd4e675e5c07afc94dce0ba671341a2651c11c",
-          "card_sha256": null,
+          "captured_at_utc": "2026-11-22T16:55:40.321127+00:00",
+          "page_sha256": "8ad11abef51a15b0dbe89e5b09d662dceb3d8ae15c45b429e5c22916cac40e99",
+          "card_sha256": "77aade1a3ba1289f37180840c406cd93a1ef936eba84aa0e62b891f58b5c957c",
           "official": false
         },
         "probabilities_modified": false,
@@ -983,7 +3988,7 @@
             "name": "Nikita Tolopilo",
             "save_pct": 0.9459459459459459,
             "shots_faced": 37.0,
-            "source_status": "candidate",
+            "source_status": "likely",
             "starter_confirmed": false,
             "starter_probability": null
           },
@@ -999,8 +4004,8 @@
           "scenario_weight": null,
           "expected_goals": {
             "home": 3.346640106136303,
-            "away": 1.291821282333727,
-            "total": 4.63846138847003
+            "away": 1.2113605289547318,
+            "total": 4.558000635091035
           },
           "expected_goals_by_strength": null,
           "rotowire_pp_impact": null,
@@ -1038,14 +4043,43 @@
             "team_aggregate_baseline": 3.3466401061363023,
             "rotowire_PP1_PP2_adjustment": {
               "applied": false,
-              "reason": "rotowire_observation_unavailable"
+              "reason": "no_historical_PP_minutes_for_RotoWire_units"
             },
             "rotowire_confirmed_availability_adjustment": {
               "applied": false,
-              "reason": "rotowire_injury_report_unavailable",
+              "reason": "no_historical_scoring_to_remove",
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
               "excluded_goal_rate": 0.0,
-              "players": [],
-              "unresolved": []
+              "excluded_PP_goal_rate": 0.0,
+              "excluded_non_PP_goal_rate": 0.0,
+              "team_games_reference": 25.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8475848,
+                  "name": "Brendan Gallagher",
+                  "status": "IR",
+                  "historical_goals": 0.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.0
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "E. Pettersson",
+                  "status": "OUT"
+                },
+                {
+                  "name": "Thatcher Demko",
+                  "status": "IR"
+                },
+                {
+                  "name": "M. MacEachern",
+                  "status": "IR-NR"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
             },
             "aggregate_baseline_PP_goal_delta": 0.0,
             "opponent_goalie_save_pct": 0.870239745047051,
@@ -1056,19 +4090,48 @@
           },
           "away_components": {
             "forecast_basis": "official_team_season_goal_rates_and_goalie_scenario",
-            "attacking_goals_for_per_game": 2.52173,
+            "attacking_goals_for_per_game": 2.2173821739130433,
             "opponent_goals_against_per_game": 4.32,
-            "team_aggregate_baseline": 3.3005868569089345,
+            "team_aggregate_baseline": 3.0950106609354915,
             "rotowire_PP1_PP2_adjustment": {
               "applied": false,
-              "reason": "rotowire_observation_unavailable"
+              "reason": "power_play_unit_has_uncertain_availability"
             },
             "rotowire_confirmed_availability_adjustment": {
-              "applied": false,
-              "reason": "rotowire_injury_report_unavailable",
-              "excluded_goal_rate": 0.0,
-              "players": [],
-              "unresolved": []
+              "applied": true,
+              "reason": null,
+              "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+              "excluded_goal_rate": 0.30434782608695654,
+              "excluded_PP_goal_rate": 0.08695652173913043,
+              "excluded_non_PP_goal_rate": 0.21739130434782608,
+              "team_games_reference": 23.0,
+              "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+              "players": [
+                {
+                  "player_id": 8484144,
+                  "name": "Connor Bedard",
+                  "status": "IR",
+                  "historical_goals": 7.0,
+                  "historical_PP_goals": 2.0,
+                  "historical_goals_per_team_game": 0.30434782608695654
+                },
+                {
+                  "player_id": 8481524,
+                  "name": "Bowen Byram",
+                  "status": "IR",
+                  "historical_goals": 0.0,
+                  "historical_PP_goals": 0.0,
+                  "historical_goals_per_team_game": 0.0
+                }
+              ],
+              "unresolved": [
+                {
+                  "name": "Ryan Ellis",
+                  "status": "IR"
+                }
+              ],
+              "replacement_effect": "not_estimated_without_identified_active_replacement",
+              "calibrated": false
             },
             "aggregate_baseline_PP_goal_delta": 0.0,
             "opponent_goalie_save_pct": 0.9459459459459459,
@@ -1083,36 +4146,36 @@
           },
           "markets": {
             "lambda_home": 3.3466,
-            "lambda_away": 1.2918,
+            "lambda_away": 1.2114,
             "regulation": {
-              "home": 0.76613,
-              "draw": 0.12541,
-              "away": 0.10846
+              "home": 0.7802,
+              "draw": 0.12126,
+              "away": 0.09853
             },
             "strong_win_regulation": {
-              "home": 0.59065,
-              "away": 0.04072
+              "home": 0.60595,
+              "away": 0.03546
             },
             "double_chance_regulation": {
-              "home": 0.89154,
-              "away": 0.23387
+              "home": 0.90147,
+              "away": 0.2198
             },
             "strong_dual_definition": "FUERTE = ganar por 2+ goles en 60 minutos; DUAL = ganar o empatar en 60 minutos (1X/X2)",
             "illustrative_ml": {
-              "home": 0.82884,
-              "away": 0.17116
+              "home": 0.84084,
+              "away": 0.15916
             },
             "three_goal_lead": {
-              "home": 0.4579,
-              "away": 0.02634
+              "home": 0.46851,
+              "away": 0.02222
             },
             "first_to_three_goal_lead": {
-              "home": 0.4577,
-              "away": 0.02632
+              "home": 0.46834,
+              "away": 0.02221
             },
             "comeback_after_two_goal_deficit": {
-              "home": 0.02724,
-              "away": 0.01326
+              "home": 0.02492,
+              "away": 0.01175
             },
             "comeback_definition": "falls behind by at least two regulation goals, then wins illustrative ML; a regulation tie is split 50/50 for overtime",
             "model": "unfitted_independent_poisson_shrunken_goals",
@@ -1128,14 +4191,14 @@
           "status": "omitted_team_aggregate_fallback",
           "rotowire_power_play": {
             "applied": false,
-            "reason": "rotowire_observation_unavailable"
+            "reason": "no_historical_PP_minutes_for_RotoWire_units"
           }
         },
         "CHI": {
           "status": "omitted_team_aggregate_fallback",
           "rotowire_power_play": {
             "applied": false,
-            "reason": "rotowire_observation_unavailable"
+            "reason": "power_play_unit_has_uncertain_availability"
           }
         }
       },
@@ -1153,8 +4216,11 @@
             "Faltan plazas de defense en la alineaci\u00f3n capturada.",
             "Falta la captura de injuries para confirmar disponibilidad.",
             "Falta la captura de scratches para confirmar disponibilidad.",
+            "RotoWire report\u00f3 una baja sin identidad reconciliada para E. Pettersson.",
+            "RotoWire report\u00f3 una baja sin identidad reconciliada para M. MacEachern.",
             "El reporte de disponibilidad est\u00e1 incompleto.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual.",
+            "RotoWire report\u00f3 una baja sin identidad reconciliada para Ryan Ellis.",
             "Falta historial individual verificable de un portero.",
             "Se usa la tasa defensiva oficial como referencia de porter\u00eda, sin atribuirla a un jugador."
           ],
@@ -1191,8 +4257,11 @@
             "Faltan plazas de defense en la alineaci\u00f3n capturada.",
             "Falta la captura de injuries para confirmar disponibilidad.",
             "Falta la captura de scratches para confirmar disponibilidad.",
+            "RotoWire report\u00f3 una baja sin identidad reconciliada para E. Pettersson.",
+            "RotoWire report\u00f3 una baja sin identidad reconciliada para M. MacEachern.",
             "El reporte de disponibilidad est\u00e1 incompleto.",
             "Hay estad\u00edsticas de jugadores transferidos que no se pueden atribuir al equipo actual.",
+            "RotoWire report\u00f3 una baja sin identidad reconciliada para Ryan Ellis.",
             "Falta historial individual verificable de un portero.",
             "Se usa la tasa defensiva oficial como referencia de porter\u00eda, sin atribuirla a un jugador."
           ],
@@ -1222,20 +4291,78 @@
           "status": "team_aggregate_availability_only",
           "availability": {
             "applied": false,
-            "reason": "rotowire_injury_report_unavailable",
+            "reason": "no_historical_scoring_to_remove",
+            "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
             "excluded_goal_rate": 0.0,
-            "players": [],
-            "unresolved": []
+            "excluded_PP_goal_rate": 0.0,
+            "excluded_non_PP_goal_rate": 0.0,
+            "team_games_reference": 25.0,
+            "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+            "players": [
+              {
+                "player_id": 8475848,
+                "name": "Brendan Gallagher",
+                "status": "IR",
+                "historical_goals": 0.0,
+                "historical_PP_goals": 0.0,
+                "historical_goals_per_team_game": 0.0
+              }
+            ],
+            "unresolved": [
+              {
+                "name": "E. Pettersson",
+                "status": "OUT"
+              },
+              {
+                "name": "Thatcher Demko",
+                "status": "IR"
+              },
+              {
+                "name": "M. MacEachern",
+                "status": "IR-NR"
+              }
+            ],
+            "replacement_effect": "not_estimated_without_identified_active_replacement",
+            "calibrated": false
           }
         },
         "CHI": {
           "status": "team_aggregate_availability_only",
           "availability": {
-            "applied": false,
-            "reason": "rotowire_injury_report_unavailable",
-            "excluded_goal_rate": 0.0,
-            "players": [],
-            "unresolved": []
+            "applied": true,
+            "reason": null,
+            "method": "subtract_explicit_OUT_IR_historical_team_game_goal_contribution; no replacement goals imputed",
+            "excluded_goal_rate": 0.30434782608695654,
+            "excluded_PP_goal_rate": 0.08695652173913043,
+            "excluded_non_PP_goal_rate": 0.21739130434782608,
+            "team_games_reference": 23.0,
+            "power_play_overlap_handled_by_PP1_PP2_adjustment": false,
+            "players": [
+              {
+                "player_id": 8484144,
+                "name": "Connor Bedard",
+                "status": "IR",
+                "historical_goals": 7.0,
+                "historical_PP_goals": 2.0,
+                "historical_goals_per_team_game": 0.30434782608695654
+              },
+              {
+                "player_id": 8481524,
+                "name": "Bowen Byram",
+                "status": "IR",
+                "historical_goals": 0.0,
+                "historical_PP_goals": 0.0,
+                "historical_goals_per_team_game": 0.0
+              }
+            ],
+            "unresolved": [
+              {
+                "name": "Ryan Ellis",
+                "status": "IR"
+              }
+            ],
+            "replacement_effect": "not_estimated_without_identified_active_replacement",
+            "calibrated": false
           }
         }
       },
@@ -1263,7 +4390,7 @@
       },
       "possession_context": {
         "VAN": {
-          "faceoff_win_pct": 0.482129,
+          "faceoff_win_pct": 0.4814,
           "probability_effect": "embedded in observed shot and scoring rates"
         },
         "CHI": {
@@ -1272,6 +4399,7 @@
         }
       },
       "unresolved": [
+        "CHI RotoWire unavailable player unresolved: Ryan Ellis (IR)",
         "CHI defense projected slots not captured: 6",
         "CHI forwards projected slots not captured: 12",
         "CHI goalie candidate omitted: history unavailable",
@@ -1291,7 +4419,13 @@
         "No hay alineaci\u00f3n proyectada identificable.",
         "No hay comparaci\u00f3n verificable con la alineaci\u00f3n anterior.",
         "No hay procedencia editorial fechada para validar l\u00edneas.",
+        "RotoWire report\u00f3 una baja sin identidad reconciliada para E. Pettersson.",
+        "RotoWire report\u00f3 una baja sin identidad reconciliada para M. MacEachern.",
+        "RotoWire report\u00f3 una baja sin identidad reconciliada para Ryan Ellis.",
         "Se usa la tasa defensiva oficial como referencia de porter\u00eda, sin atribuirla a un jugador.",
+        "VAN RotoWire goalie injury tracked in goalie scenarios, not skater availability: Thatcher Demko",
+        "VAN RotoWire unavailable player unresolved: E. Pettersson (OUT)",
+        "VAN RotoWire unavailable player unresolved: M. MacEachern (IR-NR)",
         "VAN defense projected slots not captured: 6",
         "VAN forwards projected slots not captured: 12",
         "VAN incomplete availability report",
@@ -1345,6 +4479,6 @@
   "odds_used": false,
   "public_base_replaced": false,
   "note": "Internal execution evidence only; not the public PULSO forecast feed.",
-  "published_at_utc": "2026-11-22T07:19:57.103928+00:00",
-  "run_id": "44997629089"
+  "published_at_utc": "2026-11-22T16:56:42.974171+00:00",
+  "run_id": "45046488915"
 }
