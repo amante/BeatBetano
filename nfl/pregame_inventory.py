@@ -38,10 +38,14 @@ def build(slate,evidence,reconciled,run_id,generated_at=None):
         if as_of>=kickoff: raise ValueError("Capture must precede kickoff")
         report=obs.get(gid,{})
         resolved=verified.get(gid,{})
-        if report.get("observed_at_utc") and utc(report["observed_at_utc"])>as_of:
-            raise ValueError("Evidence exceeds forecast cutoff")
+        report_time=report.get("observed_at_utc")
+        evidence_after_cutoff=bool(report_time and utc(report_time)>as_of)
         source={"provider":"ESPN","url":report.get("source"),
-                "captured_at_utc":report.get("observed_at_utc")}
+                "captured_at_utc":report_time,
+                "available_after_forecast_cutoff":evidence_after_cutoff}
+        timing_note=("Captura posterior al pronóstico inicial; aporta contexto, "
+                     "pero no formó parte de ese porcentaje."
+                     if evidence_after_cutoff else "")
         listed=[]
         for group in report.get("injury_observations",[]):
             for player in group.get("observations",[]):
@@ -72,12 +76,16 @@ def build(slate,evidence,reconciled,run_id,generated_at=None):
           {"title":"QB, lesiones e inactivos","rows":[
             item("QB","partial" if qbs else "missing",
               {"reportados":qbs,"titular_confirmado":report.get("starting_qbs_verified") is True},
-              source if report else {},gap="El reporte no confirma el QB titular ni su disponibilidad oficial."),
+              source if report else {},note=timing_note,
+              gap="El reporte no confirma el QB titular ni su disponibilidad oficial."),
             item("Inactivos oficiales","captured" if inactive else "missing",inactive,
               {"captured_at_utc":as_of.isoformat()} if inactive else {},
               gap=None if inactive else "No hay inactivos oficiales reconciliados para el partido."),
             item("Lesiones del proveedor","partial" if listed else "missing",listed,
-              source if listed else {},gap="Son observaciones del proveedor; no se tratan como baja confirmada ni cambian el porcentaje.") ]},
+              source if listed else {},
+              note=("Observaciones auxiliares; no se tratan como baja confirmada ni cambian el porcentaje."
+                    + (" "+timing_note if timing_note else "")),
+              gap=None if listed else "Sin fuente en esta captura.") ]},
           {"title":"Matchups y condiciones","rows":[
             item("Línea ofensiva y reemplazos","missing",gap="No hay titulares, roles y reemplazos reconciliados."),
             item("Defensa rival y cobertura","missing",gap="No hay asignaciones de matchup verificadas."),
@@ -90,7 +98,9 @@ def build(slate,evidence,reconciled,run_id,generated_at=None):
         games.append({"event_id":gid,"start_utc":fixture["start_utc"],
           "home":fixture["home_team"],"away":fixture["away_team"],
           "home_name":fixture.get("home_name",fixture["home_team"]),
-          "away_name":fixture.get("away_name",fixture["away_team"]),"groups":groups})
+          "away_name":fixture.get("away_name",fixture["away_team"]),
+          "forecast_cutoff_utc":slate["as_of_utc"],
+          "supplement_captured_after_forecast_cutoff":evidence_after_cutoff,"groups":groups})
     return {"kind":"nfl_pregame_input_inventory_v1","sport":"nfl","run_id":str(run_id),
       "generated_at_utc":generated_at or datetime.now(timezone.utc).isoformat(),
       "as_of_utc":slate["as_of_utc"],"official_prediction":False,"odds_used_in_model":False,
