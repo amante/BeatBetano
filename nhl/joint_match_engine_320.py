@@ -1003,6 +1003,7 @@ def _aggregate_scoring_rate(attacking, defending, goalie):
             "opponent_goals_against_per_game": allow,
             "team_aggregate_baseline": math.sqrt(attack * allow),
             "rotowire_PP1_PP2_adjustment": pp_adjustment,
+            "rotowire_confirmed_availability_adjustment": attacking.get("rotowire_availability_adjustment"),
             "aggregate_baseline_PP_goal_delta": pp_delta,
             "opponent_goalie_save_pct": save_pct,
             "opponent_goalie_factor": goalie_factor,
@@ -1261,12 +1262,10 @@ def run(inputs):
         "minute_distribution": {home_code: home["minute_distribution"],
                                 away_code: away["minute_distribution"]},
         "lineup_coverage": {home_code: home["lineup_coverage"], away_code: away["lineup_coverage"]},
-        "lineup_impact": (
-            {home_code: {"status": "not_applied_missing_projected_lineup"},
-             away_code: {"status": "not_applied_missing_projected_lineup"}}
-            if aggregate_fallback else
-            {home_code: home["lineup_impact"], away_code: away["lineup_impact"]}
-        ),
+        "lineup_impact": {
+            home_code: home["lineup_impact"],
+            away_code: away["lineup_impact"],
+        },
         "player_contributions": {home_code: [] if aggregate_fallback else home["player_contributions"],
                                  away_code: [] if aggregate_fallback else away["player_contributions"]},
         "player_scoring_model": {
