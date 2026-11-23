@@ -44,6 +44,7 @@
  const local=x=>new Date(x).toLocaleString("es-CL",{timeZone:"America/Santiago"});
  const teamNames={ATL:"Atlanta Hawks",BOS:"Boston Celtics",BKN:"Brooklyn Nets",CHA:"Charlotte Hornets",CHI:"Chicago Bulls",CLE:"Cleveland Cavaliers",DAL:"Dallas Mavericks",DEN:"Denver Nuggets",DET:"Detroit Pistons",GS:"Golden State Warriors",GSW:"Golden State Warriors",HOU:"Houston Rockets",IND:"Indiana Pacers",LAC:"LA Clippers",LAL:"Los Angeles Lakers",MEM:"Memphis Grizzlies",MIA:"Miami Heat",MIL:"Milwaukee Bucks",MIN:"Minnesota Timberwolves",NO:"New Orleans Pelicans",NOP:"New Orleans Pelicans",NY:"New York Knicks",NYK:"New York Knicks",OKC:"Oklahoma City Thunder",ORL:"Orlando Magic",PHI:"Philadelphia 76ers",PHX:"Phoenix Suns",POR:"Portland Trail Blazers",SA:"San Antonio Spurs",SAS:"San Antonio Spurs",SAC:"Sacramento Kings",TOR:"Toronto Raptors",UTA:"Utah Jazz",UTAH:"Utah Jazz",WAS:"Washington Wizards",WSH:"Washington Wizards"};
  const teamName=code=>teamNames[code]||code;
+ const sameGame=(a,b)=>String(a?.game_id??a?.id??"")!==""&&String(a?.game_id??a?.id)===String(b?.game_id??b?.id)&&Number.isFinite(Date.parse(a?.tipoff_utc||a?.start_utc))&&Date.parse(a?.tipoff_utc||a?.start_utc)===Date.parse(b?.tipoff_utc||b?.start_utc);
  const validMarket=(m,tip)=>m&&m.source_provider==="rotowire"&&m.display_only===true&&m.model_input===false&&stamp(m.observed_at_utc)&&Date.parse(m.observed_at_utc)<Date.parse(tip);
  const marketModelSide=(game,modelHome=null)=>{
   const probabilities=game.first_prediction||game;
@@ -214,7 +215,7 @@
    const heading=el("summary","Otros estados reportados · "+reported.length+" jugadores · rol en el partido sin confirmar");
    bench.append(heading,statusGroup("Disponible según fuente",reported,"available"),el("p","La fuente publica la plantilla, pero no identifica a estos jugadores como suplentes para el partido.","nba-roster-note"));
    body.append(bench);
-  }else if(!outs.length&&!unknown.length&&!doubts.length)body.append(el("p","Esta captura no trae bajas ni dudas individuales reportadas.","nba-section-empty"));
+  }
   if(!s.official_injury_status_verified)body.append(el("p","El reporte oficial NBA de lesiones no está verificado en esta captura; los porcentajes no incorporan estas disponibilidades.","nba-source-warning"));
   details.append(body);return details;
  }
@@ -226,6 +227,7 @@
   for(const row of [...agenda.querySelectorAll(".daily-match")]){
    const gameId=String(row.dataset.gameId||"");
    if(!gameId)continue;
+   const marketStrip=row.nextElementSibling?.classList.contains("nba-calendar-market")?row.nextElementSibling:null;
    const details=document.createElement("details");details.className="nba-game-disclosure";details.dataset.gameId=gameId;
    const summary=document.createElement("summary");summary.className=row.className;
    summary.setAttribute("aria-label","Desplegar simulación de "+row.textContent.trim());
@@ -244,6 +246,7 @@
    }else lineupPanel.append(el("p","Sin información de alineaciones o disponibilidad para este partido.","nba-game-disclosure__empty"));
    const runPanel=el("section",undefined,"nba-game-disclosure__panel nba-game-disclosure__run-panel");
    runPanel.append(el("h4","Corrida y probabilidades"));
+   if(marketStrip){marketStrip.classList.add("nba-calendar-market--inside-accordion");runPanel.append(marketStrip);}
    if(runTitle||runMeta)runPanel.append(el("p",runTitle+(runMeta?" · "+runMeta:""),"nba-game-disclosure__run-meta"));
    const simulation=root.querySelector('.nba-current-run__game[data-game-id="'+gameId+'"]');
    if(simulation){
@@ -496,9 +499,11 @@
   const selected=document.getElementById("daily-date").value,rows=calendarGames(data,dailySchedule,selected);
   const label=document.getElementById("daily-label"),source=document.getElementById("feed-message");
   if(label)label.textContent="NBA · "+selected+" · "+rows.length+" partido"+(rows.length===1?" registrado":"s registrados");
-  if(source)source.textContent="Jornada NBA según fecha oficial de EE. UU. · horarios de Chile · captura "+local(data.last_source_capture_utc)+"."+(rows.some(game=>game.calendar_only)?" · hay partidos sin emisión en la última corrida.":"");
+  const lastCapture=currentRun?.created_at_utc||data.last_source_capture_utc;
+  const isStale=Date.now()-Date.parse(lastCapture)>8*3600000;
+  if(source)source.textContent="Jornada NBA · captura calendario "+local(data.last_source_capture_utc)+(currentRun?" · última corrida "+local(currentRun.created_at_utc):"")+(rows.some(game=>game.calendar_only)?" · hay partidos sin emisión en la última corrida.":"");
   root.append(el("p","Elo y Challenger experimentales · los ajustes de lesiones, quintetos, cruces y viajes dependen de evidencia suficiente."));
-  root.append(el("p","Última captura: "+local(data.last_source_capture_utc)+(stale(data)?" · Datos desactualizados; revisar la fuente.":"")));
+  root.append(el("p","Última captura: "+local(lastCapture)+(isStale?" · Datos desactualizados; revisar la fuente.":"")));
   if(data.source_error_count)root.append(el("p","El registro conserva fallos de fuente. La cobertura requiere revisión."));
   if(data.sporting_evidence_errors.length)root.append(el("p","Hay evidencia deportiva que no pudo verificarse."));
   if(!rows.length){const empty="La fecha elegida todavía no tiene cobertura suficiente en el calendario NBA.";root.append(el("p",empty));if(agenda)agenda.append(el("p",empty));}
@@ -506,7 +511,7 @@
    const card=el("article","");card.className="nba-forward-game";
    const state=g.outcome?"Final":g.source_state==="in"?"En juego al último corte":g.source_status==="STATUS_FINAL"?"Final · cierre emparejado pendiente":g.source_status==="STATUS_POSTPONED"?"Aplazado":g.source_status==="STATUS_CANCELED"?"Cancelado":g.status.includes("review")?"Requiere revisión":Date.now()>=Date.parse(g.tipoff_utc)?"Sin actualización posterior al inicio":"Por comenzar";
    const matchData={sport:"nba",id:g.game_id,away:g.away_team,home:g.home_team,start_utc:g.tipoff_utc,status:g.source_status||g.status,completed:Boolean(g.outcome),away_score:g.outcome?.away_points,home_score:g.outcome?.home_points};
-   const latest=currentRun?.predictions.find(row=>String(row.game_id)===String(g.game_id)&&row.tipoff_utc===g.tipoff_utc);
+   const latest=currentRun?.predictions.find(row=>sameGame(row,g));
    const market=latest?.market_context||g.market_context;
    const modelHome=latest?(latest.model_p_home??latest.statistical_baseline_p_home??latest.hybrid_p_home):null;
    if(g.calendar_only){
@@ -541,7 +546,7 @@
    for(const team of [g.away_team,g.home_team]){
     const s=g.sporting[team];
     if(!s){card.append(el("p",teamName(team)+": disponibilidad pregame sin cobertura.","nba-coverage-empty"));continue;}
-    card.append(sportingTeam(team,s));
+    try{card.append(sportingTeam(team,s));}catch{card.append(el("p","No se pudo desplegar la disponibilidad capturada para "+teamName(team)+".","nba-coverage-empty"));}
    }
    card.append(el("p","Modelo deportivo integrado y ventaja +20: PASS. "+(data.evaluation_status==="window_open_metrics_withheld"?"Validación prospectiva en curso.":"Ventana cerrada; falta la auditoría final.")));root.append(card);
   }
@@ -560,7 +565,7 @@
    const latest=await currentResponse.json();
    if(latest?.kind==="nba_pulso_research_publication_v1"&&stamp(latest.created_at_utc)&&Array.isArray(latest.predictions))currentRun=latest;
   }
-  if(currentRun){const marketById=new Map(x.games.map(game=>[String(game.game_id),game]));for(const prediction of currentRun.predictions){const game=marketById.get(String(prediction.game_id));if(game&&game.tipoff_utc===prediction.tipoff_utc&&validMarket(game.market_context,game.tipoff_utc))prediction.market_context=game.market_context;}}
+  if(currentRun){const marketById=new Map(x.games.map(game=>[String(game.game_id),game]));for(const prediction of currentRun.predictions){const game=marketById.get(String(prediction.game_id));if(game&&sameGame(game,prediction)&&validMarket(game.market_context,game.tipoff_utc))prediction.market_context=game.market_context;}}
 
  }catch{error="No se pudo cargar un registro NBA válido. No se muestran porcentajes de otra emisión.";}render();})()};
 })();
