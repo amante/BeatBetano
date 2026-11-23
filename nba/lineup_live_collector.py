@@ -36,18 +36,18 @@ def parse_market_contexts(html,snapshot,observed):
    # Reject a page/section wrapper spanning several matchups so rows cannot
    # accidentally be attributed to the wrong game.
    if len(parent.select(".lineup"))>1:continue
-   candidate_text=re.sub(r"\\s+"," ",parent.get_text(" ",strip=True))
-   if re.search(r"\\bLINE\\s+[A-Z]{2,4}\\s+[+-]\\d{2,5}\\b",candidate_text,re.I) or re.search(r"\\bSPREAD\\s+[A-Z]{2,4}\\s+[+-]\\d+(?:\\.\\d+)?\\b",candidate_text,re.I) or re.search(r"\\bO/U\\s+\\d+(?:\\.\\d+)?\\s*Pts\\b",candidate_text,re.I):
+   candidate_text=re.sub(r"\s+"," ",parent.get_text(" ",strip=True))
+   if re.search(r"\bLINE\s+[A-Z]{2,4}\s+[+-]\d{2,5}\b",candidate_text,re.I) or re.search(r"\bSPREAD\s+[A-Z]{2,4}\s+[+-]\d+(?:\.\d+)?\b",candidate_text,re.I) or re.search(r"\bO/U\s+\d+(?:\.\d+)?\s*Pts\b",candidate_text,re.I):
     market_scope=parent
     break
-  text=re.sub(r"\\s+"," ",market_scope.get_text(" ",strip=True))
-  moneyline=re.search(r"\\bLINE\\s+([A-Z]{2,4})\\s+([+-]\\d{2,5})\\b",text,re.I)
-  spread=re.search(r"\\bSPREAD\\s+([A-Z]{2,4})\\s+([+-]\\d+(?:\\.\\d+)?)\\b",text,re.I)
-  total=re.search(r"\\bO/U\\s+(\\d+(?:\\.\\d+)?)\\s*Pts\\b",text,re.I)
-  refs=re.search(r"\\bReferees:\\s*(.+?)\\s+LINE\\b",text,re.I)
+  text=re.sub(r"\s+"," ",market_scope.get_text(" ",strip=True))
+  moneyline=re.search(r"\bLINE\s+([A-Z]{2,4})\s+([+-]\d{2,5})\b",text,re.I)
+  spread=re.search(r"\bSPREAD\s+([A-Z]{2,4})\s+([+-]\d+(?:\.\d+)?)\b",text,re.I)
+  total=re.search(r"\bO/U\s+(\d+(?:\.\d+)?)\s*Pts\b",text,re.I)
+  refs=re.search(r"\bReferees:\s*(.+?)\s+LINE\b",text,re.I)
   referees=[]
   if refs:
-   referees=[re.sub(r"\\s+"," ",name).strip() for name in re.split(r"\\s*,\\s*",refs.group(1)) if name.strip()][:3]
+   referees=[re.sub(r"\s+"," ",name).strip() for name in re.split(r"\s*,\s*",refs.group(1)) if name.strip()][:3]
   team_by_code={canonical(t):t for t in (game["home_team"],game["away_team"])}
   def team_for(match):
    return team_by_code.get(canonical(match.group(1))) if match else None
