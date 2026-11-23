@@ -501,7 +501,7 @@
   if(label)label.textContent="NBA · "+selected+" · "+rows.length+" partido"+(rows.length===1?" registrado":"s registrados");
   const lastCapture=currentRun?.created_at_utc||data.last_source_capture_utc;
   const isStale=Date.now()-Date.parse(lastCapture)>8*3600000;
-  if(source)source.textContent="Jornada NBA · captura calendario "+local(data.last_source_capture_utc)+(currentRun?" · última corrida "+local(currentRun.created_at_utc):"")+(rows.some(game=>game.calendar_only)?" · hay partidos sin emisión en la última corrida.":"");
+  if(source)source.textContent="Jornada NBA según fecha oficial de EE. UU. · horarios de Chile · captura calendario "+local(data.last_source_capture_utc)+(currentRun?" · última corrida "+local(currentRun.created_at_utc):"")+(rows.some(game=>game.calendar_only)?" · hay partidos sin emisión en la última corrida.":"");
   root.append(el("p","Elo y Challenger experimentales · los ajustes de lesiones, quintetos, cruces y viajes dependen de evidencia suficiente."));
   root.append(el("p","Última captura: "+local(lastCapture)+(isStale?" · Datos desactualizados; revisar la fuente.":"")));
   if(data.source_error_count)root.append(el("p","El registro conserva fallos de fuente. La cobertura requiere revisión."));
