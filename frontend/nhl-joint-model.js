@@ -86,11 +86,21 @@
   }:(rotowireFeed&&Array.isArray(rotowireFeed.games)?rotowireFeed.games.find(x=>String(x.game_id)===String(game.game_id)):null);
   if(!record)return;
   const details=make("details",undefined,"nhl-joint-context");
-  details.append(make("summary","RotoWire · evidencia pregame"));
+  const effectLabel=embedded
+   ? embedded.probabilities_modified===true
+    ? " · efecto aplicado al escenario experimental"
+    : " · capturado, sin cambio cuantificado"
+   : " · fuente observada; efecto del modelo no informado";
+  details.append(make("summary","RotoWire · evidencia pregame"+effectLabel));
   if(record.status!=="observed"){
    details.append(make("p","Captura RotoWire no disponible para este partido."));
    if(record.source_error||record.reason)details.append(make("small",record.source_error||record.reason));
    parent.append(details);return;
+  }
+  if(embedded){
+   details.append(make("p",embedded.probabilities_modified===true
+    ? "RotoWire cambió los goles esperados y las probabilidades de estos escenarios experimentales. El porcentaje base publicado se mantiene separado y no fue reemplazado."
+    : "RotoWire se capturó para este partido, pero no produjo un cambio cuantificado en los escenarios. El porcentaje base publicado se mantiene separado."));
   }
   for(const team of [record.home,record.away]){
    const evidence=record.teams&&record.teams[team];

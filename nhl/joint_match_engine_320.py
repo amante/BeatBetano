@@ -1133,6 +1133,29 @@ def run(inputs):
         profile.get("minute_distribution", {}).get("rotowire_power_play", {}).get("applied") is True
         for profile in (home, away)
     )
+    rotowire_pp_effect_applied = any(
+        audit.get("applied") is True
+        and type(audit.get("projected_PP_goal_delta")) in (int, float)
+        and abs(audit["projected_PP_goal_delta"]) > 1e-12
+        for profile in (home, away)
+        for audit in [profile.get("rotowire_pp_adjustment")
+                      or profile.get("minute_distribution", {}).get("rotowire_power_play", {})]
+    )
+    rotowire_availability_adjustment_applied = any(
+        adjustment.get("applied") is True
+        for profile in (home, away)
+        for adjustment in [profile.get("rotowire_availability_adjustment") or {}]
+    )
+    rotowire_availability_effect_applied = any(
+        adjustment.get("applied") is True
+        and type(adjustment.get("excluded_goal_rate")) in (int, float)
+        and adjustment["excluded_goal_rate"] > 1e-12
+        for profile in (home, away)
+        for adjustment in [profile.get("rotowire_availability_adjustment") or {}]
+    )
+    rotowire_probability_effect_applied = (
+        rotowire_pp_effect_applied or rotowire_availability_effect_applied
+    )
     base_home = base_away = None
     if rotowire_pp_applied:
         home_without_rotowire = dict(inputs["teams"][home_code], rotowire_pregame=None)
@@ -1254,8 +1277,9 @@ def run(inputs):
             "teams": {code: inputs["teams"][code].get("rotowire_pregame") for code in (home_code, away_code)},
             "market_observation": inputs["teams"][home_code].get("rotowire_market_observation"),
             "source": inputs["teams"][home_code].get("rotowire_source") or inputs["teams"][away_code].get("rotowire_source"),
-            "probabilities_modified": rotowire_pp_applied,
+            "probabilities_modified": rotowire_probability_effect_applied,
             "power_play_adjustment_applied": rotowire_pp_applied,
+            "availability_adjustment_applied": rotowire_availability_adjustment_applied,
         },
         "scenario_weighted_summary": weighted_summary,
         "scenarios": scenarios,
