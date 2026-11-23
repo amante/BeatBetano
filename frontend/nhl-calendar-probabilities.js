@@ -27,7 +27,7 @@
   const pair=teamsIn(card);
   if(!pair.every(x=>x.label))return null;
   const events=records.events.filter(e=>e.sport==="nhl"&&day(e.start_utc)===date);
-  const id=String(card.dataset.gameId||"");
+  const id=String(card.dataset.nhlId||"");
   return events.find(e=>id&&e.event_id===id)||events.find(e=>{
    const participants=e.participants.map(value=>key(value));
    return pair.every(team=>participants.includes(key(team.label))||Boolean(team.code&&e.participants.some(value=>String(value).toUpperCase()===team.code)));
@@ -40,7 +40,7 @@
   if(!records||!root)return;
   const selected=document.getElementById("daily-date")?.value;
   if(!selected)return;
-  for(const card of root.querySelectorAll(".nba-game-disclosure[data-game-id]")){
+  for(const card of root.querySelectorAll(".nhl-game-disclosure[data-nhl-id]")){
    const panel=card.querySelector(".nba-game-disclosure__run-panel");
    if(!panel)continue;
    const existing=panel.querySelector(".nhl-calendar-probability");
