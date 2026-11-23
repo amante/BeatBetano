@@ -1,0 +1,93 @@
+{
+  "sport": "nfl",
+  "as_of_utc": "2026-11-23T21:19:17.718376Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401873078",
+      "start_utc": "2026-11-24T01:15:00Z",
+      "participants": [
+        "WSH",
+        "CIN"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.529001,
+          "away": 0.47099899999999995
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nfl-historical-elo",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_model_output": {
+    "event_id": "401873078",
+    "start_utc": "2026-11-24T01:15:00+00:00",
+    "participants": [
+      "WSH",
+      "CIN"
+    ],
+    "home_team": "WSH",
+    "away_team": "CIN",
+    "home_name": "Washington Commanders",
+    "away_name": "Cincinnati Bengals",
+    "venue": "Northwest Stadium",
+    "city": "Landover",
+    "neutral_site": false,
+    "official_baseline": null,
+    "historical_elo_candidate": 0.529001,
+    "challenger": null,
+    "final_probability": null,
+    "away_probability": null,
+    "all_inputs_verified": false,
+    "independent_validation_passed": false,
+    "starting_lineups_verified": false,
+    "injury_report_verified": false,
+    "weather_verified": false,
+    "props": null,
+    "missing_evidence": [
+      "confirmed_inactives",
+      "starters",
+      "weather",
+      "matchups",
+      "independent_calibration"
+    ]
+  },
+  "source_output_sha256": "46da98db12d0cd04e78b2e11e2704653a35539507976afc4c7f72b2147aea6d9",
+  "source_output_sha256_scope": "event",
+  "model_provenance": {
+    "model_code_sha256": "812913d702db5ccfec8bee55baa6aa21b5d52f3d4a13ff7d28337af0adab1657",
+    "data_role": "historical_elo_training_history",
+    "training_data_sha256": "900beecbee0ba7890bf088164d43f26b6fa88ff64971fe962fbcf943c36a9a85",
+    "training_cutoff_utc": "2026-11-22T00:00:00+00:00",
+    "model_code_revision": "737ac4f12d4327d456d7f1528e273d1ef6816679",
+    "model_family": "nfl-historical-elo",
+    "forecast_model_version": "nfl-historical-elo",
+    "source_output_sha256": "46da98db12d0cd04e78b2e11e2704653a35539507976afc4c7f72b2147aea6d9"
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-23T21:19:17.890490+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "d075557e0f0ea30fa81760b2a7809d69f43307919f3aa6999c6e96ec6012c058"
+}
