@@ -162,5 +162,5 @@ def main():
  result,sources=collect(json.loads(Path(a.snapshot).read_text()))
  for dest,content in ((a.output,json.dumps(result,indent=2)),(a.summary,markdown(result)),(a.candidates,json.dumps(sources,indent=2))):
   f=Path(dest);f.parent.mkdir(parents=True,exist_ok=True);f.write_text(content)
- print(json.dumps({"fetched_candidates":result["fetched_candidates"],"errors":len(result["fetch_errors"])}))
+ print(json.dumps({"fetched_candidates":result["fetched_candidates"],"fetched_market_contexts":len(result["market_contexts"]),"errors":len(result["fetch_errors"])}))
 if __name__=="__main__":main()
