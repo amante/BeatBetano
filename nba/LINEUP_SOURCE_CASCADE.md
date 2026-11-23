@@ -7,6 +7,8 @@ Each provider adapter must emit records:
 
 Run `python nba/lineup_source_cascade.py --snapshot snapshot.json --sources source_candidates.json --output lineup_cascade.json --summary lineup_cascade.md`.
 
-**Current scope:** evidence selection, source trust, pretip cutoff, conflicts and report. Provider network scrapers/API integrations are **not implemented in this PR**. Neither a provider name nor a URL implies that actual candidates were fetched. RotoWire offers an authenticated `get-nba-lineups.php` API; use approved credentials/terms, not fabricated access. Public web pages may change or block automation. Do not use bookmaker odds as model input.
+**Active source:** the public RotoWire NBA lineups page is fetched first for projected starting fives. NBA or team confirmed lineups override the projection; ESPN and other projected sources remain fallbacks. Every selected lineup retains its provider, URL, status and pregame timestamp. RotoWire projected starters are never described as official confirmation.
 
-**Remaining:** provider adapters; fixture/team/player ID reconciliation; as-of timestamps and caching; pregame freshness rules; roster and availability matching; minute adjustments; chronological evaluations. No current starters are automatically confirmed from prior games.
+The capture reads only five names from each expected-lineup list. It does not infer active status from absence in the injury list. Odds and referee information are handled separately as display-only market context and never enter the model. If the page layout or fixture mapping prevents extraction, the capture reports zero lineup coverage instead of fabricating names.
+
+**Remaining:** reconcile lineup names to the complete current roster; source and resolve RotoWire player availability claims without conflating them with official NBA injury statuses; track source freshness; and evaluate lineup accuracy prospectively.

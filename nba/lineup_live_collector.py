@@ -80,7 +80,7 @@ def parse_rotowire(html,snapshot,observed):
     if "lineup__abbr" in classes:self.capture=("abbr",None)
     if "lineup__list" in classes:
      self.current["lists"].append([]);self.list_index=len(self.current["lists"])-1
-    if "lineup__player" in classes and self.list_index>=0:self.capture=("player",self.list_index)
+    if tag=="li" and self.list_index>=0:self.capture=("player",self.list_index)
    def handle_data(self,data):
     if self.current is None or self.capture is None:return
     kind,index=self.capture;v=data.strip()
@@ -121,9 +121,9 @@ def parse_rotowire(html,snapshot,observed):
    team=next(t for t in (game["home_team"],game["away_team"]) if canonical(t)==canonical(team))
    players=[]
    for li in section.select("li"):
-    # Do not read benched/injured player sections.
-    cl=" ".join(li.get("class",[]))
-    if "lineup__player" not in cl:continue
+    # RotoWire has changed player-row classes over time. The expected-lineup
+    # list is already scoped here, so use its linked player names regardless
+    # of the decorative row class; injury sections are separate lists.
     p=li.select_one("a") or li.select_one(".lineup__player-name")
     label=p.get_text(" ",strip=True) if p else ""
     if label:players.append(label)
@@ -153,6 +153,9 @@ def collect(snapshot,session=None,observed=None):
  result["market_contexts"]=market_contexts
  result["fetch_url"]=URL;result["fetch_errors"]=errors
  result["fetched_candidates"]=len(candidates)
+ result["teams_with_lineups"]=sum(bool(team.get("starters")) for game in result.get("games",{}).values() for team in game.get("teams",{}).values())
+ result["lineup_capture_status"]="captured" if result["teams_with_lineups"] else "no_candidates"
+ result["lineup_capture_diagnostic"]=None if result["teams_with_lineups"] else "RotoWire loaded, but no five-player lineup matched the current fixture cohort."
  result["notes"]="RotoWire is the primary third-party pregame capture. NBA/team-confirmed lineups retain authority over projections; odds are display-only and may be unavailable."
  return result,sources
 def main():
@@ -162,5 +165,5 @@ def main():
  result,sources=collect(json.loads(Path(a.snapshot).read_text()))
  for dest,content in ((a.output,json.dumps(result,indent=2)),(a.summary,markdown(result)),(a.candidates,json.dumps(sources,indent=2))):
   f=Path(dest);f.parent.mkdir(parents=True,exist_ok=True);f.write_text(content)
- print(json.dumps({"fetched_candidates":result["fetched_candidates"],"fetched_market_contexts":len(result["market_contexts"]),"errors":len(result["fetch_errors"])}))
+ print(json.dumps({"fetched_candidates":result["fetched_candidates"],"teams_with_lineups":result["teams_with_lineups"],"lineup_capture_status":result["lineup_capture_status"],"fetched_market_contexts":len(result["market_contexts"]),"errors":len(result["fetch_errors"])}))
 if __name__=="__main__":main()

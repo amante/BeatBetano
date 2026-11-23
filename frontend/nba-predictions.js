@@ -150,8 +150,11 @@
   body.append(el("p","Disponibilidad observada · "+local(s.observed_at_utc),"nba-capture-time"));
   const lineup=el("section",undefined,"nba-lineup-section");
   const lineupHead=el("div",undefined,"nba-lineup-heading");
-  lineupHead.append(el("h4","Quinteto inicial"),el("span",s.lineup_status==="confirmed"?"Confirmado por proveedor":s.lineup_status==="projected"?"Proyectado por proveedor":"Sin confirmación","nba-lineup-badge "+(s.lineup_status==="confirmed"?"is-confirmed":"is-projected")));
+  const provider=s.lineup_source_provider==="rotowire"?"RotoWire":s.lineup_source_provider==="nba_official"?"NBA oficial":s.lineup_source_provider==="team_official"?"equipo":"proveedor";
+  const lineupLabel=s.lineup_status==="confirmed"?"Confirmado por "+provider:s.lineup_status==="projected"?"Proyectado por "+provider:"Sin confirmación";
+  lineupHead.append(el("h4","Quinteto inicial"),el("span",lineupLabel,"nba-lineup-badge "+(s.lineup_status==="confirmed"?"is-confirmed":"is-projected")));
   lineup.append(lineupHead);
+  if(s.lineup_observed_at_utc)lineup.append(el("p","Fuente: "+provider+" · captura "+local(s.lineup_observed_at_utc),"nba-capture-time"));
   if(starters.length){
    const court=el("div","");court.className="nba-lineup-court";
    const note=el("p","Quinteto listado · las posiciones individuales no vienen informadas por la fuente.");note.className="nba-lineup-court__note";
