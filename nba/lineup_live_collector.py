@@ -80,7 +80,7 @@ def parse_rotowire(html,snapshot,observed):
     if "lineup__abbr" in classes:self.capture=("abbr",None)
     if "lineup__list" in classes:
      self.current["lists"].append([]);self.list_index=len(self.current["lists"])-1
-    if "lineup__player" in classes and self.list_index>=0:self.capture=("player",self.list_index)
+    if tag=="li" and self.list_index>=0:self.capture=("player",self.list_index)
    def handle_data(self,data):
     if self.current is None or self.capture is None:return
     kind,index=self.capture;v=data.strip()
@@ -121,9 +121,9 @@ def parse_rotowire(html,snapshot,observed):
    team=next(t for t in (game["home_team"],game["away_team"]) if canonical(t)==canonical(team))
    players=[]
    for li in section.select("li"):
-    # Do not read benched/injured player sections.
-    cl=" ".join(li.get("class",[]))
-    if "lineup__player" not in cl:continue
+    # RotoWire has changed player-row classes over time. The expected-lineup
+    # list is already scoped here, so use its linked player names regardless
+    # of the decorative row class; injury sections are separate lists.
     p=li.select_one("a") or li.select_one(".lineup__player-name")
     label=p.get_text(" ",strip=True) if p else ""
     if label:players.append(label)
@@ -146,6 +146,8 @@ def collect(snapshot,session=None,observed=None):
   res.raise_for_status()
   candidates,errors=parse_rotowire(res.text,snapshot,observed)
   market_contexts=parse_market_contexts(res.text,snapshot,observed)
+  if not candidates and snapshot.get("predictions") and not errors:
+   errors.append({"provider":"rotowire","error":"no_starter_candidates_extracted","detail":"Page loaded but no five-player expected lineup matched the fixture cohort."})
  except requests.RequestException as e:
   errors.append({"provider":"rotowire","error":type(e).__name__})
  sources={"candidates":candidates}
