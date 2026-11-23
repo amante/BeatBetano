@@ -46,6 +46,15 @@
  const teamName=code=>teamNames[code]||code;
  const sameGame=(a,b)=>String(a?.game_id??a?.id??"")!==""&&String(a?.game_id??a?.id)===String(b?.game_id??b?.id)&&Number.isFinite(Date.parse(a?.tipoff_utc||a?.start_utc))&&Date.parse(a?.tipoff_utc||a?.start_utc)===Date.parse(b?.tipoff_utc||b?.start_utc);
  const validMarket=(m,tip)=>m&&m.source_provider==="rotowire"&&m.display_only===true&&m.model_input===false&&stamp(m.observed_at_utc)&&Date.parse(m.observed_at_utc)<Date.parse(tip);
+ const currentRunLineup=(prediction,team,game)=>{
+  const data=prediction?.supporting_modules?.starting_lineups?.data;
+  const candidate=data?.teams?.[team],starters=candidate?.starters;
+  if(!data||data.home_team!==game.home_team||data.away_team!==game.away_team||!candidate)return null;
+  if(candidate.source_provider!=="rotowire"||candidate.source_url!=="https://www.rotowire.com/basketball/nba-lineups.php")return null;
+  if(!["projected","confirmed"].includes(candidate.lineup_status)||!stamp(candidate.observed_at_utc)||Date.parse(candidate.observed_at_utc)>=Date.parse(game.tipoff_utc))return null;
+  if(!Array.isArray(starters)||starters.length!==5||starters.some(name=>typeof name!=="string"||!name.trim())||new Set(starters.map(name=>normalize(name))).size!==5)return null;
+  return candidate;
+ };
  const marketModelSide=(game,modelHome=null)=>{
   const probabilities=game.first_prediction||game;
   return modelHome!==null&&Number.isFinite(modelHome)?modelHome>.5?"home":modelHome<.5?"away":null:
@@ -547,7 +556,9 @@
    }else card.append(el("p",g.issues.length?"PASS · La emisión original requiere revisión por cambios de la ficha.":"PASS · No hay una pareja de pronósticos pregame válida."));
    if(g.issues.length)card.append(el("p","El partido presenta cambios o conflictos de fuente; requiere revisión."));
    for(const team of [g.away_team,g.home_team]){
-    const s=g.sporting[team];
+    const archived=g.sporting[team];
+    const lineup=currentRunLineup(latest,team,g);
+    const s=lineup?{...(archived||{players:[],official_injury_status_verified:false}),provider_starters:lineup.starters,lineup_status:lineup.lineup_status,lineup_source_provider:"rotowire",lineup_source_url:lineup.source_url,lineup_observed_at_utc:lineup.observed_at_utc,observed_at_utc:archived?.observed_at_utc||lineup.observed_at_utc}:archived;
     if(!s){card.append(el("p",teamName(team)+": disponibilidad pregame sin cobertura.","nba-coverage-empty"));continue;}
     try{card.append(sportingTeam(team,s));}catch{card.append(el("p","No se pudo desplegar la disponibilidad capturada para "+teamName(team)+".","nba-coverage-empty"));}
    }
