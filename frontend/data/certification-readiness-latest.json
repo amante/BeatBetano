@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "kind": "multisport_certification_readiness",
-  "generated_at_utc": "2026-11-22T17:08:49.975273+00:00",
-  "evaluation_sha256": "4564c6f56c76da32f283f245687d3e2e4f9dd1aaed062b857d6a1ae014a3709c",
+  "generated_at_utc": "2026-11-23T01:40:32.947046+00:00",
+  "evaluation_sha256": "85e18e0ed3c185743c13195a1f29cb2c4d7b98943c6d32a154ac87ee43bbb10c",
   "holdout_protocol_id": "prospective-certification-holdout-2026-27-v1",
-  "holdout_sha256": "ebad8410818cf0d580e73076b43915aca7d805a922ffe263fc1fb674035ad30f",
+  "holdout_sha256": "85352993759ed113846f87e0efdca489446d6c38d427e1b059133e30f3288433",
   "holdout_protocol_frozen_at_utc": "2026-11-11T04:31:29Z",
-  "scored_model_versions": 10,
+  "scored_model_versions": 11,
   "models": [
     {
       "sport": "nba",
@@ -61,7 +61,7 @@
       "sport": "nba",
       "model_version": "nba-existing-baselines-hybrid-challenger",
       "model_code_sha256": "1cee1bd0884eaf344cf35a37b8de4f78c5388816a04a4811b22a11e4c8c2cda3",
-      "scored_forecasts": 65,
+      "scored_forecasts": 67,
       "stages": [
         {
           "stage": "final_pregame",
@@ -69,7 +69,7 @@
         },
         {
           "stage": "initial",
-          "n": 20
+          "n": 22
         },
         {
           "stage": "update",
@@ -77,18 +77,18 @@
         }
       ],
       "by_season": {
-        "2026-27": 65
+        "2026-27": 67
       },
       "lineage_coverage": {
-        "scored_forecasts": 65,
-        "with_model_code_revision": 65,
-        "with_model_code_sha256": 65,
-        "with_training_data_sha256": 65,
-        "with_training_cutoff_utc": 65,
+        "scored_forecasts": 67,
+        "with_model_code_revision": 67,
+        "with_model_code_sha256": 67,
+        "with_training_data_sha256": 67,
+        "with_training_cutoff_utc": 67,
         "with_predictor_input_sha256": 0,
         "with_predictor_input_as_of_utc": 0,
-        "with_any_data_cutoff": 65,
-        "with_any_data_fingerprint": 65
+        "with_any_data_cutoff": 67,
+        "with_any_data_fingerprint": 67
       },
       "holdout_by_season": {
         "2026-27": {
@@ -213,6 +213,52 @@
     {
       "sport": "nfl",
       "model_version": "nfl-historical-elo",
+      "model_code_sha256": "812913d702db5ccfec8bee55baa6aa21b5d52f3d4a13ff7d28337af0adab1657",
+      "scored_forecasts": 10,
+      "stages": [
+        {
+          "stage": "update",
+          "n": 10
+        }
+      ],
+      "by_season": {
+        "2026-27": 10
+      },
+      "lineage_coverage": {
+        "scored_forecasts": 10,
+        "with_model_code_revision": 10,
+        "with_model_code_sha256": 10,
+        "with_training_data_sha256": 10,
+        "with_training_cutoff_utc": 10,
+        "with_predictor_input_sha256": 0,
+        "with_predictor_input_as_of_utc": 0,
+        "with_any_data_cutoff": 10,
+        "with_any_data_fingerprint": 10
+      },
+      "holdout_by_season": {
+        "2026-27": {
+          "frozen_forecasts": 11,
+          "lineage_complete_forecasts": 11,
+          "settled_forecasts_scored": 10
+        }
+      },
+      "holdout_frozen_forecasts": 11,
+      "holdout_lineage_complete_forecasts": 11,
+      "holdout_sample_mature": false,
+      "eligible_for_certification_review": false,
+      "certified": false,
+      "automatic_promotion_allowed": false,
+      "blockers": [
+        "paired_baseline_and_ablation_walk_forward_not_provided",
+        "independent_source_and_reliability_review_not_attested",
+        "prospective_holdout_sample_incomplete",
+        "certification_evidence_packet_missing"
+      ],
+      "evidence_packet": null
+    },
+    {
+      "sport": "nfl",
+      "model_version": "nfl-historical-elo",
       "model_code_sha256": "8d0cbf6bed0b5df374e91050966404d69dc34aae5970680a2419525c52e6201b",
       "scored_forecasts": 14,
       "stages": [
@@ -317,15 +363,15 @@
       "sport": "nhl",
       "model_version": "nhl-prior-day-standings",
       "model_code_sha256": "621165343ac70277c10f3aef7ecac6eac4659ff65965287dfd519402452314b4",
-      "scored_forecasts": 79,
+      "scored_forecasts": 81,
       "stages": [
         {
           "stage": "final_pregame",
-          "n": 6
+          "n": 7
         },
         {
           "stage": "initial",
-          "n": 16
+          "n": 17
         },
         {
           "stage": "update",
@@ -333,18 +379,18 @@
         }
       ],
       "by_season": {
-        "2026-27": 79
+        "2026-27": 81
       },
       "lineage_coverage": {
-        "scored_forecasts": 79,
-        "with_model_code_revision": 79,
-        "with_model_code_sha256": 79,
+        "scored_forecasts": 81,
+        "with_model_code_revision": 81,
+        "with_model_code_sha256": 81,
         "with_training_data_sha256": 0,
         "with_training_cutoff_utc": 0,
-        "with_predictor_input_sha256": 79,
-        "with_predictor_input_as_of_utc": 79,
-        "with_any_data_cutoff": 79,
-        "with_any_data_fingerprint": 79
+        "with_predictor_input_sha256": 81,
+        "with_predictor_input_as_of_utc": 81,
+        "with_any_data_cutoff": 81,
+        "with_any_data_fingerprint": 81
       },
       "holdout_by_season": {
         "2026-27": {
