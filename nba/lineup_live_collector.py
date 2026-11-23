@@ -146,8 +146,6 @@ def collect(snapshot,session=None,observed=None):
   res.raise_for_status()
   candidates,errors=parse_rotowire(res.text,snapshot,observed)
   market_contexts=parse_market_contexts(res.text,snapshot,observed)
-  if not candidates and snapshot.get("predictions") and not errors:
-   errors.append({"provider":"rotowire","error":"no_starter_candidates_extracted","detail":"Page loaded but no five-player expected lineup matched the fixture cohort."})
  except requests.RequestException as e:
   errors.append({"provider":"rotowire","error":type(e).__name__})
  sources={"candidates":candidates}
@@ -155,6 +153,9 @@ def collect(snapshot,session=None,observed=None):
  result["market_contexts"]=market_contexts
  result["fetch_url"]=URL;result["fetch_errors"]=errors
  result["fetched_candidates"]=len(candidates)
+ result["teams_with_lineups"]=sum(bool(team.get("starters")) for game in result.get("games",{}).values() for team in game.get("teams",{}).values())
+ result["lineup_capture_status"]="captured" if result["teams_with_lineups"] else "no_candidates"
+ result["lineup_capture_diagnostic"]=None if result["teams_with_lineups"] else "RotoWire loaded, but no five-player lineup matched the current fixture cohort."
  result["notes"]="RotoWire is the primary third-party pregame capture. NBA/team-confirmed lineups retain authority over projections; odds are display-only and may be unavailable."
  return result,sources
 def main():
@@ -164,5 +165,5 @@ def main():
  result,sources=collect(json.loads(Path(a.snapshot).read_text()))
  for dest,content in ((a.output,json.dumps(result,indent=2)),(a.summary,markdown(result)),(a.candidates,json.dumps(sources,indent=2))):
   f=Path(dest);f.parent.mkdir(parents=True,exist_ok=True);f.write_text(content)
- print(json.dumps({"fetched_candidates":result["fetched_candidates"],"fetched_market_contexts":len(result["market_contexts"]),"errors":len(result["fetch_errors"])}))
+ print(json.dumps({"fetched_candidates":result["fetched_candidates"],"teams_with_lineups":result["teams_with_lineups"],"lineup_capture_status":result["lineup_capture_status"],"fetched_market_contexts":len(result["market_contexts"]),"errors":len(result["fetch_errors"])}))
 if __name__=="__main__":main()
