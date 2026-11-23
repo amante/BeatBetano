@@ -73,7 +73,7 @@ def team_observation(records,gid,team,tip,as_of):
         status=lineup.get('lineup_status')
         try:lineup_timely=bool(lineup_time and utc(lineup_time)<utc(tip) and utc(lineup_time)<=utc(as_of))
         except (ValueError,TypeError):lineup_timely=False
-        if lineup_timely and status in ('confirmed','projected') and isinstance(starters,list) and len(starters)==5 and len(set(starters))==5:
+        if lineup_timely and status in ('confirmed','projected') and isinstance(starters,list) and 0<len(starters)<=5 and all(isinstance(name,str) and name.strip() for name in starters) and len(set(starters))==len(starters):
             lineup_candidates.append((utc(lineup_time),bundle,lineup))
 
     availability_choice=max(availability_candidates,key=lambda item:(item[0],item[1]['ref'])) if availability_candidates else None
