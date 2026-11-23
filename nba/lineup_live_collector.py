@@ -12,7 +12,12 @@ from lineup_source_cascade import cascade,markdown
 URL="https://www.rotowire.com/basketball/nba-lineups.php"
 UA="BeatBetano/1.0 (pregame lineup evidence; contact via repository)"
 def parse_market_contexts(html,snapshot,observed):
- """Extract attributed market/referee information for display only."""
+ """Extract odds from the full RotoWire game card, keeping them display-only.
+
+ RotoWire renders odds/referee rows alongside the nested lineup panel. Search
+ the smallest shared ancestor that contains this matchup's lineup and its
+ market rows instead of assuming the rows live inside the lineup element.
+ """
  try:
   from bs4 import BeautifulSoup
  except ImportError:
@@ -26,8 +31,16 @@ def parse_market_contexts(html,snapshot,observed):
   if len(codes)!=2 or codes[0]==codes[1]:continue
   game=fixtures.get(frozenset(canonical(x) for x in codes))
   if not game:continue
-  team_by_code={canonical(t):t for t in (game["home_team"],game["away_team"])}
-  text=re.sub(r"\s+"," ",box.get_text(" ",strip=True))
+  market_scope=box
+  for parent in box.parents:
+   # Reject a page/section wrapper spanning several matchups so rows cannot
+   # accidentally be attributed to the wrong game.
+   if len(parent.select(".lineup"))>1:continue
+   candidate_text=re.sub(r"\s+"," ",parent.get_text(" ",strip=True))
+   if re.search(r"\bLINE\s+[A-Z]{2,4}\s+[+-]\d{2,5}\b",candidate_text,re.I) or re.search(r"\bSPREAD\s+[A-Z]{2,4}\s+[+-]\d+(?:\.\d+)?\b",candidate_text,re.I) or re.search(r"\bO/U\s+\d+(?:\.\d+)?\s*Pts\b",candidate_text,re.I):
+    market_scope=parent
+    break
+  text=re.sub(r"\s+"," ",market_scope.get_text(" ",strip=True))
   moneyline=re.search(r"\bLINE\s+([A-Z]{2,4})\s+([+-]\d{2,5})\b",text,re.I)
   spread=re.search(r"\bSPREAD\s+([A-Z]{2,4})\s+([+-]\d+(?:\.\d+)?)\b",text,re.I)
   total=re.search(r"\bO/U\s+(\d+(?:\.\d+)?)\s*Pts\b",text,re.I)
@@ -35,15 +48,18 @@ def parse_market_contexts(html,snapshot,observed):
   referees=[]
   if refs:
    referees=[re.sub(r"\s+"," ",name).strip() for name in re.split(r"\s*,\s*",refs.group(1)) if name.strip()][:3]
+  team_by_code={canonical(t):t for t in (game["home_team"],game["away_team"])}
   def team_for(match):
    return team_by_code.get(canonical(match.group(1))) if match else None
   ml_team=team_for(moneyline);spread_team=team_for(spread)
-  output[str(game["game_id"])]={
+  market={
    "source_provider":"rotowire","source_url":URL,"observed_at_utc":observed,
    "display_only":True,"model_input":False,
    "moneyline":{"team":ml_team,"american_odds":int(moneyline.group(2))} if ml_team else None,
    "spread":{"team":spread_team,"points":float(spread.group(2))} if spread_team else None,
    "total_points":float(total.group(1)) if total else None,"referees":referees}
+  if market["moneyline"] or market["spread"] or market["total_points"] is not None or referees:
+   output[str(game["game_id"])]=market
  return output
 
 def parse_rotowire(html,snapshot,observed):
@@ -146,5 +162,5 @@ def main():
  result,sources=collect(json.loads(Path(a.snapshot).read_text()))
  for dest,content in ((a.output,json.dumps(result,indent=2)),(a.summary,markdown(result)),(a.candidates,json.dumps(sources,indent=2))):
   f=Path(dest);f.parent.mkdir(parents=True,exist_ok=True);f.write_text(content)
- print(json.dumps({"fetched_candidates":result["fetched_candidates"],"errors":len(result["fetch_errors"])}))
+ print(json.dumps({"fetched_candidates":result["fetched_candidates"],"fetched_market_contexts":len(result["market_contexts"]),"errors":len(result["fetch_errors"])}))
 if __name__=="__main__":main()
