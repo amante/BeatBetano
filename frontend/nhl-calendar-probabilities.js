@@ -63,13 +63,13 @@
     rows.append(row);
     const delta=current-initial;
     if(Number.isFinite(delta)&&Math.abs(delta)>=0.0005){
-     row.append(make("small","Desde la inicial: "+(delta>0?"+":"−")+pct(Math.abs(delta))));
+     row.append(make("small","Desde la inicial: "+(delta>0?"+":"−")+(100*Math.abs(delta)).toLocaleString("es-CL",{minimumFractionDigits:1,maximumFractionDigits:1})+" p.p."));
     }
    }
    if(!rows.children.length)continue;
    section.append(rows);
    const model=record.latest.model_version||"Modelo experimental";
-   section.append(make("p",model+" · "+record.history.length+" corrida"+(record.history.length===1?"":"s")+" · Sin calibración certificada.","nhl-calendar-probability__note"));
+   section.append(make("p",model+" · "+(Array.isArray(record.history)?record.history.length:1)+" corrida"+((Array.isArray(record.history)?record.history.length:1)===1?"":"s")+" · Sin calibración certificada.","nhl-calendar-probability__note"));
    panel.append(section);
   }
   const market=document.querySelector("#nhl-five-market .daily-empty");
