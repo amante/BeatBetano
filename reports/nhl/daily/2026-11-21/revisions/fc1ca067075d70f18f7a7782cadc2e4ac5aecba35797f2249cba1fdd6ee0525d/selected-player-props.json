@@ -1,0 +1,20 @@
+{
+  "kind": "nhl_player_props_postmortem_v1",
+  "status": "partial",
+  "forecast_games": 8,
+  "graded_games": 0,
+  "forecast_players": 0,
+  "graded_players": 0,
+  "selection_policy": "latest valid pregame player forecast captured before puck drop; postgame revisions are rejected",
+  "scenario_policy": "grade scenario probabilities only when both official starters match a recorded goalie scenario; otherwise retain alternatives without blending them",
+  "metrics": [],
+  "players": [],
+  "source_errors": {},
+  "automatic_parameter_updates": false,
+  "calibration_status": "observations_only_pending_independent_validation",
+  "limitations": [
+    "Players absent from the official boxscore are not assigned zero statistics.",
+    "DNP rows are excluded from accuracy metrics.",
+    "Unmatched goalie scenarios are retained but not averaged."
+  ]
+}
