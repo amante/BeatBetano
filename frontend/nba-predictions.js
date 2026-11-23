@@ -55,6 +55,22 @@
   if(!Array.isArray(starters)||starters.length!==5||starters.some(name=>typeof name!=="string"||!name.trim())||new Set(starters.map(name=>normalize(name))).size!==5)return null;
   return candidate;
  };
+ const currentRunAvailability=(prediction,team,game)=>{
+  if(!prediction||prediction.home_team!==game.home_team||prediction.away_team!==game.away_team)return null;
+  const record=prediction.supporting_modules?.rotation_minutes?.availability_status?.teams?.[team];
+  if(!record||record.roster_complete!==true||!Array.isArray(record.players)||!stamp(record.observed_at_utc)||Date.parse(record.observed_at_utc)>=Date.parse(game.tipoff_utc))return null;
+  const evidence=prediction.supporting_modules?.injury_source_reconciliation?.data?.teams?.[team]||[];
+  const byId=new Map(evidence.filter(item=>item?.player_id!=null).map(item=>[String(item.player_id),item]));
+  const players=record.players.map(player=>{
+   const claim=byId.get(String(player.player_id));
+   const sources=Array.isArray(claim?.claims)&&claim.claims.length?claim.claims:(player.status_sources||[]);
+   let status=claim?.conflict?"conflict":claim?.status_agreement||player.status||"unknown";
+   if(!["out","questionable","doubtful","probable","available","unknown","conflict"].includes(status))status="unknown";
+   return {...player,status,status_sources:sources};
+  });
+  const providers=[...new Set(players.flatMap(player=>(player.status_sources||[]).map(source=>source.source||source.provider||(String(source.url||"").includes("cbssports.com")?"CBS Sports":String(source.url||"").includes("espn.com")?"ESPN":null)).filter(Boolean)))];
+  return {observed_at_utc:record.observed_at_utc,players,availability_sources:providers,availability_source_provider:providers.join(" + "),source_url:record.roster_source||null};
+ };
  const marketModelSide=(game,modelHome=null)=>{
   const probabilities=game.first_prediction||game;
   return modelHome!==null&&Number.isFinite(modelHome)?modelHome>.5?"home":modelHome<.5?"away":null:
@@ -128,7 +144,7 @@
   const matches=players.filter(p=>{const name=normalize(p.player).split(" ");return name[name.length-1]===surname&&name[0]?.startsWith(initial)});
   return matches.length===1?matches[0]:null;
  };
- const statusLabels={out:"Baja reportada",questionable:"En duda",doubtful:"Dudoso",probable:"Probable",available:"Disponible según fuente",unknown:"Sin estado reportado"};
+ const statusLabels={out:"Baja reportada",questionable:"En duda",doubtful:"Dudoso",probable:"Probable",available:"Disponible según fuente",unknown:"Sin estado reportado",conflict:"Fuentes en conflicto"};
  const playerCard=(name,label,tone="neutral",index=null)=>{
   const item=el("div",undefined,"nba-player-card nba-player-"+tone);
   if(index!==null)item.append(el("span",String(index+1).padStart(2,"0"),"nba-player-number"));
@@ -148,15 +164,20 @@
   const starterIds=new Set(starters.map(x=>x.player?.player_id).filter(Boolean));
   const outs=players.filter(p=>p.status==="out");
   const doubts=players.filter(p=>["questionable","doubtful"].includes(p.status));
-  const other=players.filter(p=>!starterIds.has(p.player_id)&&!["out","questionable","doubtful"].includes(p.status));
+  const conflicts=players.filter(p=>p.status==="conflict");
+  const other=players.filter(p=>!starterIds.has(p.player_id)&&!["out","questionable","doubtful","conflict"].includes(p.status));
   const reported=other.filter(p=>["available","probable"].includes(p.status));
   const details=el("details",undefined,"nba-team-details");
   const summary=el("summary",undefined,"nba-team-summary");
   summary.append(el("strong",teamName(team),"nba-team-name"));
-  summary.append(el("span",starters.length+" titulares · "+outs.length+" bajas","nba-team-count"));
+  const counts=[starters.length+" titulares"];
+  if(outs.length)counts.push(outs.length+" bajas");
+  if(doubts.length)counts.push(doubts.length+" en duda");
+  if(conflicts.length)counts.push(conflicts.length+" por revisar");
+  summary.append(el("span",counts.join(" · "),"nba-team-count"));
   details.append(summary);
   const body=el("div",undefined,"nba-team-body");
-  body.append(el("p","Disponibilidad observada · "+local(s.observed_at_utc),"nba-capture-time"));
+  body.append(el("p",(s.availability_source_provider?"Disponibilidad · "+s.availability_source_provider+" · captura ":"Disponibilidad observada · ")+local(s.observed_at_utc),"nba-capture-time"));
   const lineup=el("section",undefined,"nba-lineup-section");
   const lineupHead=el("div",undefined,"nba-lineup-heading");
   const provider=s.lineup_source_provider==="rotowire"?"RotoWire":s.lineup_source_provider==="nba_official"?"NBA oficial":s.lineup_source_provider==="team_official"?"equipo":"proveedor";
@@ -209,9 +230,9 @@
      for(const p of items){
       const row=el("li","");row.className="nba-availability-grid__row";
       const name=el("span",p.player);name.className="nba-availability-grid__name";row.append(name);
-      const inDoubt=kind==="doubt",badgeText=inDoubt?(p.status==="doubtful"?"DUDOSO":"EN DUDA"):"OUT";
-      const badge=el("span",badgeText);badge.className="nba-availability-grid__badge"+(inDoubt?" nba-availability-grid__badge--doubt":"");
-      badge.setAttribute("aria-label",inDoubt?(p.status==="doubtful"?"Dudoso según reporte":"En duda según reporte"):"Baja reportada");row.append(badge);
+      const inDoubt=kind==="doubt",isConflict=kind==="conflict",badgeText=inDoubt?(p.status==="doubtful"?"DUDOSO":"EN DUDA"):isConflict?"REVISAR":"OUT";
+      const badge=el("span",badgeText);badge.className="nba-availability-grid__badge"+(inDoubt?" nba-availability-grid__badge--doubt":isConflict?" nba-availability-grid__badge--conflict":"");
+      badge.setAttribute("aria-label",inDoubt?(p.status==="doubtful"?"Dudoso según reporte":"En duda según reporte"):isConflict?"Fuentes con estados distintos; requiere revisión":"Baja reportada");row.append(badge);
       list.append(row);
      }
      column.append(list);
@@ -220,6 +241,7 @@
    };
    addAvailabilityColumn("Bajas reportadas",outs,"out");
    addAvailabilityColumn("En duda",doubts,"doubt");
+   if(conflicts.length)addAvailabilityColumn("Fuentes en conflicto",conflicts,"conflict");
    body.append(availabilityGrid);
   }else body.append(el("p","Esta captura no reporta bajas ni jugadores en duda.","nba-section-empty"));
   if(reported.length){
@@ -558,7 +580,9 @@
    for(const team of [g.away_team,g.home_team]){
     const archived=g.sporting[team];
     const lineup=currentRunLineup(latest,team,g);
-    const s=lineup?{...(archived||{players:[],official_injury_status_verified:false}),provider_starters:lineup.starters,lineup_status:lineup.lineup_status,lineup_source_provider:"rotowire",lineup_source_url:lineup.source_url,lineup_observed_at_utc:lineup.observed_at_utc,observed_at_utc:archived?.observed_at_utc||lineup.observed_at_utc}:archived;
+    const availability=currentRunAvailability(latest,team,g);
+    const base=archived||{players:[],official_injury_status_verified:false};
+    const s={...base,...(availability?{players:availability.players,observed_at_utc:availability.observed_at_utc,availability_sources:availability.availability_sources,availability_source_provider:availability.availability_source_provider,source_url:availability.source_url}:{}),...(lineup?{provider_starters:lineup.starters,lineup_status:lineup.lineup_status,lineup_source_provider:"rotowire",lineup_source_url:lineup.source_url,lineup_observed_at_utc:lineup.observed_at_utc,observed_at_utc:availability?.observed_at_utc||lineup.observed_at_utc}:{})};
     if(!s){card.append(el("p",teamName(team)+": disponibilidad pregame sin cobertura.","nba-coverage-empty"));continue;}
     try{card.append(sportingTeam(team,s));}catch{card.append(el("p","No se pudo desplegar la disponibilidad capturada para "+teamName(team)+".","nba-coverage-empty"));}
    }
