@@ -58,26 +58,44 @@ def bundles(root):
 
 
 def team_observation(records,gid,team,tip,as_of):
-    selected=[]
+    availability_candidates=[];lineup_candidates=[]
     for bundle in records:
-        a=bundle['availability'].get('games',{}).get(str(gid),{}).get('teams',{}).get(team,{})
-        when=a.get('observed_at_utc')
+        availability=bundle['availability'].get('games',{}).get(str(gid),{}).get('teams',{}).get(team,{})
+        when=availability.get('observed_at_utc')
         try:timely=bool(when and utc(when)<utc(tip) and utc(when)<=utc(as_of))
         except (ValueError,TypeError):timely=False
-        if timely and a.get('roster_complete'):
-            selected.append((utc(when),bundle,a))
-    if not selected:return None
-    _,bundle,a=max(selected,key=lambda item:(item[0],item[1]['ref']))
-    lineup=bundle['lineups'].get('games',{}).get(str(gid),{}).get('teams',{}).get(team,{})
-    try:lineup_ok=bool(lineup.get('observed_at_utc') and utc(lineup['observed_at_utc'])<utc(tip) and utc(lineup['observed_at_utc'])<=utc(as_of))
-    except (ValueError,TypeError):lineup_ok=False
-    return {'observed_at_utc':a['observed_at_utc'],'source_ref':bundle['ref'],
-            'source_url':a.get('roster_source'),'roster_complete':a['roster_complete'],
+        if timely and availability.get('roster_complete'):
+            availability_candidates.append((utc(when),bundle,availability))
+
+        lineup=bundle['lineups'].get('games',{}).get(str(gid),{}).get('teams',{}).get(team,{})
+        lineup_time=lineup.get('observed_at_utc')
+        starters=lineup.get('starters',[])
+        status=lineup.get('lineup_status')
+        try:lineup_timely=bool(lineup_time and utc(lineup_time)<utc(tip) and utc(lineup_time)<=utc(as_of))
+        except (ValueError,TypeError):lineup_timely=False
+        if lineup_timely and status in ('confirmed','projected') and isinstance(starters,list) and len(starters)==5 and len(set(starters))==5:
+            lineup_candidates.append((utc(lineup_time),bundle,lineup))
+
+    availability_choice=max(availability_candidates,key=lambda item:(item[0],item[1]['ref'])) if availability_candidates else None
+    lineup_choice=max(lineup_candidates,key=lambda item:(item[0],item[1]['ref'])) if lineup_candidates else None
+    if not availability_choice and not lineup_choice:return None
+
+    a_bundle,a=(availability_choice[1],availability_choice[2]) if availability_choice else (None,{})
+    l_bundle,lineup=(lineup_choice[1],lineup_choice[2]) if lineup_choice else (None,{})
+    observed_times=[item[0] for item in (availability_choice,lineup_choice) if item]
+    latest_observed=max(observed_times).isoformat().replace('+00:00','Z')
+    ref_bundle=(availability_choice or lineup_choice)[1]
+    return {'observed_at_utc':latest_observed,'source_ref':ref_bundle['ref'],
+            'source_url':a.get('roster_source') or lineup.get('source_url'),
+            'roster_complete':a.get('roster_complete') is True,
             'allocation_ready':a.get('allocation_ready') is True,
             'players':[{'player_id':p['player_id'],'player':p['player'],'status':p['status'],
-                        'status_sources':p.get('status_sources',[])} for p in a['players']],
-            'provider_starters':lineup.get('starters',[]) if lineup_ok else [],
-            'lineup_status':lineup.get('lineup_status','unavailable') if lineup_ok else 'unavailable',
+                        'status_sources':p.get('status_sources',[])} for p in a.get('players',[])],
+            'provider_starters':lineup.get('starters',[]) if lineup else [],
+            'lineup_status':lineup.get('lineup_status','unavailable'),
+            'lineup_source_provider':lineup.get('source_provider') or lineup.get('provider'),
+            'lineup_source_url':lineup.get('source_url'),
+            'lineup_observed_at_utc':lineup.get('observed_at_utc'),
             'official_injury_status_verified':False,'probabilities_adjusted':False}
 
 def market_observation(records,gid,tip,as_of):
