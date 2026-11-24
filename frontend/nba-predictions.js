@@ -468,7 +468,7 @@
     if(playerStats){
      const statsDetails=el("details","");statsDetails.className="nba-module-run-status nba-player-stat-projections";
      statsDetails.append(el("summary","Puntos · rebotes · asistencias por jugador"));
-     statsDetails.append(el("p","Estimación basada en producción histórica por minuto y minutos previstos; no es una línea de apuestas ni modifica la probabilidad del partido. Los jugadores OUT se muestran en la tabla de bajas y se excluyen de estas proyecciones."));
+     statsDetails.append(el("p","Estimación basada en producción histórica por minuto y minutos previstos; incluye puntos, rebotes, asistencias y tiros libres convertidos e intentados. No es una línea de apuestas ni modifica la probabilidad del partido. Los jugadores OUT se muestran en la tabla de bajas y se excluyen de estas proyecciones."));
      for(const team of [prediction.away_team,prediction.home_team]){
       const teamData=playerStats.teams?.[team];if(!teamData)continue;
       const projectionPlayers=(teamData.players||[]).filter(player=>player.availability_status!=="out"&&player.projection_status!=="unavailable");
@@ -494,7 +494,7 @@
        for(const [key,label,baseKey,deltaKey] of [
         ["points_projection","PTS","baseline_points_projection","injury_delta_points_projection"],
         ["rebounds_projection","REB","baseline_rebounds_projection","injury_delta_rebounds_projection"],
-        ["assists_projection","AST","baseline_assists_projection","injury_delta_assists_projection"]
+        ["assists_projection","AST","baseline_assists_projection","injury_delta_assists_projection"],\n        ["free_throws_made_projection","TL","baseline_free_throws_made_projection","injury_delta_free_throws_made_projection"],\n        ["free_throws_attempted_projection","INT TL","baseline_free_throws_attempted_projection","injury_delta_free_throws_attempted_projection"]
        ]){
         const value=player[key],sample=player[key.replace("_projection","_sample_games")];
         let metricText=label+" "+(typeof value==="number"?value.toFixed(1):"—");
