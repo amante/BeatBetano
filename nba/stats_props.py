@@ -1,4 +1,5 @@
 """Descriptive NBA player prop history; never a betting probability."""
+import math
 from statistics import fmean
 
 METRICS = (
@@ -9,7 +10,7 @@ METRICS = (
 )
 
 def _number(value):
-    return type(value) in (int, float) and value >= 0
+    return type(value) in (int, float) and math.isfinite(value) and value >= 0
 
 def _metric_value(row, key):
     if key == "points_rebounds_assists":
