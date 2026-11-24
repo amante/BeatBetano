@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "kind": "sealed_forecast_outcome_evaluation",
-  "generated_at_utc": "2026-11-24T05:18:42.322241+00:00",
+  "generated_at_utc": "2026-11-24T20:09:02.366510+00:00",
   "inputs": {
-    "forecast_snapshot_count": 627,
-    "forecast_snapshot_manifest_sha256": "9fcaddcd79330570668cdab06cfdade50c059ffe93ffc33fc808eee9011af149",
+    "forecast_snapshot_count": 631,
+    "forecast_snapshot_manifest_sha256": "af9e57f14b59ce5b6c68850e899241b5e743ce0a387cc57540c8e9a047396fa1",
     "settled_history_row_count": 466,
-    "settled_history_sha256": "85640210da8e514c02a740c107f599835856cce4769be7e55d65a4be16e61911"
+    "settled_history_sha256": "d5836a336c2d51d44662e28d7a379bef91bddf5f5d46680d444f1f17016da5fe"
   },
   "coverage": {
-    "verified_chains": 300,
-    "latest_pregame_forecasts": 317,
-    "forecasts_bound_to_history": 317,
-    "pending_forecasts": 5,
+    "verified_chains": 303,
+    "latest_pregame_forecasts": 320,
+    "forecasts_bound_to_history": 320,
+    "pending_forecasts": 4,
     "scored_forecast_groups": 27,
     "legacy_source_output_digest_scope_unverified": 423
   },
@@ -2930,10 +2930,10 @@
       "model_code_sha256": "1cee1bd0884eaf344cf35a37b8de4f78c5388816a04a4811b22a11e4c8c2cda3",
       "stage": "initial",
       "metrics": {
-        "n": 11,
-        "brier": 0.1389937165772441,
-        "log_loss": 0.4375357470428447,
-        "accuracy": 0.8181818181818182,
+        "n": 13,
+        "brier": 0.12053124911056011,
+        "log_loss": 0.39216693629540206,
+        "accuracy": 0.8461538461538461,
         "reliability_bins": {
           "home": [
             {
@@ -2946,8 +2946,8 @@
             {
               "lower": 0.1,
               "upper": 0.2,
-              "n": 1,
-              "forecast_mean": 0.1318448349295089,
+              "n": 2,
+              "forecast_mean": 0.15165086042035436,
               "observed_rate": 0.0
             },
             {
@@ -3002,18 +3002,18 @@
             {
               "lower": 0.9,
               "upper": 1.0,
-              "n": 0,
-              "forecast_mean": null,
-              "observed_rate": null
+              "n": 1,
+              "forecast_mean": 0.9073830881467634,
+              "observed_rate": 1.0
             }
           ],
           "away": [
             {
               "lower": 0.0,
               "upper": 0.1,
-              "n": 0,
-              "forecast_mean": null,
-              "observed_rate": null
+              "n": 1,
+              "forecast_mean": 0.09261691185323662,
+              "observed_rate": 0.0
             },
             {
               "lower": 0.1,
@@ -3067,8 +3067,8 @@
             {
               "lower": 0.8,
               "upper": 0.9,
-              "n": 1,
-              "forecast_mean": 0.8681551650704911,
+              "n": 2,
+              "forecast_mean": 0.8483491395796456,
               "observed_rate": 1.0
             },
             {
@@ -3083,10 +3083,10 @@
       },
       "by_season": {
         "2026-27": {
-          "n": 11,
-          "brier": 0.1389937165772441,
-          "log_loss": 0.4375357470428447,
-          "accuracy": 0.8181818181818182,
+          "n": 13,
+          "brier": 0.12053124911056011,
+          "log_loss": 0.39216693629540206,
+          "accuracy": 0.8461538461538461,
           "reliability_bins": {
             "home": [
               {
@@ -3099,8 +3099,8 @@
               {
                 "lower": 0.1,
                 "upper": 0.2,
-                "n": 1,
-                "forecast_mean": 0.1318448349295089,
+                "n": 2,
+                "forecast_mean": 0.15165086042035436,
                 "observed_rate": 0.0
               },
               {
@@ -3155,18 +3155,18 @@
               {
                 "lower": 0.9,
                 "upper": 1.0,
-                "n": 0,
-                "forecast_mean": null,
-                "observed_rate": null
+                "n": 1,
+                "forecast_mean": 0.9073830881467634,
+                "observed_rate": 1.0
               }
             ],
             "away": [
               {
                 "lower": 0.0,
                 "upper": 0.1,
-                "n": 0,
-                "forecast_mean": null,
-                "observed_rate": null
+                "n": 1,
+                "forecast_mean": 0.09261691185323662,
+                "observed_rate": 0.0
               },
               {
                 "lower": 0.1,
@@ -3220,8 +3220,8 @@
               {
                 "lower": 0.8,
                 "upper": 0.9,
-                "n": 1,
-                "forecast_mean": 0.8681551650704911,
+                "n": 2,
+                "forecast_mean": 0.8483491395796456,
                 "observed_rate": 1.0
               },
               {
@@ -3236,15 +3236,15 @@
         }
       },
       "lineage_coverage": {
-        "scored_forecasts": 11,
-        "with_model_code_revision": 11,
-        "with_model_code_sha256": 11,
-        "with_training_data_sha256": 11,
-        "with_training_cutoff_utc": 11,
+        "scored_forecasts": 13,
+        "with_model_code_revision": 13,
+        "with_model_code_sha256": 13,
+        "with_training_data_sha256": 13,
+        "with_training_cutoff_utc": 13,
         "with_predictor_input_sha256": 0,
         "with_predictor_input_as_of_utc": 0,
-        "with_any_data_cutoff": 11,
-        "with_any_data_fingerprint": 11
+        "with_any_data_cutoff": 13,
+        "with_any_data_fingerprint": 13
       }
     },
     {
@@ -6806,10 +6806,10 @@
       "model_code_sha256": "621165343ac70277c10f3aef7ecac6eac4659ff65965287dfd519402452314b4",
       "stage": "update",
       "metrics": {
-        "n": 62,
-        "brier": 0.26569515938698385,
-        "log_loss": 0.7253145872160139,
-        "accuracy": 0.41935483870967744,
+        "n": 64,
+        "brier": 0.2632597014029062,
+        "log_loss": 0.7203864153801647,
+        "accuracy": 0.4375,
         "reliability_bins": {
           "home": [
             {
@@ -6843,16 +6843,16 @@
             {
               "lower": 0.4,
               "upper": 0.5,
-              "n": 17,
-              "forecast_mean": 0.47157052941176464,
-              "observed_rate": 0.47058823529411764
+              "n": 18,
+              "forecast_mean": 0.4679347777777777,
+              "observed_rate": 0.4444444444444444
             },
             {
               "lower": 0.5,
               "upper": 0.6,
-              "n": 32,
-              "forecast_mean": 0.5537496562499998,
-              "observed_rate": 0.40625
+              "n": 33,
+              "forecast_mean": 0.5533665757575756,
+              "observed_rate": 0.42424242424242425
             },
             {
               "lower": 0.6,
@@ -6915,16 +6915,16 @@
             {
               "lower": 0.4,
               "upper": 0.5,
-              "n": 32,
-              "forecast_mean": 0.44625034375000006,
-              "observed_rate": 0.59375
+              "n": 33,
+              "forecast_mean": 0.44663342424242425,
+              "observed_rate": 0.5757575757575758
             },
             {
               "lower": 0.5,
               "upper": 0.6,
-              "n": 17,
-              "forecast_mean": 0.5284294705882353,
-              "observed_rate": 0.5294117647058824
+              "n": 18,
+              "forecast_mean": 0.5320652222222224,
+              "observed_rate": 0.5555555555555556
             },
             {
               "lower": 0.6,
@@ -6959,10 +6959,10 @@
       },
       "by_season": {
         "2026-27": {
-          "n": 62,
-          "brier": 0.26569515938698385,
-          "log_loss": 0.7253145872160139,
-          "accuracy": 0.41935483870967744,
+          "n": 64,
+          "brier": 0.2632597014029062,
+          "log_loss": 0.7203864153801647,
+          "accuracy": 0.4375,
           "reliability_bins": {
             "home": [
               {
@@ -6996,16 +6996,16 @@
               {
                 "lower": 0.4,
                 "upper": 0.5,
-                "n": 17,
-                "forecast_mean": 0.47157052941176464,
-                "observed_rate": 0.47058823529411764
+                "n": 18,
+                "forecast_mean": 0.4679347777777777,
+                "observed_rate": 0.4444444444444444
               },
               {
                 "lower": 0.5,
                 "upper": 0.6,
-                "n": 32,
-                "forecast_mean": 0.5537496562499998,
-                "observed_rate": 0.40625
+                "n": 33,
+                "forecast_mean": 0.5533665757575756,
+                "observed_rate": 0.42424242424242425
               },
               {
                 "lower": 0.6,
@@ -7068,16 +7068,16 @@
               {
                 "lower": 0.4,
                 "upper": 0.5,
-                "n": 32,
-                "forecast_mean": 0.44625034375000006,
-                "observed_rate": 0.59375
+                "n": 33,
+                "forecast_mean": 0.44663342424242425,
+                "observed_rate": 0.5757575757575758
               },
               {
                 "lower": 0.5,
                 "upper": 0.6,
-                "n": 17,
-                "forecast_mean": 0.5284294705882353,
-                "observed_rate": 0.5294117647058824
+                "n": 18,
+                "forecast_mean": 0.5320652222222224,
+                "observed_rate": 0.5555555555555556
               },
               {
                 "lower": 0.6,
@@ -7112,15 +7112,15 @@
         }
       },
       "lineage_coverage": {
-        "scored_forecasts": 62,
-        "with_model_code_revision": 62,
-        "with_model_code_sha256": 62,
+        "scored_forecasts": 64,
+        "with_model_code_revision": 64,
+        "with_model_code_sha256": 64,
         "with_training_data_sha256": 0,
         "with_training_cutoff_utc": 0,
-        "with_predictor_input_sha256": 62,
-        "with_predictor_input_as_of_utc": 62,
-        "with_any_data_cutoff": 62,
-        "with_any_data_fingerprint": 62
+        "with_predictor_input_sha256": 64,
+        "with_predictor_input_as_of_utc": 64,
+        "with_any_data_cutoff": 64,
+        "with_any_data_fingerprint": 64
       }
     },
     {
