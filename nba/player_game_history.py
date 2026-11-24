@@ -13,7 +13,7 @@ SUMMARY="https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary"
 
 def _season_end_year(game):
     tipoff=str(game.get("tipoff_utc") or "")
-    match=re.match(r"(\\d{4})-(\\d{2})",tipoff)
+    match=re.match(r"(\d{4})-(\d{2})",tipoff)
     if not match:raise ValueError("Invalid historical tipoff date")
     year,month=map(int,match.groups())
     return year+1 if month>=10 else year
