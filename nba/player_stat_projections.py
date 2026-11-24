@@ -6,6 +6,7 @@ import math
 import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
+from stats_props import build_player_stats_props
 
 
 def digest(value):
@@ -50,6 +51,7 @@ def build(snapshot, module_context, player_history, roster_feed):
         raise ValueError("Invalid historical player statistics")
     history_by_player = {}
     game_cutoff = stamp(snapshot.get("created_at_utc"))
+    current_season_end_year = game_cutoff.year + (1 if game_cutoff.month >= 10 else 0) if game_cutoff else None
     for row in observations:
         played_at = stamp(row.get("tipoff_utc"))
         minutes = row.get("minutes_played")
@@ -130,8 +132,11 @@ def build(snapshot, module_context, player_history, roster_feed):
                     hist = matches[0] if len(matches) == 1 else None
                 status_row = status_by_id.get(pid) or status_by_name.get(name_key(name), {})
                 availability_status = status_row.get("status", "unknown")
-                player_history_rows = history_by_player.get((team, str(hist.get("player_id"))), []) if hist else []
-                player_history_rows = sorted(player_history_rows, key=lambda row: stamp(row["tipoff_utc"]), reverse=True)[:10]
+                all_player_history_rows = history_by_player.get((team, str(hist.get("player_id"))), []) if hist else []
+                all_player_history_rows = sorted(all_player_history_rows, key=lambda row: stamp(row["tipoff_utc"]), reverse=True)
+                player_history_rows = all_player_history_rows[:10]
+                season_history_rows = [row for row in all_player_history_rows
+                                       if row.get("season_end_year") == current_season_end_year]
                 historical_minutes = hist.get("minutes_projection") if hist else None
                 base_minutes = joint_allocations.get(pid)
                 minutes_source = "availability_adjusted_team_allocation"
@@ -206,6 +211,11 @@ def build(snapshot, module_context, player_history, roster_feed):
                     "injury_adjustment_source": change.get("projection_method") if scenario_valid and change_valid else None,
                     "minutes_source": minutes_source,
                     "historical_games": len(player_history_rows),
+                    "stats_props": build_player_stats_props(
+                        season_history_rows,
+                        season_end_year=current_season_end_year,
+                        opponent_team=fixture["home_team"] if team == fixture["away_team"] else fixture["away_team"],
+                    ),
                     **metrics,
                 })
             projected.sort(key=lambda p: (p["role"] != "starter_listed_by_provider",
