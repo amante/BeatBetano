@@ -11,6 +11,13 @@ import requests
 
 SUMMARY="https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary"
 
+def _season_end_year(game):
+    tipoff=str(game.get("tipoff_utc") or "")
+    match=re.match(r"(\\d{4})-(\\d{2})",tipoff)
+    if not match:raise ValueError("Invalid historical tipoff date")
+    year,month=map(int,match.groups())
+    return year+1 if month>=10 else year
+
 def parse_boxscore(payload,game,observed_at):
     header=payload.get("header",{})
     comps=header.get("competitions",[]) if isinstance(header,dict) else []
@@ -85,6 +92,9 @@ def parse_boxscore(payload,game,observed_at):
                     numeric["plus_minus"]=None
                 rows.append({"game_id":str(game["game_id"]),"team":team,
                     "tipoff_utc":game["tipoff_utc"],
+                    "season_end_year":_season_end_year(game),
+                    "opponent_team":game["away_team"] if team==game["home_team"] else game["home_team"],
+                    "is_home":team==game["home_team"],
                     "player_id":pid,"player":athlete.get("displayName"),
                     "minutes_played":minutes,
                     **numeric,
@@ -109,6 +119,12 @@ def collect(games,session=None,cache_dir=None):
             from observation_cache import read, save
             cached=read(cache_dir,game)
             if cached is not None:
+                for row in cached:
+                    team=row.get("team")
+                    if team in (game["home_team"],game["away_team"]):
+                        row.setdefault("season_end_year",_season_end_year(game))
+                        row.setdefault("opponent_team",game["away_team"] if team==game["home_team"] else game["home_team"])
+                        row.setdefault("is_home",team==game["home_team"])
                 out.extend(cached)
                 continue
         try:
