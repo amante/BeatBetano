@@ -494,7 +494,9 @@
        for(const [key,label,baseKey,deltaKey] of [
         ["points_projection","PTS","baseline_points_projection","injury_delta_points_projection"],
         ["rebounds_projection","REB","baseline_rebounds_projection","injury_delta_rebounds_projection"],
-        ["assists_projection","AST","baseline_assists_projection","injury_delta_assists_projection"],\n        ["free_throws_made_projection","TL","baseline_free_throws_made_projection","injury_delta_free_throws_made_projection"],\n        ["free_throws_attempted_projection","INT TL","baseline_free_throws_attempted_projection","injury_delta_free_throws_attempted_projection"]
+        ["assists_projection","AST","baseline_assists_projection","injury_delta_assists_projection"],
+        ["free_throws_made_projection","TL","baseline_free_throws_made_projection","injury_delta_free_throws_made_projection"],
+        ["free_throws_attempted_projection","INT TL","baseline_free_throws_attempted_projection","injury_delta_free_throws_attempted_projection"]
        ]){
         const value=player[key],sample=player[key.replace("_projection","_sample_games")];
         let metricText=label+" "+(typeof value==="number"?value.toFixed(1):"—");
