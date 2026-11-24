@@ -1,37 +1,37 @@
 {
   "schema_version": 1,
   "kind": "nba_team_confidence_diagnostic_v1",
-  "created_at_utc": "2026-11-24T01:48:51.652262+00:00",
-  "scored_games": 58,
+  "created_at_utc": "2026-11-24T23:36:02.401102+00:00",
+  "scored_games": 68,
   "deduplicated_to_latest_pregame_forecast_per_game": true,
   "skipped_post_tipoff_predictions": 0,
   "models": {
     "elo": {
-      "n": 58,
-      "mean_forecast": 0.550815046515659,
+      "n": 68,
+      "mean_forecast": 0.5532703835662253,
       "observed_win_rate": 0.5,
-      "mean_bias": 0.05081504651565905,
-      "brier": 0.24312980222512962,
-      "log_loss": 0.6909906274813417,
-      "accuracy": 0.6206896551724138
+      "mean_bias": 0.05327038356622528,
+      "brier": 0.24650783639141066,
+      "log_loss": 0.6946128034648473,
+      "accuracy": 0.6029411764705882
     },
     "challenger": {
-      "n": 58,
-      "mean_forecast": 0.5419528042837133,
+      "n": 68,
+      "mean_forecast": 0.5442250645535928,
       "observed_win_rate": 0.5,
-      "mean_bias": 0.04195280428371331,
-      "brier": 0.24871386554347386,
-      "log_loss": 0.7091098220722816,
-      "accuracy": 0.603448275862069
+      "mean_bias": 0.04422506455359282,
+      "brier": 0.25092740423008636,
+      "log_loss": 0.709512915804106,
+      "accuracy": 0.5882352941176471
     },
     "hybrid": {
-      "n": 58,
-      "mean_forecast": 0.5407906223893066,
+      "n": 68,
+      "mean_forecast": 0.5430891044362145,
       "observed_win_rate": 0.5,
-      "mean_bias": 0.04079062238930667,
-      "brier": 0.24663591070301355,
-      "log_loss": 0.6993990177066239,
-      "accuracy": 0.603448275862069
+      "mean_bias": 0.04308910443621444,
+      "brier": 0.24947194706622747,
+      "log_loss": 0.702690599462699,
+      "accuracy": 0.5882352941176471
     }
   },
   "team_metrics": {
@@ -70,9 +70,9 @@
       }
     },
     "BKN": {
-      "games": 3,
+      "games": 4,
       "home_games": 2,
-      "away_games": 1,
+      "away_games": 2,
       "models": {
         "elo": {
           "n": 0,
@@ -138,8 +138,8 @@
       }
     },
     "CHA": {
-      "games": 2,
-      "home_games": 0,
+      "games": 3,
+      "home_games": 1,
       "away_games": 2,
       "models": {
         "elo": {
@@ -172,8 +172,8 @@
       }
     },
     "CHI": {
-      "games": 4,
-      "home_games": 2,
+      "games": 5,
+      "home_games": 3,
       "away_games": 2,
       "models": {
         "elo": {
@@ -206,9 +206,9 @@
       }
     },
     "CLE": {
-      "games": 4,
+      "games": 5,
       "home_games": 2,
-      "away_games": 2,
+      "away_games": 3,
       "models": {
         "elo": {
           "n": 0,
@@ -376,8 +376,8 @@
       }
     },
     "HOU": {
-      "games": 5,
-      "home_games": 2,
+      "games": 6,
+      "home_games": 3,
       "away_games": 3,
       "models": {
         "elo": {
@@ -410,8 +410,8 @@
       }
     },
     "IND": {
-      "games": 3,
-      "home_games": 3,
+      "games": 4,
+      "home_games": 4,
       "away_games": 0,
       "models": {
         "elo": {
@@ -444,40 +444,6 @@
       }
     },
     "LAC": {
-      "games": 4,
-      "home_games": 3,
-      "away_games": 1,
-      "models": {
-        "elo": {
-          "n": 0,
-          "mean_forecast": null,
-          "observed_win_rate": null,
-          "mean_bias": null,
-          "brier": null,
-          "log_loss": null,
-          "accuracy": null
-        },
-        "challenger": {
-          "n": 0,
-          "mean_forecast": null,
-          "observed_win_rate": null,
-          "mean_bias": null,
-          "brier": null,
-          "log_loss": null,
-          "accuracy": null
-        },
-        "hybrid": {
-          "n": 0,
-          "mean_forecast": null,
-          "observed_win_rate": null,
-          "mean_bias": null,
-          "brier": null,
-          "log_loss": null,
-          "accuracy": null
-        }
-      }
-    },
-    "LAL": {
       "games": 5,
       "home_games": 3,
       "away_games": 2,
@@ -511,10 +477,44 @@
         }
       }
     },
+    "LAL": {
+      "games": 6,
+      "home_games": 4,
+      "away_games": 2,
+      "models": {
+        "elo": {
+          "n": 0,
+          "mean_forecast": null,
+          "observed_win_rate": null,
+          "mean_bias": null,
+          "brier": null,
+          "log_loss": null,
+          "accuracy": null
+        },
+        "challenger": {
+          "n": 0,
+          "mean_forecast": null,
+          "observed_win_rate": null,
+          "mean_bias": null,
+          "brier": null,
+          "log_loss": null,
+          "accuracy": null
+        },
+        "hybrid": {
+          "n": 0,
+          "mean_forecast": null,
+          "observed_win_rate": null,
+          "mean_bias": null,
+          "brier": null,
+          "log_loss": null,
+          "accuracy": null
+        }
+      }
+    },
     "MEM": {
-      "games": 5,
+      "games": 6,
       "home_games": 1,
-      "away_games": 4,
+      "away_games": 5,
       "models": {
         "elo": {
           "n": 0,
@@ -580,9 +580,9 @@
       }
     },
     "MIL": {
-      "games": 3,
+      "games": 4,
       "home_games": 1,
-      "away_games": 2,
+      "away_games": 3,
       "models": {
         "elo": {
           "n": 0,
@@ -614,8 +614,8 @@
       }
     },
     "MIN": {
-      "games": 4,
-      "home_games": 4,
+      "games": 5,
+      "home_games": 5,
       "away_games": 0,
       "models": {
         "elo": {
@@ -648,8 +648,8 @@
       }
     },
     "NO": {
-      "games": 5,
-      "home_games": 4,
+      "games": 6,
+      "home_games": 5,
       "away_games": 1,
       "models": {
         "elo": {
@@ -716,9 +716,9 @@
       }
     },
     "OKC": {
-      "games": 3,
+      "games": 4,
       "home_games": 1,
-      "away_games": 2,
+      "away_games": 3,
       "models": {
         "elo": {
           "n": 0,
@@ -784,8 +784,8 @@
       }
     },
     "PHI": {
-      "games": 3,
-      "home_games": 1,
+      "games": 4,
+      "home_games": 2,
       "away_games": 2,
       "models": {
         "elo": {
@@ -818,40 +818,6 @@
       }
     },
     "PHX": {
-      "games": 4,
-      "home_games": 1,
-      "away_games": 3,
-      "models": {
-        "elo": {
-          "n": 0,
-          "mean_forecast": null,
-          "observed_win_rate": null,
-          "mean_bias": null,
-          "brier": null,
-          "log_loss": null,
-          "accuracy": null
-        },
-        "challenger": {
-          "n": 0,
-          "mean_forecast": null,
-          "observed_win_rate": null,
-          "mean_bias": null,
-          "brier": null,
-          "log_loss": null,
-          "accuracy": null
-        },
-        "hybrid": {
-          "n": 0,
-          "mean_forecast": null,
-          "observed_win_rate": null,
-          "mean_bias": null,
-          "brier": null,
-          "log_loss": null,
-          "accuracy": null
-        }
-      }
-    },
-    "POR": {
       "games": 5,
       "home_games": 1,
       "away_games": 4,
@@ -885,10 +851,44 @@
         }
       }
     },
+    "POR": {
+      "games": 6,
+      "home_games": 1,
+      "away_games": 5,
+      "models": {
+        "elo": {
+          "n": 0,
+          "mean_forecast": null,
+          "observed_win_rate": null,
+          "mean_bias": null,
+          "brier": null,
+          "log_loss": null,
+          "accuracy": null
+        },
+        "challenger": {
+          "n": 0,
+          "mean_forecast": null,
+          "observed_win_rate": null,
+          "mean_bias": null,
+          "brier": null,
+          "log_loss": null,
+          "accuracy": null
+        },
+        "hybrid": {
+          "n": 0,
+          "mean_forecast": null,
+          "observed_win_rate": null,
+          "mean_bias": null,
+          "brier": null,
+          "log_loss": null,
+          "accuracy": null
+        }
+      }
+    },
     "SA": {
-      "games": 4,
+      "games": 5,
       "home_games": 3,
-      "away_games": 1,
+      "away_games": 2,
       "models": {
         "elo": {
           "n": 0,
@@ -920,6 +920,40 @@
       }
     },
     "SAC": {
+      "games": 6,
+      "home_games": 5,
+      "away_games": 1,
+      "models": {
+        "elo": {
+          "n": 0,
+          "mean_forecast": null,
+          "observed_win_rate": null,
+          "mean_bias": null,
+          "brier": null,
+          "log_loss": null,
+          "accuracy": null
+        },
+        "challenger": {
+          "n": 0,
+          "mean_forecast": null,
+          "observed_win_rate": null,
+          "mean_bias": null,
+          "brier": null,
+          "log_loss": null,
+          "accuracy": null
+        },
+        "hybrid": {
+          "n": 0,
+          "mean_forecast": null,
+          "observed_win_rate": null,
+          "mean_bias": null,
+          "brier": null,
+          "log_loss": null,
+          "accuracy": null
+        }
+      }
+    },
+    "TOR": {
       "games": 5,
       "home_games": 4,
       "away_games": 1,
@@ -953,44 +987,10 @@
         }
       }
     },
-    "TOR": {
-      "games": 4,
-      "home_games": 3,
-      "away_games": 1,
-      "models": {
-        "elo": {
-          "n": 0,
-          "mean_forecast": null,
-          "observed_win_rate": null,
-          "mean_bias": null,
-          "brier": null,
-          "log_loss": null,
-          "accuracy": null
-        },
-        "challenger": {
-          "n": 0,
-          "mean_forecast": null,
-          "observed_win_rate": null,
-          "mean_bias": null,
-          "brier": null,
-          "log_loss": null,
-          "accuracy": null
-        },
-        "hybrid": {
-          "n": 0,
-          "mean_forecast": null,
-          "observed_win_rate": null,
-          "mean_bias": null,
-          "brier": null,
-          "log_loss": null,
-          "accuracy": null
-        }
-      }
-    },
     "UTAH": {
-      "games": 5,
+      "games": 6,
       "home_games": 2,
-      "away_games": 3,
+      "away_games": 4,
       "models": {
         "elo": {
           "n": 0,
@@ -1057,8 +1057,8 @@
     }
   },
   "minnesota_diagnostic": {
-    "games": 4,
-    "home_games": 4,
+    "games": 5,
+    "home_games": 5,
     "away_games": 0,
     "models": {
       "elo": {
@@ -2020,6 +2020,166 @@
         "elo": 0.18428730963460588,
         "challenger": 0.14337137465729635,
         "hybrid": 0.18428730963460588
+      }
+    },
+    {
+      "game_id": "401910036",
+      "home_team": "CHA",
+      "away_team": "MEM",
+      "tipoff_utc": "2026-11-24T00:00:00Z",
+      "prediction_as_of_utc": "2026-11-23T23:03:16.341588+00:00",
+      "model_revision": "dc92f4ad8cb3ca8b61977696307a789430fd59ff",
+      "snapshot_file": "run-45283403422.json",
+      "snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+      "outcome_home": 0,
+      "probabilities_home": {
+        "elo": 0.6266146607056592,
+        "challenger": 0.5628460707522116,
+        "hybrid": 0.5628460707522116
+      }
+    },
+    {
+      "game_id": "401910037",
+      "home_team": "PHI",
+      "away_team": "POR",
+      "tipoff_utc": "2026-11-24T00:00:00Z",
+      "prediction_as_of_utc": "2026-11-23T23:03:16.341588+00:00",
+      "model_revision": "dc92f4ad8cb3ca8b61977696307a789430fd59ff",
+      "snapshot_file": "run-45283403422.json",
+      "snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+      "outcome_home": 0,
+      "probabilities_home": {
+        "elo": 0.6434153845339973,
+        "challenger": 0.6485607846679147,
+        "hybrid": 0.6485607846679147
+      }
+    },
+    {
+      "game_id": "401910038",
+      "home_team": "IND",
+      "away_team": "OKC",
+      "tipoff_utc": "2026-11-24T00:30:00Z",
+      "prediction_as_of_utc": "2026-11-23T23:03:16.341588+00:00",
+      "model_revision": "dc92f4ad8cb3ca8b61977696307a789430fd59ff",
+      "snapshot_file": "run-45283403422.json",
+      "snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+      "outcome_home": 1,
+      "probabilities_home": {
+        "elo": 0.22515812112269948,
+        "challenger": 0.19413599750335536,
+        "hybrid": 0.19413599750335536
+      }
+    },
+    {
+      "game_id": "401910039",
+      "home_team": "TOR",
+      "away_team": "MIL",
+      "tipoff_utc": "2026-11-24T00:30:00Z",
+      "prediction_as_of_utc": "2026-11-23T23:03:16.341588+00:00",
+      "model_revision": "dc92f4ad8cb3ca8b61977696307a789430fd59ff",
+      "snapshot_file": "run-45283403422.json",
+      "snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+      "outcome_home": 0,
+      "probabilities_home": {
+        "elo": 0.7589142212701745,
+        "challenger": 0.7907142250408341,
+        "hybrid": 0.7907142250408341
+      }
+    },
+    {
+      "game_id": "401910040",
+      "home_team": "MIN",
+      "away_team": "BKN",
+      "tipoff_utc": "2026-11-24T00:30:00Z",
+      "prediction_as_of_utc": "2026-11-23T23:03:16.341588+00:00",
+      "model_revision": "dc92f4ad8cb3ca8b61977696307a789430fd59ff",
+      "snapshot_file": "run-45283403422.json",
+      "snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+      "outcome_home": 1,
+      "probabilities_home": {
+        "elo": 0.8723266520311389,
+        "challenger": 0.8990477869172537,
+        "hybrid": 0.8723266520311389
+      }
+    },
+    {
+      "game_id": "401910041",
+      "home_team": "CHI",
+      "away_team": "CLE",
+      "tipoff_utc": "2026-11-24T01:00:00Z",
+      "prediction_as_of_utc": "2026-11-23T23:03:16.341588+00:00",
+      "model_revision": "dc92f4ad8cb3ca8b61977696307a789430fd59ff",
+      "snapshot_file": "run-45283403422.json",
+      "snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+      "outcome_home": 1,
+      "probabilities_home": {
+        "elo": 0.34603808741713143,
+        "challenger": 0.3156144048128284,
+        "hybrid": 0.3156144048128284
+      }
+    },
+    {
+      "game_id": "401910042",
+      "home_team": "NO",
+      "away_team": "PHX",
+      "tipoff_utc": "2026-11-24T01:00:00Z",
+      "prediction_as_of_utc": "2026-11-23T23:03:16.341588+00:00",
+      "model_revision": "dc92f4ad8cb3ca8b61977696307a789430fd59ff",
+      "snapshot_file": "run-45283403422.json",
+      "snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+      "outcome_home": 0,
+      "probabilities_home": {
+        "elo": 0.3698165692253239,
+        "challenger": 0.29566983666726504,
+        "hybrid": 0.29566983666726504
+      }
+    },
+    {
+      "game_id": "401910043",
+      "home_team": "HOU",
+      "away_team": "LAC",
+      "tipoff_utc": "2026-11-24T01:30:00Z",
+      "prediction_as_of_utc": "2026-11-23T23:03:16.341588+00:00",
+      "model_revision": "dc92f4ad8cb3ca8b61977696307a789430fd59ff",
+      "snapshot_file": "run-45283403422.json",
+      "snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+      "outcome_home": 1,
+      "probabilities_home": {
+        "elo": 0.7579481443752729,
+        "challenger": 0.8094534876935502,
+        "hybrid": 0.8094534876935502
+      }
+    },
+    {
+      "game_id": "401910044",
+      "home_team": "LAL",
+      "away_team": "UTAH",
+      "tipoff_utc": "2026-11-24T03:00:00Z",
+      "prediction_as_of_utc": "2026-11-23T23:03:16.341588+00:00",
+      "model_revision": "dc92f4ad8cb3ca8b61977696307a789430fd59ff",
+      "snapshot_file": "run-45283403422.json",
+      "snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+      "outcome_home": 1,
+      "probabilities_home": {
+        "elo": 0.9034246580024965,
+        "challenger": 0.9250737569350886,
+        "hybrid": 0.9034246580024965
+      }
+    },
+    {
+      "game_id": "401910045",
+      "home_team": "SAC",
+      "away_team": "SA",
+      "tipoff_utc": "2026-11-24T03:00:00Z",
+      "prediction_as_of_utc": "2026-11-23T23:03:16.341588+00:00",
+      "model_revision": "dc92f4ad8cb3ca8b61977696307a789430fd59ff",
+      "snapshot_file": "run-45283403422.json",
+      "snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+      "outcome_home": 0,
+      "probabilities_home": {
+        "elo": 0.1714568859111998,
+        "challenger": 0.13292539019863753,
+        "hybrid": 0.1714568859111998
       }
     }
   ],
