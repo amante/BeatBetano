@@ -15,7 +15,7 @@
   const row=node("article",undefined,"nba-player-stat-projections__player");
   row.append(node("strong",player.player||"Jugador sin nombre","nba-player-stat-projections__name"));
   const role=player.role==="starter_listed_by_provider"?"Titular listado":"Rol sin confirmar";
-  const status={out:"Baja reportada",questionable:"En duda",doubtful:"Dudoso",probable:"Probable",available:"Disponible según fuente",unknown:"Estado sin confirmar"}[player.availability_status]||"Estado sin confirmar";
+  const status={out:"Baja reportada",questionable:"QUESTIONABLE",doubtful:"DOUBTFUL",probable:"Probable",available:"Disponible según fuente",unknown:"Estado sin confirmar"}[player.availability_status]||"Estado sin confirmar";
   const minuteSource=player.minutes_source==="availability_adjusted_team_allocation"?"min ajustados":"min históricos";
   const minutes=typeof player.projected_minutes==="number"?player.projected_minutes.toFixed(1):"—";
   const injuryLabel=player.injury_adjustment_status==="applied"?" · ajuste por bajas aplicado":player.injury_adjustment_status==="scenario_unavailable"?" · sin escenario de bajas":"";
