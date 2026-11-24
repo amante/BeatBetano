@@ -66,7 +66,9 @@
    const sources=Array.isArray(claim?.claims)&&claim.claims.length?claim.claims:(player.status_sources||[]);
    let status=claim?.conflict?"conflict":claim?.status_agreement||player.status||"unknown";
    if(!["out","questionable","doubtful","probable","available","unknown","conflict"].includes(status))status="unknown";
-   return {...player,status,status_sources:sources};
+   const reportedStates=[...new Set(sources.map(source=>source.reported_status||source.status).filter(value=>["out","questionable","doubtful","probable","available","day-to-day"].includes(value)))];
+   const reported_status=claim?.conflict||reportedStates.length>1?"conflict":reportedStates[0]||player.reported_status||status;
+   return {...player,status,reported_status,status_sources:sources};
   });
   const providers=[...new Set(players.flatMap(player=>(player.status_sources||[]).map(source=>source.source||source.provider||(String(source.url||"").includes("cbssports.com")?"CBS Sports":String(source.url||"").includes("espn.com")?"ESPN":null)).filter(Boolean)))];
   return {observed_at_utc:record.observed_at_utc,players,availability_sources:providers,availability_source_provider:providers.join(" + "),source_url:record.roster_source||null};
@@ -144,7 +146,8 @@
   const matches=players.filter(p=>{const name=normalize(p.player).split(" ");return name[name.length-1]===surname&&name[0]?.startsWith(initial)});
   return matches.length===1?matches[0]:null;
  };
- const statusLabels={out:"Baja reportada",questionable:"En duda",doubtful:"Dudoso",probable:"Probable",available:"Disponible según fuente",unknown:"Sin estado reportado",conflict:"Fuentes en conflicto"};
+ const statusLabels={out:"OUT",questionable:"QUESTIONABLE",doubtful:"DOUBTFUL",probable:"PROBABLE",available:"AVAILABLE",unknown:"Sin estado reportado",conflict:"Fuentes en conflicto","day-to-day":"DAY-TO-DAY"};
+ const exactStatusLabels={out:"OUT",questionable:"QUESTIONABLE",doubtful:"DOUBTFUL",probable:"PROBABLE",available:"AVAILABLE","day-to-day":"DAY-TO-DAY",unknown:"SIN ESTADO"};
  const playerCard=(name,label,tone="neutral",index=null)=>{
   const item=el("div",undefined,"nba-player-card nba-player-"+tone);
   if(index!==null)item.append(el("span",String(index+1).padStart(2,"0"),"nba-player-number"));
@@ -162,17 +165,24 @@
   const players=Array.isArray(s.players)?[...s.players]:[];
   const starters=(Array.isArray(s.provider_starters)?s.provider_starters:[]).map(raw=>({raw,player:rosterPlayer(raw,players)}));
   const starterIds=new Set(starters.map(x=>x.player?.player_id).filter(Boolean));
-  const outs=players.filter(p=>p.status==="out");
-  const doubts=players.filter(p=>["questionable","doubtful"].includes(p.status));
-  const conflicts=players.filter(p=>p.status==="conflict");
-  const other=players.filter(p=>!starterIds.has(p.player_id)&&!["out","questionable","doubtful","conflict"].includes(p.status));
-  const reported=other.filter(p=>["available","probable"].includes(p.status));
+  const injuryState=p=>p.reported_status||p.status;
+  const outs=players.filter(p=>injuryState(p)==="out");
+  const questionables=players.filter(p=>injuryState(p)==="questionable");
+  const doubtfuls=players.filter(p=>injuryState(p)==="doubtful");
+  const probables=players.filter(p=>injuryState(p)==="probable");
+  const dayToDays=players.filter(p=>injuryState(p)==="day-to-day");
+  const conflicts=players.filter(p=>p.status==="conflict"||injuryState(p)==="conflict");
+  const classified=new Set([...outs,...questionables,...doubtfuls,...probables,...dayToDays,...conflicts].map(p=>p.player_id));
+  const other=players.filter(p=>!starterIds.has(p.player_id)&&!classified.has(p.player_id));
+  const reported=other.filter(p=>p.status==="available");
   const details=el("details",undefined,"nba-team-details");
   const summary=el("summary",undefined,"nba-team-summary");
   summary.append(el("strong",teamName(team),"nba-team-name"));
   const counts=[starters.length+" titulares"];
   if(outs.length)counts.push(outs.length+" bajas");
-  if(doubts.length)counts.push(doubts.length+" en duda");
+  if(questionables.length)counts.push(questionables.length+" questionable");
+  if(doubtfuls.length)counts.push(doubtfuls.length+" doubtful");
+  if(probables.length)counts.push(probables.length+" probable");
   if(conflicts.length)counts.push(conflicts.length+" por revisar");
   summary.append(el("span",counts.join(" · "),"nba-team-count"));
   details.append(summary);
@@ -230,24 +240,27 @@
      for(const p of items){
       const row=el("li","");row.className="nba-availability-grid__row";
       const name=el("span",p.player);name.className="nba-availability-grid__name";row.append(name);
-      const inDoubt=kind==="doubt",isConflict=kind==="conflict",badgeText=inDoubt?(p.status==="doubtful"?"DUDOSO":"EN DUDA"):isConflict?"REVISAR":"OUT";
+      const display=injuryState(p);const inDoubt=kind==="doubt",isConflict=kind==="conflict",badgeText=isConflict?"REVISAR":(statusLabels[display]||"REVISAR");
       const badge=el("span",badgeText);badge.className="nba-availability-grid__badge"+(inDoubt?" nba-availability-grid__badge--doubt":isConflict?" nba-availability-grid__badge--conflict":"");
-      badge.setAttribute("aria-label",inDoubt?(p.status==="doubtful"?"Dudoso según reporte":"En duda según reporte"):isConflict?"Fuentes con estados distintos; requiere revisión":"Baja reportada");row.append(badge);
+      badge.setAttribute("aria-label",isConflict?"Fuentes con estados distintos; requiere revisión":(exactStatusLabels[display]||"Estado según fuente"));row.append(badge);
       list.append(row);
      }
      column.append(list);
-    }else{const empty=el("p",kind==="out"?"Sin bajas reportadas.":"Sin jugadores en duda.");empty.className="nba-availability-grid__empty";column.append(empty);}
+    }else{const empty=el("p",kind==="out"?"Sin bajas reportadas.":"Sin jugadores con este estado.");empty.className="nba-availability-grid__empty";column.append(empty);}
     availabilityGrid.append(column);
    };
    addAvailabilityColumn("Bajas reportadas",outs,"out");
-   addAvailabilityColumn("En duda",doubts,"doubt");
+   addAvailabilityColumn("Questionable",questionables,"doubt");
+   addAvailabilityColumn("Doubtful",doubtfuls,"doubt");
+   addAvailabilityColumn("Probable",probables,"available");
+   addAvailabilityColumn("Day-to-day",dayToDays,"doubt");
    if(conflicts.length)addAvailabilityColumn("Fuentes en conflicto",conflicts,"conflict");
    body.append(availabilityGrid);
-  }else body.append(el("p","Esta captura no reporta bajas ni jugadores en duda.","nba-section-empty"));
+  }else body.append(el("p","Esta captura no reporta estados de disponibilidad para este equipo.","nba-section-empty"));
   if(reported.length){
    const bench=el("details","");bench.className="nba-roster-details";
    const heading=el("summary","Otros estados reportados · "+reported.length+" jugadores · rol en el partido sin confirmar");
-   bench.append(heading,statusGroup("Disponible según fuente",reported,"available"),el("p","La fuente publica la plantilla, pero no identifica a estos jugadores como suplentes para el partido.","nba-roster-note"));
+   bench.append(heading,statusGroup("Available",reported,"available"),el("p","La fuente publica la plantilla, pero no identifica a estos jugadores como suplentes para el partido.","nba-roster-note"));
    body.append(bench);
   }
   if(!s.official_injury_status_verified)body.append(el("p","El reporte oficial NBA de lesiones no está verificado en esta captura; los porcentajes no incorporan estas disponibilidades.","nba-source-warning"));
