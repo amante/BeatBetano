@@ -1,0 +1,95 @@
+{
+  "kind": "nhl_prospective_snapshot_276",
+  "run_id": "45510140869",
+  "date": "2026-11-24",
+  "slate": {
+    "kind": "nhl_research_daily_presentation_275",
+    "date": "2026-11-24",
+    "source_schedule": "https://api-web.nhle.com/v1/score/2026-11-24",
+    "run_id": "45510140869",
+    "official_schedule_games": 1,
+    "experimental_predicted_games": 1,
+    "games": [
+      {
+        "game_id": "2026020385",
+        "home": "EDM",
+        "away": "VGK",
+        "start_utc": "2026-11-25T01:00:00Z",
+        "status": "experimental_forecast",
+        "ml": {
+          "home": 0.55523697,
+          "away": 0.44476302999999995
+        },
+        "previous_ml": null,
+        "ml_change": null,
+        "ml_trend": null,
+        "rt": {
+          "home": 0.3948359094734045,
+          "draw": 0.25651732857543563,
+          "away": 0.34864676195115984
+        },
+        "home_plus3": 0.25031819328837795,
+        "away_plus3": 0.22333780951305984,
+        "first_to_plus3": {
+          "home": 0.25505601508853726,
+          "away": 0.22400504426173745,
+          "none": 0.5209389406497252
+        },
+        "home_win_ml": 0.55523697,
+        "away_win_ml": 0.44476302999999995,
+        "goalie_A_vs_B_probabilities": null,
+        "goalies_confirmed": false,
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 1,
+            "away_rest_days": 2,
+            "rest_differential_days": -1,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": -0.06,
+            "source_as_of_utc": "2026-11-24T23:28:05.398368+00:00",
+            "probability_before": 0.54063847,
+            "probability_after": 0.52570563,
+            "probability_delta_percentage_points": -1.4933
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-24T23:28:09.474573+00:00",
+            "baseline_probability_home": 0.52570563,
+            "scenario_probability_home": 0.55523697,
+            "scenario_probability_away": 0.44476303,
+            "probability_delta_home_percentage_points": 2.9531,
+            "adjusted_goal_expectations": {
+              "home": 3.9177754400725764,
+              "away": 3.532114391478891
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "model": "outcome-only-206-rest-lineup-scenario-v1",
+        "probability_status": "research_experimental_not_official"
+      }
+    ],
+    "official": false,
+    "odds_used": false,
+    "limitations": [
+      "Outcome-only research baseline, not validated full NHL model",
+      "No goalie-conditioned A/B probabilities",
+      "RT includes regulation draw",
+      "home_plus3 and away_plus3 are not complementary events",
+      "First-to-+3 includes neither team",
+      "Rest adjusts the ML market only when both prior fixtures are confirmed completed; missing rest leaves that probability unchanged",
+      "Lineup availability can adjust ML only as an unvalidated conditional scenario when both team exposures are complete and pregame; goalie, travel, officials and special teams are not incorporated"
+    ]
+  },
+  "slate_sha256": "efefdd3149501617749a6b98fd8d9db791027ce4994f08eb86931863933c0062",
+  "official": false
+}

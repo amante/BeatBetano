@@ -1,0 +1,174 @@
+{
+  "kind": "nhl_goalie_ml_comparison_v1",
+  "run_id": "45510140869",
+  "date": "2026-11-24",
+  "as_of_utc": "2026-11-24T23:28:09.962880+00:00",
+  "games": [
+    {
+      "game_id": "2026020385",
+      "home": "EDM",
+      "away": "VGK",
+      "start_utc": "2026-11-25T01:00:00Z",
+      "baseline_p_home": 0.55523697,
+      "candidate_p_home": null,
+      "candidate_p_away": null,
+      "recalibration_p_home": null,
+      "delta_vs_baseline_pp": null,
+      "delta_vs_recalibration_pp": null,
+      "status": "goalie_model_not_executed",
+      "reasons": [
+        "model_failed_incremental_evaluation",
+        "missing_verified_same_run_inputs"
+      ],
+      "computed_at_utc": "2026-11-24T23:28:09.962880+00:00",
+      "pairings": [
+        {
+          "home_goalie": {
+            "player_id": 8482221,
+            "name": "Devon Levi",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8479394,
+            "name": "Carter Hart",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8482221,
+            "name": "Devon Levi",
+            "source": "ESPN/NHL roster",
+            "status": "confirmed"
+          },
+          "away_goalie": {
+            "player_id": 8478499,
+            "name": "Adin Hill",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8477465,
+            "name": "Tristan Jarry",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8479394,
+            "name": "Carter Hart",
+            "source": "ESPN/NHL roster",
+            "status": "likely"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        },
+        {
+          "home_goalie": {
+            "player_id": 8477465,
+            "name": "Tristan Jarry",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "away_goalie": {
+            "player_id": 8478499,
+            "name": "Adin Hill",
+            "source": "NHL.com projected lineup/NHL roster",
+            "status": "projected"
+          },
+          "candidate_p_home": null,
+          "candidate_p_away": null,
+          "recalibration_p_home": null,
+          "delta_vs_baseline_pp": null,
+          "delta_vs_recalibration_pp": null,
+          "status": "goalie_model_not_executed",
+          "reasons": [
+            "model_failed_incremental_evaluation"
+          ]
+        }
+      ],
+      "scenario_count": 4,
+      "unresolved_editorial_candidates": {
+        "EDM": [],
+        "VGK": []
+      },
+      "scenario_history_sha256": "ace8709df2bf10b8b736e547ce9bed91f6e4376c72327137237e97e086304f86",
+      "scenario_inputs_sha256": "42166c178612435c4320b3dd51b1f4de922977120fc1d73e618b983125493947",
+      "baseline_forecast_sha256": "5217dca58bc20b8a2e2e7ee67c6cf507b52f978b676e539b83e4f9d5b4f58104",
+      "baseline_as_of_utc": "2026-11-24T23:28:09.632511+00:00",
+      "scenario_interpretation": "conditional_if_each_named_pair_plays_not_a_weighted_or_confirmed_starter_forecast"
+    }
+  ],
+  "candidate_assessment": {
+    "kind": "nhl_goalie_ml_assessment_v1",
+    "decision": "not_approved_no_incremental_gain",
+    "metrics": {
+      "baseline": {
+        "n": 429,
+        "brier": 0.245599,
+        "log_loss": 0.6843
+      },
+      "recalibration_only": {
+        "n": 429,
+        "brier": 0.245171,
+        "log_loss": 0.683428
+      },
+      "recalibration_plus_goalie": {
+        "n": 429,
+        "brier": 0.246198,
+        "log_loss": 0.685515
+      }
+    },
+    "fit_n": 1342,
+    "validation_n": 550,
+    "test_n": 429,
+    "report_path": "reports/nhl/goalie-candidate-2026-11-02/evaluation.json",
+    "report_sha256": "0d308c26e03f95a58783d4f34db9e20d2b82ecff0e9a91efdd5222bdba7b449f",
+    "parameters_deployed": false,
+    "reason": "Candidate failed to improve both baseline and recalibration control on the same retrospective test cohort."
+  },
+  "published_baseline_replaced": false,
+  "market": "ml",
+  "official": false,
+  "automatic_promotion": false,
+  "limitations": [
+    "ML-only candidate: RT and +3 retain their original model.",
+    "Differences between fitted models are not causal goalie effects.",
+    "Provider confirmation is not independent starter verification."
+  ],
+  "input_exclusions": [
+    {
+      "run_id": "45510140869",
+      "reason": "invalid_evidence",
+      "detail": "Unexpected baseline version or market"
+    }
+  ]
+}
