@@ -1,0 +1,384 @@
+{
+  "schema_version": 1,
+  "kind": "nba_plus20_trajectory_validation_v1",
+  "created_at_utc": "2026-11-24T23:36:05.172284+00:00",
+  "source_snapshot_sha256": "43e2d82360f704ecf8466936b317d892bbba76134d717effe9379ca49711fa4d",
+  "settled_games_requested": 10,
+  "games_with_verified_score_path": 9,
+  "games_unavailable": 1,
+  "plus20_games": 3,
+  "five_largest_observed_advantages": [
+    {
+      "game_id": "401910040",
+      "team": "MIN",
+      "opponent": "BKN",
+      "side": "home",
+      "maximum_lead_points": 30,
+      "period": 4,
+      "clock": "11:20",
+      "tipoff_utc": "2026-11-24T00:30:00Z"
+    },
+    {
+      "game_id": "401910037",
+      "team": "POR",
+      "opponent": "PHI",
+      "side": "away",
+      "maximum_lead_points": 22,
+      "period": 4,
+      "clock": "5:16",
+      "tipoff_utc": "2026-11-24T00:00:00Z"
+    },
+    {
+      "game_id": "401910045",
+      "team": "SA",
+      "opponent": "SAC",
+      "side": "away",
+      "maximum_lead_points": 22,
+      "period": 3,
+      "clock": "3:39",
+      "tipoff_utc": "2026-11-24T03:00:00Z"
+    },
+    {
+      "game_id": "401910044",
+      "team": "LAL",
+      "opponent": "UTAH",
+      "side": "home",
+      "maximum_lead_points": 17,
+      "period": 4,
+      "clock": "2:13",
+      "tipoff_utc": "2026-11-24T03:00:00Z"
+    },
+    {
+      "game_id": "401910038",
+      "team": "IND",
+      "opponent": "OKC",
+      "side": "home",
+      "maximum_lead_points": 13,
+      "period": 3,
+      "clock": "10:08",
+      "tipoff_utc": "2026-11-24T00:30:00Z"
+    }
+  ],
+  "games": [
+    {
+      "game_id": "401910036",
+      "home_team": "CHA",
+      "away_team": "MEM",
+      "tipoff_utc": "2026-11-24T00:00:00Z",
+      "play_by_play_status": "verified_against_settled_score",
+      "final_score": {
+        "home": 111,
+        "away": 117
+      },
+      "max_home_lead": {
+        "points": 4,
+        "period": 1,
+        "clock": "28.7",
+        "play_id": "401910036154"
+      },
+      "max_away_lead": {
+        "points": 12,
+        "period": 4,
+        "clock": "8:06",
+        "play_id": "401910036587"
+      },
+      "either_team_reached_plus20": false,
+      "first_home_plus20": null,
+      "first_away_plus20": null,
+      "lead_changes": 7,
+      "score_observations": 485,
+      "play_events": 485,
+      "source_url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401910036",
+      "source_sha256": "f9e49de5e2bb7f641a2d6de71da1851569e16671df327ae6f8876c60f81fb55a",
+      "fetched_at_utc": "2026-11-24T23:36:04.587264+00:00"
+    },
+    {
+      "game_id": "401910037",
+      "home_team": "PHI",
+      "away_team": "POR",
+      "tipoff_utc": "2026-11-24T00:00:00Z",
+      "play_by_play_status": "verified_against_settled_score",
+      "final_score": {
+        "home": 111,
+        "away": 128
+      },
+      "max_home_lead": {
+        "points": 8,
+        "period": 1,
+        "clock": "9:37",
+        "play_id": "40191003728"
+      },
+      "max_away_lead": {
+        "points": 22,
+        "period": 4,
+        "clock": "5:16",
+        "play_id": "401910037627"
+      },
+      "either_team_reached_plus20": true,
+      "first_home_plus20": null,
+      "first_away_plus20": {
+        "lead_points": 20,
+        "period": 4,
+        "clock": "5:27",
+        "play_id": "401910037620"
+      },
+      "lead_changes": 9,
+      "score_observations": 483,
+      "play_events": 483,
+      "source_url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401910037",
+      "source_sha256": "b30999eb54c7069144fd60ec6d2f457751272c90901196e50744e0ee5b5e1d99",
+      "fetched_at_utc": "2026-11-24T23:36:04.635846+00:00"
+    },
+    {
+      "game_id": "401910038",
+      "home_team": "IND",
+      "away_team": "OKC",
+      "tipoff_utc": "2026-11-24T00:30:00Z",
+      "play_by_play_status": "verified_against_settled_score",
+      "final_score": {
+        "home": 125,
+        "away": 120
+      },
+      "max_home_lead": {
+        "points": 13,
+        "period": 3,
+        "clock": "10:08",
+        "play_id": "401910038368"
+      },
+      "max_away_lead": {
+        "points": 7,
+        "period": 1,
+        "clock": "6:01",
+        "play_id": "40191003884"
+      },
+      "either_team_reached_plus20": false,
+      "first_home_plus20": null,
+      "first_away_plus20": null,
+      "lead_changes": 1,
+      "score_observations": 505,
+      "play_events": 505,
+      "source_url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401910038",
+      "source_sha256": "36d99dd7c9fcfc08152c900e946b4c57c3fc81d1295cb00021fd032f10d9947e",
+      "fetched_at_utc": "2026-11-24T23:36:04.700336+00:00"
+    },
+    {
+      "game_id": "401910039",
+      "home_team": "TOR",
+      "away_team": "MIL",
+      "tipoff_utc": "2026-11-24T00:30:00Z",
+      "play_by_play_status": "verified_against_settled_score",
+      "final_score": {
+        "home": 111,
+        "away": 116
+      },
+      "max_home_lead": {
+        "points": 10,
+        "period": 1,
+        "clock": "9:48",
+        "play_id": "40191003928"
+      },
+      "max_away_lead": {
+        "points": 10,
+        "period": 4,
+        "clock": "1:03",
+        "play_id": "401910039695"
+      },
+      "either_team_reached_plus20": false,
+      "first_home_plus20": null,
+      "first_away_plus20": null,
+      "lead_changes": 15,
+      "score_observations": 491,
+      "play_events": 491,
+      "source_url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401910039",
+      "source_sha256": "ebbf8908bcaab201887c6d970a694e1b17c06d1dd2f2a1a2ff785694bdac39eb",
+      "fetched_at_utc": "2026-11-24T23:36:04.765436+00:00"
+    },
+    {
+      "game_id": "401910040",
+      "home_team": "MIN",
+      "away_team": "BKN",
+      "tipoff_utc": "2026-11-24T00:30:00Z",
+      "play_by_play_status": "verified_against_settled_score",
+      "final_score": {
+        "home": 142,
+        "away": 116
+      },
+      "max_home_lead": {
+        "points": 30,
+        "period": 4,
+        "clock": "11:20",
+        "play_id": "401910040540"
+      },
+      "max_away_lead": {
+        "points": 0,
+        "period": null,
+        "clock": null,
+        "play_id": null
+      },
+      "either_team_reached_plus20": true,
+      "first_home_plus20": {
+        "lead_points": 21,
+        "period": 3,
+        "clock": "3:31",
+        "play_id": "401910040468"
+      },
+      "first_away_plus20": null,
+      "lead_changes": 0,
+      "score_observations": 466,
+      "play_events": 466,
+      "source_url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401910040",
+      "source_sha256": "3d95fef2e5e5531aee35849334823afc1c857b79b36a3eecd2f6d0f7c39f6dcb",
+      "fetched_at_utc": "2026-11-24T23:36:04.799212+00:00"
+    },
+    {
+      "game_id": "401910042",
+      "home_team": "NO",
+      "away_team": "PHX",
+      "tipoff_utc": "2026-11-24T01:00:00Z",
+      "play_by_play_status": "verified_against_settled_score",
+      "final_score": {
+        "home": 119,
+        "away": 123
+      },
+      "max_home_lead": {
+        "points": 10,
+        "period": 3,
+        "clock": "1:11",
+        "play_id": "401910042541"
+      },
+      "max_away_lead": {
+        "points": 7,
+        "period": 1,
+        "clock": "5:03",
+        "play_id": "401910042111"
+      },
+      "either_team_reached_plus20": false,
+      "first_home_plus20": null,
+      "first_away_plus20": null,
+      "lead_changes": 19,
+      "score_observations": 545,
+      "play_events": 545,
+      "source_url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401910042",
+      "source_sha256": "e8336026b0a263a11b9240ed43b1bcdd67fc1851ba375cf304c1138a4e693727",
+      "fetched_at_utc": "2026-11-24T23:36:04.886439+00:00"
+    },
+    {
+      "game_id": "401910043",
+      "home_team": "HOU",
+      "away_team": "LAC",
+      "tipoff_utc": "2026-11-24T01:30:00Z",
+      "play_by_play_status": "verified_against_settled_score",
+      "final_score": {
+        "home": 116,
+        "away": 104
+      },
+      "max_home_lead": {
+        "points": 13,
+        "period": 2,
+        "clock": "9:08",
+        "play_id": "401910043195"
+      },
+      "max_away_lead": {
+        "points": 5,
+        "period": 3,
+        "clock": "9:16",
+        "play_id": "401910043368"
+      },
+      "either_team_reached_plus20": false,
+      "first_home_plus20": null,
+      "first_away_plus20": null,
+      "lead_changes": 4,
+      "score_observations": 448,
+      "play_events": 448,
+      "source_url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401910043",
+      "source_sha256": "76a5bd78af4ed76dfca0ccc0f45e7ca5b3610d6c6c97874108d657f793dcf1a6",
+      "fetched_at_utc": "2026-11-24T23:36:04.941225+00:00"
+    },
+    {
+      "game_id": "401910044",
+      "home_team": "LAL",
+      "away_team": "UTAH",
+      "tipoff_utc": "2026-11-24T03:00:00Z",
+      "play_by_play_status": "verified_against_settled_score",
+      "final_score": {
+        "home": 109,
+        "away": 94
+      },
+      "max_home_lead": {
+        "points": 17,
+        "period": 4,
+        "clock": "2:13",
+        "play_id": "401910044707"
+      },
+      "max_away_lead": {
+        "points": 3,
+        "period": 3,
+        "clock": "1:27",
+        "play_id": "401910044531"
+      },
+      "either_team_reached_plus20": false,
+      "first_home_plus20": null,
+      "first_away_plus20": null,
+      "lead_changes": 11,
+      "score_observations": 513,
+      "play_events": 513,
+      "source_url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401910044",
+      "source_sha256": "0e662b30ef18093e550d0eaa1b9f59080e2f9a7acd37aadf3345ba3b41ccb4e8",
+      "fetched_at_utc": "2026-11-24T23:36:05.057375+00:00"
+    },
+    {
+      "game_id": "401910045",
+      "home_team": "SAC",
+      "away_team": "SA",
+      "tipoff_utc": "2026-11-24T03:00:00Z",
+      "play_by_play_status": "verified_against_settled_score",
+      "final_score": {
+        "home": 107,
+        "away": 123
+      },
+      "max_home_lead": {
+        "points": 12,
+        "period": 1,
+        "clock": "1:38",
+        "play_id": "401910045135"
+      },
+      "max_away_lead": {
+        "points": 22,
+        "period": 3,
+        "clock": "3:39",
+        "play_id": "401910045476"
+      },
+      "either_team_reached_plus20": true,
+      "first_home_plus20": null,
+      "first_away_plus20": {
+        "lead_points": 20,
+        "period": 3,
+        "clock": "4:06",
+        "play_id": "401910045463"
+      },
+      "lead_changes": 5,
+      "score_observations": 488,
+      "play_events": 488,
+      "source_url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401910045",
+      "source_sha256": "fb4bef0e54fba7bc4d2fe99cc56135295d130a6cbe5442e5274b3b9fbf1bb5f3",
+      "fetched_at_utc": "2026-11-24T23:36:05.171647+00:00"
+    }
+  ],
+  "unavailable_games": [
+    {
+      "game_id": "401910041",
+      "status": "unavailable_or_invalid",
+      "error_type": "ValueError",
+      "reason": "play_by_play_score_path_does_not_match_final_box"
+    }
+  ],
+  "model_probabilities_modified": false,
+  "calibrated": false,
+  "production_approved": false,
+  "limitations": [
+    "The report records observed scoring paths; it does not estimate the probability of a future +20 lead.",
+    "Only play-by-play records whose final winner agrees with the settled result are retained as verified.",
+    "A largest lead is descriptive and does not measure its cause or validate a forecast.",
+    "Unavailable source data is listed per game and does not block the base postmortem."
+  ]
+}
