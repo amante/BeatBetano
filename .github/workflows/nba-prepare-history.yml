@@ -39,7 +39,7 @@ jobs:
           python nba/auto_history.py --date "$GAME_DATE" --timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --output results/nba/history.json --workdir results/nba/raw
       - name: Capture archived individual and team observations
         run: |
-          python nba/player_game_history.py --history results/nba/history.json --limit 200 --cache-dir results/nba/raw/player-observations --output results/nba/player_game_history.json
+          python nba/player_game_history.py --history results/nba/history.json --limit 250 --cache-dir results/nba/raw/player-observations --output results/nba/player_game_history.json
           python nba/capture_team_boxscores.py --history results/nba/history.json --limit 80 --cache-dir results/nba/raw/team-observations --output results/nba/team_boxscores.json
       - name: Persist verified daily history deltas
         uses: actions/cache/save@v4

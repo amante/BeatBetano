@@ -126,3 +126,27 @@
 .nba-availability-grid__column--conflict{border-color:#725d35;background:linear-gradient(145deg,#302a1d,#102b40 75%)}
 .nba-availability-grid__column--conflict .nba-availability-grid__heading{color:#ffda83}
 .nba-availability-grid__badge--conflict{background:#674d20;color:#fff1c7}
+
+
+/* Stats Props: compact per-player history with explicit venue notation and comparison icons. */
+.nba-stats-props{margin:9px 0 14px;border:1px solid #2d6078;border-radius:11px;background:#0e2638;overflow:hidden}
+.nba-stats-props>summary{list-style:none;padding:10px 12px;cursor:pointer;color:#74e5f5;font-size:11px;font-weight:800}
+.nba-stats-props>summary::-webkit-details-marker{display:none}
+.nba-stats-props>summary:before{content:"＋";display:inline-grid;place-items:center;width:20px;height:20px;margin-right:7px;border-radius:6px;background:#173e54;color:#66dff2}
+.nba-stats-props[open]>summary:before{content:"−"}
+.nba-stats-props__note{margin:8px 12px;color:#a9c0cf!important;font-size:10px;line-height:1.5}
+.nba-stats-props__metric{margin:0 10px 10px;padding:10px;border:1px solid #294b63;border-radius:9px;background:#122d42}
+.nba-stats-props__heading{margin:0 0 7px;color:#eaf4f8;font-size:11px}
+.nba-stats-props__splits,.nba-stats-props__matchup{margin:4px 0;color:#b9cfdb!important;font-size:10px;line-height:1.5}
+.nba-stats-props__matchup{color:#70e2f2!important}
+.nba-stats-props__empty{margin:8px 0;color:#9db4c2!important;font-size:10px}
+.nba-stats-props__table{display:block;width:100%;overflow-x:auto;border-collapse:collapse;margin-top:8px;color:#e6f0f5;font-size:10px}
+.nba-stats-props__table th,.nba-stats-props__table td{padding:6px 8px;border-bottom:1px solid #29485c;text-align:left;white-space:nowrap}
+.nba-stats-props__table th{color:#91adbd;font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+.nba-stats-props__table th:last-child,.nba-stats-props__comparison{text-align:center!important}
+.nba-stats-props__comparison{width:68px}
+.nba-stats-props__icon{display:inline-grid;place-items:center;width:26px;height:26px;border:1px solid currentColor;border-radius:50%;font-size:16px;font-weight:900;line-height:1}
+.nba-stats-props__icon.is-hit{background:#143d33;color:#79edb3}
+.nba-stats-props__icon.is-below{background:#45252e;color:#ff8c9a}
+.nba-stats-props__icon.is-pending{background:#283644;color:#a9c0cf}
+@media(max-width:560px){.nba-stats-props__metric{margin:0 7px 8px;padding:8px}.nba-stats-props__table th,.nba-stats-props__table td{padding:6px 5px}}

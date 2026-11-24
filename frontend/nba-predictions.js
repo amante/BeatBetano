@@ -467,7 +467,7 @@
     const playerStats=prediction.player_stat_projections;
     if(playerStats){
      const statsDetails=el("details","");statsDetails.className="nba-module-run-status nba-player-stat-projections";
-     statsDetails.append(el("summary","Puntos · rebotes · asistencias · tiros libres por jugador"));
+     statsDetails.append(el("summary","Stats Props por jugador · proyección e historial"));
      statsDetails.append(el("p","Estimación basada en producción histórica por minuto y minutos previstos; incluye puntos, rebotes, asistencias y tiros libres convertidos e intentados. No es una línea de apuestas ni modifica la probabilidad del partido. Los jugadores OUT se muestran en la tabla de bajas y se excluyen de estas proyecciones."));
      for(const team of [prediction.away_team,prediction.home_team]){
       const teamData=playerStats.teams?.[team];if(!teamData)continue;
@@ -510,6 +510,63 @@
        if(player.projection_reason==="insufficient_historical_sample"){const notice=el("span","Muestra insuficiente");notice.className="nba-player-stat-projections__notice";row.append(notice);}
        if(player.projection_reason==="insufficient_minutes_evidence"){const notice=el("span","Minutos insuficientes");notice.className="nba-player-stat-projections__notice";row.append(notice);}
        row.append(metrics);statsDetails.append(row);
+       const propsData=player.stats_props;
+       if(propsData){
+        const propsDetails=el("details","");propsDetails.className="nba-stats-props";
+        propsDetails.append(el("summary","📊 Stats Props · historial de temporada"));
+        propsDetails.addEventListener("toggle",()=>{
+         if(!propsDetails.open||propsDetails.dataset.rendered==="true")return;
+         propsDetails.dataset.rendered="true";
+         propsDetails.append(el("p","Comparación descriptiva de cada partido con la media de temporada disponible. ▲ alcanzó o superó la media; ▼ quedó bajo. No es una línea ni una probabilidad de apuesta.","nba-stats-props__note"));
+         const metricsData=propsData.metrics||{};
+         const definitions=[
+          ["pra","PRA"],["three_pointers_made","Triples"],["rebounds","Rebotes"],["free_throws_made","Tiros libres"]
+         ];
+         const average=value=>typeof value==="number"?value.toFixed(1):"—";
+         for(const [key,label] of definitions){
+          const metric=metricsData[key];if(!metric)continue;
+          const section=el("section","");section.className="nba-stats-props__metric";
+          const summary=metric.summary||{};
+          section.append(el("h6",label+" · media temporada: "+average(summary.season_average)+" · n="+(summary.games||0),"nba-stats-props__heading"));
+          const splitText=(name,data)=>name+": "+average(data?.average)+" · "+(data?.games||0)+" PJ · "+(data?.at_or_above_season_average||0)+" ≥ media";
+          section.append(el("p",splitText("Local",summary.home)+"  |  "+splitText("Visita",summary.away),"nba-stats-props__splits"));
+          const matchup=metric.matchup;
+          if(matchup?.games){
+           section.append(el("p","Contra "+teamName(propsData.opponent_team||"rival")+": "+matchup.at_or_above_season_average+"/"+matchup.games+" partidos ≥ media de temporada","nba-stats-props__matchup"));
+          }else{
+           section.append(el("p","Sin enfrentamientos contra "+teamName(propsData.opponent_team||"este rival")+" en el historial capturado.","nba-stats-props__matchup"));
+          }
+          const games=Array.isArray(metric.games)?metric.games:[];
+          if(!games.length){section.append(el("p","No hay resultados verificables para esta estadística.","nba-stats-props__empty"));propsDetails.append(section);continue;}
+          const table=el("table","");table.className="nba-stats-props__table";
+          const thead=el("thead",""),header=el("tr","");
+          for(const title of ["Fecha","Rival","Dato","Comparación"]){const th=el("th",title);th.scope="col";header.append(th);}
+          thead.append(header);table.append(thead);
+          const tbody=el("tbody","");
+          for(const game of games){
+           const tr=el("tr","");
+           const date=game.tipoff_utc?new Date(game.tipoff_utc).toLocaleDateString("es-CL",{timeZone:"America/New_York"}):"—";
+           tr.append(el("td",date));
+           const opponent=teamName(game.opponent_team||"Rival");
+           tr.append(el("td",(game.is_home?"":"@ ")+opponent));
+           const detail=Number.isFinite(game.attempted)?game.value+" / "+game.attempted:String(game.value);
+           tr.append(el("td",detail));
+           const comparison=el("td","");comparison.className="nba-stats-props__comparison";
+           let icon,labelText,className;
+           if(game.at_or_above_season_average===true){icon="▲";labelText="Alcanzó o superó la media";className="is-hit";}
+           else if(game.at_or_above_season_average===false){icon="▼";labelText="Quedó bajo la media";className="is-below";}
+           else{icon="—";labelText="Sin comparación";className="is-pending";}
+           const badge=el("span",icon,"nba-stats-props__icon "+className);badge.title=labelText;badge.setAttribute("aria-label",labelText);comparison.append(badge);tr.append(comparison);tbody.append(tr);
+          }
+          table.append(tbody);section.append(table);propsDetails.append(section);
+         }
+         const coverage=propsData.history_from_utc&&propsData.history_through_utc
+          ?"Muestra capturada: "+new Date(propsData.history_from_utc).toLocaleDateString("es-CL",{timeZone:"America/New_York"})+"–"+new Date(propsData.history_through_utc).toLocaleDateString("es-CL",{timeZone:"America/New_York"})+" · "+propsData.history_games+" PJ."
+          :"Aún no hay historial capturado para esta temporada.";
+         propsDetails.append(el("p",coverage,"nba-stats-props__note"));
+        });
+        statsDetails.append(propsDetails);
+       }
       }
      }
      card.append(statsDetails);
