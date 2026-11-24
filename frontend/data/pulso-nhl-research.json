@@ -1,155 +1,9 @@
 {
-  "generated_at_utc": "2026-11-23T23:40:39.561321+00:00",
+  "generated_at_utc": "2026-11-24T01:20:55.675021+00:00",
   "date": "2026-11-23",
   "data_kind": "source_readiness_only",
-  "game_count": 7,
+  "game_count": 2,
   "games": [
-    {
-      "sport": "nhl",
-      "game_id": "2026020378",
-      "home": "NJD",
-      "away": "CBJ",
-      "start_utc": "2026-11-24T00:00:00Z",
-      "status": "unavailable",
-      "probabilities": null,
-      "readiness_issues": [
-        "roster_snapshot_not_connected",
-        "goalie_identity_and_confirmation_not_verified",
-        "team_rate_model_not_calibrated"
-      ],
-      "goalie_provider_observations": {
-        "NJD": {
-          "status": "unknown",
-          "source_count": 0
-        },
-        "CBJ": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Cam Talbot",
-          "confirmed_as_official": false
-        }
-      },
-      "odds_used_in_model": false,
-      "official": false
-    },
-    {
-      "sport": "nhl",
-      "game_id": "2026020379",
-      "home": "MTL",
-      "away": "LAK",
-      "start_utc": "2026-11-24T00:30:00Z",
-      "status": "unavailable",
-      "probabilities": null,
-      "readiness_issues": [
-        "roster_snapshot_not_connected",
-        "goalie_identity_and_confirmation_not_verified",
-        "team_rate_model_not_calibrated"
-      ],
-      "goalie_provider_observations": {
-        "MTL": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Jakub Dobes",
-          "confirmed_as_official": false
-        },
-        "LAK": {
-          "status": "unknown",
-          "source_count": 0
-        }
-      },
-      "odds_used_in_model": false,
-      "official": false
-    },
-    {
-      "sport": "nhl",
-      "game_id": "2026020380",
-      "home": "OTT",
-      "away": "CGY",
-      "start_utc": "2026-11-24T00:30:00Z",
-      "status": "unavailable",
-      "probabilities": null,
-      "readiness_issues": [
-        "roster_snapshot_not_connected",
-        "goalie_identity_and_confirmation_not_verified",
-        "team_rate_model_not_calibrated"
-      ],
-      "goalie_provider_observations": {
-        "OTT": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Linus Ullmark",
-          "confirmed_as_official": false
-        },
-        "CGY": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Devin Cooley",
-          "confirmed_as_official": false
-        }
-      },
-      "odds_used_in_model": false,
-      "official": false
-    },
-    {
-      "sport": "nhl",
-      "game_id": "2026020381",
-      "home": "NYI",
-      "away": "TOR",
-      "start_utc": "2026-11-24T00:30:00Z",
-      "status": "unavailable",
-      "probabilities": null,
-      "readiness_issues": [
-        "roster_snapshot_not_connected",
-        "goalie_identity_and_confirmation_not_verified",
-        "team_rate_model_not_calibrated"
-      ],
-      "goalie_provider_observations": {
-        "NYI": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Ilya Sorokin",
-          "confirmed_as_official": false
-        },
-        "TOR": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Anthony Stolarz",
-          "confirmed_as_official": false
-        }
-      },
-      "odds_used_in_model": false,
-      "official": false
-    },
-    {
-      "sport": "nhl",
-      "game_id": "2026020382",
-      "home": "WPG",
-      "away": "UTA",
-      "start_utc": "2026-11-24T00:30:00Z",
-      "status": "unavailable",
-      "probabilities": null,
-      "readiness_issues": [
-        "roster_snapshot_not_connected",
-        "goalie_identity_and_confirmation_not_verified",
-        "team_rate_model_not_calibrated"
-      ],
-      "goalie_provider_observations": {
-        "WPG": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Stuart Skinner",
-          "confirmed_as_official": false
-        },
-        "UTA": {
-          "status": "confirmed",
-          "source_count": 1,
-          "provider_goalie_name": "Sebastian Cossa",
-          "confirmed_as_official": false
-        }
-      },
-      "odds_used_in_model": false,
-      "official": false
-    },
     {
       "sport": "nhl",
       "game_id": "2026020383",
@@ -212,12 +66,15 @@
   "official_predictions": 0,
   "goalie_identity_audit": {
     "observations": 14,
-    "source_confirmed": 11,
-    "identity_linked": 14,
-    "fixture_linked": 14,
-    "pregame_identity_usable": 14
+    "source_confirmed": 12,
+    "error_roster_missing": 10,
+    "error_source_after_start": 10,
+    "error_goalie_name_missing": 10,
+    "identity_linked": 4,
+    "fixture_linked": 4,
+    "pregame_identity_usable": 4
   },
-  "official_roster_teams_captured": 14,
+  "official_roster_teams_captured": 4,
   "roster_capture_errors": {},
   "nhlcom_editorial_lineup_blocks": 14,
   "nhlcom_editorial_source_error": null,
