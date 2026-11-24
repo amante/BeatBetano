@@ -47,6 +47,9 @@ def build_player_stats_props(history_rows, *, season_end_year, opponent_team):
         row for row in history_rows
         if row.get("season_end_year") == season_end_year
         and not row.get("did_not_play")
+        and type(row.get("minutes_played")) in (int, float)
+        and math.isfinite(row["minutes_played"])
+        and row["minutes_played"] > 0
     ]
     season_rows.sort(key=lambda row: (str(row.get("tipoff_utc") or ""), str(row.get("game_id") or "")))
     opponent = str(opponent_team or "").upper()
