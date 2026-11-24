@@ -100,7 +100,7 @@ def capture(snapshot,output,history=None):
     for game in roster.get('games',{}).values():
         for team in game.get('teams',{}).values():
             if team.get('observed_at_utc'):team['observed_at_utc']=roster_completed
-    status=reconcile(snapshot,roster,sporting,official)
+    status=reconcile(snapshot,roster,sporting,official,include_reported_status=True)
     availability=resolve(snapshot,roster,status,lineups)
     for name,obj in [('sporting',sporting),('roster',roster),('lineups',lineups),('lineup_candidates',candidates),('official_injury_source',official),('status',status),('availability',availability)]:save(name+'.json',obj)
     teams=[t for g in availability['games'].values() for t in g['teams'].values()]

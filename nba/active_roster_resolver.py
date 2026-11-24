@@ -51,6 +51,8 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
     for r in claims:
      source={"url":r["source_url"],"status":r["status"],
              "observed_at_utc":r["observed_at_utc"]}
+     for key in ("reported_status","raw_status"):
+      if r.get(key) is not None:source[key]=r[key]
      # Keep the archived availability schema stable for existing feeds.
      # Rich provenance is required only for official NBA PDF claims and is
      # consumed by the research impact sidecar.
@@ -58,10 +60,13 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
       for key in ("reported_at_utc","confidence","identity_match","official_row"):
        if r.get(key) is not None:source[key]=r[key]
      status_sources.append(source)
-    players.append({"player_id":pid,"player":name,"status":status,
+    player_record={"player_id":pid,"player":name,"status":status,
       "starter_projected":name in starter_names,
       "status_sources":status_sources,
-      "max_minutes":member.get("max_minutes",48)})
+      "max_minutes":member.get("max_minutes",48)}
+    reported_states={r.get("reported_status") for r in claims if r.get("reported_status")}
+    if len(reported_states)==1:player_record["reported_status"]=next(iter(reported_states))
+    players.append(player_record)
    ready=good and not unresolved and all(p["status"] in ("available","out") for p in players)
    teams[team]={"roster_complete":bool(good),"roster_source":evidence.get("source_url") if good else None,
     "observed_at_utc":evidence.get("observed_at_utc") if good else None,
