@@ -1,0 +1,371 @@
+{
+  "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+  "emitted_at_utc": "2026-11-24T22:12:31.345749+00:00",
+  "fixtures": 3,
+  "research_scenarios": 0,
+  "official_injury_impact_summary": {
+    "games_with_injury_scenario": 3,
+    "official_out_players": 0,
+    "baseline_probabilities_changed": false,
+    "calibrated": false
+  },
+  "coverage_status": "captured",
+  "source_failure": null,
+  "games": [
+    {
+      "game_id": "401909314",
+      "emitted_at_utc": "2026-11-24T22:12:30.842807+00:00",
+      "tipoff_utc": "2026-11-25T00:00:00Z",
+      "home_team": "ORL",
+      "away_team": "DET",
+      "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+      "baseline_snapshot_sha256": "22f9d8859e91307dad704db5f997bdbe8b4c76f0cf8e4c8f1661bd9262e41ebb",
+      "scenario_sha256": "434a1e632886203024aa9ca8c4ac4fb298d4b062403f1de1c0ccc48a6ea79b5a",
+      "coverage_sha256": "f81c0e4556f6074cef23e5ebe4339de1e2a8ae8fbc346099f7561bb227949baf",
+      "team_ml_sha256": "9313fbaeaba4d3d8f7baad86476e9b7b9bba2cbb0ef84cf354eae7b9e49ced97",
+      "possession_sha256": "6e9bf6c757042693312d74845e4ed026b0478c9e3c5f9ab5aed557149d09ff7b",
+      "status": "PASS",
+      "rotation_rating_deltas": {
+        "ORL": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "DET": {
+          "offense_delta_per_100": 0.09631479924525924,
+          "defense_delta_per_100": 0.027065485544278838,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "blocked": {
+        "ORL": [
+          "incomplete_usage_sample",
+          "insufficient_opponent_adjusted_ratings"
+        ],
+        "DET": [
+          "incomplete_usage_sample",
+          "insufficient_opponent_adjusted_ratings",
+          "unsupported_player_effect:4397449",
+          "unsupported_player_effect:5107818",
+          "unsupported_player_effect:4700852",
+          "unsupported_player_effect:5258459",
+          "unsupported_player_effect:2990962",
+          "unsupported_player_effect:3157465",
+          "unsupported_player_effect:4397882"
+        ]
+      },
+      "comparison": null,
+      "assumptions": [
+        "Conditional minutes and availability from the scenario.",
+        "Turnover pressure and fatigue held fixed across both branches.",
+        "Historical usage is a coverage check and does not alter the rating deltas."
+      ],
+      "calibrated": false,
+      "production_approved": false,
+      "no_odds_input": true,
+      "content_sha256": "6c61419b11d40fb5e624baa0231c1dcffaafcc47608fbe5d37b90138829fd5c4",
+      "official_injury_impact": {
+        "status": "research_only",
+        "emitted_at_utc": "2026-11-24T22:12:13.095144+00:00",
+        "teams": {
+          "ORL": {
+            "team": "ORL",
+            "roster_complete": true,
+            "official_report_capture_status": "report_not_retrieved",
+            "official_report_fixture_rows": 0,
+            "official_reported_players": [],
+            "conflicting_official_claims": [],
+            "official_out_count": 0,
+            "historical_output_loss_per_game": {
+              "points": 0.0,
+              "rebounds": 0.0,
+              "assists": 0.0,
+              "turnovers": 0.0
+            },
+            "players_without_historical_minutes": [],
+            "minute_redistribution": {
+              "status": "no_official_out_players",
+              "baseline": null,
+              "conditional": null,
+              "changes": [],
+              "lineup_role_weights_applied": 0,
+              "lineup_evidence_status": "no_official_out_players"
+            },
+            "historical_output_from_added_minutes_per_game": null,
+            "replacement_history_gaps": [],
+            "players_without_confirmed_availability": 13,
+            "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
+            "all_player_changes_are_research_estimates": true
+          },
+          "DET": {
+            "team": "DET",
+            "roster_complete": true,
+            "official_report_capture_status": "report_not_retrieved",
+            "official_report_fixture_rows": 0,
+            "official_reported_players": [],
+            "conflicting_official_claims": [],
+            "official_out_count": 0,
+            "historical_output_loss_per_game": {
+              "points": 0.0,
+              "rebounds": 0.0,
+              "assists": 0.0,
+              "turnovers": 0.0
+            },
+            "players_without_historical_minutes": [],
+            "minute_redistribution": {
+              "status": "no_official_out_players",
+              "baseline": null,
+              "conditional": null,
+              "changes": [],
+              "lineup_role_weights_applied": 0,
+              "lineup_evidence_status": "no_official_out_players"
+            },
+            "historical_output_from_added_minutes_per_game": null,
+            "replacement_history_gaps": [],
+            "players_without_confirmed_availability": 14,
+            "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
+            "all_player_changes_are_research_estimates": true
+          }
+        },
+        "probabilities_adjusted": false,
+        "baseline_snapshot_sha256": "22f9d8859e91307dad704db5f997bdbe8b4c76f0cf8e4c8f1661bd9262e41ebb"
+      }
+    },
+    {
+      "game_id": "401909315",
+      "emitted_at_utc": "2026-11-24T22:12:30.842807+00:00",
+      "tipoff_utc": "2026-11-25T01:00:00Z",
+      "home_team": "WSH",
+      "away_team": "BOS",
+      "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+      "baseline_snapshot_sha256": "22f9d8859e91307dad704db5f997bdbe8b4c76f0cf8e4c8f1661bd9262e41ebb",
+      "scenario_sha256": "30afdea5ba9fe4cacb049e4074a5a483055473d80f63f47f1ed8cda6b8aa8a70",
+      "coverage_sha256": "f81c0e4556f6074cef23e5ebe4339de1e2a8ae8fbc346099f7561bb227949baf",
+      "team_ml_sha256": "9313fbaeaba4d3d8f7baad86476e9b7b9bba2cbb0ef84cf354eae7b9e49ced97",
+      "possession_sha256": "6e9bf6c757042693312d74845e4ed026b0478c9e3c5f9ab5aed557149d09ff7b",
+      "status": "PASS",
+      "rotation_rating_deltas": {
+        "WSH": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "BOS": {
+          "offense_delta_per_100": 0.10658173554778526,
+          "defense_delta_per_100": -0.027049996986656322,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "blocked": {
+        "WSH": [
+          "missing_path_features",
+          "insufficient_opponent_adjusted_ratings"
+        ],
+        "BOS": [
+          "unsupported_player_effect:5142621",
+          "unsupported_player_effect:3195",
+          "unsupported_player_effect:4397251"
+        ]
+      },
+      "comparison": null,
+      "assumptions": [
+        "Conditional minutes and availability from the scenario.",
+        "Turnover pressure and fatigue held fixed across both branches.",
+        "Historical usage is a coverage check and does not alter the rating deltas."
+      ],
+      "calibrated": false,
+      "production_approved": false,
+      "no_odds_input": true,
+      "content_sha256": "92b66f4d4f9e15d1cb4c3f4b1eac021eaeb155b1b374182ad483dbe9b025106d",
+      "official_injury_impact": {
+        "status": "research_only",
+        "emitted_at_utc": "2026-11-24T22:12:13.095144+00:00",
+        "teams": {
+          "WSH": {
+            "team": "WSH",
+            "roster_complete": true,
+            "official_report_capture_status": "report_not_retrieved",
+            "official_report_fixture_rows": 0,
+            "official_reported_players": [],
+            "conflicting_official_claims": [],
+            "official_out_count": 0,
+            "historical_output_loss_per_game": {
+              "points": 0.0,
+              "rebounds": 0.0,
+              "assists": 0.0,
+              "turnovers": 0.0
+            },
+            "players_without_historical_minutes": [],
+            "minute_redistribution": {
+              "status": "no_official_out_players",
+              "baseline": null,
+              "conditional": null,
+              "changes": [],
+              "lineup_role_weights_applied": 0,
+              "lineup_evidence_status": "no_official_out_players"
+            },
+            "historical_output_from_added_minutes_per_game": null,
+            "replacement_history_gaps": [],
+            "players_without_confirmed_availability": 14,
+            "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
+            "all_player_changes_are_research_estimates": true
+          },
+          "BOS": {
+            "team": "BOS",
+            "roster_complete": true,
+            "official_report_capture_status": "report_not_retrieved",
+            "official_report_fixture_rows": 0,
+            "official_reported_players": [],
+            "conflicting_official_claims": [],
+            "official_out_count": 0,
+            "historical_output_loss_per_game": {
+              "points": 0.0,
+              "rebounds": 0.0,
+              "assists": 0.0,
+              "turnovers": 0.0
+            },
+            "players_without_historical_minutes": [],
+            "minute_redistribution": {
+              "status": "no_official_out_players",
+              "baseline": null,
+              "conditional": null,
+              "changes": [],
+              "lineup_role_weights_applied": 0,
+              "lineup_evidence_status": "no_official_out_players"
+            },
+            "historical_output_from_added_minutes_per_game": null,
+            "replacement_history_gaps": [],
+            "players_without_confirmed_availability": 16,
+            "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
+            "all_player_changes_are_research_estimates": true
+          }
+        },
+        "probabilities_adjusted": false,
+        "baseline_snapshot_sha256": "22f9d8859e91307dad704db5f997bdbe8b4c76f0cf8e4c8f1661bd9262e41ebb"
+      }
+    },
+    {
+      "game_id": "401909316",
+      "emitted_at_utc": "2026-11-24T22:12:30.842807+00:00",
+      "tipoff_utc": "2026-11-25T03:00:00Z",
+      "home_team": "DEN",
+      "away_team": "DAL",
+      "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
+      "baseline_snapshot_sha256": "22f9d8859e91307dad704db5f997bdbe8b4c76f0cf8e4c8f1661bd9262e41ebb",
+      "scenario_sha256": "c040dc7240725bfed32432d25cd2bd605379fe0841d286129ec5de4b5d3ec08a",
+      "coverage_sha256": "f81c0e4556f6074cef23e5ebe4339de1e2a8ae8fbc346099f7561bb227949baf",
+      "team_ml_sha256": "9313fbaeaba4d3d8f7baad86476e9b7b9bba2cbb0ef84cf354eae7b9e49ced97",
+      "possession_sha256": "6e9bf6c757042693312d74845e4ed026b0478c9e3c5f9ab5aed557149d09ff7b",
+      "status": "PASS",
+      "rotation_rating_deltas": {
+        "DEN": {
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        },
+        "DAL": {
+          "offense_delta_per_100": -0.0005357363829786915,
+          "defense_delta_per_100": -0.016523717741097056,
+          "turnover_rate_delta": 0.0,
+          "forced_turnover_rate_delta": 0.0
+        }
+      },
+      "blocked": {
+        "DEN": [
+          "incomplete_usage_sample",
+          "insufficient_opponent_adjusted_ratings"
+        ],
+        "DAL": [
+          "insufficient_opponent_adjusted_ratings",
+          "unsupported_player_effect:4701208",
+          "unsupported_player_effect:5105806",
+          "unsupported_player_effect:5106040"
+        ]
+      },
+      "comparison": null,
+      "assumptions": [
+        "Conditional minutes and availability from the scenario.",
+        "Turnover pressure and fatigue held fixed across both branches.",
+        "Historical usage is a coverage check and does not alter the rating deltas."
+      ],
+      "calibrated": false,
+      "production_approved": false,
+      "no_odds_input": true,
+      "content_sha256": "86eb14f2d9d2fadc4610d45d144149c186d2799d85542e4c5106d75615054388",
+      "official_injury_impact": {
+        "status": "research_only",
+        "emitted_at_utc": "2026-11-24T22:12:13.095144+00:00",
+        "teams": {
+          "DEN": {
+            "team": "DEN",
+            "roster_complete": true,
+            "official_report_capture_status": "report_not_retrieved",
+            "official_report_fixture_rows": 0,
+            "official_reported_players": [],
+            "conflicting_official_claims": [],
+            "official_out_count": 0,
+            "historical_output_loss_per_game": {
+              "points": 0.0,
+              "rebounds": 0.0,
+              "assists": 0.0,
+              "turnovers": 0.0
+            },
+            "players_without_historical_minutes": [],
+            "minute_redistribution": {
+              "status": "no_official_out_players",
+              "baseline": null,
+              "conditional": null,
+              "changes": [],
+              "lineup_role_weights_applied": 0,
+              "lineup_evidence_status": "no_official_out_players"
+            },
+            "historical_output_from_added_minutes_per_game": null,
+            "replacement_history_gaps": [],
+            "players_without_confirmed_availability": 17,
+            "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
+            "all_player_changes_are_research_estimates": true
+          },
+          "DAL": {
+            "team": "DAL",
+            "roster_complete": true,
+            "official_report_capture_status": "report_not_retrieved",
+            "official_report_fixture_rows": 0,
+            "official_reported_players": [],
+            "conflicting_official_claims": [],
+            "official_out_count": 0,
+            "historical_output_loss_per_game": {
+              "points": 0.0,
+              "rebounds": 0.0,
+              "assists": 0.0,
+              "turnovers": 0.0
+            },
+            "players_without_historical_minutes": [],
+            "minute_redistribution": {
+              "status": "no_official_out_players",
+              "baseline": null,
+              "conditional": null,
+              "changes": [],
+              "lineup_role_weights_applied": 0,
+              "lineup_evidence_status": "no_official_out_players"
+            },
+            "historical_output_from_added_minutes_per_game": null,
+            "replacement_history_gaps": [],
+            "players_without_confirmed_availability": 14,
+            "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
+            "all_player_changes_are_research_estimates": true
+          }
+        },
+        "probabilities_adjusted": false,
+        "baseline_snapshot_sha256": "22f9d8859e91307dad704db5f997bdbe8b4c76f0cf8e4c8f1661bd9262e41ebb"
+      }
+    }
+  ],
+  "calibrated": false,
+  "production_approved": false,
+  "content_sha256": "6c565fc1d43de2ba1278f3e4b6c354a3b77c448c8e81cb475d10cdf90bc6e4f4"
+}
