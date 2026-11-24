@@ -10,7 +10,7 @@ from pathlib import Path
 
 OUT={"out","inactive","suspended"}
 IN={"available","active"}
-UNKNOWN={"questionable","doubtful","probable","day-to-day","unknown"}
+UNKNOWN={"questionable","doubtful","probable","unknown"}
 def utc(value):
  try:
   d=datetime.fromisoformat(str(value).replace("Z","+00:00"))
@@ -50,8 +50,6 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
     status_sources=[]
     for r in claims:
      source={"url":r["source_url"],"status":r["status"],
-             "reported_status":r.get("reported_status",r["status"]),
-             "raw_status":r.get("raw_status"),
              "observed_at_utc":r["observed_at_utc"]}
      # Keep the archived availability schema stable for existing feeds.
      # Rich provenance is required only for official NBA PDF claims and is
@@ -61,7 +59,6 @@ def resolve(snapshot,roster_feed,status_feed,lineups):
        if r.get(key) is not None:source[key]=r[key]
      status_sources.append(source)
     players.append({"player_id":pid,"player":name,"status":status,
-      "reported_status":(claims[0].get("reported_status",claims[0]["status"]) if claims and len({r.get("reported_status",r["status"]) for r in claims})==1 else "conflict" if claims else "unknown"),
       "starter_projected":name in starter_names,
       "status_sources":status_sources,
       "max_minutes":member.get("max_minutes",48)})
