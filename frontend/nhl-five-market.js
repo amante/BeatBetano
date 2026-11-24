@@ -79,7 +79,7 @@
    const game=data&&data.date===selected&&Array.isArray(data.games)?data.games.find(item=>normalizedGameId(item.game_id)===id):null;
    const card=game?.status==="experimental_forecast"?cards.find(item=>normalizedGameId(item.dataset.gameId)===id):null;
    if(card)attachedForecasts++;
-   addDetailPanelContent(left,card,".nhl-goalie-comparison,.nhl-match-context,.nhl-absence-exposure","No hay una captura disponible de porteros, alineaciones o bajas para este partido.");
+   addDetailPanelContent(left,card,".nhl-goalie-comparison,.nhl-match-context,.nhl-absence-exposure,.nhl-pregame-input-inventory","No hay una captura disponible de porteros, alineaciones o bajas para este partido.");
    right.replaceChildren(make("h4","Corrida y probabilidades"));
    if(game){
     const runLabel=["Captura "+data.date,data.run_id?"corrida #"+data.run_id:null,"Experimental · sin calibrar"].filter(Boolean).join(" · ");
