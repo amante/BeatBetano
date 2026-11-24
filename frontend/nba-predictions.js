@@ -540,11 +540,13 @@
           if(!games.length){section.append(el("p","No hay resultados verificables para esta estadística.","nba-stats-props__empty"));propsDetails.append(section);continue;}
           const table=el("table","");table.className="nba-stats-props__table";
           const thead=el("thead",""),header=el("tr","");
-          for(const title of ["Rival","Dato","Comparación"]){const th=el("th",title);th.scope="col";header.append(th);}
+          for(const title of ["Fecha","Rival","Dato","Comparación"]){const th=el("th",title);th.scope="col";header.append(th);}
           thead.append(header);table.append(thead);
           const tbody=el("tbody","");
           for(const game of games){
            const tr=el("tr","");
+           const date=game.tipoff_utc?new Date(game.tipoff_utc).toLocaleDateString("es-CL",{timeZone:"America/New_York"}):"—";
+           tr.append(el("td",date));
            const opponent=teamName(game.opponent_team||"Rival");
            tr.append(el("td",(game.is_home?"":"@ ")+opponent));
            const detail=Number.isFinite(game.attempted)?game.value+" / "+game.attempted:String(game.value);
