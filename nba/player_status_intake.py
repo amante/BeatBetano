@@ -22,7 +22,9 @@ def utc(s):
 def status(s):
  t=normalize(s)
  if t in ("out","inactive","suspended","ruled out"):return "out"
- if t in ("questionable","doubtful","day-to-day","day to day"):return "questionable"
+ if t=="questionable":return "questionable"
+ if t=="doubtful":return "doubtful"
+ if t in ("day-to-day","day to day"):return "day-to-day"
  if t=="probable":return "probable"
  # Do not infer active from absence of an injury entry.
  return None
@@ -138,7 +140,7 @@ def reconcile(snapshot,roster,sporting,official=None):
      unknown.append({"game_id":gid,"team":team,"player":row.get("player"),"reason":"not_unique_roster_match"})
      continue
     pid=ids[0]
-    claims.setdefault(pid,[]).append({"player_id":pid,"status":state,
+    claims.setdefault(pid,[]).append({"player_id":pid,"status":state,"reported_status":state,"raw_status":row.get("status"),
      "source_url":source,"observed_at_utc":evidence["observed_at_utc"],
      "identity_match":"provider_id" if source_id else "unique_normalized_name",
      "reported_at_utc":row.get("reported_at_utc"),
@@ -157,7 +159,7 @@ def reconcile(snapshot,roster,sporting,official=None):
        "source_url":official.get("report_url"),"report_as_of_utc":official.get("source_report_as_of_utc")})
      continue
     pid=ids[0];official_matched+=1
-    claims.setdefault(pid,[]).append({"player_id":pid,"status":state,
+    claims.setdefault(pid,[]).append({"player_id":pid,"status":state,"reported_status":state,"raw_status":row.get("status"),
      "source_url":official.get("report_url"),"observed_at_utc":official["downloaded_at_utc"],
      "identity_match":"unique_normalized_name_within_team_roster",
      "reported_at_utc":official.get("source_report_as_of_utc"),
