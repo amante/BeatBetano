@@ -1481,11 +1481,80 @@
           "log_loss": 0.705073
         }
       ],
-      "revision_sha256": "214ac8fd917a9c30a7d6598ac9b3b9e48c769b5a37c6337a7cdfa3ab8c153bc3",
-      "generated_at_utc": "2026-11-23T23:58:10.751259+00:00",
+      "revision_sha256": "c9bc9d8945bfb7311929240a2a5bf5295d49a54ab967d044a6d1c08865c6ccd5",
+      "generated_at_utc": "2026-11-24T22:31:10.408070+00:00",
       "player_props": {
         "status": "partial",
         "forecast_games": 5,
+        "graded_games": 0,
+        "forecast_players": 0,
+        "graded_players": 0,
+        "metrics": []
+      }
+    },
+    {
+      "date": "2026-11-23",
+      "status": "complete",
+      "complete": true,
+      "official_games": 6,
+      "forecast_games": 6,
+      "graded_games": 6,
+      "market_forecasts_scored": 30,
+      "metrics": [
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "away3",
+          "n": 6,
+          "modal_correct": 6,
+          "brier": 0.047673,
+          "log_loss": 0.245687
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "first3",
+          "n": 6,
+          "modal_correct": 6,
+          "brier": 0.118832,
+          "log_loss": 0.66522
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "home3",
+          "n": 6,
+          "modal_correct": 6,
+          "brier": 0.074662,
+          "log_loss": 0.318011
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "rt",
+          "n": 6,
+          "modal_correct": 4,
+          "brier": 0.177807,
+          "log_loss": 0.897804
+        },
+        {
+          "model_version": "outcome-only-206-rest-context-v1",
+          "market": "ml",
+          "n": 2,
+          "modal_correct": 2,
+          "brier": 0.188891,
+          "log_loss": 0.569941
+        },
+        {
+          "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+          "market": "ml",
+          "n": 4,
+          "modal_correct": 3,
+          "brier": 0.238128,
+          "log_loss": 0.66932
+        }
+      ],
+      "revision_sha256": "b8b17b5278717bb31d96dc5d33c045a9cf628524b60ed523c1cb1076ac8f55e1",
+      "generated_at_utc": "2026-11-24T22:31:11.419846+00:00",
+      "player_props": {
+        "status": "partial",
+        "forecast_games": 6,
         "graded_games": 0,
         "forecast_players": 0,
         "graded_players": 0,
