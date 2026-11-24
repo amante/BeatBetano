@@ -1,4 +1,4 @@
-"""Build transparent per-player points/rebounds/assists projections for NBA fixtures."""
+"""Build transparent per-player points/rebounds/assists/free-throw projections."""
 import argparse
 import hashlib
 import json
@@ -166,7 +166,7 @@ def build(snapshot, module_context, player_history, roster_feed):
                 if scenario_valid and change_valid and scenario_minutes == 0:
                     minutes = 0.0
                 metrics = {}
-                for metric in ("points", "rebounds", "assists"):
+                for metric in ("points", "rebounds", "assists", "free_throws_made", "free_throws_attempted"):
                     sample = [row for row in player_history_rows
                               if type(row.get(metric)) in (int, float) and math.isfinite(row[metric])]
                     weighted_minutes = 0.0
