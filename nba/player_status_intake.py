@@ -22,11 +22,15 @@ def utc(s):
 def status(s):
  t=normalize(s)
  if t in ("out","inactive","suspended","ruled out"):return "out"
- if t=="questionable":return "questionable"
- if t=="doubtful":return "doubtful"
- if t in ("day-to-day","day to day"):return "day-to-day"
+ if t in ("questionable","doubtful","day-to-day","day to day"):return "questionable"
  if t=="probable":return "probable"
  # Do not infer active from absence of an injury entry.
+ return None
+def reported_status(s):
+ t=normalize(s)
+ if t in ("out","inactive","suspended","ruled out"):return "out"
+ if t in ("questionable","doubtful","probable","available","active"):return t
+ if t in ("day-to-day","day to day"):return "day-to-day"
  return None
 def official_status(s):
  t=normalize(s)
@@ -97,7 +101,7 @@ def official_rows_for_game(game,official,roster=None):
           if report_game_day(row.get("game_date"))==expected_day
           and any(same_team(row.get("team"),team) for team in teams)]
  return relevant,pending,diagnostic
-def reconcile(snapshot,roster,sporting,official=None):
+def reconcile(snapshot,roster,sporting,official=None,include_reported_status=False):
  official_provided=official is not None
  official=official or {}
  digest=snapshot["content_sha256"]
@@ -140,11 +144,16 @@ def reconcile(snapshot,roster,sporting,official=None):
      unknown.append({"game_id":gid,"team":team,"player":row.get("player"),"reason":"not_unique_roster_match"})
      continue
     pid=ids[0]
-    claims.setdefault(pid,[]).append({"player_id":pid,"status":state,
+    claim={"player_id":pid,"status":state,
      "source_url":source,"observed_at_utc":evidence["observed_at_utc"],
      "identity_match":"provider_id" if source_id else "unique_normalized_name",
      "reported_at_utc":row.get("reported_at_utc"),
-     "confidence":"supplementary_espn_injury_claim_not_official"})
+     "confidence":"supplementary_espn_injury_claim_not_official"}
+    if include_reported_status:
+     exact=reported_status(row.get("status"))
+     if exact is not None:claim["reported_status"]=exact
+     if row.get("status") is not None:claim["raw_status"]=row.get("status")
+    claims.setdefault(pid,[]).append(claim)
    for row in official_rows:
     row_team=row.get("team")
     if row_team and not same_team(row_team,team):continue
@@ -159,13 +168,17 @@ def reconcile(snapshot,roster,sporting,official=None):
        "source_url":official.get("report_url"),"report_as_of_utc":official.get("source_report_as_of_utc")})
      continue
     pid=ids[0];official_matched+=1
-    claims.setdefault(pid,[]).append({"player_id":pid,"status":state,
+    claim={"player_id":pid,"status":state,
      "source_url":official.get("report_url"),"observed_at_utc":official["downloaded_at_utc"],
      "identity_match":"unique_normalized_name_within_team_roster",
      "reported_at_utc":official.get("source_report_as_of_utc"),
      "confidence":"official_nba_injury_report_unique_roster_match",
      "official_row":{"game_date":row.get("game_date"),"matchup":row.get("matchup"),
-       "page":row.get("page"),"line":row.get("line"),"raw":row.get("raw")}})
+       "page":row.get("page"),"line":row.get("line"),"raw":row.get("raw")}}
+    if include_reported_status:
+     claim["reported_status"]=state
+     claim["raw_status"]=row.get("status")
+    claims.setdefault(pid,[]).append(claim)
    for pid,observations in claims.items():
     if len({x["status"] for x in observations})>1:
      conflicts.append({"game_id":gid,"team":team,"player_id":pid})
