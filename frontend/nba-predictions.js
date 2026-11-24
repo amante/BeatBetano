@@ -467,7 +467,7 @@
     const playerStats=prediction.player_stat_projections;
     if(playerStats){
      const statsDetails=el("details","");statsDetails.className="nba-module-run-status nba-player-stat-projections";
-     statsDetails.append(el("summary","Puntos · rebotes · asistencias · tiros libres por jugador"));
+     statsDetails.append(el("summary","Stats Props por jugador · proyección e historial"));
      statsDetails.append(el("p","Estimación basada en producción histórica por minuto y minutos previstos; incluye puntos, rebotes, asistencias y tiros libres convertidos e intentados. No es una línea de apuestas ni modifica la probabilidad del partido. Los jugadores OUT se muestran en la tabla de bajas y se excluyen de estas proyecciones."));
      for(const team of [prediction.away_team,prediction.home_team]){
       const teamData=playerStats.teams?.[team];if(!teamData)continue;
