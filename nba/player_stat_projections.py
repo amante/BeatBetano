@@ -132,7 +132,8 @@ def build(snapshot, module_context, player_history, roster_feed):
                     hist = matches[0] if len(matches) == 1 else None
                 status_row = status_by_id.get(pid) or status_by_name.get(name_key(name), {})
                 availability_status = status_row.get("status", "unknown")
-                all_player_history_rows = history_by_player.get((team, str(hist.get("player_id"))), []) if hist else []
+                stats_history_player_id = str(hist.get("player_id")) if hist else pid
+                all_player_history_rows = history_by_player.get((team, stats_history_player_id), [])
                 all_player_history_rows = sorted(all_player_history_rows, key=lambda row: stamp(row["tipoff_utc"]), reverse=True)
                 player_history_rows = all_player_history_rows[:10]
                 season_history_rows = [row for row in all_player_history_rows
