@@ -1563,16 +1563,28 @@
     },
     {
       "date": "2026-11-24",
-      "status": "complete",
-      "complete": true,
+      "status": "needs_review",
+      "complete": false,
       "official_games": 2,
       "forecast_games": 2,
       "graded_games": 2,
-      "market_forecasts_scored": 10,
+      "market_forecasts_scored": 12,
       "metrics": [
+        {
+          "model_version": "nhl-prior-day-standings",
+          "market": "ml",
+          "source_classification": "unvalidated_model_output",
+          "point_in_time_sources_verified": false,
+          "n": 2,
+          "modal_correct": 1,
+          "brier": 0.246526,
+          "log_loss": 0.68581
+        },
         {
           "model_version": "outcome-only-206-frozen-params",
           "market": "away3",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
           "n": 2,
           "modal_correct": 1,
           "brier": 0.297326,
@@ -1581,6 +1593,8 @@
         {
           "model_version": "outcome-only-206-frozen-params",
           "market": "first3",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
           "n": 2,
           "modal_correct": 1,
           "brier": 0.197357,
@@ -1589,6 +1603,8 @@
         {
           "model_version": "outcome-only-206-frozen-params",
           "market": "home3",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
           "n": 2,
           "modal_correct": 2,
           "brier": 0.048067,
@@ -1597,6 +1613,8 @@
         {
           "model_version": "outcome-only-206-frozen-params",
           "market": "rt",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
           "n": 2,
           "modal_correct": 1,
           "brier": 0.196738,
@@ -1605,14 +1623,16 @@
         {
           "model_version": "outcome-only-206-rest-lineup-scenario-v1",
           "market": "ml",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
           "n": 2,
           "modal_correct": 1,
           "brier": 0.271397,
           "log_loss": 0.736182
         }
       ],
-      "revision_sha256": "4cb7051d9f018707a1d9efb10fb5bb63b8c424040429ffbc82bb74c013ccd241",
-      "generated_at_utc": "2026-11-25T21:45:52.079925+00:00",
+      "revision_sha256": "1357021c0773482541471167f6f9f4c7c05aa962b47b282831c4a2860ded50ca",
+      "generated_at_utc": "2026-11-25T22:12:23.840288+00:00",
       "player_props": {
         "status": "partial",
         "forecast_games": 2,
