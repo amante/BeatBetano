@@ -350,9 +350,15 @@ def analyze(repo,day,get=fetch_json,now=None):
 def save(repo,core,sources,forecasts,now=None):
  repo=Path(repo);now=now or datetime.now(timezone.utc);day=core['date'];public=repo/'frontend/data/nhl-postmortems'/(day+'.json');revision=digest(core)
  previous=read(public) if public.exists() else None
- # Never erase previously scored finals when an upstream temporarily regresses.
- if previous and (not set(g['game_id'] for g in previous['games'] if g.get('outcomes')).issubset(set(g['game_id'] for g in core['games'] if g.get('outcomes'))) or (previous['complete'] and not core['complete'])):
-  return {'date':day,'status':'preserved_previous_result','upstream_status':core['status'],'source_errors':core['source_errors']}
+ # Preserve prior finals and scored markets only when the refreshed inputs lose them.
+ # A provenance warning alone must still be published alongside descriptive scores.
+ if previous:
+  previous_outcomes={g['game_id'] for g in previous['games'] if g.get('outcomes')}
+  current_outcomes={g['game_id'] for g in core['games'] if g.get('outcomes')}
+  previous_scores={(str(r.get('game_id')),r.get('model_version'),r.get('market')) for r in previous.get('market_scores',[])}
+  current_scores={(str(r.get('game_id')),r.get('model_version'),r.get('market')) for r in core.get('market_scores',[])}
+  if not previous_outcomes.issubset(current_outcomes) or not previous_scores.issubset(current_scores):
+   return {'date':day,'status':'preserved_previous_result','upstream_status':core['status'],'source_errors':core['source_errors']}
  archive=repo/'reports/nhl/daily'/day/'revisions'/revision
  if archive.exists():
   stored=read(archive/'report.json')
