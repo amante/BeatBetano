@@ -22,13 +22,75 @@ def fetch_json(url):
 def local_day(value):return parse_utc(value).astimezone(TZ).date().isoformat()
 def original_forecasts(repo,day):
  selected={};paths={};count=0
+ legacy=[]
  for path in sorted((Path(repo)/'frontend/data/nhl-forecasts').glob('run-*/*.json')):
   envelope=read(path);row=envelope.get('record',{})
   if local_day(row['start_utc'])!=day:continue
   if envelope.get('frozen') is not True or freeze_prediction(row)['sha256']!=envelope.get('sha256'):raise ValueError('Invalid frozen forecast: '+str(path))
   if row.get('official') is not False or row.get('odds_used_in_model') is not False:raise ValueError('Not an experimental odds-free forecast')
-  count+=1;key=(str(row['game_id']),row['model_version'],row['market'])
-  if key not in selected or parse_utc(row['prediction_as_of_utc'])<parse_utc(selected[key]['record']['prediction_as_of_utc']):selected[key]=envelope;paths[key]=str(path.relative_to(repo))
+  legacy.append((envelope,str(path.relative_to(repo))))
+ archive_root=Path(repo)/'frontend/data/forecast_archive/nhl'
+ archived=[]
+ for path in sorted(archive_root.rglob('*.json')) if archive_root.exists() else []:
+  snapshot=read(path)
+  if snapshot.get('sport')!='nhl' or snapshot.get('emission_kind')!='pregame':continue
+  events=snapshot.get('events')
+  if not isinstance(events,list):continue
+  matching=[event for event in events if event.get('start_utc') and local_day(event['start_utc'])==day]
+  if not matching:continue
+  content_sha=snapshot.get('content_sha256')
+  content={k:v for k,v in snapshot.items() if k!='content_sha256'}
+  if not content_sha or digest(content)!=content_sha:raise ValueError('Invalid NHL forecast archive content hash: '+str(path))
+  if snapshot.get('source_input_declares_no_odds') is not True or snapshot.get('odds_used_in_sport_model') is not False:
+   continue
+  model_output=snapshot.get('source_model_output')
+  if not isinstance(model_output,dict):continue
+  output_sha=snapshot.get('source_output_sha256')
+  output_core={k:v for k,v in model_output.items() if k!='source_output_sha256'}
+  if snapshot.get('source_output_sha256_scope')=='event' and (not output_sha or digest(output_core)!=output_sha):
+   raise ValueError('Invalid NHL archived model-output hash: '+str(path))
+  provenance=snapshot.get('model_provenance') or {}
+  source_asof=provenance.get('predictor_input_as_of_utc') or snapshot.get('as_of_utc')
+  issued=snapshot.get('emitted_at_utc') or snapshot.get('as_of_utc')
+  if not source_asof or not issued or parse_utc(source_asof)>parse_utc(issued):
+   raise ValueError('Invalid NHL archive forecast timing: '+str(path))
+  for event in matching:
+   forecast=event.get('forecast')
+   if not isinstance(forecast,dict) or not isinstance(forecast.get('probabilities'),dict):continue
+   event_id=str(event.get('event_id') or '')
+   if str(model_output.get('event_id') or '')!=event_id:continue
+   start=event['start_utc']
+   if model_output.get('start_utc') and parse_utc(model_output['start_utc'])!=parse_utc(start):
+    raise ValueError('NHL archive forecast start mismatch: '+event_id)
+   home=model_output.get('home_team');away=model_output.get('away_team')
+   participants=event.get('participants')
+   if not home or not away or (participants and [str(home),str(away)]!=[str(x) for x in participants]):
+    raise ValueError('NHL archive forecast teams mismatch: '+event_id)
+   probabilities=forecast['probabilities']
+   if set(probabilities)!={'home','away'} or any(type(probabilities[k]) not in (int,float) or not math.isfinite(probabilities[k]) or probabilities[k]<0 or probabilities[k]>1 for k in ('home','away')) or abs(sum(probabilities.values())-1)>1e-6:
+    raise ValueError('Invalid NHL archived ML probabilities: '+event_id)
+   if parse_utc(issued)>=parse_utc(start):raise ValueError('Postgame NHL archived forecast: '+event_id)
+   team_stats=model_output.get('official_team_stats') or {}
+   source_url=next((team_stats.get(side,{}).get('source_url') for side in ('home','away') if team_stats.get(side,{}).get('source_url')), 'https://api-web.nhle.com/v1/')
+   model=forecast.get('model_version') or snapshot.get('source_revision') or 'unknown'
+   verified=snapshot.get('verified_point_in_time_source') is True
+   record={'game_id':event_id,'home':str(home),'away':str(away),'start_utc':start,
+    'prediction_as_of_utc':issued,'source_asof_utc':source_asof,'source_url':source_url,
+    'model_version':model,'market':'ml','probabilities':probabilities,
+    'odds_used_in_model':False,'official':False,'point_in_time_sources_verified':verified,
+    'forecast_source_classification':forecast.get('source_classification') or 'archived_model_output',
+    'source_archive_content_sha256':content_sha,'source_output_sha256':output_sha}
+   envelope={'record':record,'sha256':digest({'archive_content_sha256':content_sha,'source_output_sha256':output_sha,'event_id':event_id}),
+    'frozen':True,'source_kind':'forecast_archive','archive_content_sha256':content_sha,
+    'source_output_sha256':output_sha,'point_in_time_sources_verified':verified}
+   archived.append((envelope,str(path.relative_to(repo))))
+ for envelope,path in legacy+archived:
+  row=envelope['record']
+  if row.get('official') is not False or row.get('odds_used_in_model') is not False:raise ValueError('Not an experimental odds-free forecast')
+  key=(str(row['game_id']),row['model_version'],row['market'])
+  if key not in selected or parse_utc(row['prediction_as_of_utc'])<parse_utc(selected[key]['record']['prediction_as_of_utc']):
+   selected[key]=envelope;paths[key]=path
+ count=len(legacy)+len(archived)
  return selected,paths,count
 
 
@@ -251,27 +313,38 @@ def analyze(repo,day,get=fetch_json,now=None):
   if any(r[k]!=label[k] for k in ('home','away')) or r['start_utc']!=score_games[gid]['startTimeUTC']:raise ValueError('Forecast/result identity mismatch')
   target={'ml':label['ml_winner'],'rt':label['rt_result'],'first3':label['first_to_plus3'] or 'none','home3':'yes' if label['home_reached_plus3'] else 'no','away3':'yes' if label['away_reached_plus3'] else 'no'}[market]
   probabilities=r['probabilities'];modal=max(probabilities,key=probabilities.get)
+  source_classification=r.get('forecast_source_classification') or 'verified_legacy_frozen_ledger'
+  source_verified=r.get('point_in_time_sources_verified') is True
   row={'game_id':gid,'model_version':model,'market':market,'probabilities':probabilities,'actual':target,'modal_class':modal,'modal_correct':modal==target,
    'brier':brier([probabilities[c] for c in CATEGORIES[market]],target,CATEGORIES[market]),'log_loss':-math.log(max(1e-12,probabilities[target])),
-   'prediction_as_of_utc':r['prediction_as_of_utc'],'source_path':paths[key],'forecast_sha256':envelope['sha256']}
-  rows.append(row);grouped[(model,market)].append(row)
- metrics=[{'model_version':model,'market':market,'n':len(v),'modal_correct':sum(r['modal_correct'] for r in v),'brier':round(sum(r['brier'] for r in v)/len(v),6),'log_loss':round(sum(r['log_loss'] for r in v)/len(v),6)} for (model,market),v in sorted(grouped.items())]
+   'prediction_as_of_utc':r['prediction_as_of_utc'],'source_path':paths[key],'forecast_sha256':envelope['sha256'],
+   'source_classification':source_classification,'point_in_time_sources_verified':source_verified,
+   'source_archive_content_sha256':envelope.get('archive_content_sha256'),'source_output_sha256':envelope.get('source_output_sha256')}
+  rows.append(row);grouped[(model,market,source_classification,source_verified)].append(row)
+ metrics=[{'model_version':model,'market':market,'source_classification':source_classification,'point_in_time_sources_verified':source_verified,
+   'n':len(v),'modal_correct':sum(r['modal_correct'] for r in v),'brier':round(sum(r['brier'] for r in v)/len(v),6),
+   'log_loss':round(sum(r['log_loss'] for r in v)/len(v),6)}
+   for (model,market,source_classification,source_verified),v in sorted(grouped.items())]
  player_props=player_props_postmortem(player_forecasts,player_boxscores,player_errors)
  games=[{'game_id':gid,'home':g['homeTeam']['abbrev'],'away':g['awayTeam']['abbrev'],'start_utc':g['startTimeUTC'],'state':g['gameState'],
   'home_score':g['homeTeam'].get('score') if g['gameState'] in ('OFF','FINAL') else None,'away_score':g['awayTeam'].get('score') if g['gameState'] in ('OFF','FINAL') else None,
   'prediction_available':gid in expected,'outcomes':labels.get(gid)} for gid,g in sorted(score_games.items())]
- baseline={gid:{'model':r['record']['model_version'],'home':r['record']['home'],'away':r['record']['away'],'start_utc':r['record']['start_utc'],'as_of':r['record']['prediction_as_of_utc'],'p_home':r['record']['probabilities']['home']} for (gid,model,market),r in chosen.items() if market=='ml'}
+ verified_expected={str(k[0]) for k,envelope in chosen.items() if envelope['record'].get('point_in_time_sources_verified') is True}
+ baseline={gid:{'model':r['record']['model_version'],'home':r['record']['home'],'away':r['record']['away'],'start_utc':r['record']['start_utc'],'as_of':r['record']['prediction_as_of_utc'],'p_home':r['record']['probabilities']['home']} for (gid,model,market),r in chosen.items() if market=='ml' and r['record'].get('point_in_time_sources_verified') is True}
  paired=None
- if len({k[1] for k in chosen if k[2]=='ml'})==1:
-  challenger={gid:r for gid,r in collect_challenger((Path(repo)/'frontend/data/nhl-shadow').glob('run-*/shadow.json')).items() if gid in expected}
+ if baseline and len({k[1] for k in chosen if k[2]=='ml' and str(k[0]) in verified_expected})==1:
+  challenger={gid:r for gid,r in collect_challenger((Path(repo)/'frontend/data/nhl-shadow').glob('run-*/shadow.json')).items() if gid in verified_expected}
   paired=paired_evaluate(baseline,challenger,final_scores({'games':[g for gid,g in score_games.items() if gid in labels]}))
- status='needs_review' if errors else 'pending_results' if pending else 'complete' if chosen else 'no_forecasts'
- core={'kind':'nhl_daily_postmortem','date':day,'timezone':'America/Santiago','pipeline_code_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'status':status,'complete':not errors and not pending,
+ unverified_count=sum(1 for envelope in chosen.values() if envelope['record'].get('point_in_time_sources_verified') is not True)
+ source_warnings=['One or more immutable archived forecasts have no independent point-in-time source verification; their scores are descriptive and excluded from paired model comparison.'] if unverified_count else []
+ status='needs_review' if errors or source_warnings else 'pending_results' if pending else 'complete' if chosen else 'no_forecasts'
+ core={'kind':'nhl_daily_postmortem','date':day,'timezone':'America/Santiago','pipeline_code_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'status':status,'complete':not errors and not pending and not source_warnings,
   'official_games':len(games),'forecast_games':len(expected),'graded_games':len(labels),'market_forecasts_scored':len(rows),'player_props':player_props,'unpredicted_games':sorted(set(score_games)-expected),
-  'source_forecast_files':total,'unique_forecast_issuances':len(chosen),'selection_policy':'earliest valid pregame issuance per game/model/market',
+  'source_forecast_files':total,'unique_forecast_issuances':len(chosen),'unverified_forecast_count':unverified_count,'source_warnings':source_warnings,
+  'selection_policy':'earliest valid pregame issuance per game/model/market',
   'pending_game_ids':pending,'source_errors':errors,'games':games,'market_scores':rows,'metrics':metrics,'paired_ml_comparison':paired,
   'source_hashes':{url:digest(payload) for url,payload in sorted(sources.items())},'automatic_promotion':False,'parameters_changed':False,
-  'learning_state':'observations_only_pending_independent_validation','limitations':['Markets from the same game are correlated.','No parameter changes or promotion from daily results.','Hashes verify content, not independent original capture time.']}
+  'learning_state':'observations_only_pending_independent_validation','limitations':['Markets from the same game are correlated.','No parameter changes or promotion from daily results.','Archive hashes verify stored forecast content; they do not independently validate captured pregame input provenance.','Descriptive scores from unverified archived forecasts are excluded from certification and paired comparison.']}
  return core,sources,[{'source_path':paths[k],'envelope':v} for k,v in sorted(chosen.items())]
 
 def save(repo,core,sources,forecasts,now=None):
