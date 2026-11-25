@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "kind": "sealed_forecast_outcome_evaluation",
-  "generated_at_utc": "2026-11-24T23:06:34.868620+00:00",
+  "generated_at_utc": "2026-11-25T04:10:44.679829+00:00",
   "inputs": {
-    "forecast_snapshot_count": 639,
-    "forecast_snapshot_manifest_sha256": "add62721b794a4ca7884b5d8017c0bebb71fb7963bfa3e1135b17d87cc5bbe99",
-    "settled_history_row_count": 466,
-    "settled_history_sha256": "0d675aa7953cbb68bce18cbd2562cbdb7e1d650116603e8998e542bf5b6cfd44"
+    "forecast_snapshot_count": 663,
+    "forecast_snapshot_manifest_sha256": "48b83be4c162d9a754afa29b96a17efb239a60da3ccee4c41427190ac3cdf40c",
+    "settled_history_row_count": 499,
+    "settled_history_sha256": "63cbc98d83968286e674126649d940cd8f4227683439248bb53084b7e8334d32"
   },
   "coverage": {
-    "verified_chains": 303,
-    "latest_pregame_forecasts": 320,
-    "forecasts_bound_to_history": 320,
-    "pending_forecasts": 4,
+    "verified_chains": 327,
+    "latest_pregame_forecasts": 344,
+    "forecasts_bound_to_history": 343,
+    "pending_forecasts": 24,
     "scored_forecast_groups": 27,
     "legacy_source_output_digest_scope_unverified": 423
   },
@@ -1638,10 +1638,10 @@
       "model_code_sha256": "1cee1bd0884eaf344cf35a37b8de4f78c5388816a04a4811b22a11e4c8c2cda3",
       "stage": "update",
       "metrics": {
-        "n": 33,
-        "brier": 0.22370573488853013,
-        "log_loss": 0.6336154600926609,
-        "accuracy": 0.6060606060606061,
+        "n": 35,
+        "brier": 0.21660985980750122,
+        "log_loss": 0.6181991732076697,
+        "accuracy": 0.6285714285714286,
         "reliability_bins": {
           "home": [
             {
@@ -1654,8 +1654,8 @@
             {
               "lower": 0.1,
               "upper": 0.2,
-              "n": 3,
-              "forecast_mean": 0.1667889907110168,
+              "n": 4,
+              "forecast_mean": 0.1725723985085897,
               "observed_rate": 0.0
             },
             {
@@ -1675,9 +1675,9 @@
             {
               "lower": 0.4,
               "upper": 0.5,
-              "n": 6,
-              "forecast_mean": 0.44446623187617024,
-              "observed_rate": 0.6666666666666666
+              "n": 7,
+              "forecast_mean": 0.43864452796055814,
+              "observed_rate": 0.5714285714285714
             },
             {
               "lower": 0.5,
@@ -1754,9 +1754,9 @@
             {
               "lower": 0.5,
               "upper": 0.6,
-              "n": 6,
-              "forecast_mean": 0.5555337681238298,
-              "observed_rate": 0.3333333333333333
+              "n": 7,
+              "forecast_mean": 0.5613554720394418,
+              "observed_rate": 0.42857142857142855
             },
             {
               "lower": 0.6,
@@ -1775,8 +1775,8 @@
             {
               "lower": 0.8,
               "upper": 0.9,
-              "n": 3,
-              "forecast_mean": 0.8332110092889833,
+              "n": 4,
+              "forecast_mean": 0.8274276014914104,
               "observed_rate": 1.0
             },
             {
@@ -1791,10 +1791,10 @@
       },
       "by_season": {
         "2026-27": {
-          "n": 33,
-          "brier": 0.22370573488853013,
-          "log_loss": 0.6336154600926609,
-          "accuracy": 0.6060606060606061,
+          "n": 35,
+          "brier": 0.21660985980750122,
+          "log_loss": 0.6181991732076697,
+          "accuracy": 0.6285714285714286,
           "reliability_bins": {
             "home": [
               {
@@ -1807,8 +1807,8 @@
               {
                 "lower": 0.1,
                 "upper": 0.2,
-                "n": 3,
-                "forecast_mean": 0.1667889907110168,
+                "n": 4,
+                "forecast_mean": 0.1725723985085897,
                 "observed_rate": 0.0
               },
               {
@@ -1828,9 +1828,9 @@
               {
                 "lower": 0.4,
                 "upper": 0.5,
-                "n": 6,
-                "forecast_mean": 0.44446623187617024,
-                "observed_rate": 0.6666666666666666
+                "n": 7,
+                "forecast_mean": 0.43864452796055814,
+                "observed_rate": 0.5714285714285714
               },
               {
                 "lower": 0.5,
@@ -1907,9 +1907,9 @@
               {
                 "lower": 0.5,
                 "upper": 0.6,
-                "n": 6,
-                "forecast_mean": 0.5555337681238298,
-                "observed_rate": 0.3333333333333333
+                "n": 7,
+                "forecast_mean": 0.5613554720394418,
+                "observed_rate": 0.42857142857142855
               },
               {
                 "lower": 0.6,
@@ -1928,8 +1928,8 @@
               {
                 "lower": 0.8,
                 "upper": 0.9,
-                "n": 3,
-                "forecast_mean": 0.8332110092889833,
+                "n": 4,
+                "forecast_mean": 0.8274276014914104,
                 "observed_rate": 1.0
               },
               {
@@ -1944,15 +1944,15 @@
         }
       },
       "lineage_coverage": {
-        "scored_forecasts": 33,
-        "with_model_code_revision": 33,
-        "with_model_code_sha256": 33,
-        "with_training_data_sha256": 33,
-        "with_training_cutoff_utc": 33,
+        "scored_forecasts": 35,
+        "with_model_code_revision": 35,
+        "with_model_code_sha256": 35,
+        "with_training_data_sha256": 35,
+        "with_training_cutoff_utc": 35,
         "with_predictor_input_sha256": 0,
         "with_predictor_input_as_of_utc": 0,
-        "with_any_data_cutoff": 33,
-        "with_any_data_fingerprint": 33
+        "with_any_data_cutoff": 35,
+        "with_any_data_fingerprint": 35
       }
     },
     {
@@ -6806,10 +6806,10 @@
       "model_code_sha256": "621165343ac70277c10f3aef7ecac6eac4659ff65965287dfd519402452314b4",
       "stage": "update",
       "metrics": {
-        "n": 64,
-        "brier": 0.2632597014029062,
-        "log_loss": 0.7203864153801647,
-        "accuracy": 0.4375,
+        "n": 65,
+        "brier": 0.2642574534943076,
+        "log_loss": 0.722388641014598,
+        "accuracy": 0.4307692307692308,
         "reliability_bins": {
           "home": [
             {
@@ -6850,9 +6850,9 @@
             {
               "lower": 0.5,
               "upper": 0.6,
-              "n": 33,
-              "forecast_mean": 0.5533665757575756,
-              "observed_rate": 0.42424242424242425
+              "n": 34,
+              "forecast_mean": 0.5539385,
+              "observed_rate": 0.4117647058823529
             },
             {
               "lower": 0.6,
@@ -6915,9 +6915,9 @@
             {
               "lower": 0.4,
               "upper": 0.5,
-              "n": 33,
-              "forecast_mean": 0.44663342424242425,
-              "observed_rate": 0.5757575757575758
+              "n": 34,
+              "forecast_mean": 0.44606150000000006,
+              "observed_rate": 0.5882352941176471
             },
             {
               "lower": 0.5,
@@ -6959,10 +6959,10 @@
       },
       "by_season": {
         "2026-27": {
-          "n": 64,
-          "brier": 0.2632597014029062,
-          "log_loss": 0.7203864153801647,
-          "accuracy": 0.4375,
+          "n": 65,
+          "brier": 0.2642574534943076,
+          "log_loss": 0.722388641014598,
+          "accuracy": 0.4307692307692308,
           "reliability_bins": {
             "home": [
               {
@@ -7003,9 +7003,9 @@
               {
                 "lower": 0.5,
                 "upper": 0.6,
-                "n": 33,
-                "forecast_mean": 0.5533665757575756,
-                "observed_rate": 0.42424242424242425
+                "n": 34,
+                "forecast_mean": 0.5539385,
+                "observed_rate": 0.4117647058823529
               },
               {
                 "lower": 0.6,
@@ -7068,9 +7068,9 @@
               {
                 "lower": 0.4,
                 "upper": 0.5,
-                "n": 33,
-                "forecast_mean": 0.44663342424242425,
-                "observed_rate": 0.5757575757575758
+                "n": 34,
+                "forecast_mean": 0.44606150000000006,
+                "observed_rate": 0.5882352941176471
               },
               {
                 "lower": 0.5,
@@ -7112,15 +7112,15 @@
         }
       },
       "lineage_coverage": {
-        "scored_forecasts": 64,
-        "with_model_code_revision": 64,
-        "with_model_code_sha256": 64,
+        "scored_forecasts": 65,
+        "with_model_code_revision": 65,
+        "with_model_code_sha256": 65,
         "with_training_data_sha256": 0,
         "with_training_cutoff_utc": 0,
-        "with_predictor_input_sha256": 64,
-        "with_predictor_input_as_of_utc": 64,
-        "with_any_data_cutoff": 64,
-        "with_any_data_fingerprint": 64
+        "with_predictor_input_sha256": 65,
+        "with_predictor_input_as_of_utc": 65,
+        "with_any_data_cutoff": 65,
+        "with_any_data_fingerprint": 65
       }
     },
     {
@@ -9027,7 +9027,9 @@
       }
     }
   ],
-  "exclusion_counts": {},
+  "exclusion_counts": {
+    "unmatched_nhl_team_and_start": 1
+  },
   "lineage_warnings": [
     "Legacy source-output digests are not independently verifiable because older snapshots stored a slate digest beside one event payload; outer snapshot seals were verified."
   ],
