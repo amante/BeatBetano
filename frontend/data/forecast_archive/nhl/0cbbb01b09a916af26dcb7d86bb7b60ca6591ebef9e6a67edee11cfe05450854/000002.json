@@ -1,0 +1,180 @@
+{
+  "sport": "nhl",
+  "as_of_utc": "2026-11-25T19:14:53.229812Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "2026020398",
+      "start_utc": "2026-11-26T03:00:00Z",
+      "participants": [
+        "ANA",
+        "SJS"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.580204,
+          "away": 0.41979599999999995
+        },
+        "model_version": "nhl-prior-day-standings",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "statistical_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nhl-prior-day-standings",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_model_output": {
+    "event_id": "2026020398",
+    "home_team": "ANA",
+    "away_team": "SJS",
+    "goalie_daily_evidence": {
+      "home": {
+        "status": "missing_or_wrong_team",
+        "confirmed": false,
+        "rating": null
+      },
+      "away": {
+        "status": "missing_or_wrong_team",
+        "confirmed": false,
+        "rating": null
+      },
+      "both_starters_confirmed": false,
+      "calibrated_goalie_impact": null
+    },
+    "unit_strength_evidence": null,
+    "official_team_stats": {
+      "home": {
+        "gamesPlayed": 25,
+        "goalFor": 89,
+        "goalAgainst": 95,
+        "goalDifferential": -6,
+        "powerPlayPct": null,
+        "penaltyKillPct": null,
+        "goal_diff_per_game_shrunk": -0.17142857142857143,
+        "goals_for_per_game": 3.56,
+        "goals_against_per_game": 3.8,
+        "power_play_pct_observed": null,
+        "penalty_kill_pct_observed": null,
+        "sustainable_special_teams_strength": null,
+        "crs": null,
+        "goalie_rating": null,
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-24",
+        "observed_at_utc": "2026-11-25T19:14:53.229812+00:00"
+      },
+      "away": {
+        "gamesPlayed": 26,
+        "goalFor": 71,
+        "goalAgainst": 94,
+        "goalDifferential": -23,
+        "powerPlayPct": null,
+        "penaltyKillPct": null,
+        "goal_diff_per_game_shrunk": -0.6388888888888888,
+        "goals_for_per_game": 2.730769230769231,
+        "goals_against_per_game": 3.6153846153846154,
+        "power_play_pct_observed": null,
+        "penalty_kill_pct_observed": null,
+        "sustainable_special_teams_strength": null,
+        "crs": null,
+        "goalie_rating": null,
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-24",
+        "observed_at_utc": "2026-11-25T19:14:53.229812+00:00"
+      }
+    },
+    "start_utc": "2026-11-26T03:00:00+00:00",
+    "statistical_p_home": 0.580204,
+    "statistical_p_away": 0.419796,
+    "official_baseline": null,
+    "challenger": null,
+    "final_probability": null,
+    "regulation_win_home": null,
+    "regulation_draw": null,
+    "regulation_win_away": null,
+    "three_goal_lead_home": null,
+    "three_goal_lead_away": null,
+    "first_to_plus_three_home": null,
+    "first_to_plus_three_away": null,
+    "goalie_confirmed": false,
+    "special_teams_verified": false,
+    "roster_verified": false,
+    "rivalry_verified": false,
+    "eligible_for_bet": false,
+    "status": "exploratory_statistical_only"
+  },
+  "source_output_sha256": "e99532c7e882d713aa894b41b6f74031c3dd2f762a9c73752b976ce8302140e4",
+  "source_output_sha256_scope": "event",
+  "model_provenance": {
+    "model_code_sha256": "621165343ac70277c10f3aef7ecac6eac4659ff65965287dfd519402452314b4",
+    "data_role": "prior_day_standings_heuristic_inputs",
+    "predictor_input_sha256": "0fdc5bb41c64a5af3306252ebc906bdecaa99b3f0d11c5531460b44be9ef79b3",
+    "predictor_input_as_of_utc": "2026-11-25T19:14:53.229812+00:00",
+    "schedule_input_sha256": "450554613f8c08054b343b82ba256717a0c428ba77fc92d49d3dee02af0f480a",
+    "model_code_revision": "3d29decd03975ed697eeeabf965f10ea3723551c",
+    "model_family": "nhl-prior-day-standings",
+    "forecast_model_version": "nhl-prior-day-standings",
+    "source_output_sha256": "e99532c7e882d713aa894b41b6f74031c3dd2f762a9c73752b976ce8302140e4"
+  },
+  "revision": 2,
+  "parent_snapshot_sha256": "77111a07618c98f2bff687622ee5eecb64d8043744647ad7c24b3e7fcf149ad0",
+  "changes": [
+    {
+      "event_id": "2026020398",
+      "before": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.580204,
+          "away": 0.41979599999999995
+        },
+        "model_version": "nhl-prior-day-standings",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "statistical_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "after": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.580204,
+          "away": 0.41979599999999995
+        },
+        "model_version": "nhl-prior-day-standings",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "statistical_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "previous_start_utc": "2026-11-26T03:00:00Z",
+      "start_utc": "2026-11-26T03:00:00Z"
+    }
+  ],
+  "emitted_at_utc": "2026-11-25T19:14:53.345003+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "623c2b008d674e6840fbd2de7cd249741841416a564ffac89ca25efe3fba32da"
+}

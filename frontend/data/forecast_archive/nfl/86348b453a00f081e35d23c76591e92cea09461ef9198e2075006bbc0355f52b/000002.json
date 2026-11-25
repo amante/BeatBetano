@@ -1,0 +1,135 @@
+{
+  "sport": "nfl",
+  "as_of_utc": "2026-11-25T19:14:52.844385Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401873079",
+      "start_utc": "2026-11-26T01:00:00Z",
+      "participants": [
+        "LAR",
+        "GB"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.52697,
+          "away": 0.47302999999999995
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nfl-historical-elo",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_model_output": {
+    "event_id": "401873079",
+    "start_utc": "2026-11-26T01:00:00+00:00",
+    "participants": [
+      "LAR",
+      "GB"
+    ],
+    "home_team": "LAR",
+    "away_team": "GB",
+    "home_name": "Los Angeles Rams",
+    "away_name": "Green Bay Packers",
+    "venue": "SoFi Stadium",
+    "city": "Inglewood",
+    "neutral_site": false,
+    "official_baseline": null,
+    "historical_elo_candidate": 0.52697,
+    "challenger": null,
+    "final_probability": null,
+    "away_probability": null,
+    "all_inputs_verified": false,
+    "independent_validation_passed": false,
+    "starting_lineups_verified": false,
+    "injury_report_verified": false,
+    "weather_verified": false,
+    "props": null,
+    "missing_evidence": [
+      "confirmed_inactives",
+      "starters",
+      "weather",
+      "matchups",
+      "independent_calibration"
+    ]
+  },
+  "source_output_sha256": "fc8b3c396cdbb91c054e394998b8c1630a1c04ec30490beb9d496b36c7e89590",
+  "source_output_sha256_scope": "event",
+  "model_provenance": {
+    "model_code_sha256": "812913d702db5ccfec8bee55baa6aa21b5d52f3d4a13ff7d28337af0adab1657",
+    "data_role": "historical_elo_training_history",
+    "training_data_sha256": "122dc754e1672b6bfeb7f9620d3dbaad6d6de5ecd75e1d3aff6e52536faef738",
+    "training_cutoff_utc": "2026-11-23T00:00:00+00:00",
+    "model_code_revision": "3d29decd03975ed697eeeabf965f10ea3723551c",
+    "model_family": "nfl-historical-elo",
+    "forecast_model_version": "nfl-historical-elo",
+    "source_output_sha256": "fc8b3c396cdbb91c054e394998b8c1630a1c04ec30490beb9d496b36c7e89590"
+  },
+  "revision": 2,
+  "parent_snapshot_sha256": "0c86bf8b385a022dc4fa9f6a248de3d6c8ccb689093dd1f119edcc641b359cbc",
+  "changes": [
+    {
+      "event_id": "401873079",
+      "before": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.52697,
+          "away": 0.47302999999999995
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "after": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.52697,
+          "away": 0.47302999999999995
+        },
+        "model_version": "nfl-historical-elo",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "historical_elo_candidate",
+        "source_classification": "unvalidated_model_output"
+      },
+      "previous_start_utc": "2026-11-26T01:00:00Z",
+      "start_utc": "2026-11-26T01:00:00Z"
+    }
+  ],
+  "emitted_at_utc": "2026-11-25T19:14:53.098695+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "8791f969c8d807befe068ac1b84ea8094d1162dde7072d22fcfa536b583f9250"
+}
