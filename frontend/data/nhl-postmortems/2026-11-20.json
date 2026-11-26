@@ -2,7 +2,7 @@
   "kind": "nhl_daily_postmortem",
   "date": "2026-11-20",
   "timezone": "America/Santiago",
-  "pipeline_code_sha256": "2e36ff109bb00d16aabb80c15f594eec5e5a8395c2a38911d2dc6f2c1441c620",
+  "pipeline_code_sha256": "418d4fc99e7c4837bcbbf6581d19b919309779d344508f015ee65f7d133e62f1",
   "status": "needs_review",
   "complete": false,
   "official_games": 1,
@@ -30,8 +30,12 @@
     ]
   },
   "unpredicted_games": [],
-  "source_forecast_files": 15,
-  "unique_forecast_issuances": 5,
+  "source_forecast_files": 18,
+  "unique_forecast_issuances": 6,
+  "unverified_forecast_count": 1,
+  "source_warnings": [
+    "One or more immutable archived forecasts have no independent point-in-time source verification; their scores are descriptive and excluded from paired model comparison."
+  ],
   "selection_policy": "earliest valid pregame issuance per game/model/market",
   "pending_game_ids": [],
   "source_errors": {
@@ -52,21 +56,7 @@
   ],
   "market_scores": [],
   "metrics": [],
-  "paired_ml_comparison": {
-    "status": "prospective_paired_ml_evaluation",
-    "paired_completed": 0,
-    "paired_awaiting_official_final": [
-      "2026020358"
-    ],
-    "unpaired_baseline_only": [],
-    "unpaired_challenger_only": [],
-    "metrics": null,
-    "games": [],
-    "source": "NHL official score API; final only",
-    "odds_used": false,
-    "automatic_promotion": false,
-    "limitations": "Matching pregame snapshots; provenance is repository run-specific filenames, not independent trusted timestamp attestation."
-  },
+  "paired_ml_comparison": null,
   "source_hashes": {
     "https://api-web.nhle.com/v1/gamecenter/2026020358/play-by-play": "26aab3efdf13998fc53ee40fb0e596e9330e6ee81a43d91b1c8c7f82db6ceffe",
     "https://api-web.nhle.com/v1/score/2026-11-19": "a2727b6310aab05dd99c53c8e8c700841e25d4e2c5ed8353e6d77a86f645b7b7",
@@ -79,9 +69,10 @@
   "limitations": [
     "Markets from the same game are correlated.",
     "No parameter changes or promotion from daily results.",
-    "Hashes verify content, not independent original capture time."
+    "Archive hashes verify stored forecast content; they do not independently validate captured pregame input provenance.",
+    "Descriptive scores from unverified archived forecasts are excluded from certification and paired comparison."
   ],
-  "revision_sha256": "c05ea82814568b028fe90c4a6a50eefec9e51a8fdb35da8b61517b90d8df149d",
-  "generated_at_utc": "2026-11-23T23:58:09.287777+00:00",
-  "archive_path": "reports/nhl/daily/2026-11-20/revisions/c05ea82814568b028fe90c4a6a50eefec9e51a8fdb35da8b61517b90d8df149d"
+  "revision_sha256": "9d493a277a58245103e20215e9dd9f65209fbfb18a124dc8a63097a280da6a64",
+  "generated_at_utc": "2026-11-26T21:39:26.775578+00:00",
+  "archive_path": "reports/nhl/daily/2026-11-20/revisions/9d493a277a58245103e20215e9dd9f65209fbfb18a124dc8a63097a280da6a64"
 }

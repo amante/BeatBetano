@@ -2,13 +2,13 @@
   "kind": "nhl_daily_postmortem",
   "date": "2026-11-19",
   "timezone": "America/Santiago",
-  "pipeline_code_sha256": "2e36ff109bb00d16aabb80c15f594eec5e5a8395c2a38911d2dc6f2c1441c620",
+  "pipeline_code_sha256": "418d4fc99e7c4837bcbbf6581d19b919309779d344508f015ee65f7d133e62f1",
   "status": "needs_review",
   "complete": false,
   "official_games": 12,
   "forecast_games": 12,
   "graded_games": 11,
-  "market_forecasts_scored": 62,
+  "market_forecasts_scored": 73,
   "player_props": {
     "kind": "nhl_player_props_postmortem_v1",
     "status": "no_frozen_player_forecasts",
@@ -30,8 +30,12 @@
     ]
   },
   "unpredicted_games": [],
-  "source_forecast_files": 170,
-  "unique_forecast_issuances": 68,
+  "source_forecast_files": 195,
+  "unique_forecast_issuances": 80,
+  "unverified_forecast_count": 12,
+  "source_warnings": [
+    "One or more immutable archived forecasts have no independent point-in-time source verification; their scores are descriptive and excluded from paired model comparison."
+  ],
   "selection_policy": "earliest valid pregame issuance per game/model/market",
   "pending_game_ids": [],
   "source_errors": {
@@ -383,6 +387,27 @@
   "market_scores": [
     {
       "game_id": "2026020346",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.467102,
+        "away": 0.532898
+      },
+      "actual": "home",
+      "modal_class": "away",
+      "modal_correct": false,
+      "brier": 0.283980278404,
+      "log_loss": 0.7612076297448556,
+      "prediction_as_of_utc": "2026-11-18T18:02:37.566953+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/768c27f2377bc892ce987a9067a7b4d9e5d2695c69230688184c3193cadbe8e5/000001.json",
+      "forecast_sha256": "70e222dd94c7d7f70a74a26c1e37b37b504b3eac17b71beeaf4b4e0efe94de03",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "cf5cc15a403d76201c16f19c86ada18b3a3274cc7dc38838a391240110a8b265",
+      "source_output_sha256": "af1bf9bc4e14df9849871cc7d5c55d1811c348098daf0775efdb7b430c09190a"
+    },
+    {
+      "game_id": "2026020346",
       "model_version": "outcome-only-206-frozen-params",
       "market": "away3",
       "probabilities": {
@@ -396,7 +421,11 @@
       "log_loss": 0.25832554852694734,
       "prediction_as_of_utc": "2026-11-18T22:59:43.454436+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44416642535/2026020346-away3.json",
-      "forecast_sha256": "4cfc6f14b0c5e369f88289ec4e36139da4aeda5a9e48eabf33c7a8d1ab0c9fed"
+      "forecast_sha256": "4cfc6f14b0c5e369f88289ec4e36139da4aeda5a9e48eabf33c7a8d1ab0c9fed",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020346",
@@ -414,7 +443,11 @@
       "log_loss": 1.4214235077222885,
       "prediction_as_of_utc": "2026-11-18T22:59:43.454436+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44416642535/2026020346-first3.json",
-      "forecast_sha256": "fc9c8da981dba17f3ffb520675151ffb5a83426de5a80b6c32d845eff09efa50"
+      "forecast_sha256": "fc9c8da981dba17f3ffb520675151ffb5a83426de5a80b6c32d845eff09efa50",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020346",
@@ -431,7 +464,11 @@
       "log_loss": 1.4610311926392963,
       "prediction_as_of_utc": "2026-11-18T22:59:43.454436+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44416642535/2026020346-home3.json",
-      "forecast_sha256": "64d5cb5c673007859be971c2836ecf700e8ee1813422559dd50cf81989e66871"
+      "forecast_sha256": "64d5cb5c673007859be971c2836ecf700e8ee1813422559dd50cf81989e66871",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020346",
@@ -449,7 +486,11 @@
       "log_loss": 0.9384775758560369,
       "prediction_as_of_utc": "2026-11-18T22:59:43.454436+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44416642535/2026020346-rt.json",
-      "forecast_sha256": "8c27f0178969b753562a09fa50184a09b4e58742397673bada6ec40765f6e760"
+      "forecast_sha256": "8c27f0178969b753562a09fa50184a09b4e58742397673bada6ec40765f6e760",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020346",
@@ -466,7 +507,32 @@
       "log_loss": 0.7696261459132783,
       "prediction_as_of_utc": "2026-11-18T22:59:43.454436+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44416642535/2026020346-ml.json",
-      "forecast_sha256": "63e4a63c946d766c0dca02ce43b4a224fe68ac1eaf9da80600ef4abba9944911"
+      "forecast_sha256": "63e4a63c946d766c0dca02ce43b4a224fe68ac1eaf9da80600ef4abba9944911",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
+    },
+    {
+      "game_id": "2026020348",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.618754,
+        "away": 0.381246
+      },
+      "actual": "away",
+      "modal_class": "home",
+      "modal_correct": false,
+      "brier": 0.38285651251600006,
+      "log_loss": 0.9643104429188338,
+      "prediction_as_of_utc": "2026-11-19T18:15:37.184275+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/1f013836080d45abdd81a92090f1366d60b14cf5052f05f864f091c661b0fab5/000001.json",
+      "forecast_sha256": "eb01206a7f5da26c365e91334ce8ff91fb303625affd0c87e395f64b333f59d6",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "4f94837ddd803ea63bdbfc81854ee0513e3657e35027384accad2841f22698e7",
+      "source_output_sha256": "24ea3e81f28ab40cc45011974e26e79a48737ec6390a0464dd92d62b9b2b3f15"
     },
     {
       "game_id": "2026020348",
@@ -483,7 +549,11 @@
       "log_loss": 0.22635657775974685,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020348-away3.json",
-      "forecast_sha256": "bae5dabf64335518603f0cb7f818e512f09ce57104a945a8945dddf5ddbc0c14"
+      "forecast_sha256": "bae5dabf64335518603f0cb7f818e512f09ce57104a945a8945dddf5ddbc0c14",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020348",
@@ -501,7 +571,11 @@
       "log_loss": 1.3511316178150001,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020348-first3.json",
-      "forecast_sha256": "5555b11d563ff2b66467ceebced48e9e43f4e68e1ed9fb5b743c6e612d33c681"
+      "forecast_sha256": "5555b11d563ff2b66467ceebced48e9e43f4e68e1ed9fb5b743c6e612d33c681",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020348",
@@ -518,7 +592,11 @@
       "log_loss": 1.364534668014606,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020348-home3.json",
-      "forecast_sha256": "629e5ea85c95cd22c9460ed3fa168926d7d3f9d3619e9d34ff26af35e1116651"
+      "forecast_sha256": "629e5ea85c95cd22c9460ed3fa168926d7d3f9d3619e9d34ff26af35e1116651",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020348",
@@ -536,7 +614,11 @@
       "log_loss": 1.3839666304899443,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020348-rt.json",
-      "forecast_sha256": "875f8b8e97fb1a6d516ce218edb1354e8d64ce10acd6ab1d8b460b25bcee6634"
+      "forecast_sha256": "875f8b8e97fb1a6d516ce218edb1354e8d64ce10acd6ab1d8b460b25bcee6634",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020348",
@@ -553,7 +635,11 @@
       "log_loss": 0.8516258646566376,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020348-ml.json",
-      "forecast_sha256": "8cc403e91abd55e99d3449cc7e4ecf256e274c80ea00459bbc7c67e98b0b846f"
+      "forecast_sha256": "8cc403e91abd55e99d3449cc7e4ecf256e274c80ea00459bbc7c67e98b0b846f",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020348",
@@ -570,7 +656,32 @@
       "log_loss": 0.8516258593442573,
       "prediction_as_of_utc": "2026-11-19T18:04:13.011258+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44583656356/2026020348-ml.json",
-      "forecast_sha256": "24aaba0d7425d2b9fb892ef81012b63283ce1d40f225be5229eb5cb2ebb1c063"
+      "forecast_sha256": "24aaba0d7425d2b9fb892ef81012b63283ce1d40f225be5229eb5cb2ebb1c063",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
+    },
+    {
+      "game_id": "2026020349",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.511259,
+        "away": 0.488741
+      },
+      "actual": "home",
+      "modal_class": "home",
+      "modal_correct": true,
+      "brier": 0.238867765081,
+      "log_loss": 0.6708789678680921,
+      "prediction_as_of_utc": "2026-11-19T18:15:37.188061+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/bf19a98bf41342df314bcbd7c3dcdc21faccaf678e87ea8ceb258ee22944cc7a/000001.json",
+      "forecast_sha256": "ca3eb40160b9b5be449fa45e44900ed27cbc58c9183322900d95c42899ca2a90",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "3ee9a766daa1d6cd0646057b1e2b261438a4020b242ebcc5fd99ae90d2422b8d",
+      "source_output_sha256": "dedb2432af3965e5394a6873dfe2c5b528a3c3e07b537de1f07b33591c8b3a7f"
     },
     {
       "game_id": "2026020349",
@@ -587,7 +698,11 @@
       "log_loss": 0.24763582039327808,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020349-away3.json",
-      "forecast_sha256": "ddb5f3604a91254a1e6fd6fe06f9d5a653eab8c9b96d2002fbddf30ff76c95f1"
+      "forecast_sha256": "ddb5f3604a91254a1e6fd6fe06f9d5a653eab8c9b96d2002fbddf30ff76c95f1",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020349",
@@ -605,7 +720,11 @@
       "log_loss": 1.239377033767514,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020349-first3.json",
-      "forecast_sha256": "cda487e6eacb49f0f4fc1df2073d9197176dad78f043d26ccb431a323b131d3c"
+      "forecast_sha256": "cda487e6eacb49f0f4fc1df2073d9197176dad78f043d26ccb431a323b131d3c",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020349",
@@ -622,7 +741,11 @@
       "log_loss": 1.2161268700814676,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020349-home3.json",
-      "forecast_sha256": "76b9f3f187190ca127087db48dceb16d4ed93d5a5a16d1fa6eda48de9845d90f"
+      "forecast_sha256": "76b9f3f187190ca127087db48dceb16d4ed93d5a5a16d1fa6eda48de9845d90f",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020349",
@@ -640,7 +763,11 @@
       "log_loss": 0.8001077681151458,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020349-rt.json",
-      "forecast_sha256": "76512ee3984be558e0da89f6982259f86953af89bfbdc64d97240fa031d04921"
+      "forecast_sha256": "76512ee3984be558e0da89f6982259f86953af89bfbdc64d97240fa031d04921",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020349",
@@ -657,7 +784,11 @@
       "log_loss": 0.5789892556345251,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020349-ml.json",
-      "forecast_sha256": "bc118e5f8135a651899c55555bdecd619f56452433229f17b55efeba55f7a922"
+      "forecast_sha256": "bc118e5f8135a651899c55555bdecd619f56452433229f17b55efeba55f7a922",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020349",
@@ -674,7 +805,32 @@
       "log_loss": 0.5789892498862247,
       "prediction_as_of_utc": "2026-11-19T18:04:13.011258+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44583656356/2026020349-ml.json",
-      "forecast_sha256": "021f2a4d4f2228ad902f27ccb2dbb483d31cad729aaacfd1b00efcedabb87b65"
+      "forecast_sha256": "021f2a4d4f2228ad902f27ccb2dbb483d31cad729aaacfd1b00efcedabb87b65",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
+    },
+    {
+      "game_id": "2026020350",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.519385,
+        "away": 0.480615
+      },
+      "actual": "away",
+      "modal_class": "home",
+      "modal_correct": false,
+      "brier": 0.269760778225,
+      "log_loss": 0.732688745180554,
+      "prediction_as_of_utc": "2026-11-19T18:15:37.185055+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/02e57ddddc4504c8e580fa5f3efa647bf14aa3232effa93459a66bb3bfb6656e/000001.json",
+      "forecast_sha256": "ede42dc22f6f7993ae6c53fe0911a231994e2cba442b6a3ef70a1bed133b3260",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "c2606a12c696e5435be843918cd4d3a47c66c5effaa2237007b1b2851a3a3bde",
+      "source_output_sha256": "6b24785c764342e4d7c1736a416b20464a89e9545fb3cf07ba660fb8b0de88fc"
     },
     {
       "game_id": "2026020350",
@@ -691,7 +847,11 @@
       "log_loss": 1.4799184886439745,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020350-away3.json",
-      "forecast_sha256": "2649df2d50bbd57e338f45bdea161799b140286e00cc89400f5b46fa4902f574"
+      "forecast_sha256": "2649df2d50bbd57e338f45bdea161799b140286e00cc89400f5b46fa4902f574",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020350",
@@ -709,7 +869,11 @@
       "log_loss": 1.471052938527112,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020350-first3.json",
-      "forecast_sha256": "b720a39428f5da39e9a50942deb6b023176558461afe09b00014dbdd92429947"
+      "forecast_sha256": "b720a39428f5da39e9a50942deb6b023176558461afe09b00014dbdd92429947",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020350",
@@ -726,7 +890,11 @@
       "log_loss": 0.3345681647920308,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020350-home3.json",
-      "forecast_sha256": "a4f514236c7bb6c30b011c70f20e511c465c223e5906e2e9f82c3421ce0b8e47"
+      "forecast_sha256": "a4f514236c7bb6c30b011c70f20e511c465c223e5906e2e9f82c3421ce0b8e47",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020350",
@@ -744,7 +912,11 @@
       "log_loss": 1.056291116150653,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020350-rt.json",
-      "forecast_sha256": "3636212eb415bd9c9002dfe8b60789bd4c337df3c24b403c9e52d8bba1cfbba9"
+      "forecast_sha256": "3636212eb415bd9c9002dfe8b60789bd4c337df3c24b403c9e52d8bba1cfbba9",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020350",
@@ -761,7 +933,11 @@
       "log_loss": 0.8798025789028863,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020350-ml.json",
-      "forecast_sha256": "ce96c1bd2e860a5288998544f20335d4884bd309d5686471c1bf12bd4f7b8eb8"
+      "forecast_sha256": "ce96c1bd2e860a5288998544f20335d4884bd309d5686471c1bf12bd4f7b8eb8",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020350",
@@ -778,7 +954,32 @@
       "log_loss": 0.7854799053859288,
       "prediction_as_of_utc": "2026-11-19T18:04:13.011258+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44583656356/2026020350-ml.json",
-      "forecast_sha256": "06de61bd2761a6110cfebe923252cfc5af08766699c595e8b45214944732555d"
+      "forecast_sha256": "06de61bd2761a6110cfebe923252cfc5af08766699c595e8b45214944732555d",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
+    },
+    {
+      "game_id": "2026020351",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.566659,
+        "away": 0.433341
+      },
+      "actual": "away",
+      "modal_class": "home",
+      "modal_correct": false,
+      "brier": 0.321102422281,
+      "log_loss": 0.8362303320494334,
+      "prediction_as_of_utc": "2026-11-19T18:15:37.185809+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/b75d35271549da5f01c25f0f3268adddf938a12c29ebcb5753fe49fdd0e225cd/000001.json",
+      "forecast_sha256": "462983450b0272de4bbca176fa004f577e1abe5815bcda400c3545cb70c5bc0e",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "a20a4d90b060d6abed4ac38c36b00945ae05c40d5c93e38f313749125c9c5c9d",
+      "source_output_sha256": "5af209b239f771c8da0dd4952e38fce3941944a6b9d8fef358b3f9336b5cc944"
     },
     {
       "game_id": "2026020351",
@@ -795,7 +996,11 @@
       "log_loss": 1.6386576789988099,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020351-away3.json",
-      "forecast_sha256": "342ffb388f61ba915fc5d0ac956c2cce7a82a0268db1b6bb5d4fbdbc330a6249"
+      "forecast_sha256": "342ffb388f61ba915fc5d0ac956c2cce7a82a0268db1b6bb5d4fbdbc330a6249",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020351",
@@ -813,7 +1018,11 @@
       "log_loss": 1.6829899254992637,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020351-first3.json",
-      "forecast_sha256": "184d4ba60a246e7ac22cf25169d2cfb7b58f7849204d9429abf623decc5b94d3"
+      "forecast_sha256": "184d4ba60a246e7ac22cf25169d2cfb7b58f7849204d9429abf623decc5b94d3",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020351",
@@ -830,7 +1039,11 @@
       "log_loss": 0.3846780643497212,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020351-home3.json",
-      "forecast_sha256": "4d7ecdb612f42c59aab6c057b3d4b007c5a568f8cb90b4a7f45102691d869435"
+      "forecast_sha256": "4d7ecdb612f42c59aab6c057b3d4b007c5a568f8cb90b4a7f45102691d869435",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020351",
@@ -848,7 +1061,11 @@
       "log_loss": 1.1304166680025187,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020351-rt.json",
-      "forecast_sha256": "abee48b29476b5efd3e3cf2e4a4ecad441b6a47e2d6521291f8be9bba0a2c598"
+      "forecast_sha256": "abee48b29476b5efd3e3cf2e4a4ecad441b6a47e2d6521291f8be9bba0a2c598",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020351",
@@ -865,7 +1082,11 @@
       "log_loss": 0.8486540942674802,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020351-ml.json",
-      "forecast_sha256": "71666c11ffca35fc0e5c4bca8cb66908003ab4bf3a8a6ee3b1c149b63a97888d"
+      "forecast_sha256": "71666c11ffca35fc0e5c4bca8cb66908003ab4bf3a8a6ee3b1c149b63a97888d",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020351",
@@ -882,7 +1103,32 @@
       "log_loss": 0.8432239068832338,
       "prediction_as_of_utc": "2026-11-19T18:04:13.011258+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44583656356/2026020351-ml.json",
-      "forecast_sha256": "449c2a85051d617924d3abafd48a1f05ff4ce9d8dec60e50b8665cf87c7f929b"
+      "forecast_sha256": "449c2a85051d617924d3abafd48a1f05ff4ce9d8dec60e50b8665cf87c7f929b",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
+    },
+    {
+      "game_id": "2026020352",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.633204,
+        "away": 0.366796
+      },
+      "actual": "away",
+      "modal_class": "home",
+      "modal_correct": false,
+      "brier": 0.400947305616,
+      "log_loss": 1.0029494437846975,
+      "prediction_as_of_utc": "2026-11-19T18:15:37.186554+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/d4248f858e4fe4062350bb6e8dee5612d2b6ef2768c7887dbb2d7526eae84c22/000001.json",
+      "forecast_sha256": "2c15ad8b77a55198791cfae849cdb67ff87c92a669cf4c82f0c9f1bbc3b6e092",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "1be17649c9b197141f0a8cee472085a8992a20e38cddd02b34c889b6d01751bf",
+      "source_output_sha256": "0ea7f4f1a7480b7192bb200cfede0e584ce84454e7b700716c560d0621e2f601"
     },
     {
       "game_id": "2026020352",
@@ -899,7 +1145,11 @@
       "log_loss": 0.2107019079523709,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020352-away3.json",
-      "forecast_sha256": "aae9bf88e52672dc27211bd5d59c9258326df094c4c6bdfc2157a240ec73dbec"
+      "forecast_sha256": "aae9bf88e52672dc27211bd5d59c9258326df094c4c6bdfc2157a240ec73dbec",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020352",
@@ -917,7 +1167,11 @@
       "log_loss": 0.5997698214789141,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020352-first3.json",
-      "forecast_sha256": "071abe7dbe598e1339ec5e7e18e19b9e777ac989bed672ae6ee319f1c020c963"
+      "forecast_sha256": "071abe7dbe598e1339ec5e7e18e19b9e777ac989bed672ae6ee319f1c020c963",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020352",
@@ -934,7 +1188,11 @@
       "log_loss": 0.31675248352630314,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020352-home3.json",
-      "forecast_sha256": "506bcc6c64ca6543a579bd26a633e2da94d64b9794e3bb7f49db65135e8d272d"
+      "forecast_sha256": "506bcc6c64ca6543a579bd26a633e2da94d64b9794e3bb7f49db65135e8d272d",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020352",
@@ -951,7 +1209,11 @@
       "log_loss": 0.8607677095160853,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020352-ml.json",
-      "forecast_sha256": "82a2ed56f9394cfb3c15afd02995a843718a44979752cdb8b69f68493302a21f"
+      "forecast_sha256": "82a2ed56f9394cfb3c15afd02995a843718a44979752cdb8b69f68493302a21f",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020352",
@@ -969,7 +1231,11 @@
       "log_loss": 1.4847208184692435,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020352-rt.json",
-      "forecast_sha256": "eb779d645c0b373ccba38b114a70101d7908c29200f48005b94cc8a36e01c05c"
+      "forecast_sha256": "eb779d645c0b373ccba38b114a70101d7908c29200f48005b94cc8a36e01c05c",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020352",
@@ -986,7 +1252,32 @@
       "log_loss": 0.954990578701856,
       "prediction_as_of_utc": "2026-11-19T18:04:13.011258+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44583656356/2026020352-ml.json",
-      "forecast_sha256": "56f2878648f9cd429403b60a1f2cf164a38763cc41b1f9d52cb4e0b44fdca7a5"
+      "forecast_sha256": "56f2878648f9cd429403b60a1f2cf164a38763cc41b1f9d52cb4e0b44fdca7a5",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
+    },
+    {
+      "game_id": "2026020353",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.495325,
+        "away": 0.504675
+      },
+      "actual": "away",
+      "modal_class": "away",
+      "modal_correct": true,
+      "brier": 0.24534685562500003,
+      "log_loss": 0.6838406212396457,
+      "prediction_as_of_utc": "2026-11-19T18:15:37.188815+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/4c3320b1592154b15bf34988f10dd2fe1a70f856d5df0660db934700b62d5f6b/000001.json",
+      "forecast_sha256": "9e76308ac805b8fcd3fdf2a3dc4771025dd29c72603af2a98ab01135d99b5d4a",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "9e9d88dbc513ecd481583e78b73d5c4e8564151efbe6430dc61f98d9a4f30fc3",
+      "source_output_sha256": "7953ea2b6140060019c8eda5f0b991cd010b1970c56309dfb61e261a830fd246"
     },
     {
       "game_id": "2026020353",
@@ -1003,7 +1294,11 @@
       "log_loss": 0.2640001193092992,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020353-away3.json",
-      "forecast_sha256": "3b0f312c26cfb36bc3ea58645cf2ae0d6e4c293e6c3205b824c3c05e12b817cf"
+      "forecast_sha256": "3b0f312c26cfb36bc3ea58645cf2ae0d6e4c293e6c3205b824c3c05e12b817cf",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020353",
@@ -1021,7 +1316,11 @@
       "log_loss": 0.6289942988879748,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020353-first3.json",
-      "forecast_sha256": "80b46899d2a1962a148598fcecf3c6df31933cb78005ce2aa4ab40fe4db7c28d"
+      "forecast_sha256": "80b46899d2a1962a148598fcecf3c6df31933cb78005ce2aa4ab40fe4db7c28d",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020353",
@@ -1038,7 +1337,11 @@
       "log_loss": 0.24664108852500607,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020353-home3.json",
-      "forecast_sha256": "2cd7da30e8f3d60e3767a0b6787b8f33d91800ed7b6784827187d404cae9a552"
+      "forecast_sha256": "2cd7da30e8f3d60e3767a0b6787b8f33d91800ed7b6784827187d404cae9a552",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020353",
@@ -1056,7 +1359,11 @@
       "log_loss": 1.0248766740496211,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020353-rt.json",
-      "forecast_sha256": "4ea8f12c3c7ac4c1896c358f528b9b159b38bef802ea3e99635daa96d9e7bcae"
+      "forecast_sha256": "4ea8f12c3c7ac4c1896c358f528b9b159b38bef802ea3e99635daa96d9e7bcae",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020353",
@@ -1073,7 +1380,11 @@
       "log_loss": 0.709466803148133,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020353-ml.json",
-      "forecast_sha256": "1216ce23a3fa423ab0989272857ca9b7e1d1f44acd21cd7a8d014c07582bb204"
+      "forecast_sha256": "1216ce23a3fa423ab0989272857ca9b7e1d1f44acd21cd7a8d014c07582bb204",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020353",
@@ -1090,7 +1401,32 @@
       "log_loss": 0.5907356027483696,
       "prediction_as_of_utc": "2026-11-19T18:40:23.664075+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44590110490/2026020353-ml.json",
-      "forecast_sha256": "314b26692e5610047f87e85c358e51a682c50225fa7ce04fa7e3bf1a84210f1e"
+      "forecast_sha256": "314b26692e5610047f87e85c358e51a682c50225fa7ce04fa7e3bf1a84210f1e",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
+    },
+    {
+      "game_id": "2026020354",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.497526,
+        "away": 0.502474
+      },
+      "actual": "home",
+      "modal_class": "away",
+      "modal_correct": false,
+      "brier": 0.25248012067599995,
+      "log_loss": 0.6981074624425314,
+      "prediction_as_of_utc": "2026-11-19T18:15:37.187314+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/983a83a8d09bfa4ff572405d507eaf0b70932b0b8a0b544ea97bb6aee1f9a1a4/000001.json",
+      "forecast_sha256": "4f64f319b035cf1dede73d49d96b5b627b87c127dc205fbab418add3dc7f974d",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "ea0f67765c2d9f25ec76332164be2b1f6ee55012921598472850f2a6fc36643e",
+      "source_output_sha256": "e573325d2862faf255455a06e6c50bf3b2ddc476790f595b8f6d4b9cec1930e3"
     },
     {
       "game_id": "2026020354",
@@ -1107,7 +1443,11 @@
       "log_loss": 0.20562932401281156,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020354-away3.json",
-      "forecast_sha256": "fc32dac50a4d969db8ab2ca456930fc8dd5a73c7598995852ab688bc7afc78d0"
+      "forecast_sha256": "fc32dac50a4d969db8ab2ca456930fc8dd5a73c7598995852ab688bc7afc78d0",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020354",
@@ -1125,7 +1465,11 @@
       "log_loss": 0.6368683553188805,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020354-first3.json",
-      "forecast_sha256": "18ce5292e407eb135011886f9d1f76c297fe0597c69cdafe926ff6a0bbcda4e5"
+      "forecast_sha256": "18ce5292e407eb135011886f9d1f76c297fe0597c69cdafe926ff6a0bbcda4e5",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020354",
@@ -1142,7 +1486,11 @@
       "log_loss": 0.36426848365897807,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020354-home3.json",
-      "forecast_sha256": "a388a184fc3243a73dac5dd714a003604571574d13fe2262ca12399abd4728d1"
+      "forecast_sha256": "a388a184fc3243a73dac5dd714a003604571574d13fe2262ca12399abd4728d1",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020354",
@@ -1160,7 +1508,11 @@
       "log_loss": 1.4645452258604805,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020354-rt.json",
-      "forecast_sha256": "e676a4e3958308b5f9d6b38e96391e967e24eb6d00756120b4759e6886ffb9a2"
+      "forecast_sha256": "e676a4e3958308b5f9d6b38e96391e967e24eb6d00756120b4759e6886ffb9a2",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020354",
@@ -1177,7 +1529,32 @@
       "log_loss": 0.5819787944828911,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020354-ml.json",
-      "forecast_sha256": "093b6984e76dfc3a1fac60d3cdea031a8f3da7bec3e26ca1b5fbf0a571281e77"
+      "forecast_sha256": "093b6984e76dfc3a1fac60d3cdea031a8f3da7bec3e26ca1b5fbf0a571281e77",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
+    },
+    {
+      "game_id": "2026020355",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.401758,
+        "away": 0.5982419999999999
+      },
+      "actual": "away",
+      "modal_class": "away",
+      "modal_correct": true,
+      "brier": 0.16140949056400003,
+      "log_loss": 0.5137599246190448,
+      "prediction_as_of_utc": "2026-11-19T18:15:37.189549+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/ec43450efcdcf40842d165de00a84638fdd7a4bb3950a54100ed440b34800f37/000001.json",
+      "forecast_sha256": "2489b1eb58b45667dedb8b9ddbf3efef3f392183be03542ee6537f37048bd681",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "b24f6182e9b2a0cdd431080e0299b06d1cd436aaf325d94820025269c80450d5",
+      "source_output_sha256": "aa6bdc851a03e5e2d0a5781f3075a0f953bb029f45117476140089713eb3c493"
     },
     {
       "game_id": "2026020355",
@@ -1194,7 +1571,11 @@
       "log_loss": 1.4688471345344265,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020355-away3.json",
-      "forecast_sha256": "ec9e72213b262ba8f678fe4706cb2ca7483ac9e430546bb312e92121388dc8fd"
+      "forecast_sha256": "ec9e72213b262ba8f678fe4706cb2ca7483ac9e430546bb312e92121388dc8fd",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020355",
@@ -1212,7 +1593,11 @@
       "log_loss": 1.4568935268101972,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020355-first3.json",
-      "forecast_sha256": "8e9dc563e604ba5ffb1ea7044a24fbd30e78d764f415bc6cd557106f4ad6934c"
+      "forecast_sha256": "8e9dc563e604ba5ffb1ea7044a24fbd30e78d764f415bc6cd557106f4ad6934c",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020355",
@@ -1229,7 +1614,11 @@
       "log_loss": 0.27626054915737136,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020355-home3.json",
-      "forecast_sha256": "4af4dc0eabc5bf80fd182aac2405ead0d0f88b7258ecac0c2fa0edaafdc30455"
+      "forecast_sha256": "4af4dc0eabc5bf80fd182aac2405ead0d0f88b7258ecac0c2fa0edaafdc30455",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020355",
@@ -1247,7 +1636,11 @@
       "log_loss": 1.0208839049432115,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020355-rt.json",
-      "forecast_sha256": "df05778ff67ccc20abf0a80bd64f546ee18b2b41a35d0b2320bf4c36a9d8c3af"
+      "forecast_sha256": "df05778ff67ccc20abf0a80bd64f546ee18b2b41a35d0b2320bf4c36a9d8c3af",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020355",
@@ -1264,7 +1657,32 @@
       "log_loss": 0.7425547327396882,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020355-ml.json",
-      "forecast_sha256": "1b7162708185b8f02b2bf56802d43072f14c2d237d405a3ef7f19c9612745df9"
+      "forecast_sha256": "1b7162708185b8f02b2bf56802d43072f14c2d237d405a3ef7f19c9612745df9",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
+    },
+    {
+      "game_id": "2026020356",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.588284,
+        "away": 0.41171599999999997
+      },
+      "actual": "home",
+      "modal_class": "home",
+      "modal_correct": true,
+      "brier": 0.16951006465599996,
+      "log_loss": 0.5305454544899011,
+      "prediction_as_of_utc": "2026-11-19T18:15:37.190298+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/daa38864f942269e3983d78090047056de5ab7f3925a57b879e680aa01ba42b0/000001.json",
+      "forecast_sha256": "4cafdef7f2edef3dfaa13e61a0b1f907daa1061b94f7dd425de283fe390a4457",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "3930a70f3f92499d53c7c43f43db49fd58be009e2ce2fd8052b68c108b40e4a8",
+      "source_output_sha256": "f57be13ff2ac5fd3b17f0919b252e6c29c24afd26a12c476a5bc012b4a6462f0"
     },
     {
       "game_id": "2026020356",
@@ -1281,7 +1699,11 @@
       "log_loss": 0.20792186733398788,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020356-away3.json",
-      "forecast_sha256": "37645c4ed8ef43e2ea28d98fb72695372f427584e41ede9689b6b24c23066de0"
+      "forecast_sha256": "37645c4ed8ef43e2ea28d98fb72695372f427584e41ede9689b6b24c23066de0",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020356",
@@ -1299,7 +1721,11 @@
       "log_loss": 1.1236380605471747,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020356-first3.json",
-      "forecast_sha256": "a261e94e26b8792597dd0052553ff4a9b7ba6cedc6c1eb3514b9cfacbc375007"
+      "forecast_sha256": "a261e94e26b8792597dd0052553ff4a9b7ba6cedc6c1eb3514b9cfacbc375007",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020356",
@@ -1316,7 +1742,11 @@
       "log_loss": 1.0683281903143602,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020356-home3.json",
-      "forecast_sha256": "93bad071c46c17c8d7b5ce7875aed654d9e825327de664e5404a8d9f1163f46f"
+      "forecast_sha256": "93bad071c46c17c8d7b5ce7875aed654d9e825327de664e5404a8d9f1163f46f",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020356",
@@ -1333,7 +1763,11 @@
       "log_loss": 0.5460830245902123,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020356-ml.json",
-      "forecast_sha256": "2ecf5de9d61fcea058800b2407ada2a2e06d6f9e9c9edc9fd08b752f02032082"
+      "forecast_sha256": "2ecf5de9d61fcea058800b2407ada2a2e06d6f9e9c9edc9fd08b752f02032082",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020356",
@@ -1351,7 +1785,11 @@
       "log_loss": 0.7571101111478755,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020356-rt.json",
-      "forecast_sha256": "f5702be3d70db4e5ce65f8786caa26c26d1d74706d71c4d46a2eab754e264589"
+      "forecast_sha256": "f5702be3d70db4e5ce65f8786caa26c26d1d74706d71c4d46a2eab754e264589",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020356",
@@ -1368,7 +1806,32 @@
       "log_loss": 0.5717702101311188,
       "prediction_as_of_utc": "2026-11-19T18:04:13.011258+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44583656356/2026020356-ml.json",
-      "forecast_sha256": "5cf509046903c27dacde081d35da3861e9c4a22aa7a6dcca4d037228e57cf283"
+      "forecast_sha256": "5cf509046903c27dacde081d35da3861e9c4a22aa7a6dcca4d037228e57cf283",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
+    },
+    {
+      "game_id": "2026020357",
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "probabilities": {
+        "home": 0.606615,
+        "away": 0.393385
+      },
+      "actual": "home",
+      "modal_class": "home",
+      "modal_correct": true,
+      "brier": 0.15475175822499998,
+      "log_loss": 0.499860956041301,
+      "prediction_as_of_utc": "2026-11-19T18:15:37.191056+00:00",
+      "source_path": "frontend/data/forecast_archive/nhl/3958bf3d8fc872bded42deecaa98cd66dc18a04d6f3d1ffae1c6245b2ae0b296/000001.json",
+      "forecast_sha256": "28e25a1229873b982691b5c1cf660fd1dc6c1bd0aaece7eb114fc7cea3911e70",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "source_archive_content_sha256": "264571ed0da90a693a60b77d8ef3fe081f0227199ef7f6698508529381ed880b",
+      "source_output_sha256": "ab3a7f0cd29db95759bf77154487a3a775a0607e415f7e06cf03952f397921db"
     },
     {
       "game_id": "2026020357",
@@ -1385,7 +1848,11 @@
       "log_loss": 0.25360598737978196,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020357-away3.json",
-      "forecast_sha256": "587b6fb0a6cf826feac04855a099924bdd425d8f23b85f8b77d30ddc2e06ca9f"
+      "forecast_sha256": "587b6fb0a6cf826feac04855a099924bdd425d8f23b85f8b77d30ddc2e06ca9f",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020357",
@@ -1403,7 +1870,11 @@
       "log_loss": 1.3031402123052174,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020357-first3.json",
-      "forecast_sha256": "c91374bb3f1cb67721a05743994280de078823ac72c3450f8c24abb8712a465b"
+      "forecast_sha256": "c91374bb3f1cb67721a05743994280de078823ac72c3450f8c24abb8712a465b",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020357",
@@ -1420,7 +1891,11 @@
       "log_loss": 1.3002808353751596,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020357-home3.json",
-      "forecast_sha256": "f4e43b051532e83243aaae619cf90d44581f2776b0b401b069ab5e714fb67333"
+      "forecast_sha256": "f4e43b051532e83243aaae619cf90d44581f2776b0b401b069ab5e714fb67333",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020357",
@@ -1438,7 +1913,11 @@
       "log_loss": 0.867927944359114,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020357-rt.json",
-      "forecast_sha256": "2c3bb126f6d9dd0d480bf1c308b62833b46eae41ca4d053a23340ab2c0606e54"
+      "forecast_sha256": "2c3bb126f6d9dd0d480bf1c308b62833b46eae41ca4d053a23340ab2c0606e54",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     },
     {
       "game_id": "2026020357",
@@ -1455,13 +1934,29 @@
       "log_loss": 0.5796608674031358,
       "prediction_as_of_utc": "2026-11-19T01:00:52.257611+00:00",
       "source_path": "frontend/data/nhl-forecasts/run-44433487967/2026020357-ml.json",
-      "forecast_sha256": "8275d061e86aa66cb0d2fbb19a5307cf8222190c38898594122c1561ad4a0f9e"
+      "forecast_sha256": "8275d061e86aa66cb0d2fbb19a5307cf8222190c38898594122c1561ad4a0f9e",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
+      "source_archive_content_sha256": null,
+      "source_output_sha256": null
     }
   ],
   "metrics": [
     {
+      "model_version": "nhl-prior-day-standings",
+      "market": "ml",
+      "source_classification": "unvalidated_model_output",
+      "point_in_time_sources_verified": false,
+      "n": 11,
+      "modal_correct": 5,
+      "brier": 0.26191,
+      "log_loss": 0.717671
+    },
+    {
       "model_version": "outcome-only-206-frozen-params",
       "market": "away3",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
       "n": 11,
       "modal_correct": 8,
       "brier": 0.199022,
@@ -1470,6 +1965,8 @@
     {
       "model_version": "outcome-only-206-frozen-params",
       "market": "first3",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
       "n": 11,
       "modal_correct": 3,
       "brier": 0.241743,
@@ -1478,6 +1975,8 @@
     {
       "model_version": "outcome-only-206-frozen-params",
       "market": "home3",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
       "n": 11,
       "modal_correct": 6,
       "brier": 0.277744,
@@ -1486,6 +1985,8 @@
     {
       "model_version": "outcome-only-206-frozen-params",
       "market": "ml",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
       "n": 2,
       "modal_correct": 1,
       "brier": 0.255089,
@@ -1494,6 +1995,8 @@
     {
       "model_version": "outcome-only-206-frozen-params",
       "market": "rt",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
       "n": 11,
       "modal_correct": 3,
       "brier": 0.219799,
@@ -1502,6 +2005,8 @@
     {
       "model_version": "outcome-only-206-rest-context-v1",
       "market": "ml",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
       "n": 9,
       "modal_correct": 4,
       "brier": 0.255788,
@@ -1510,6 +2015,8 @@
     {
       "model_version": "outcome-only-206-rest-lineup-scenario-v1",
       "market": "ml",
+      "source_classification": "verified_legacy_frozen_ledger",
+      "point_in_time_sources_verified": true,
       "n": 7,
       "modal_correct": 2,
       "brier": 0.286861,
@@ -1540,9 +2047,10 @@
   "limitations": [
     "Markets from the same game are correlated.",
     "No parameter changes or promotion from daily results.",
-    "Hashes verify content, not independent original capture time."
+    "Archive hashes verify stored forecast content; they do not independently validate captured pregame input provenance.",
+    "Descriptive scores from unverified archived forecasts are excluded from certification and paired comparison."
   ],
-  "revision_sha256": "1ebf786c220f0b83eac7de91aac004e38665efa4f8b3e42c201c801c7b09e66c",
-  "generated_at_utc": "2026-11-20T20:27:34.399522+00:00",
-  "archive_path": "reports/nhl/daily/2026-11-19/revisions/1ebf786c220f0b83eac7de91aac004e38665efa4f8b3e42c201c801c7b09e66c"
+  "revision_sha256": "e6938682d6f5507a1289886231be6eb03f268468492910b0175d56b797c44654",
+  "generated_at_utc": "2026-11-26T21:39:26.340148+00:00",
+  "archive_path": "reports/nhl/daily/2026-11-19/revisions/e6938682d6f5507a1289886231be6eb03f268468492910b0175d56b797c44654"
 }

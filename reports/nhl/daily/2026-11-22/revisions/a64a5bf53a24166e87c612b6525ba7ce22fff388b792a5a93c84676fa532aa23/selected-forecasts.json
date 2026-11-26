@@ -1,0 +1,2171 @@
+[
+  {
+    "source_path": "frontend/data/forecast_archive/nhl/ed7771bb84251e7218527ac00e0d686fc42dc8476164489fb129982c3c8a02f6/000001.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020371",
+        "home": "VAN",
+        "away": "MIN",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "prediction_as_of_utc": "2026-11-21T16:46:31.265498+00:00",
+        "source_asof_utc": "2026-11-21T16:46:31.188053+00:00",
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-20",
+        "model_version": "nhl-prior-day-standings",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.356298,
+          "away": 0.643702
+        },
+        "odds_used_in_model": false,
+        "official": false,
+        "point_in_time_sources_verified": false,
+        "forecast_source_classification": "unvalidated_model_output",
+        "source_archive_content_sha256": "463af3ff43508d7184fe8f8b5faeaca960205b67f7f0c6b5ecdf3aece610e0f3",
+        "source_output_sha256": "4fb8d0a00e2f8fd5dd605453b4ccb09f24a2e5943178effb87e3d1c16ed6adb2"
+      },
+      "sha256": "a4e8a70166813b26e4c7346ebb3b3ed398f3cc86b9f83c3c518a92e39c81058a",
+      "frozen": true,
+      "source_kind": "forecast_archive",
+      "archive_content_sha256": "463af3ff43508d7184fe8f8b5faeaca960205b67f7f0c6b5ecdf3aece610e0f3",
+      "source_output_sha256": "4fb8d0a00e2f8fd5dd605453b4ccb09f24a2e5943178effb87e3d1c16ed6adb2",
+      "point_in_time_sources_verified": false
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44953592150/2026020371-away3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020371",
+        "home": "VAN",
+        "away": "MIN",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "away3",
+        "probabilities": {
+          "yes": 0.2780673799584105,
+          "no": 0.7219326200415894
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "06d5763b5bd7045e41b40810f8dd6c46cd7bd9f026f4cdc0c2ec7bbc29d820ff",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44953592150/2026020371-first3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020371",
+        "home": "VAN",
+        "away": "MIN",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "first3",
+        "probabilities": {
+          "home": 0.2221984396824482,
+          "away": 0.295634348939253,
+          "none": 0.4821672113782988
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "477f4e00e848623600d87b8929f1cd136cd5117e2f9df37c9c8724b8f56ff731",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44953592150/2026020371-home3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020371",
+        "home": "VAN",
+        "away": "MIN",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "home3",
+        "probabilities": {
+          "yes": 0.20672518617772795,
+          "no": 0.793274813822272
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "89839b4543b5d328b3ef9c5baf52a120d75ee816e1ecab510a1c349c1f2651d3",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44953592150/2026020371-rt.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020371",
+        "home": "VAN",
+        "away": "MIN",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "rt",
+        "probabilities": {
+          "home": 0.35710826398978557,
+          "draw": 0.22255557442454812,
+          "away": 0.4203361615856662
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "7a4d9e8a1fcf729a07a076228bcb70405fba6e376ee9f302a7f4e4335bd7c5a6",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44965711766/2026020371-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020371",
+        "home": "VAN",
+        "away": "MIN",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-22T00:16:03.639336+00:00",
+        "source_asof_utc": "2026-11-22T00:16:03.639336+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-context-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.4578028475042654,
+          "away": 0.5421971524957345
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 1,
+            "away_rest_days": 1,
+            "rest_differential_days": 0,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.0,
+            "source_as_of_utc": "2026-11-22T00:15:51.309573+00:00",
+            "probability_before": 0.45780285,
+            "probability_after": 0.45780285,
+            "probability_delta_percentage_points": 0.0
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "unavailable",
+            "reason": "scenario_incomplete:No complete team exposure scenario"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "762f0e6cb9757d925ff1cceb621be89ef7ad28c379589a4de58e08e42f63e5dd",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44953592150/2026020371-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020371",
+        "home": "VAN",
+        "away": "MIN",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.47878357,
+          "away": 0.52121643
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 1,
+            "away_rest_days": 1,
+            "rest_differential_days": 0,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.0,
+            "source_as_of_utc": "2026-11-21T21:50:51.865293+00:00",
+            "probability_before": 0.45780285,
+            "probability_after": 0.45780285,
+            "probability_delta_percentage_points": 0.0
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-21T21:51:09.947951+00:00",
+            "baseline_probability_home": 0.45780285,
+            "scenario_probability_home": 0.47878357,
+            "scenario_probability_away": 0.52121643,
+            "probability_delta_home_percentage_points": 2.0981,
+            "adjusted_goal_expectations": {
+              "home": 3.7521851293039052,
+              "away": 3.9018909781472852
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "91696dd4dddfa54a004f2b702ff0aa748d140255b49531e20d61b307157dc72a",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/forecast_archive/nhl/2d58f494fc60b12534f08313cbfc485e90b8ba0c37db763e1a60741614dc85ad/000001.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020372",
+        "home": "SJS",
+        "away": "SEA",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "prediction_as_of_utc": "2026-11-21T16:46:31.265992+00:00",
+        "source_asof_utc": "2026-11-21T16:46:31.188053+00:00",
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-20",
+        "model_version": "nhl-prior-day-standings",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.495008,
+          "away": 0.504992
+        },
+        "odds_used_in_model": false,
+        "official": false,
+        "point_in_time_sources_verified": false,
+        "forecast_source_classification": "unvalidated_model_output",
+        "source_archive_content_sha256": "226cfd3d97c20faf78a5853ad2e0351b2ce77240c9368b7321b8b7cd4ddb1cac",
+        "source_output_sha256": "8739203b9ac70ec476bb8cc1b472b689c5b1ac20ec0160795ca046aaef2be823"
+      },
+      "sha256": "d5581003a23191650c686cc9b890178eb76cb9b9a0a978f3310842a56c8d5b63",
+      "frozen": true,
+      "source_kind": "forecast_archive",
+      "archive_content_sha256": "226cfd3d97c20faf78a5853ad2e0351b2ce77240c9368b7321b8b7cd4ddb1cac",
+      "source_output_sha256": "8739203b9ac70ec476bb8cc1b472b689c5b1ac20ec0160795ca046aaef2be823",
+      "point_in_time_sources_verified": false
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44953592150/2026020372-away3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020372",
+        "home": "SJS",
+        "away": "SEA",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "away3",
+        "probabilities": {
+          "yes": 0.22467116956985425,
+          "no": 0.7753288304301459
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "d3aa8427c9d2e24300fd2d1639758d76922ee2ae827a164690842e361729d76c",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44953592150/2026020372-first3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020372",
+        "home": "SJS",
+        "away": "SEA",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "first3",
+        "probabilities": {
+          "home": 0.24137017991276113,
+          "away": 0.22576194656967263,
+          "none": 0.5328678735175663
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "f26f0dd280f8cfb55f154aa48fef246fe34ecb479961c53ce433637de5575ad5",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44953592150/2026020372-home3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020372",
+        "home": "SJS",
+        "away": "SEA",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "home3",
+        "probabilities": {
+          "yes": 0.23199691782542906,
+          "no": 0.7680030821745709
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "a49fb46421c12c4eb8dcb661fcbe1011bdd1b8464fedf2b80838bc2ebc1c86ec",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44953592150/2026020372-rt.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020372",
+        "home": "SJS",
+        "away": "SEA",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "rt",
+        "probabilities": {
+          "home": 0.4091334372911562,
+          "draw": 0.21625773053708006,
+          "away": 0.3746088321717638
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "e96671c7b0957f8d2578f7ff3bba472ee9ee0168ef96f680d0d1d61e618a14d7",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44965711766/2026020372-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020372",
+        "home": "SJS",
+        "away": "SEA",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-22T00:16:03.639336+00:00",
+        "source_asof_utc": "2026-11-22T00:16:03.639336+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-context-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.5527893561743463,
+          "away": 0.4472106438256537
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 3,
+            "away_rest_days": 1,
+            "rest_differential_days": 2,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.12,
+            "source_as_of_utc": "2026-11-22T00:15:51.309573+00:00",
+            "probability_before": 0.52297064,
+            "probability_after": 0.55278936,
+            "probability_delta_percentage_points": 2.9819
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "unavailable",
+            "reason": "scenario_incomplete:No complete team exposure scenario"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "aad8785bc88d1e40cccaa4f47b821f9ca21b1377e59e76666eda6aa8c7619432",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44953592150/2026020372-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020372",
+        "home": "SJS",
+        "away": "SEA",
+        "start_utc": "2026-11-22T03:00:00Z",
+        "game_date": "2026-11-21",
+        "prediction_as_of_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_asof_utc": "2026-11-21T21:51:10.168035+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.54518526,
+          "away": 0.45481474
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 3,
+            "away_rest_days": 1,
+            "rest_differential_days": 2,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.12,
+            "source_as_of_utc": "2026-11-21T21:50:51.865293+00:00",
+            "probability_before": 0.52297064,
+            "probability_after": 0.55278936,
+            "probability_delta_percentage_points": 2.9819
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-21T21:51:09.947951+00:00",
+            "baseline_probability_home": 0.55278936,
+            "scenario_probability_home": 0.54518526,
+            "scenario_probability_away": 0.45481474,
+            "probability_delta_home_percentage_points": -0.7604,
+            "adjusted_goal_expectations": {
+              "home": 3.334608498132141,
+              "away": 3.0421292181077906
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "97709ab757babad0875e5f40e33afe57e6fbe9ac68de90b16473837221950c7a",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/forecast_archive/nhl/a2290d4ddb8107f744ce09ac1c09cc0efd966bc82258520f703c3aec816f463e/000001.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020373",
+        "home": "NYR",
+        "away": "CAR",
+        "start_utc": "2026-11-22T17:30:00Z",
+        "prediction_as_of_utc": "2026-11-22T17:08:49.523039+00:00",
+        "source_asof_utc": "2026-11-22T17:08:49.316558+00:00",
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-21",
+        "model_version": "nhl-prior-day-standings",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.453382,
+          "away": 0.546618
+        },
+        "odds_used_in_model": false,
+        "official": false,
+        "point_in_time_sources_verified": false,
+        "forecast_source_classification": "unvalidated_model_output",
+        "source_archive_content_sha256": "298c7e973d48d008135e1206820c7aa9b7e1dc07a100e08c39672612e81b7e43",
+        "source_output_sha256": "6fb949ac891b076955ef0c026c11bf214d65082acbfecd262d89625bc6e278fc"
+      },
+      "sha256": "2c6eef112b630ba85ac254cee200b135825741e7ba0cf14d445b730f08099425",
+      "frozen": true,
+      "source_kind": "forecast_archive",
+      "archive_content_sha256": "298c7e973d48d008135e1206820c7aa9b7e1dc07a100e08c39672612e81b7e43",
+      "source_output_sha256": "6fb949ac891b076955ef0c026c11bf214d65082acbfecd262d89625bc6e278fc",
+      "point_in_time_sources_verified": false
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020373-away3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020373",
+        "home": "NYR",
+        "away": "CAR",
+        "start_utc": "2026-11-22T17:30:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "away3",
+        "probabilities": {
+          "yes": 0.2596024758997093,
+          "no": 0.7403975241002907
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "bf725889f01a41aa353982488d603f6037042c45885c0800f545c7af3eab83d5",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020373-first3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020373",
+        "home": "NYR",
+        "away": "CAR",
+        "start_utc": "2026-11-22T17:30:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "first3",
+        "probabilities": {
+          "home": 0.24826690722213107,
+          "away": 0.2714203706741021,
+          "none": 0.48031272210376685
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "b85073c45061eb888cf347d059c12599b6c574e283611317f0669f1c6c0022f6",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020373-home3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020373",
+        "home": "NYR",
+        "away": "CAR",
+        "start_utc": "2026-11-22T17:30:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "home3",
+        "probabilities": {
+          "yes": 0.2413847515543722,
+          "no": 0.7586152484456278
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "49e78a1c4f369846743b49dfc03bccce65ce112d5078ff7005a34b4d5aa13867",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020373-rt.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020373",
+        "home": "NYR",
+        "away": "CAR",
+        "start_utc": "2026-11-22T17:30:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "rt",
+        "probabilities": {
+          "home": 0.3913520632133451,
+          "draw": 0.21601864626447592,
+          "away": 0.392629290522179
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "55d283fefc74a2179ec252141e727fdc86f1fd8daebf50f912fbd815777d5446",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020373-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020373",
+        "home": "NYR",
+        "away": "CAR",
+        "start_utc": "2026-11-22T17:30:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-context-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.5602794001836298,
+          "away": 0.43972059981637024
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 5,
+            "away_rest_days": 0,
+            "rest_differential_days": 4,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.24,
+            "source_as_of_utc": "2026-11-22T03:15:39.407465+00:00",
+            "probability_before": 0.50057402,
+            "probability_after": 0.5602794,
+            "probability_delta_percentage_points": 5.9705
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "unavailable",
+            "reason": "scenario_incomplete:No complete team exposure scenario"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "8ba76e13a0cf37c4e831f1eb6ecd753a091daf8bb5d16ee91bb2f3ea106b553a",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-45046488915/2026020373-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020373",
+        "home": "NYR",
+        "away": "CAR",
+        "start_utc": "2026-11-22T17:30:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T16:55:54.282098+00:00",
+        "source_asof_utc": "2026-11-22T16:55:54.282098+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.53991708,
+          "away": 0.46008291999999995
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 5,
+            "away_rest_days": 0,
+            "rest_differential_days": 4,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.24,
+            "source_as_of_utc": "2026-11-22T16:55:42.855351+00:00",
+            "probability_before": 0.50057402,
+            "probability_after": 0.5602794,
+            "probability_delta_percentage_points": 5.9705
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-22T16:55:54.115639+00:00",
+            "baseline_probability_home": 0.5602794,
+            "scenario_probability_home": 0.53991708,
+            "scenario_probability_away": 0.46008292,
+            "probability_delta_home_percentage_points": -2.0362,
+            "adjusted_goal_expectations": {
+              "home": 4.76871761120052,
+              "away": 4.460014323268372
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "f9f66c441e4a77fd7bab2f9631e087b9b995f44430ebd28e4bd41b8ac04ba3d9",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/forecast_archive/nhl/b5c9388d85f25ca1f3a5a939cea6a193a61a00c00e8e6b42989aea1845f9f106/000001.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020374",
+        "home": "TBL",
+        "away": "BUF",
+        "start_utc": "2026-11-22T22:00:00Z",
+        "prediction_as_of_utc": "2026-11-22T17:08:49.523656+00:00",
+        "source_asof_utc": "2026-11-22T17:08:49.316558+00:00",
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-21",
+        "model_version": "nhl-prior-day-standings",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.628838,
+          "away": 0.371162
+        },
+        "odds_used_in_model": false,
+        "official": false,
+        "point_in_time_sources_verified": false,
+        "forecast_source_classification": "unvalidated_model_output",
+        "source_archive_content_sha256": "265d202397bc97c8de288df696d01f223ce13dc489301e1e928156e2bcde589d",
+        "source_output_sha256": "676ca2daba8f65e1e4a21c394a396ddd9d5a5383d1506c1eecb62e7ab345de65"
+      },
+      "sha256": "e003d7731b2b4a94a0f4c0eae5328e8c717a7d64dbd4c5fd7e525a4c95575088",
+      "frozen": true,
+      "source_kind": "forecast_archive",
+      "archive_content_sha256": "265d202397bc97c8de288df696d01f223ce13dc489301e1e928156e2bcde589d",
+      "source_output_sha256": "676ca2daba8f65e1e4a21c394a396ddd9d5a5383d1506c1eecb62e7ab345de65",
+      "point_in_time_sources_verified": false
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020374-away3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020374",
+        "home": "TBL",
+        "away": "BUF",
+        "start_utc": "2026-11-22T22:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "away3",
+        "probabilities": {
+          "yes": 0.20438575390988376,
+          "no": 0.7956142460901163
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "8f401d39ec7723aa5cf30cd1e09cd3fb39484cbc1dc63c91d1fad53cb1a11f26",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020374-first3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020374",
+        "home": "TBL",
+        "away": "BUF",
+        "start_utc": "2026-11-22T22:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "first3",
+        "probabilities": {
+          "home": 0.3171236058179294,
+          "away": 0.19909171801286032,
+          "none": 0.48378467616921017
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "51ac3c4d3bf317ea0bc722665fc891e78c2764bc4ca450494e510d9fcd0306e0",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020374-home3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020374",
+        "home": "TBL",
+        "away": "BUF",
+        "start_utc": "2026-11-22T22:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "home3",
+        "probabilities": {
+          "yes": 0.3332179542350366,
+          "no": 0.6667820457649634
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "05745a2c429ba3e47b0fc32f34f8e2ce3459075e828e3af1f8c6a7540e78f21f",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020374-rt.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020374",
+        "home": "TBL",
+        "away": "BUF",
+        "start_utc": "2026-11-22T22:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "rt",
+        "probabilities": {
+          "home": 0.46724461524711774,
+          "draw": 0.2079231728440773,
+          "away": 0.324832211908805
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "136d8c28f4239939d9fa7281fcbbdf72d5b143af1ef64d77bbd636e470f1c86f",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020374-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020374",
+        "home": "TBL",
+        "away": "BUF",
+        "start_utc": "2026-11-22T22:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-context-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.6161577747848158,
+          "away": 0.3838422252151842
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 2,
+            "away_rest_days": 0,
+            "rest_differential_days": 2,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.12,
+            "source_as_of_utc": "2026-11-22T03:15:39.407465+00:00",
+            "probability_before": 0.58741067,
+            "probability_after": 0.61615777,
+            "probability_delta_percentage_points": 2.8747
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "unavailable",
+            "reason": "scenario_incomplete:No complete team exposure scenario"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "25b92f133d7cfdbc51e321c031a0cceb63ee6e65ce05a9bfce5da1df48a7c570",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-45046488915/2026020374-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020374",
+        "home": "TBL",
+        "away": "BUF",
+        "start_utc": "2026-11-22T22:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T16:55:54.282098+00:00",
+        "source_asof_utc": "2026-11-22T16:55:54.282098+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.61615777,
+          "away": 0.38384222999999995
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 2,
+            "away_rest_days": 0,
+            "rest_differential_days": 2,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.12,
+            "source_as_of_utc": "2026-11-22T16:55:42.855351+00:00",
+            "probability_before": 0.58741067,
+            "probability_after": 0.61615777,
+            "probability_delta_percentage_points": 2.8747
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-22T16:55:54.115639+00:00",
+            "baseline_probability_home": 0.61615777,
+            "scenario_probability_home": 0.61615777,
+            "scenario_probability_away": 0.38384223,
+            "probability_delta_home_percentage_points": 0.0,
+            "adjusted_goal_expectations": {
+              "home": 3.74196820177107,
+              "away": 2.9632787502352724
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "250ecb19c3516d790397e3fa3379eae263cb5db62d677863ad1e4dd3fca15dac",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/forecast_archive/nhl/e08145232bb5f3d1bfab63c1d7012210d3b3d41a13dd9558c412e11fc2be9d9e/000001.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020375",
+        "home": "STL",
+        "away": "EDM",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "prediction_as_of_utc": "2026-11-22T17:08:49.524223+00:00",
+        "source_asof_utc": "2026-11-22T17:08:49.316558+00:00",
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-21",
+        "model_version": "nhl-prior-day-standings",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.488108,
+          "away": 0.511892
+        },
+        "odds_used_in_model": false,
+        "official": false,
+        "point_in_time_sources_verified": false,
+        "forecast_source_classification": "unvalidated_model_output",
+        "source_archive_content_sha256": "ea7b518e6a24808c343f51a309578f933df6ef94b98462c613c24c4c3673e1c1",
+        "source_output_sha256": "99ce2ae8466d9941cedb7494fd03d47062a74c92ac1595d3c47d9cc941ef554d"
+      },
+      "sha256": "bda1bb420a558a8076608cbaf51c6032821f002c438579383edca98a092380cd",
+      "frozen": true,
+      "source_kind": "forecast_archive",
+      "archive_content_sha256": "ea7b518e6a24808c343f51a309578f933df6ef94b98462c613c24c4c3673e1c1",
+      "source_output_sha256": "99ce2ae8466d9941cedb7494fd03d47062a74c92ac1595d3c47d9cc941ef554d",
+      "point_in_time_sources_verified": false
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020375-away3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020375",
+        "home": "STL",
+        "away": "EDM",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "away3",
+        "probabilities": {
+          "yes": 0.22234982576617116,
+          "no": 0.7776501742338289
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "beb5b1504972000ea2ba0f8c6d3e578c7657602720c0a3544e82c3faa33cea39",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020375-first3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020375",
+        "home": "STL",
+        "away": "EDM",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "first3",
+        "probabilities": {
+          "home": 0.23838344833761452,
+          "away": 0.22271376525695483,
+          "none": 0.5389027864054307
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "790f8c85c1a1e3145c1e4f17f78b983b6cfcb4d89c34120b9c5afebd1d77536d",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020375-home3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020375",
+        "home": "STL",
+        "away": "EDM",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "home3",
+        "probabilities": {
+          "yes": 0.22795479634029975,
+          "no": 0.7720452036597002
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "d5f7baa18d6b010a634e0a3e59bf1cad877f957badee0ca43dc871da29ea0ddd",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020375-rt.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020375",
+        "home": "STL",
+        "away": "EDM",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "rt",
+        "probabilities": {
+          "home": 0.4133523996782555,
+          "draw": 0.21989922074826893,
+          "away": 0.36674837957347567
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "7fa88e159e562aaf4608884dd8a4f8649ff8ec9f57603f094386e01cfa4af8e4",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020375-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020375",
+        "home": "STL",
+        "away": "EDM",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-context-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.5215424110896586,
+          "away": 0.4784575889103414
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 0,
+            "away_rest_days": 0,
+            "rest_differential_days": 0,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.0,
+            "source_as_of_utc": "2026-11-22T03:15:39.407465+00:00",
+            "probability_before": 0.52154241,
+            "probability_after": 0.52154241,
+            "probability_delta_percentage_points": 0.0
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "unavailable",
+            "reason": "scenario_incomplete:No complete team exposure scenario"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "c23c7348efbf13e1d3a40ce94bc50175f23ea46dfaf472a9396edd689a2339e6",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-45046488915/2026020375-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020375",
+        "home": "STL",
+        "away": "EDM",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T16:55:54.282098+00:00",
+        "source_asof_utc": "2026-11-22T16:55:54.282098+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.52154241,
+          "away": 0.47845759
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 0,
+            "away_rest_days": 0,
+            "rest_differential_days": 0,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.0,
+            "source_as_of_utc": "2026-11-22T16:55:42.855351+00:00",
+            "probability_before": 0.52154241,
+            "probability_after": 0.52154241,
+            "probability_delta_percentage_points": 0.0
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-22T16:55:54.115639+00:00",
+            "baseline_probability_home": 0.52154241,
+            "scenario_probability_home": 0.52154241,
+            "scenario_probability_away": 0.47845759,
+            "probability_delta_home_percentage_points": 0.0,
+            "adjusted_goal_expectations": {
+              "home": 4.10967860048998,
+              "away": 3.9537965962336674
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "8843c75ef1735e3a358a70c022c1a3601f9708a4401a87d8766535e685cd51a1",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/forecast_archive/nhl/4ac08aaf91666f9c8ecffa1fa3cddfb7aea3029aa70cff656be6f0715622a445/000001.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020376",
+        "home": "DAL",
+        "away": "PIT",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "prediction_as_of_utc": "2026-11-22T17:08:49.524838+00:00",
+        "source_asof_utc": "2026-11-22T17:08:49.316558+00:00",
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-21",
+        "model_version": "nhl-prior-day-standings",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.596207,
+          "away": 0.40379299999999996
+        },
+        "odds_used_in_model": false,
+        "official": false,
+        "point_in_time_sources_verified": false,
+        "forecast_source_classification": "unvalidated_model_output",
+        "source_archive_content_sha256": "241d8b0aa89df7226bf813866cbf1e8475cc54f7080aa11e4483bcbfddf695e3",
+        "source_output_sha256": "ce33c6a2f6290aef23c1fd1a767a3b3b2f157add021c510d6b5bcaa1f78505c1"
+      },
+      "sha256": "470d214f8b1026230a0cb3e71b4b453bb88d1e05942bc8c879ac668a2c5d7e87",
+      "frozen": true,
+      "source_kind": "forecast_archive",
+      "archive_content_sha256": "241d8b0aa89df7226bf813866cbf1e8475cc54f7080aa11e4483bcbfddf695e3",
+      "source_output_sha256": "ce33c6a2f6290aef23c1fd1a767a3b3b2f157add021c510d6b5bcaa1f78505c1",
+      "point_in_time_sources_verified": false
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020376-away3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020376",
+        "home": "DAL",
+        "away": "PIT",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "away3",
+        "probabilities": {
+          "yes": 0.20553365521038924,
+          "no": 0.7944663447896109
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "385f443321158ef67000cfe73d9a49eb4162f4ca3606fddf112354bedf1596d9",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020376-first3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020376",
+        "home": "DAL",
+        "away": "PIT",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "first3",
+        "probabilities": {
+          "home": 0.28618441975779796,
+          "away": 0.20065874075979193,
+          "none": 0.5131568394824101
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "30edc96af12273645538d39188be10a7f38bce3003252ae2048533599778f766",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020376-home3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020376",
+        "home": "DAL",
+        "away": "PIT",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "home3",
+        "probabilities": {
+          "yes": 0.29176897049045053,
+          "no": 0.7082310295095494
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "3dc167b76f07fa2f4a1c346db23f51cdab4b42ed124cac39895d379bfe55ff64",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020376-rt.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020376",
+        "home": "DAL",
+        "away": "PIT",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "rt",
+        "probabilities": {
+          "home": 0.4423136542805262,
+          "draw": 0.23574581522231994,
+          "away": 0.32194053049715393
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "989904bb8d490b16fcac6b7509d21a3e3b81756e0a429f82d0d91154e69d48ed",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020376-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020376",
+        "home": "DAL",
+        "away": "PIT",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-context-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.6197404301984685,
+          "away": 0.3802595698015315
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 2,
+            "away_rest_days": 0,
+            "rest_differential_days": 2,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.12,
+            "source_as_of_utc": "2026-11-22T03:15:39.407465+00:00",
+            "probability_before": 0.59108358,
+            "probability_after": 0.61974043,
+            "probability_delta_percentage_points": 2.8657
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "unavailable",
+            "reason": "scenario_incomplete:No complete team exposure scenario"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "153d06ce0a08371113ed7b963cdc4e03bf4e6b520ab427edb08d0dbf04c2800a",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-45076543265/2026020376-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020376",
+        "home": "DAL",
+        "away": "PIT",
+        "start_utc": "2026-11-23T00:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T22:14:33.248586+00:00",
+        "source_asof_utc": "2026-11-22T22:14:33.248586+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.64313812,
+          "away": 0.35686187999999996
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 2,
+            "away_rest_days": 0,
+            "rest_differential_days": 2,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.12,
+            "source_as_of_utc": "2026-11-22T22:14:23.225162+00:00",
+            "probability_before": 0.59108358,
+            "probability_after": 0.61974043,
+            "probability_delta_percentage_points": 2.8657
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-22T22:14:33.093926+00:00",
+            "baseline_probability_home": 0.61974043,
+            "scenario_probability_home": 0.64313812,
+            "scenario_probability_away": 0.35686188,
+            "probability_delta_home_percentage_points": 2.3398,
+            "adjusted_goal_expectations": {
+              "home": 3.036320995213239,
+              "away": 2.179697114510758
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "380f182d818a169d98faa944907f386862d4aaf6fe4d3a86a0556bcd3fc1d07e",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/forecast_archive/nhl/e587a3a32977204b6566cc6629e5106622a4045590db30b5ca6cf3caf13b138a/000001.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020377",
+        "home": "VAN",
+        "away": "CHI",
+        "start_utc": "2026-11-23T01:00:00Z",
+        "prediction_as_of_utc": "2026-11-22T17:08:49.525397+00:00",
+        "source_asof_utc": "2026-11-22T17:08:49.316558+00:00",
+        "source_url": "https://api-web.nhle.com/v1/standings/2026-11-21",
+        "model_version": "nhl-prior-day-standings",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.540216,
+          "away": 0.45978399999999997
+        },
+        "odds_used_in_model": false,
+        "official": false,
+        "point_in_time_sources_verified": false,
+        "forecast_source_classification": "unvalidated_model_output",
+        "source_archive_content_sha256": "f40904eee98ecdc89211b8eceafb8b1d90c827cb5c9832db8546151a6c12f2bd",
+        "source_output_sha256": "5b243af791a2513536da47503d37fab801b6b9798c54d676ef13cc9931a7e849"
+      },
+      "sha256": "613f5d1764e71324462337e209e6044141d31ee49084c5b64a1699a3b25a7c33",
+      "frozen": true,
+      "source_kind": "forecast_archive",
+      "archive_content_sha256": "f40904eee98ecdc89211b8eceafb8b1d90c827cb5c9832db8546151a6c12f2bd",
+      "source_output_sha256": "5b243af791a2513536da47503d37fab801b6b9798c54d676ef13cc9931a7e849",
+      "point_in_time_sources_verified": false
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020377-away3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020377",
+        "home": "VAN",
+        "away": "CHI",
+        "start_utc": "2026-11-23T01:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "away3",
+        "probabilities": {
+          "yes": 0.24031389762245858,
+          "no": 0.7596861023775414
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "f5e43edaa997a7a4754821146fd959cf70b2abb4d1f2f5528209dc3050258003",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020377-first3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020377",
+        "home": "VAN",
+        "away": "CHI",
+        "start_utc": "2026-11-23T01:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "first3",
+        "probabilities": {
+          "home": 0.262005495581709,
+          "away": 0.2463358125010493,
+          "none": 0.4916586919172417
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "260061fff1d1bc1c54469e6295be061a736fed20334f4e00dfd1e7461d9e930c",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020377-home3.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020377",
+        "home": "VAN",
+        "away": "CHI",
+        "start_utc": "2026-11-23T01:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "home3",
+        "probabilities": {
+          "yes": 0.2595337437087208,
+          "no": 0.7404662562912792
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "e76e68e79e1a5677e0feac5dcaaf0e444553dd5a7fd87b42c1aa42c452bd6ead",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020377-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020377",
+        "home": "VAN",
+        "away": "CHI",
+        "start_utc": "2026-11-23T01:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.5245364230657065,
+          "away": 0.47546357693429353
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "unavailable",
+            "reason": "home_previous_game_not_confirmed_complete"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "unavailable",
+            "reason": "scenario_incomplete:No complete team exposure scenario"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "493fccbab87fb6a1bc92d1a11279769cf595750fa9a26317122280926211da09",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44979775813/2026020377-rt.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020377",
+        "home": "VAN",
+        "away": "CHI",
+        "start_utc": "2026-11-23T01:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_asof_utc": "2026-11-22T03:15:49.584743+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-frozen-params",
+        "market": "rt",
+        "probabilities": {
+          "home": 0.42233443560639916,
+          "draw": 0.2139111967961731,
+          "away": 0.36375436759742774
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "not_used_for_market"
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "not_used_for_market"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "dfbb8d1a2f623c725ce571cd13ed49adb72742bc6738de42b151ec3f09c15fdb",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-44997629089/2026020377-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020377",
+        "home": "VAN",
+        "away": "CHI",
+        "start_utc": "2026-11-23T01:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T07:19:14.031775+00:00",
+        "source_asof_utc": "2026-11-22T07:19:14.031775+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-context-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.5245364230657065,
+          "away": 0.47546357693429353
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 0,
+            "away_rest_days": 0,
+            "rest_differential_days": 0,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.0,
+            "source_as_of_utc": "2026-11-22T07:19:02.766982+00:00",
+            "probability_before": 0.52453642,
+            "probability_after": 0.52453642,
+            "probability_delta_percentage_points": 0.0
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "unavailable",
+            "reason": "scenario_incomplete:No complete team exposure scenario"
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "576db24898cbb4e4b8c6b51cc6b91928414149f5a2d15161a28534e032ef5fab",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  },
+  {
+    "source_path": "frontend/data/nhl-forecasts/run-45076543265/2026020377-ml.json",
+    "envelope": {
+      "record": {
+        "game_id": "2026020377",
+        "home": "VAN",
+        "away": "CHI",
+        "start_utc": "2026-11-23T01:00:00Z",
+        "game_date": "2026-11-22",
+        "prediction_as_of_utc": "2026-11-22T22:14:33.248586+00:00",
+        "source_asof_utc": "2026-11-22T22:14:33.248586+00:00",
+        "source_url": "https://github.com/amante/BeatBetano/releases/tag/nhl-historical-2811-2026",
+        "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+        "market": "ml",
+        "probabilities": {
+          "home": 0.52453642,
+          "away": 0.47546358
+        },
+        "module_effects": {
+          "rest": {
+            "module": "schedule_rest",
+            "status": "applied",
+            "feature": "home_rest_days_minus_away_rest_days",
+            "home_rest_days": 0,
+            "away_rest_days": 0,
+            "rest_differential_days": 0,
+            "coefficient_logit_per_day": 0.06,
+            "logit_adjustment": 0.0,
+            "source_as_of_utc": "2026-11-22T22:14:23.225162+00:00",
+            "probability_before": 0.52453642,
+            "probability_after": 0.52453642,
+            "probability_delta_percentage_points": 0.0
+          },
+          "lineup_availability": {
+            "module": "crs_lineup_availability",
+            "status": "applied_experimental",
+            "source_as_of_utc": "2026-11-22T22:14:33.093926+00:00",
+            "baseline_probability_home": 0.52453642,
+            "scenario_probability_home": 0.52453642,
+            "scenario_probability_away": 0.47546358,
+            "probability_delta_home_percentage_points": 0.0,
+            "adjusted_goal_expectations": {
+              "home": 2.56036231884058,
+              "away": 2.41934543367326
+            },
+            "validated": false,
+            "assumptions": [
+              "Historical goals/minute held constant under redistributed minutes.",
+              "Independent Poisson goals; home rate anchored to preceding model probability.",
+              "Out of projection is not treated as confirmed injury."
+            ]
+          }
+        },
+        "odds_used_in_model": false,
+        "point_in_time_sources_verified": true,
+        "historical_labels_sha256": "0cc57630eab45d7d52923b486168d6ddc7448ca550e478b1c5e92bebd0d43546",
+        "historical_prior_date_games": 2811,
+        "official": false
+      },
+      "sha256": "bc19edaa5780802805bc48081a60097bb76d18113ce318c947d57eaf94028078",
+      "frozen": true,
+      "note": "Evidence signature only; immutable storage must be provided externally."
+    }
+  }
+]
