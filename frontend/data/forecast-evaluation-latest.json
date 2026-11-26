@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "kind": "sealed_forecast_outcome_evaluation",
-  "generated_at_utc": "2026-11-26T03:32:43.041203+00:00",
+  "generated_at_utc": "2026-11-26T18:59:03.752191+00:00",
   "inputs": {
-    "forecast_snapshot_count": 690,
-    "forecast_snapshot_manifest_sha256": "82330e16d08df1b04917667d24ff86ea321d849c402b13525cec5c22f6db9898",
+    "forecast_snapshot_count": 692,
+    "forecast_snapshot_manifest_sha256": "469842f8306e3643d5a6ff286e538fed45fe3a8c086b01b2d32f6ef14635496e",
     "settled_history_row_count": 503,
-    "settled_history_sha256": "092530fe244b9b147f8ba10e901dbb2358b3b852b0e6956f72e04a0c806b2a99"
+    "settled_history_sha256": "953df5dda2b7fd34f69ce0e15c7a4bbf1ae1c1be5400df35e96a340b79ed48fb"
   },
   "coverage": {
     "verified_chains": 330,
     "latest_pregame_forecasts": 347,
     "forecasts_bound_to_history": 347,
-    "pending_forecasts": 11,
+    "pending_forecasts": 3,
     "scored_forecast_groups": 27,
     "legacy_source_output_digest_scope_unverified": 423
   },
@@ -1638,10 +1638,10 @@
       "model_code_sha256": "1cee1bd0884eaf344cf35a37b8de4f78c5388816a04a4811b22a11e4c8c2cda3",
       "stage": "update",
       "metrics": {
-        "n": 42,
-        "brier": 0.23226882539906268,
-        "log_loss": 0.6537725374746569,
-        "accuracy": 0.5952380952380952,
+        "n": 45,
+        "brier": 0.22876301611830085,
+        "log_loss": 0.6457540567751647,
+        "accuracy": 0.6,
         "reliability_bins": {
           "home": [
             {
@@ -1668,9 +1668,9 @@
             {
               "lower": 0.3,
               "upper": 0.4,
-              "n": 3,
-              "forecast_mean": 0.33482562697435553,
-              "observed_rate": 0.3333333333333333
+              "n": 4,
+              "forecast_mean": 0.3438245475473154,
+              "observed_rate": 0.5
             },
             {
               "lower": 0.4,
@@ -1689,9 +1689,9 @@
             {
               "lower": 0.6,
               "upper": 0.7,
-              "n": 6,
-              "forecast_mean": 0.640821485264281,
-              "observed_rate": 0.3333333333333333
+              "n": 7,
+              "forecast_mean": 0.6457037597260572,
+              "observed_rate": 0.42857142857142855
             },
             {
               "lower": 0.7,
@@ -1703,9 +1703,9 @@
             {
               "lower": 0.8,
               "upper": 0.9,
-              "n": 4,
-              "forecast_mean": 0.8235100425364582,
-              "observed_rate": 0.75
+              "n": 5,
+              "forecast_mean": 0.8200510744448355,
+              "observed_rate": 0.8
             },
             {
               "lower": 0.9,
@@ -1726,9 +1726,9 @@
             {
               "lower": 0.1,
               "upper": 0.2,
-              "n": 4,
-              "forecast_mean": 0.1764899574635418,
-              "observed_rate": 0.25
+              "n": 5,
+              "forecast_mean": 0.1799489255551644,
+              "observed_rate": 0.2
             },
             {
               "lower": 0.2,
@@ -1740,9 +1740,9 @@
             {
               "lower": 0.3,
               "upper": 0.4,
-              "n": 6,
-              "forecast_mean": 0.359178514735719,
-              "observed_rate": 0.6666666666666666
+              "n": 7,
+              "forecast_mean": 0.35429624027394274,
+              "observed_rate": 0.5714285714285714
             },
             {
               "lower": 0.4,
@@ -1761,9 +1761,9 @@
             {
               "lower": 0.6,
               "upper": 0.7,
-              "n": 3,
-              "forecast_mean": 0.6651743730256444,
-              "observed_rate": 0.6666666666666666
+              "n": 4,
+              "forecast_mean": 0.6561754524526846,
+              "observed_rate": 0.5
             },
             {
               "lower": 0.7,
@@ -1791,10 +1791,10 @@
       },
       "by_season": {
         "2026-27": {
-          "n": 42,
-          "brier": 0.23226882539906268,
-          "log_loss": 0.6537725374746569,
-          "accuracy": 0.5952380952380952,
+          "n": 45,
+          "brier": 0.22876301611830085,
+          "log_loss": 0.6457540567751647,
+          "accuracy": 0.6,
           "reliability_bins": {
             "home": [
               {
@@ -1821,9 +1821,9 @@
               {
                 "lower": 0.3,
                 "upper": 0.4,
-                "n": 3,
-                "forecast_mean": 0.33482562697435553,
-                "observed_rate": 0.3333333333333333
+                "n": 4,
+                "forecast_mean": 0.3438245475473154,
+                "observed_rate": 0.5
               },
               {
                 "lower": 0.4,
@@ -1842,9 +1842,9 @@
               {
                 "lower": 0.6,
                 "upper": 0.7,
-                "n": 6,
-                "forecast_mean": 0.640821485264281,
-                "observed_rate": 0.3333333333333333
+                "n": 7,
+                "forecast_mean": 0.6457037597260572,
+                "observed_rate": 0.42857142857142855
               },
               {
                 "lower": 0.7,
@@ -1856,9 +1856,9 @@
               {
                 "lower": 0.8,
                 "upper": 0.9,
-                "n": 4,
-                "forecast_mean": 0.8235100425364582,
-                "observed_rate": 0.75
+                "n": 5,
+                "forecast_mean": 0.8200510744448355,
+                "observed_rate": 0.8
               },
               {
                 "lower": 0.9,
@@ -1879,9 +1879,9 @@
               {
                 "lower": 0.1,
                 "upper": 0.2,
-                "n": 4,
-                "forecast_mean": 0.1764899574635418,
-                "observed_rate": 0.25
+                "n": 5,
+                "forecast_mean": 0.1799489255551644,
+                "observed_rate": 0.2
               },
               {
                 "lower": 0.2,
@@ -1893,9 +1893,9 @@
               {
                 "lower": 0.3,
                 "upper": 0.4,
-                "n": 6,
-                "forecast_mean": 0.359178514735719,
-                "observed_rate": 0.6666666666666666
+                "n": 7,
+                "forecast_mean": 0.35429624027394274,
+                "observed_rate": 0.5714285714285714
               },
               {
                 "lower": 0.4,
@@ -1914,9 +1914,9 @@
               {
                 "lower": 0.6,
                 "upper": 0.7,
-                "n": 3,
-                "forecast_mean": 0.6651743730256444,
-                "observed_rate": 0.6666666666666666
+                "n": 4,
+                "forecast_mean": 0.6561754524526846,
+                "observed_rate": 0.5
               },
               {
                 "lower": 0.7,
@@ -1944,15 +1944,15 @@
         }
       },
       "lineage_coverage": {
-        "scored_forecasts": 42,
-        "with_model_code_revision": 42,
-        "with_model_code_sha256": 42,
-        "with_training_data_sha256": 42,
-        "with_training_cutoff_utc": 42,
+        "scored_forecasts": 45,
+        "with_model_code_revision": 45,
+        "with_model_code_sha256": 45,
+        "with_training_data_sha256": 45,
+        "with_training_cutoff_utc": 45,
         "with_predictor_input_sha256": 0,
         "with_predictor_input_as_of_utc": 0,
-        "with_any_data_cutoff": 42,
-        "with_any_data_fingerprint": 42
+        "with_any_data_cutoff": 45,
+        "with_any_data_fingerprint": 45
       }
     },
     {
@@ -3899,10 +3899,10 @@
       "model_code_sha256": "812913d702db5ccfec8bee55baa6aa21b5d52f3d4a13ff7d28337af0adab1657",
       "stage": "update",
       "metrics": {
-        "n": 11,
-        "brier": 0.16420761730754543,
-        "log_loss": 0.5038452159186311,
-        "accuracy": 0.8181818181818182,
+        "n": 12,
+        "brier": 0.16917009760691668,
+        "log_loss": 0.5152424194301889,
+        "accuracy": 0.8333333333333334,
         "reliability_bins": {
           "home": [
             {
@@ -3943,8 +3943,8 @@
             {
               "lower": 0.5,
               "upper": 0.6,
-              "n": 2,
-              "forecast_mean": 0.513147,
+              "n": 3,
+              "forecast_mean": 0.5177546666666667,
               "observed_rate": 1.0
             },
             {
@@ -4008,8 +4008,8 @@
             {
               "lower": 0.4,
               "upper": 0.5,
-              "n": 2,
-              "forecast_mean": 0.486853,
+              "n": 3,
+              "forecast_mean": 0.48224533333333336,
               "observed_rate": 0.0
             },
             {
@@ -4052,10 +4052,10 @@
       },
       "by_season": {
         "2026-27": {
-          "n": 11,
-          "brier": 0.16420761730754543,
-          "log_loss": 0.5038452159186311,
-          "accuracy": 0.8181818181818182,
+          "n": 12,
+          "brier": 0.16917009760691668,
+          "log_loss": 0.5152424194301889,
+          "accuracy": 0.8333333333333334,
           "reliability_bins": {
             "home": [
               {
@@ -4096,8 +4096,8 @@
               {
                 "lower": 0.5,
                 "upper": 0.6,
-                "n": 2,
-                "forecast_mean": 0.513147,
+                "n": 3,
+                "forecast_mean": 0.5177546666666667,
                 "observed_rate": 1.0
               },
               {
@@ -4161,8 +4161,8 @@
               {
                 "lower": 0.4,
                 "upper": 0.5,
-                "n": 2,
-                "forecast_mean": 0.486853,
+                "n": 3,
+                "forecast_mean": 0.48224533333333336,
                 "observed_rate": 0.0
               },
               {
@@ -4205,15 +4205,15 @@
         }
       },
       "lineage_coverage": {
-        "scored_forecasts": 11,
-        "with_model_code_revision": 11,
-        "with_model_code_sha256": 11,
-        "with_training_data_sha256": 11,
-        "with_training_cutoff_utc": 11,
+        "scored_forecasts": 12,
+        "with_model_code_revision": 12,
+        "with_model_code_sha256": 12,
+        "with_training_data_sha256": 12,
+        "with_training_cutoff_utc": 12,
         "with_predictor_input_sha256": 0,
         "with_predictor_input_as_of_utc": 0,
-        "with_any_data_cutoff": 11,
-        "with_any_data_fingerprint": 11
+        "with_any_data_cutoff": 12,
+        "with_any_data_fingerprint": 12
       }
     },
     {
@@ -6806,10 +6806,10 @@
       "model_code_sha256": "621165343ac70277c10f3aef7ecac6eac4659ff65965287dfd519402452314b4",
       "stage": "update",
       "metrics": {
-        "n": 75,
-        "brier": 0.26184440289456,
-        "log_loss": 0.7174884223113391,
-        "accuracy": 0.4533333333333333,
+        "n": 79,
+        "brier": 0.2628268364263924,
+        "log_loss": 0.719545609056222,
+        "accuracy": 0.45569620253164556,
         "reliability_bins": {
           "home": [
             {
@@ -6850,16 +6850,16 @@
             {
               "lower": 0.5,
               "upper": 0.6,
-              "n": 39,
-              "forecast_mean": 0.5535305897435896,
-              "observed_rate": 0.4358974358974359
+              "n": 41,
+              "forecast_mean": 0.5549487073170731,
+              "observed_rate": 0.4634146341463415
             },
             {
               "lower": 0.6,
               "upper": 0.7,
-              "n": 14,
-              "forecast_mean": 0.6242454285714284,
-              "observed_rate": 0.35714285714285715
+              "n": 16,
+              "forecast_mean": 0.6240914375000001,
+              "observed_rate": 0.3125
             },
             {
               "lower": 0.7,
@@ -6908,16 +6908,16 @@
             {
               "lower": 0.3,
               "upper": 0.4,
-              "n": 14,
-              "forecast_mean": 0.37575457142857144,
-              "observed_rate": 0.6428571428571429
+              "n": 16,
+              "forecast_mean": 0.37590856249999993,
+              "observed_rate": 0.6875
             },
             {
               "lower": 0.4,
               "upper": 0.5,
-              "n": 39,
-              "forecast_mean": 0.4464694102564103,
-              "observed_rate": 0.5641025641025641
+              "n": 41,
+              "forecast_mean": 0.44505129268292687,
+              "observed_rate": 0.5365853658536586
             },
             {
               "lower": 0.5,
@@ -6959,10 +6959,10 @@
       },
       "by_season": {
         "2026-27": {
-          "n": 75,
-          "brier": 0.26184440289456,
-          "log_loss": 0.7174884223113391,
-          "accuracy": 0.4533333333333333,
+          "n": 79,
+          "brier": 0.2628268364263924,
+          "log_loss": 0.719545609056222,
+          "accuracy": 0.45569620253164556,
           "reliability_bins": {
             "home": [
               {
@@ -7003,16 +7003,16 @@
               {
                 "lower": 0.5,
                 "upper": 0.6,
-                "n": 39,
-                "forecast_mean": 0.5535305897435896,
-                "observed_rate": 0.4358974358974359
+                "n": 41,
+                "forecast_mean": 0.5549487073170731,
+                "observed_rate": 0.4634146341463415
               },
               {
                 "lower": 0.6,
                 "upper": 0.7,
-                "n": 14,
-                "forecast_mean": 0.6242454285714284,
-                "observed_rate": 0.35714285714285715
+                "n": 16,
+                "forecast_mean": 0.6240914375000001,
+                "observed_rate": 0.3125
               },
               {
                 "lower": 0.7,
@@ -7061,16 +7061,16 @@
               {
                 "lower": 0.3,
                 "upper": 0.4,
-                "n": 14,
-                "forecast_mean": 0.37575457142857144,
-                "observed_rate": 0.6428571428571429
+                "n": 16,
+                "forecast_mean": 0.37590856249999993,
+                "observed_rate": 0.6875
               },
               {
                 "lower": 0.4,
                 "upper": 0.5,
-                "n": 39,
-                "forecast_mean": 0.4464694102564103,
-                "observed_rate": 0.5641025641025641
+                "n": 41,
+                "forecast_mean": 0.44505129268292687,
+                "observed_rate": 0.5365853658536586
               },
               {
                 "lower": 0.5,
@@ -7112,15 +7112,15 @@
         }
       },
       "lineage_coverage": {
-        "scored_forecasts": 75,
-        "with_model_code_revision": 75,
-        "with_model_code_sha256": 75,
+        "scored_forecasts": 79,
+        "with_model_code_revision": 79,
+        "with_model_code_sha256": 79,
         "with_training_data_sha256": 0,
         "with_training_cutoff_utc": 0,
-        "with_predictor_input_sha256": 75,
-        "with_predictor_input_as_of_utc": 75,
-        "with_any_data_cutoff": 75,
-        "with_any_data_fingerprint": 75
+        "with_predictor_input_sha256": 79,
+        "with_predictor_input_as_of_utc": 79,
+        "with_any_data_cutoff": 79,
+        "with_any_data_fingerprint": 79
       }
     },
     {
