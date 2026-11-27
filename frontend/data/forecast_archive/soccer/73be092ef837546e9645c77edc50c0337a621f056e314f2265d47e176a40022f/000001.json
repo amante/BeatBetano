@@ -1,0 +1,81 @@
+{
+  "sport": "soccer",
+  "as_of_utc": "2026-11-27T03:38:37.204404Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401879225",
+      "start_utc": "2026-11-27T20:00:00Z",
+      "participants": [
+        "Nottingham Forest",
+        "Chelsea"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.30235445788978316,
+          "draw": 0.2525216001566156,
+          "away": 0.4451239419536012
+        },
+        "model_version": "soccer-existing-poisson-1bd135e4c153",
+        "assumptions": [
+          "Existing Premier League season-frozen Poisson model; no current lineup adjustment."
+        ],
+        "unresolved_inputs": [
+          "Confirmed lineup and current availability"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "probabilities",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "daily-soccer",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_model_output": {
+    "event_id": "401879225",
+    "home": "Nottingham Forest",
+    "away": "Chelsea",
+    "start_utc": "2026-11-27T20:00Z",
+    "model_version": "soccer-existing-poisson-1bd135e4c153",
+    "assumptions": [
+      "Existing Premier League season-frozen Poisson model; no current lineup adjustment."
+    ],
+    "unresolved_inputs": [
+      "Confirmed lineup and current availability"
+    ],
+    "probabilities": [
+      0.30235445788978316,
+      0.2525216001566156,
+      0.4451239419536012
+    ]
+  },
+  "source_output_sha256": "0f8cf52eec9618256b1d376b55dff288c77502ae24be47689f06462075a4233a",
+  "source_output_sha256_scope": "event",
+  "model_provenance": {
+    "model_code_sha256": "85795b73d2e89900576304e71648d64d66b38acdec2bb4bb8b01bb40fdc7e196",
+    "data_role": "completed_season_training_history",
+    "training_data_sha256": "735aa59de8dd3c7b46c9349c6b90c977f413306fce54e2281cc24f539298f44e",
+    "training_manifest_sha256": "f668367904a1f0f571b8bad000694c066fb120d8b753b5501eaace4ae298fc9f",
+    "training_cutoff_utc": null,
+    "training_latest_event_date": "2026-05-24",
+    "model_code_revision": "b13b423348ac2e087522c13aefa58e565943a3fa",
+    "model_family": "soccer-existing-poisson",
+    "forecast_model_version": "soccer-existing-poisson-1bd135e4c153",
+    "source_output_sha256": "0f8cf52eec9618256b1d376b55dff288c77502ae24be47689f06462075a4233a"
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-27T03:38:37.223329+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "d32f9cd743bf1afddabb7cf5effa1dc48ba5230ffd61acaeb2722b4f6a99cf52"
+}

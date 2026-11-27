@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
   "kind": "sealed_forecast_outcome_evaluation",
-  "generated_at_utc": "2026-11-26T18:59:03.752191+00:00",
+  "generated_at_utc": "2026-11-27T03:38:37.557434+00:00",
   "inputs": {
-    "forecast_snapshot_count": 692,
-    "forecast_snapshot_manifest_sha256": "469842f8306e3643d5a6ff286e538fed45fe3a8c086b01b2d32f6ef14635496e",
-    "settled_history_row_count": 503,
-    "settled_history_sha256": "953df5dda2b7fd34f69ce0e15c7a4bbf1ae1c1be5400df35e96a340b79ed48fb"
+    "forecast_snapshot_count": 720,
+    "forecast_snapshot_manifest_sha256": "fbcb5494d00af4f6e0009fc9fb2c75bcce2c3bc78e4aea55656e291f746b8fe8",
+    "settled_history_row_count": 536,
+    "settled_history_sha256": "ed4114b0c20ae1d30cd97e515dfa022a1a843d73ddca73745d2a628da1f6da7e"
   },
   "coverage": {
-    "verified_chains": 330,
-    "latest_pregame_forecasts": 347,
-    "forecasts_bound_to_history": 347,
-    "pending_forecasts": 3,
+    "verified_chains": 358,
+    "latest_pregame_forecasts": 375,
+    "forecasts_bound_to_history": 375,
+    "pending_forecasts": 29,
     "scored_forecast_groups": 27,
     "legacy_source_output_digest_scope_unverified": 423
   },
@@ -3576,10 +3576,10 @@
       "model_code_sha256": "812913d702db5ccfec8bee55baa6aa21b5d52f3d4a13ff7d28337af0adab1657",
       "stage": "initial",
       "metrics": {
-        "n": 1,
-        "brier": 0.22184005800099996,
-        "log_loss": 0.6367649567664561,
-        "accuracy": 1.0,
+        "n": 2,
+        "brier": 0.30711352023249994,
+        "log_loss": 0.8106779714497021,
+        "accuracy": 0.5,
         "reliability_bins": {
           "home": [
             {
@@ -3627,9 +3627,9 @@
             {
               "lower": 0.6,
               "upper": 0.7,
-              "n": 0,
-              "forecast_mean": null,
-              "observed_rate": null
+              "n": 1,
+              "forecast_mean": 0.626408,
+              "observed_rate": 0.0
             },
             {
               "lower": 0.7,
@@ -3678,9 +3678,9 @@
             {
               "lower": 0.3,
               "upper": 0.4,
-              "n": 0,
-              "forecast_mean": null,
-              "observed_rate": null
+              "n": 1,
+              "forecast_mean": 0.37359200000000004,
+              "observed_rate": 1.0
             },
             {
               "lower": 0.4,
@@ -3729,10 +3729,10 @@
       },
       "by_season": {
         "2026-27": {
-          "n": 1,
-          "brier": 0.22184005800099996,
-          "log_loss": 0.6367649567664561,
-          "accuracy": 1.0,
+          "n": 2,
+          "brier": 0.30711352023249994,
+          "log_loss": 0.8106779714497021,
+          "accuracy": 0.5,
           "reliability_bins": {
             "home": [
               {
@@ -3780,9 +3780,9 @@
               {
                 "lower": 0.6,
                 "upper": 0.7,
-                "n": 0,
-                "forecast_mean": null,
-                "observed_rate": null
+                "n": 1,
+                "forecast_mean": 0.626408,
+                "observed_rate": 0.0
               },
               {
                 "lower": 0.7,
@@ -3831,9 +3831,9 @@
               {
                 "lower": 0.3,
                 "upper": 0.4,
-                "n": 0,
-                "forecast_mean": null,
-                "observed_rate": null
+                "n": 1,
+                "forecast_mean": 0.37359200000000004,
+                "observed_rate": 1.0
               },
               {
                 "lower": 0.4,
@@ -3882,15 +3882,15 @@
         }
       },
       "lineage_coverage": {
-        "scored_forecasts": 1,
-        "with_model_code_revision": 1,
-        "with_model_code_sha256": 1,
-        "with_training_data_sha256": 1,
-        "with_training_cutoff_utc": 1,
+        "scored_forecasts": 2,
+        "with_model_code_revision": 2,
+        "with_model_code_sha256": 2,
+        "with_training_data_sha256": 2,
+        "with_training_cutoff_utc": 2,
         "with_predictor_input_sha256": 0,
         "with_predictor_input_as_of_utc": 0,
-        "with_any_data_cutoff": 1,
-        "with_any_data_fingerprint": 1
+        "with_any_data_cutoff": 2,
+        "with_any_data_fingerprint": 2
       }
     },
     {
@@ -3899,10 +3899,10 @@
       "model_code_sha256": "812913d702db5ccfec8bee55baa6aa21b5d52f3d4a13ff7d28337af0adab1657",
       "stage": "update",
       "metrics": {
-        "n": 12,
-        "brier": 0.16917009760691668,
-        "log_loss": 0.5152424194301889,
-        "accuracy": 0.8333333333333334,
+        "n": 13,
+        "brier": 0.17790068026984612,
+        "log_loss": 0.5339600354101646,
+        "accuracy": 0.7692307692307693,
         "reliability_bins": {
           "home": [
             {
@@ -3943,9 +3943,9 @@
             {
               "lower": 0.5,
               "upper": 0.6,
-              "n": 3,
-              "forecast_mean": 0.5177546666666667,
-              "observed_rate": 1.0
+              "n": 4,
+              "forecast_mean": 0.5212322500000001,
+              "observed_rate": 0.75
             },
             {
               "lower": 0.6,
@@ -4008,9 +4008,9 @@
             {
               "lower": 0.4,
               "upper": 0.5,
-              "n": 3,
-              "forecast_mean": 0.48224533333333336,
-              "observed_rate": 0.0
+              "n": 4,
+              "forecast_mean": 0.47876774999999994,
+              "observed_rate": 0.25
             },
             {
               "lower": 0.5,
@@ -4052,10 +4052,10 @@
       },
       "by_season": {
         "2026-27": {
-          "n": 12,
-          "brier": 0.16917009760691668,
-          "log_loss": 0.5152424194301889,
-          "accuracy": 0.8333333333333334,
+          "n": 13,
+          "brier": 0.17790068026984612,
+          "log_loss": 0.5339600354101646,
+          "accuracy": 0.7692307692307693,
           "reliability_bins": {
             "home": [
               {
@@ -4096,9 +4096,9 @@
               {
                 "lower": 0.5,
                 "upper": 0.6,
-                "n": 3,
-                "forecast_mean": 0.5177546666666667,
-                "observed_rate": 1.0
+                "n": 4,
+                "forecast_mean": 0.5212322500000001,
+                "observed_rate": 0.75
               },
               {
                 "lower": 0.6,
@@ -4161,9 +4161,9 @@
               {
                 "lower": 0.4,
                 "upper": 0.5,
-                "n": 3,
-                "forecast_mean": 0.48224533333333336,
-                "observed_rate": 0.0
+                "n": 4,
+                "forecast_mean": 0.47876774999999994,
+                "observed_rate": 0.25
               },
               {
                 "lower": 0.5,
@@ -4205,15 +4205,15 @@
         }
       },
       "lineage_coverage": {
-        "scored_forecasts": 12,
-        "with_model_code_revision": 12,
-        "with_model_code_sha256": 12,
-        "with_training_data_sha256": 12,
-        "with_training_cutoff_utc": 12,
+        "scored_forecasts": 13,
+        "with_model_code_revision": 13,
+        "with_model_code_sha256": 13,
+        "with_training_data_sha256": 13,
+        "with_training_cutoff_utc": 13,
         "with_predictor_input_sha256": 0,
         "with_predictor_input_as_of_utc": 0,
-        "with_any_data_cutoff": 12,
-        "with_any_data_fingerprint": 12
+        "with_any_data_cutoff": 13,
+        "with_any_data_fingerprint": 13
       }
     },
     {
