@@ -1824,6 +1824,97 @@
         "graded_players": 0,
         "metrics": []
       }
+    },
+    {
+      "date": "2026-11-26",
+      "status": "needs_review",
+      "complete": false,
+      "official_games": 1,
+      "forecast_games": 1,
+      "graded_games": 1,
+      "market_forecasts_scored": 7,
+      "metrics": [
+        {
+          "model_version": "nhl-prior-day-standings",
+          "market": "ml",
+          "source_classification": "unvalidated_model_output",
+          "point_in_time_sources_verified": false,
+          "n": 1,
+          "modal_correct": 1,
+          "brier": 0.176229,
+          "log_loss": 0.544376
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "away3",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
+          "n": 1,
+          "modal_correct": 1,
+          "brier": 0.043732,
+          "log_loss": 0.234611
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "first3",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
+          "n": 1,
+          "modal_correct": 0,
+          "brier": 0.275565,
+          "log_loss": 1.274789
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "home3",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
+          "n": 1,
+          "modal_correct": 0,
+          "brier": 0.514273,
+          "log_loss": 1.262761
+        },
+        {
+          "model_version": "outcome-only-206-frozen-params",
+          "market": "rt",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
+          "n": 1,
+          "modal_correct": 1,
+          "brier": 0.160707,
+          "log_loss": 0.833096
+        },
+        {
+          "model_version": "outcome-only-206-rest-context-v1",
+          "market": "ml",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
+          "n": 1,
+          "modal_correct": 1,
+          "brier": 0.180637,
+          "log_loss": 0.55341
+        },
+        {
+          "model_version": "outcome-only-206-rest-lineup-scenario-v1",
+          "market": "ml",
+          "source_classification": "verified_legacy_frozen_ledger",
+          "point_in_time_sources_verified": true,
+          "n": 1,
+          "modal_correct": 1,
+          "brier": 0.191968,
+          "log_loss": 0.576506
+        }
+      ],
+      "revision_sha256": "de71757d69554de970609f27e144a6096cfeba266127a33506f5a95c2260728d",
+      "generated_at_utc": "2026-11-27T21:23:26.640118+00:00",
+      "player_props": {
+        "status": "partial",
+        "forecast_games": 1,
+        "graded_games": 0,
+        "forecast_players": 0,
+        "graded_players": 0,
+        "metrics": []
+      }
     }
   ]
 }
