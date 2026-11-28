@@ -1,42 +1,42 @@
 {
-  "as_of_utc": "2026-11-28T03:17:34.430074+00:00",
+  "as_of_utc": "2026-11-28T17:30:57.401299+00:00",
   "sports": {
     "nba": {
       "status": "processed",
       "publications": [
         {
           "sport": "nba",
-          "as_of_utc": "2026-11-28T03:17:34.559940Z",
+          "as_of_utc": "2026-11-28T17:30:57.799899Z",
           "events": [
             {
               "event_id": "401910046",
               "status": "reused",
-              "snapshot_sha256": "1b8dad4b680c7e6da8dfecf77d8af280b6e31e216507b3b6682a7e72606954e6",
-              "stage": "initial"
+              "snapshot_sha256": "cd130a2ed48aeeccaf944cc4a7947897459ca8d85d31b6dbd55278506d013695",
+              "stage": "update"
             },
             {
               "event_id": "401910047",
               "status": "reused",
-              "snapshot_sha256": "834648bb283c4aaa0d906032fedf2bc59d2f5c89299b32606e559136b90ac5d3",
-              "stage": "initial"
+              "snapshot_sha256": "6705bc3685279062a3a757f35a2ca14d51443a28cec67b05911c0498c957faa3",
+              "stage": "update"
             },
             {
               "event_id": "401910048",
               "status": "reused",
-              "snapshot_sha256": "dfbf15ed7eefbbf100f317bc88fdf1d876884ec7642c47bd7452280ece1f59a6",
-              "stage": "initial"
+              "snapshot_sha256": "0676e4d6abc80d37bf49876bbd94558cc4dd8099a4b7fd7fb4e923630a6272c3",
+              "stage": "update"
             },
             {
               "event_id": "401910049",
               "status": "reused",
-              "snapshot_sha256": "eed4381b87472771bbfc732c92ce28b9d965f8764e7379d2290f9d4845f5ce60",
-              "stage": "initial"
+              "snapshot_sha256": "6bcbb8afe3318fa56713ee13b915ae49e240df352ffacf8a6c5dd9ed7265fae1",
+              "stage": "update"
             },
             {
               "event_id": "401910050",
               "status": "reused",
-              "snapshot_sha256": "55de31d9aaefd8100893a3f21fd63a86dbc6dc02821e8fe0a3364777f99a310d",
-              "stage": "initial"
+              "snapshot_sha256": "0c999b16a1191b1cd4b8575cbe2a9e93c071a91c706f43aa958ca2e3299596a0",
+              "stage": "update"
             }
           ],
           "forecast_publication_only": true,
@@ -80,7 +80,7 @@
       "missing_baseline_fixture_ids": [],
       "sporting_integration": [
         {
-          "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9",
+          "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6",
           "games": 5,
           "integrated_research_games": 0,
           "game_diagnostics": [
@@ -124,14 +124,14 @@
           "production_approved": false,
           "availability_observation": {
             "status": "captured",
-            "captured_at_utc": "2026-11-28T03:17:36.847586+00:00",
-            "statistical_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9",
-            "statistical_snapshot_created_at_utc": "2026-11-28T03:17:34.559940+00:00",
+            "captured_at_utc": "2026-11-28T17:30:59.789534+00:00",
+            "statistical_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6",
+            "statistical_snapshot_created_at_utc": "2026-11-28T17:30:57.799899+00:00",
             "later_sidecar_not_retroactive_snapshot_update": true,
             "games": 5,
             "teams": 10,
             "roster_members": 177,
-            "matched_injury_claims": 36,
+            "matched_injury_claims": 38,
             "unmatched_claims": [],
             "conflicts": [],
             "official_injury_report_retrieved": false,
@@ -189,9 +189,9 @@
             "official_capture_state": "unavailable",
             "official_injury_status_verification_scope": "matched_reported_players_only; unlisted players remain unknown",
             "official_team_reports_not_submitted": [],
-            "known_out": 31,
-            "uncertain": 5,
-            "unknown": 141,
+            "known_out": 29,
+            "uncertain": 9,
+            "unknown": 139,
             "teams_allocation_ready": 0,
             "teams_with_provider_lineups": 0,
             "no_odds_input": true,
@@ -204,21 +204,24 @@
               }
             },
             "historical_rotation": {
-              "observed_at_utc": "2026-11-28T03:17:39.761430+00:00",
-              "games_requested": 124,
+              "observed_at_utc": "2026-11-28T17:31:03.006643+00:00",
+              "games_requested": 125,
               "games_unavailable": 0,
               "fixtures_covered": 5,
-              "roster_player_fixture_estimates": 144
+              "roster_player_fixture_estimates": 146
             }
           },
           "team_metrics_observation": {
             "status": "nba_livedata_estimated",
             "cutoff_date": "2026-11-27",
             "official_teams": 0,
-            "fallback_games": 31,
+            "fallback_games": 32,
             "fallback_errors": 0,
             "crosswalk": {
               "bindings": {
+                "401909327": "0022600065",
+                "401909328": "0022600066",
+                "401909329": "0022600067",
                 "401909323": "0022600061",
                 "401909322": "0022600060",
                 "401909320": "0022600058",
@@ -244,8 +247,6 @@
                 "401909306": "0022600044",
                 "401909307": "0022600045",
                 "401909305": "0022600043",
-                "401910020": "0022600271",
-                "401910011": "0022600262",
                 "401910012": "0022600263",
                 "401910008": "0022600259",
                 "401910010": "0022600261",
@@ -253,7 +254,7 @@
               },
               "unresolved": {},
               "source_url": "https://nba-prod-us-east-1-mediaops-stats.s3.amazonaws.com/NBA/staticData/scheduleLeagueV2_2.json",
-              "source_sha256": "51652e960690d1d22bbed7e0a469a4fbbeef1d564417bce35513c5a4bc0f7f51",
+              "source_sha256": "2662ef83554e52396c0eabd8ee527f2c8db5d15af52280cf9a7f514e5f6bce5a",
               "target_teams": [
                 "BKN",
                 "CHA",
@@ -280,14 +281,14 @@
               ],
               "missing_teams": []
             },
-            "research_ml_games": 0,
-            "research_sha256": "a1028d651175b17142f584f6a2043af03c683b4665c07926db51aa870f63a0c2",
+            "research_ml_games": 1,
+            "research_sha256": "45e071e17847b2b60cdd01a637268f99fba3441914f3c3bb1a5c533ee1309124",
             "player_crosswalk": {
-              "links": 345,
+              "links": 344,
               "ambiguous": 0,
-              "mapped_roster_entries": 148,
-              "unresolved_roster_entries": 29,
-              "content_sha256": "ecc3b88af33d9e0e37651361163ba59b10a822a3530d03ab2f4991c803127631"
+              "mapped_roster_entries": 146,
+              "unresolved_roster_entries": 31,
+              "content_sha256": "e058d8f84cd7ea2bdd49ed7a25d066423c9ad906935ee3e0b45ea3ba88822da0"
             }
           }
         }
@@ -302,85 +303,85 @@
       "publications": [
         {
           "sport": "nhl",
-          "as_of_utc": "2026-11-28T03:17:59.750866Z",
+          "as_of_utc": "2026-11-28T17:31:22.640215Z",
           "events": [
             {
               "event_id": "2026020415",
               "status": "reused",
-              "snapshot_sha256": "b9a1bcd83ac74e4f1983a2c1c96e49de599a5b2a63b27adbdd1babf2e362b173",
-              "stage": "initial"
+              "snapshot_sha256": "fe1830e8c3e31d9976409fc9169ec691994438b4c51d1dead4d6c163ee775697",
+              "stage": "update"
             },
             {
               "event_id": "2026020416",
               "status": "reused",
-              "snapshot_sha256": "fa48d4549e378addbab17115b7e45a8f110025095800407cf97f95cec6f8fb0c",
-              "stage": "initial"
+              "snapshot_sha256": "b9180c53e7be3fffd81348ab4d381eb07978b65e6506d3d2d3d929918f024354",
+              "stage": "update"
             },
             {
               "event_id": "2026020417",
               "status": "reused",
-              "snapshot_sha256": "8404c843ec7437cdbced54d437c67fbcdef263a691d9977f1fe57730e883afa4",
-              "stage": "initial"
+              "snapshot_sha256": "2efa238782d36eb01be6283087cf8720640fb0ca2b70d43e50c012ec464d9b8b",
+              "stage": "update"
             },
             {
               "event_id": "2026020418",
               "status": "reused",
-              "snapshot_sha256": "df8295b4b77cbd9de813971045bd82d531fa6ec917db75ae03d585b05b278cbb",
-              "stage": "initial"
+              "snapshot_sha256": "504efbca7a932bf9207273e8e9cf1c76721725b65853fd3e80718cdc23519e69",
+              "stage": "update"
             },
             {
               "event_id": "2026020419",
               "status": "reused",
-              "snapshot_sha256": "0e5978ffa07374c3bb9ae9fd5816feddd29c8b02d1ddb62b9071148e5a4aeba3",
-              "stage": "initial"
+              "snapshot_sha256": "5d76beb9a5693056778554c6423f2758f90f709dc0c8b9a51c946dede83c538a",
+              "stage": "update"
             },
             {
               "event_id": "2026020420",
               "status": "reused",
-              "snapshot_sha256": "7df0f2c050753f9f94481843b339552eca742b760955e1cb5ac6f2460d723cf5",
-              "stage": "initial"
+              "snapshot_sha256": "e6d7971dfd67cee70bbbb16bf86e92dd887215e41ba8f4295dd82240bd855641",
+              "stage": "update"
             },
             {
               "event_id": "2026020421",
               "status": "reused",
-              "snapshot_sha256": "5d609e5476b757b1a46ca0746958ceab415f48bd13bd8e6bafd91c91c9bd2f77",
-              "stage": "initial"
+              "snapshot_sha256": "6904ab27cceb6ddf54362b652b091e708b3ceaefa1264dddc04cf1deaf7f00a7",
+              "stage": "update"
             },
             {
               "event_id": "2026020422",
               "status": "reused",
-              "snapshot_sha256": "38fd74276f0f4d8a63430cc369e9f1dd8ad5ba739a2d27b74b3627aed01f3695",
-              "stage": "initial"
+              "snapshot_sha256": "1004924fb5e0dd50137fc1ab4d16165810d679df12d628efe106d4c7ea7e2739",
+              "stage": "update"
             },
             {
               "event_id": "2026020423",
               "status": "reused",
-              "snapshot_sha256": "07b4f3cfc38b5e98208d44fa2474f64d7deb47218a8a18979345086e94eb02bb",
-              "stage": "initial"
+              "snapshot_sha256": "1b38192dbf0216fb2cceb122d3804d20545641c0efeba702c5102937cea6796c",
+              "stage": "update"
             },
             {
               "event_id": "2026020424",
               "status": "reused",
-              "snapshot_sha256": "86a87e6cfab38684279688cc7bbc02a8d58e8e45ba8fc57f80e4800779d16770",
-              "stage": "initial"
+              "snapshot_sha256": "a601d2b779a74a2bc5346aec9a5e2b4e8a52a50fe2b45bdd1a2a71d33eb1f1d9",
+              "stage": "update"
             },
             {
               "event_id": "2026020425",
               "status": "reused",
-              "snapshot_sha256": "135301bf1202c78884f0bd6f0426d318d637dfa0ea918406d735bd58bc310a5f",
-              "stage": "initial"
+              "snapshot_sha256": "d3b13d916e6b99a2e4c73e6baa32ad4e99f565d6c0adde67d91166f4d95d7b5e",
+              "stage": "update"
             },
             {
               "event_id": "2026020426",
               "status": "reused",
-              "snapshot_sha256": "3de3f1fc9ab63466897987af1603ff9cd9e2a43f9b11fb5542a241413e0b0745",
-              "stage": "initial"
+              "snapshot_sha256": "37280a60bdf973c89c7b4efa15125ed0f7f9cc9fdeb9d425242d816b2ef16330",
+              "stage": "update"
             },
             {
               "event_id": "2026020427",
               "status": "reused",
-              "snapshot_sha256": "5771aea7acd0957c72f2836b7b69eed3de90b1b59ec39a0f6430ccea4e35177b",
-              "stage": "initial"
+              "snapshot_sha256": "128ea42f23face48e401068904a40dba0fc2e49dad15804939f7a622a5ec8364",
+              "stage": "update"
             }
           ],
           "forecast_publication_only": true,
@@ -474,91 +475,8 @@
       "publications": [
         {
           "sport": "soccer",
-          "as_of_utc": "2026-11-28T03:18:00.244088Z",
+          "as_of_utc": "2026-11-28T17:31:22.897224Z",
           "events": [
-            {
-              "event_id": "401882796",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401875081",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401884719",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401884721",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401884722",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401884723",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401879226",
-              "status": "published",
-              "stage": "initial",
-              "revision": 1,
-              "snapshot_sha256": "fa7c2b88cc118d575d0278f6bfb4eed11daf48bb9fa72595d084bf8df57aa7ce",
-              "snapshot_path": "frontend/data/forecast_archive/soccer/80bd2ded094db24278582612624673dce0b6a1f1c2f8a3ff0aa3e8b741d5d83a/000001.json",
-              "emission_kind": "pregame"
-            },
-            {
-              "event_id": "401879227",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401882790",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401876394",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401874826",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401878752",
-              "status": "published",
-              "stage": "initial",
-              "revision": 1,
-              "snapshot_sha256": "45eead839f3337d95a4e513d7662662900bd6671c8273758de23c9cce0281026",
-              "snapshot_path": "frontend/data/forecast_archive/soccer/d96dbf68bbe184618767f11fc1774c4a46feaf333b9b3af81895f698760faf74/000001.json",
-              "emission_kind": "pregame"
-            },
-            {
-              "event_id": "401882793",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401884726",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
-            {
-              "event_id": "401933737",
-              "status": "no_source_probability",
-              "latest_snapshot_sha256": null
-            },
             {
               "event_id": "401933724",
               "status": "no_source_probability",
@@ -624,99 +542,9 @@
           "selection_approval_changed": false
         }
       ],
-      "fixtures_requested": 27,
-      "fixtures_with_forecast": 2,
+      "fixtures_requested": 12,
+      "fixtures_with_forecast": 0,
       "fixture_bindings": [
-        {
-          "fixture_id": "401882796",
-          "forecast_event_id": "401882796",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401875081",
-          "forecast_event_id": "401875081",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401884719",
-          "forecast_event_id": "401884719",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401884721",
-          "forecast_event_id": "401884721",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401884722",
-          "forecast_event_id": "401884722",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401884723",
-          "forecast_event_id": "401884723",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401879226",
-          "forecast_event_id": "401879226",
-          "method": "same_provider_event_id",
-          "forecast_available": true
-        },
-        {
-          "fixture_id": "401879227",
-          "forecast_event_id": "401879227",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401882790",
-          "forecast_event_id": "401882790",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401876394",
-          "forecast_event_id": "401876394",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401874826",
-          "forecast_event_id": "401874826",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401878752",
-          "forecast_event_id": "401878752",
-          "method": "same_provider_event_id",
-          "forecast_available": true
-        },
-        {
-          "fixture_id": "401882793",
-          "forecast_event_id": "401882793",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401884726",
-          "forecast_event_id": "401884726",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
-        {
-          "fixture_id": "401933737",
-          "forecast_event_id": "401933737",
-          "method": "same_provider_event_id",
-          "forecast_available": false
-        },
         {
           "fixture_id": "401933724",
           "forecast_event_id": "401933724",
@@ -793,29 +621,16 @@
       "missing_baseline_fixture_ids": [
         "401850705",
         "401850706",
-        "401874826",
         "401874977",
-        "401875081",
         "401876387",
         "401876388",
         "401876390",
         "401876391",
-        "401876394",
-        "401879227",
         "401882789",
-        "401882790",
-        "401882793",
-        "401882796",
-        "401884719",
-        "401884721",
-        "401884722",
-        "401884723",
-        "401884726",
         "401933722",
         "401933723",
         "401933724",
-        "401933726",
-        "401933737"
+        "401933726"
       ]
     }
   },

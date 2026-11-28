@@ -1,6 +1,6 @@
 {
   "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-  "emitted_at_utc": "2026-11-28T03:18:19.466892+00:00",
+  "emitted_at_utc": "2026-11-28T17:31:36.610745+00:00",
   "fixtures": 5,
   "research_scenarios": 0,
   "official_injury_impact_summary": {
@@ -14,16 +14,16 @@
   "games": [
     {
       "game_id": "401910046",
-      "emitted_at_utc": "2026-11-28T03:18:18.867308+00:00",
+      "emitted_at_utc": "2026-11-28T17:31:35.930032+00:00",
       "tipoff_utc": "2026-11-28T22:00:00Z",
       "home_team": "WSH",
       "away_team": "ORL",
       "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-      "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9",
-      "scenario_sha256": "39a1f4074263f92f89de3ad3866cb638c2a932dcf40a5e4ab3f298e717e167bc",
-      "coverage_sha256": "508fc64b51e4b4bcfc43ddf80de443a182d48fa71bc7b33aff1232ea8d112503",
-      "team_ml_sha256": "a1028d651175b17142f584f6a2043af03c683b4665c07926db51aa870f63a0c2",
-      "possession_sha256": "4e294da203589e8459a9abfe5683e305a8cef41396daf6c5ba28988b90e0e5d3",
+      "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6",
+      "scenario_sha256": "0496130dc694f1e2eb11c9082cd51360bb4d6804f0ad11f8cf418c1bdf926b8f",
+      "coverage_sha256": "a7307494ce9d767362e15248bc31bbcb439bcf70cee039ba6ed6a19762f76b2f",
+      "team_ml_sha256": "45e071e17847b2b60cdd01a637268f99fba3441914f3c3bb1a5c533ee1309124",
+      "possession_sha256": "5a02d5be142084e70a5cd93cd836ead8b65738cd95fc7b5b9746b7a3d64b420a",
       "status": "PASS",
       "rotation_rating_deltas": {
         "WSH": {
@@ -33,20 +33,18 @@
           "forced_turnover_rate_delta": 0.0
         },
         "ORL": {
-          "offense_delta_per_100": -0.015265946147824248,
-          "defense_delta_per_100": 0.0011164888560315626,
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
           "turnover_rate_delta": 0.0,
           "forced_turnover_rate_delta": 0.0
         }
       },
       "blocked": {
         "WSH": [
-          "missing_path_features",
-          "insufficient_opponent_adjusted_ratings"
+          "missing_path_features"
         ],
         "ORL": [
-          "incomplete_usage_sample",
-          "unsupported_player_effect:4397204"
+          "incomplete_usage_sample"
         ]
       },
       "comparison": null,
@@ -58,10 +56,10 @@
       "calibrated": false,
       "production_approved": false,
       "no_odds_input": true,
-      "content_sha256": "3446836c30fdcf2bdf671452014ed25f1da360555de6c1d779f931fb27d35926",
+      "content_sha256": "a9b5adef5fbaf1936a343eaba76f6745214414a0c2b49ffc82386a7829991200",
       "official_injury_impact": {
         "status": "research_only",
-        "emitted_at_utc": "2026-11-28T03:18:01.361743+00:00",
+        "emitted_at_utc": "2026-11-28T17:31:24.046783+00:00",
         "teams": {
           "WSH": {
             "team": "WSH",
@@ -117,38 +115,38 @@
             },
             "historical_output_from_added_minutes_per_game": null,
             "replacement_history_gaps": [],
-            "players_without_confirmed_availability": 12,
+            "players_without_confirmed_availability": 13,
             "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
             "all_player_changes_are_research_estimates": true
           }
         },
         "probabilities_adjusted": false,
-        "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9"
+        "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6"
       }
     },
     {
       "game_id": "401910047",
-      "emitted_at_utc": "2026-11-28T03:18:18.867308+00:00",
+      "emitted_at_utc": "2026-11-28T17:31:35.930032+00:00",
       "tipoff_utc": "2026-11-28T23:00:00Z",
       "home_team": "CHA",
       "away_team": "BKN",
       "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-      "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9",
-      "scenario_sha256": "421c90857e4d7de16b6da675f1a3bc99391e6dd33ab1473082a4634bf9ab125f",
-      "coverage_sha256": "508fc64b51e4b4bcfc43ddf80de443a182d48fa71bc7b33aff1232ea8d112503",
-      "team_ml_sha256": "a1028d651175b17142f584f6a2043af03c683b4665c07926db51aa870f63a0c2",
-      "possession_sha256": "4e294da203589e8459a9abfe5683e305a8cef41396daf6c5ba28988b90e0e5d3",
+      "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6",
+      "scenario_sha256": "36b9b76ae40a90e1b252143e0428269d124d7fad81c3b644d25c482b40339fc0",
+      "coverage_sha256": "a7307494ce9d767362e15248bc31bbcb439bcf70cee039ba6ed6a19762f76b2f",
+      "team_ml_sha256": "45e071e17847b2b60cdd01a637268f99fba3441914f3c3bb1a5c533ee1309124",
+      "possession_sha256": "5a02d5be142084e70a5cd93cd836ead8b65738cd95fc7b5b9746b7a3d64b420a",
       "status": "PASS",
       "rotation_rating_deltas": {
         "CHA": {
-          "offense_delta_per_100": -0.31023908008137424,
-          "defense_delta_per_100": -0.0918274178883974,
+          "offense_delta_per_100": -0.310239080081378,
+          "defense_delta_per_100": -0.09182741788840253,
           "turnover_rate_delta": 0.0,
           "forced_turnover_rate_delta": 0.0
         },
         "BKN": {
-          "offense_delta_per_100": 0.11426875041138079,
-          "defense_delta_per_100": -0.05476024945984086,
+          "offense_delta_per_100": 0.061774884018006376,
+          "defense_delta_per_100": -0.08244140776558039,
           "turnover_rate_delta": 0.0,
           "forced_turnover_rate_delta": 0.0
         }
@@ -164,6 +162,7 @@
         ],
         "BKN": [
           "unsupported_player_effect:4687718",
+          "unsupported_player_effect:4702670",
           "unsupported_player_effect:5037873"
         ]
       },
@@ -176,10 +175,10 @@
       "calibrated": false,
       "production_approved": false,
       "no_odds_input": true,
-      "content_sha256": "2cef6a59de5a644bcc398d23b3f44604449091686baa00b67b9e9347396ed7da",
+      "content_sha256": "85c42f6455dedf583145ac19e14e89d2b1b970f7ebb42f0ae6595034be4d3688",
       "official_injury_impact": {
         "status": "research_only",
-        "emitted_at_utc": "2026-11-28T03:18:01.361743+00:00",
+        "emitted_at_utc": "2026-11-28T17:31:24.046783+00:00",
         "teams": {
           "CHA": {
             "team": "CHA",
@@ -235,38 +234,38 @@
             },
             "historical_output_from_added_minutes_per_game": null,
             "replacement_history_gaps": [],
-            "players_without_confirmed_availability": 16,
+            "players_without_confirmed_availability": 17,
             "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
             "all_player_changes_are_research_estimates": true
           }
         },
         "probabilities_adjusted": false,
-        "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9"
+        "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6"
       }
     },
     {
       "game_id": "401910048",
-      "emitted_at_utc": "2026-11-28T03:18:18.867308+00:00",
+      "emitted_at_utc": "2026-11-28T17:31:35.930032+00:00",
       "tipoff_utc": "2026-11-29T01:00:00Z",
       "home_team": "CHI",
       "away_team": "IND",
       "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-      "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9",
-      "scenario_sha256": "ce1abf036e2fe1ba39b968cdeb34317f32cb9c5ae9a0bb8b83de8d2384745eee",
-      "coverage_sha256": "508fc64b51e4b4bcfc43ddf80de443a182d48fa71bc7b33aff1232ea8d112503",
-      "team_ml_sha256": "a1028d651175b17142f584f6a2043af03c683b4665c07926db51aa870f63a0c2",
-      "possession_sha256": "4e294da203589e8459a9abfe5683e305a8cef41396daf6c5ba28988b90e0e5d3",
+      "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6",
+      "scenario_sha256": "9134d9771ff51094a481b1ed4184716a93e17e9cae72b7005ee2504a619cf0d5",
+      "coverage_sha256": "a7307494ce9d767362e15248bc31bbcb439bcf70cee039ba6ed6a19762f76b2f",
+      "team_ml_sha256": "45e071e17847b2b60cdd01a637268f99fba3441914f3c3bb1a5c533ee1309124",
+      "possession_sha256": "5a02d5be142084e70a5cd93cd836ead8b65738cd95fc7b5b9746b7a3d64b420a",
       "status": "PASS",
       "rotation_rating_deltas": {
         "CHI": {
-          "offense_delta_per_100": -0.0663107673315846,
-          "defense_delta_per_100": -0.2546072376308503,
+          "offense_delta_per_100": -0.06631076733158427,
+          "defense_delta_per_100": -0.254607237630851,
           "turnover_rate_delta": 0.0,
           "forced_turnover_rate_delta": 0.0
         },
         "IND": {
-          "offense_delta_per_100": 0.05093657596112036,
-          "defense_delta_per_100": -0.06339481491302312,
+          "offense_delta_per_100": 0.04975330847443273,
+          "defense_delta_per_100": -0.06684942177350041,
           "turnover_rate_delta": 0.0,
           "forced_turnover_rate_delta": 0.0
         }
@@ -274,6 +273,7 @@
       "blocked": {
         "CHI": [
           "incomplete_usage_sample",
+          "insufficient_opponent_adjusted_ratings",
           "unsupported_player_effect:5105555",
           "unsupported_player_effect:4066650",
           "unsupported_player_effect:4683750",
@@ -281,9 +281,6 @@
           "unsupported_player_effect:4898010",
           "unsupported_player_effect:4848625",
           "unsupported_player_effect:5095151"
-        ],
-        "IND": [
-          "insufficient_opponent_adjusted_ratings"
         ]
       },
       "comparison": null,
@@ -295,10 +292,10 @@
       "calibrated": false,
       "production_approved": false,
       "no_odds_input": true,
-      "content_sha256": "f5aee5058392a48b9dcb7b8fdcf406c64817edd41630598e95038283832ca000",
+      "content_sha256": "75afbb5203274e0dc19b8d53fcf74dea233d5f4f4f24433243f73fd86a6b97e2",
       "official_injury_impact": {
         "status": "research_only",
-        "emitted_at_utc": "2026-11-28T03:18:01.361743+00:00",
+        "emitted_at_utc": "2026-11-28T17:31:24.046783+00:00",
         "teams": {
           "CHI": {
             "team": "CHI",
@@ -360,41 +357,39 @@
           }
         },
         "probabilities_adjusted": false,
-        "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9"
+        "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6"
       }
     },
     {
       "game_id": "401910049",
-      "emitted_at_utc": "2026-11-28T03:18:18.867308+00:00",
+      "emitted_at_utc": "2026-11-28T17:31:35.930032+00:00",
       "tipoff_utc": "2026-11-29T01:00:00Z",
       "home_team": "MIL",
       "away_team": "OKC",
       "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-      "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9",
-      "scenario_sha256": "ea1991b0391c5303cdb58818cfce690bc7296a3775117a45f694de323b3fdc95",
-      "coverage_sha256": "508fc64b51e4b4bcfc43ddf80de443a182d48fa71bc7b33aff1232ea8d112503",
-      "team_ml_sha256": "a1028d651175b17142f584f6a2043af03c683b4665c07926db51aa870f63a0c2",
-      "possession_sha256": "4e294da203589e8459a9abfe5683e305a8cef41396daf6c5ba28988b90e0e5d3",
+      "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6",
+      "scenario_sha256": "dbae51651ca8fb41633f4c1593612bf17655220a773766c82b01acfa76ad0332",
+      "coverage_sha256": "a7307494ce9d767362e15248bc31bbcb439bcf70cee039ba6ed6a19762f76b2f",
+      "team_ml_sha256": "45e071e17847b2b60cdd01a637268f99fba3441914f3c3bb1a5c533ee1309124",
+      "possession_sha256": "5a02d5be142084e70a5cd93cd836ead8b65738cd95fc7b5b9746b7a3d64b420a",
       "status": "PASS",
       "rotation_rating_deltas": {
         "MIL": {
-          "offense_delta_per_100": 0.054576922415307955,
-          "defense_delta_per_100": 0.08632854075885625,
+          "offense_delta_per_100": 0.0,
+          "defense_delta_per_100": 0.0,
           "turnover_rate_delta": 0.0,
           "forced_turnover_rate_delta": 0.0
         },
         "OKC": {
-          "offense_delta_per_100": 0.020853932191449143,
-          "defense_delta_per_100": -0.09210363281276394,
+          "offense_delta_per_100": 0.02085393219144291,
+          "defense_delta_per_100": -0.0921036328127715,
           "turnover_rate_delta": 0.0,
           "forced_turnover_rate_delta": 0.0
         }
       },
       "blocked": {
         "MIL": [
-          "incomplete_usage_sample",
-          "insufficient_opponent_adjusted_ratings",
-          "unsupported_player_effect:5214989"
+          "incomplete_usage_sample"
         ],
         "OKC": [
           "incomplete_usage_sample",
@@ -413,10 +408,10 @@
       "calibrated": false,
       "production_approved": false,
       "no_odds_input": true,
-      "content_sha256": "45a9b8c093c0b9670f5d51e744c0be8fc0aff10b6cf3807ad47864d40c16a73f",
+      "content_sha256": "e1c13042dd06135a14e9f567605fbb829c64a6eacab0c27a4b5dd019764b0246",
       "official_injury_impact": {
         "status": "research_only",
-        "emitted_at_utc": "2026-11-28T03:18:01.361743+00:00",
+        "emitted_at_utc": "2026-11-28T17:31:24.046783+00:00",
         "teams": {
           "MIL": {
             "team": "MIL",
@@ -443,7 +438,7 @@
             },
             "historical_output_from_added_minutes_per_game": null,
             "replacement_history_gaps": [],
-            "players_without_confirmed_availability": 17,
+            "players_without_confirmed_availability": 18,
             "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
             "all_player_changes_are_research_estimates": true
           },
@@ -478,21 +473,21 @@
           }
         },
         "probabilities_adjusted": false,
-        "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9"
+        "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6"
       }
     },
     {
       "game_id": "401910050",
-      "emitted_at_utc": "2026-11-28T03:18:18.867308+00:00",
+      "emitted_at_utc": "2026-11-28T17:31:35.930032+00:00",
       "tipoff_utc": "2026-11-29T01:30:00Z",
       "home_team": "HOU",
       "away_team": "PHI",
       "model_version": "NBA_CONDITIONAL_ROTATION_PATH_V1",
-      "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9",
-      "scenario_sha256": "c0768fe3d44092cbc5e72ce88cd131d7cdceddcdd32d35bdabbf01c85e3e367c",
-      "coverage_sha256": "508fc64b51e4b4bcfc43ddf80de443a182d48fa71bc7b33aff1232ea8d112503",
-      "team_ml_sha256": "a1028d651175b17142f584f6a2043af03c683b4665c07926db51aa870f63a0c2",
-      "possession_sha256": "4e294da203589e8459a9abfe5683e305a8cef41396daf6c5ba28988b90e0e5d3",
+      "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6",
+      "scenario_sha256": "2789f3b022778366b30c69c6b5e6c1a4f29e146af901b3f8b328310ff58d5737",
+      "coverage_sha256": "a7307494ce9d767362e15248bc31bbcb439bcf70cee039ba6ed6a19762f76b2f",
+      "team_ml_sha256": "45e071e17847b2b60cdd01a637268f99fba3441914f3c3bb1a5c533ee1309124",
+      "possession_sha256": "5a02d5be142084e70a5cd93cd836ead8b65738cd95fc7b5b9746b7a3d64b420a",
       "status": "PASS",
       "rotation_rating_deltas": {
         "HOU": {
@@ -502,8 +497,8 @@
           "forced_turnover_rate_delta": 0.0
         },
         "PHI": {
-          "offense_delta_per_100": 0.36635288784554276,
-          "defense_delta_per_100": 0.34297767175270377,
+          "offense_delta_per_100": -0.42591927501516924,
+          "defense_delta_per_100": -0.15439318079945705,
           "turnover_rate_delta": 0.0,
           "forced_turnover_rate_delta": 0.0
         }
@@ -514,7 +509,6 @@
           "insufficient_opponent_adjusted_ratings"
         ],
         "PHI": [
-          "insufficient_opponent_adjusted_ratings",
           "unsupported_player_effect:4870562",
           "unsupported_player_effect:4711297",
           "unsupported_player_effect:3904625",
@@ -531,10 +525,10 @@
       "calibrated": false,
       "production_approved": false,
       "no_odds_input": true,
-      "content_sha256": "cb2538772d8ae4edeb7b74dfd37842c0d1ed5d167594ca1bd08445d292506e92",
+      "content_sha256": "7e714212c576159a3dfbf47123f843417cfddadbccb6b7f55cad1e72a5420c1b",
       "official_injury_impact": {
         "status": "research_only",
-        "emitted_at_utc": "2026-11-28T03:18:01.361743+00:00",
+        "emitted_at_utc": "2026-11-28T17:31:24.046783+00:00",
         "teams": {
           "HOU": {
             "team": "HOU",
@@ -590,17 +584,17 @@
             },
             "historical_output_from_added_minutes_per_game": null,
             "replacement_history_gaps": [],
-            "players_without_confirmed_availability": 14,
+            "players_without_confirmed_availability": 13,
             "scenario_assumption": "Only players explicitly reported OUT are removed; remaining historical rotation candidates are conditional replacements, not confirmed active players.",
             "all_player_changes_are_research_estimates": true
           }
         },
         "probabilities_adjusted": false,
-        "baseline_snapshot_sha256": "ce3c57761c6d1285d05483e02a8998887c8b28f20dbcc3b32f3cf1084f057ac9"
+        "baseline_snapshot_sha256": "bc96304bf4117405736a52a2d53392b8e1c5799476d5952bde2517c0cc01f6f6"
       }
     }
   ],
   "calibrated": false,
   "production_approved": false,
-  "content_sha256": "229ded7b26ff7a0975dff54fd4044b027dbaf449e02d87e68013ce0d2e62e088"
+  "content_sha256": "1c23c6385560c0d71f736ccdad1a73c70ba4f05111d110a97822a4e20d18a4bf"
 }

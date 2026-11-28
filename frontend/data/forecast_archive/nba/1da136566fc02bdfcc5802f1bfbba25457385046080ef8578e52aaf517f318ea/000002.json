@@ -1,0 +1,115 @@
+{
+  "sport": "nba",
+  "as_of_utc": "2026-11-28T17:30:57.799899Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401910049",
+      "start_utc": "2026-11-29T01:00:00Z",
+      "participants": [
+        "MIL",
+        "OKC"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.18733236471902823,
+          "away": 0.8126676352809717
+        },
+        "model_version": "nba-existing-baselines-hybrid-challenger",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "hybrid_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "nba-existing-baselines",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": false,
+  "automatic_promotion": false,
+  "source_model_output": {
+    "game_id": "401910049",
+    "tipoff_utc": "2026-11-29T01:00:00Z",
+    "home_team": "MIL",
+    "away_team": "OKC",
+    "elo_p_home": 0.23777121517726635,
+    "challenger_p_home": 0.18733236471902823,
+    "hybrid_p_home": 0.18733236471902823,
+    "hybrid_route": "challenger",
+    "dual_challenger": false,
+    "eligible_for_bet": false,
+    "status": "unvalidated_candidate"
+  },
+  "source_output_sha256": "ec8956d0d3db37706a35ed39dd8cdc91da058c8ca3eb89ab1778f49845500290",
+  "source_output_sha256_scope": "event",
+  "model_provenance": {
+    "data_role": "historical_training_history",
+    "model_code_sha256": "1cee1bd0884eaf344cf35a37b8de4f78c5388816a04a4811b22a11e4c8c2cda3",
+    "training_data_sha256": "bb62e76d11e032dabf95d9942a2dde866688f0cbe075c2b96fbc0e022785d003",
+    "training_cutoff_utc": "2026-11-28T02:30:00+00:00",
+    "model_code_revision": "0961710bdf87ab9853c4a82421ba1d15d13eea2e",
+    "model_family": "nba-existing-baselines",
+    "forecast_model_version": "nba-existing-baselines-hybrid-challenger",
+    "source_output_sha256": "ec8956d0d3db37706a35ed39dd8cdc91da058c8ca3eb89ab1778f49845500290"
+  },
+  "revision": 2,
+  "parent_snapshot_sha256": "eed4381b87472771bbfc732c92ce28b9d965f8764e7379d2290f9d4845f5ce60",
+  "changes": [
+    {
+      "event_id": "401910049",
+      "before": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.19845920658385713,
+          "away": 0.8015407934161429
+        },
+        "model_version": "nba-existing-baselines-hybrid-challenger",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "hybrid_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "after": {
+        "stage": "update",
+        "probabilities": {
+          "home": 0.18733236471902823,
+          "away": 0.8126676352809717
+        },
+        "model_version": "nba-existing-baselines-hybrid-challenger",
+        "assumptions": [
+          "Existing source-model forecast; availability has not been independently audited by this adapter."
+        ],
+        "unresolved_inputs": [
+          "Current lineup and availability not verified by this adapter"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "hybrid_p_home",
+        "source_classification": "unvalidated_model_output"
+      },
+      "previous_start_utc": "2026-11-29T01:00:00Z",
+      "start_utc": "2026-11-29T01:00:00Z"
+    }
+  ],
+  "emitted_at_utc": "2026-11-28T17:30:58.157405+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "6bcbb8afe3318fa56713ee13b915ae49e240df352ffacf8a6c5dd9ed7265fae1"
+}
