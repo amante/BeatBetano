@@ -1,0 +1,81 @@
+{
+  "sport": "soccer",
+  "as_of_utc": "2026-11-28T03:18:00.244088Z",
+  "odds_used_in_sport_model": false,
+  "events": [
+    {
+      "event_id": "401878752",
+      "start_utc": "2026-11-28T17:30:00Z",
+      "participants": [
+        "Ipswich Town",
+        "Aston Villa"
+      ],
+      "official_baseline": null,
+      "challenger": null,
+      "final_probability": null,
+      "forecast": {
+        "stage": "initial",
+        "probabilities": {
+          "home": 0.1865710446951763,
+          "draw": 0.21206777359751147,
+          "away": 0.6013611817073122
+        },
+        "model_version": "soccer-existing-poisson-1bd135e4c153",
+        "assumptions": [
+          "Existing Premier League season-frozen Poisson model; no current lineup adjustment."
+        ],
+        "unresolved_inputs": [
+          "Confirmed lineup and current availability"
+        ],
+        "selection_status": "PASS",
+        "calibration_certified": false,
+        "source_probability_field": "probabilities",
+        "source_classification": "unvalidated_model_output"
+      },
+      "forecast_unavailable_reason": null,
+      "source_candidate_available": true
+    }
+  ],
+  "source_revision": "daily-soccer",
+  "verified_point_in_time_source": false,
+  "source_input_declares_no_odds": true,
+  "automatic_promotion": false,
+  "source_model_output": {
+    "event_id": "401878752",
+    "home": "Ipswich Town",
+    "away": "Aston Villa",
+    "start_utc": "2026-11-28T17:30Z",
+    "model_version": "soccer-existing-poisson-1bd135e4c153",
+    "assumptions": [
+      "Existing Premier League season-frozen Poisson model; no current lineup adjustment."
+    ],
+    "unresolved_inputs": [
+      "Confirmed lineup and current availability"
+    ],
+    "probabilities": [
+      0.1865710446951763,
+      0.21206777359751147,
+      0.6013611817073122
+    ]
+  },
+  "source_output_sha256": "6c160424c03da360f9f16d3a958a6c4b1f68fe7aee631addfa1a64e09bd65744",
+  "source_output_sha256_scope": "event",
+  "model_provenance": {
+    "model_code_sha256": "85795b73d2e89900576304e71648d64d66b38acdec2bb4bb8b01bb40fdc7e196",
+    "data_role": "completed_season_training_history",
+    "training_data_sha256": "735aa59de8dd3c7b46c9349c6b90c977f413306fce54e2281cc24f539298f44e",
+    "training_manifest_sha256": "f668367904a1f0f571b8bad000694c066fb120d8b753b5501eaace4ae298fc9f",
+    "training_cutoff_utc": null,
+    "training_latest_event_date": "2026-05-24",
+    "model_code_revision": "6181e62f9448798952c1366872ed5626669be0c6",
+    "model_family": "soccer-existing-poisson",
+    "forecast_model_version": "soccer-existing-poisson-1bd135e4c153",
+    "source_output_sha256": "6c160424c03da360f9f16d3a958a6c4b1f68fe7aee631addfa1a64e09bd65744"
+  },
+  "revision": 1,
+  "parent_snapshot_sha256": null,
+  "changes": [],
+  "emitted_at_utc": "2026-11-28T03:18:00.256681+00:00",
+  "emission_kind": "pregame",
+  "content_sha256": "45eead839f3337d95a4e513d7662662900bd6671c8273758de23c9cce0281026"
+}
